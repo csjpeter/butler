@@ -1,0 +1,6 @@
+butler (0.1.0-0) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Császár Péter <csjpeter@gmail.com>  Wed, 28 Nov 2007 13:13:07 +0100
+
