@@ -35,11 +35,11 @@ fi
 delete_file "./dist/src/tmp"
 
 echo Deleting preinstalled trees under debian directory :
-delete_file "./debian/butler"
-delete_file "./debian/butler-dbg"
+delete_file "./debian/butler-datamodel"
+delete_file "./debian/butler-datamodel-dbg"
 
 echo Deleting some generated file under debian directory :
-delete_file "./debian/butler.substvars"
+delete_file "./debian/butler-datamodel.substvars"
 delete_file "./debian/files"
 
 echo Done
