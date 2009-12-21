@@ -14,7 +14,7 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 CFLAGS=
 CFLAGS = -Wall -g
-PACKAGENAME = butler
+PACKAGENAME = butler-datamodel
 DEBIAN_DESTDIR = $(CURDIR)/debian/${PACKAGENAME}
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))

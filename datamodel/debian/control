@@ -1,20 +1,20 @@
-Source: butler
+Source: butler-datamodel
 Section: user
 Priority: optional
 Maintainer: Császár Péter <csjpeter@gmail.com>
-Build-Depends: libqt4-core, libqt4-gui
+Build-Depends: libqt4-core, libqt4-sql
 Standards-Version: 3.6.2.2
 
-Package: butler
+Package: butler-datamodel
 Section: user
 Architecture: any
-Provides: butler
-Depends: libqt4-core, libqt4-gui
+Provides: butler-datamodel
+Depends: libqt4-core, libqt4-sql
 Description: Helper for home keeping via maintaining shoping lists.
 
-Package: butler-dbg
+Package: butler-datamodel-dbg
 Section: devel
 Architecture: any
-Depends: butler
+Depends: butler-datamodel
 Description: Debug symbols for the butler.
 
