@@ -5,11 +5,12 @@
 PREFIX = /opt/devroot
 
 # debug compilation options
-CONFIG = qt4 qobject debug build_all warn_on
-#-Wall -Werror
-# release compilation options
-#CONFIG += silent
-#QMAKE_CXXFLAGS_DEBUG +=-O0
+CONFIG = qt debug build_all warn_on -Wall -Werror
+release {
+	CONFIG += silent
+}
+
+QMAKE_CXXFLAGS_DEBUG +=-O0
 
 # try to detect maemo environment 
 
@@ -38,5 +39,7 @@ DEFINES		+= PREFIX=$$PREFIX
 
 debug{
 	DEFINES	+= DEBUG
+	DEFINES += COMPONENT_NAME=\\\"\"ButlerDataModel\\\"\"
+	DEFINES += COMPONENT_COLOR=\\\"\"VT_FG_CYAN\\\"\"
 }
 

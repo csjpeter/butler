@@ -4,7 +4,7 @@ TEMPLATE = lib
 	message( "No custom build options specified" )
 }
 
-QT += sql
+QT = core sql
 
 HEADERS		=	\
 			butler_tag.h \

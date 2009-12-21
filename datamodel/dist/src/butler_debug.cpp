@@ -39,33 +39,31 @@ void _nothing(){}
  * the construction realy happened. */
 void _runtimeBacktraceLeaveConstructor(void *ptr, const char *funcName)
 {
-	QString str = funcName;
-	str = str.section("::", 0, 0);
-	str << " " << ptr;
+	QString str, funcNameStr = funcName;
+	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, 0)), ptr);
 	if(!leakCollection.contains(str))
 		leakCollection.insert(str, true);
 	else {
 		if(leakCollection[str])
-			qCritical("Reallocating %s on %p for which no "
-					"destructor run yet.");
+			qCritical("Reallocating %s for which no destructor "
+					"run yet.", qPrintable(str));
 		leakCollection[str] = true;
 	}
 }
 
 void _runtimeBacktraceLeaveDestructor(void *ptr, const char *funcName)
 {
-	QString str = funcName;
-	str = str.section("::", 0, 0);
-	str << " " << ptr;
+	QString str, funcNameStr = funcName;
+	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, 0)), ptr);
 	leakCollection[str] = false;
 }
 
 void _reportLeakSuspections(){
-	qDebug("List of not yet destructed objects:");
+	fprintf(stderr, "List of not yet destructed objects:");
 	QMap<QString, bool>::Iterator iter;
 	for(iter=leakCollection.begin(); iter != leakCollection.end(); iter++){
 		if(iter.value())
-			qDebug(iter.key());
+			fprintf(stderr, qPrintable(iter.key()));
 	}
 }
 
@@ -95,11 +93,6 @@ void _runtimeBacktraceEnter(void *ptr, const char *funcName, int verbose)
 void _runtimeBacktraceLeave(void *ptr, const char *funcName, int verbose)
 {
 	int pop = timeStack.isEmpty() ? 0 : timeStack.pop();
-	qDebug("%s%s%s %12p %s%11.3fs %s%s%s %s",
-			ptr,
-			VT_FG_MAGENTA, (timer.elapsed()-pop) / 1000.0,
-			VT_FG_CYAN, qPrintable(outPrefix), VT_TA_ALLOFF,
-			funcName);
 	fprintf(stderr, "%s%16s%s %12p %s%11.3fs %s%s%s %s",
 			COMPONENT_COLOR, COMPONENT_NAME, VT_TA_ALLOFF,
 			ptr,
