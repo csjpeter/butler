@@ -36,11 +36,11 @@ armel{
 	PREFIX = /usr
 }
 
-# if dpkg-buildpackage runs us use /usr prefix
+# if packaging is in progress use /usr prefix
 
-DPKG_BUILDPACKAGE_RUN = $$system(ls build-stamp)
-message(DPKG_BUILDPACKAGE_RUN:	$$DPKG_BUILDPACKAGE_RUN)
-!isEmpty(DPKG_BUILDPACKAGE_RUN){
+PACKAGING_RUN = $$system(ls packaging-started)
+#message(PACKAGING_RUN:	$$PACKAGING_RUN)
+!isEmpty(PACKAGING_RUN){
 	PREFIX = /usr
 }
 

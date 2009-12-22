@@ -17,29 +17,26 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-configure: clean
+clean:
+	./clean.sh
+	rm -f packaging-started build-stamp configure-stamp
+	dh_clean 
+
+configure:
+	touch packaging-started
 	qmake
 	touch configure-stamp
 
 build: configure
+	$(MAKE)
+	./test.sh # build is ready iff tests are ok
 	touch build-stamp
 
-clean:
-	./clean.sh
-	rm -f build-stamp configure-stamp
-	dh_clean 
-
-install: build
+install: 
 	dh_installdirs
 	$(MAKE) INSTALL_ROOT=${DEBIAN_DESTDIR} install
-	./clean.sh
 
-# Build architecture-independent files here.
-binary-indep:
-# We have nothing to do by default.
-
-# Build architecture-dependent files here.
-binary-arch: build install
+binary: install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
@@ -70,6 +67,5 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+#.PHONY: build clean binary install configure
 
