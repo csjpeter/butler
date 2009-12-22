@@ -7,6 +7,9 @@ fi
 
 BENCHMARK_BACKEND=$1
 
+# avoid debug messages for function enter/leave and leak suspections
+export SUPPRESS_RUNTIME_BACKTRACE=
+
 for tdir in $(ls -1 ./test/); do
 	if test ! -d ./test/$tdir; then
 		continue;

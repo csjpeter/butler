@@ -28,6 +28,7 @@
 
 static QTime timer;
 static bool started = false;
+static bool suppressRuntimeBacktrace = false;
 static QString inPrefix, outPrefix;
 static QStack<int> timeStack;
 static QMap<QString, bool> leakCollection;
@@ -59,6 +60,9 @@ void _runtimeBacktraceLeaveDestructor(void *ptr, const char *funcName)
 }
 
 void _reportLeakSuspections(){
+	if(suppressRuntimeBacktrace)
+		return;
+
 	fprintf(stderr, "List of not yet destructed objects:");
 	QMap<QString, bool>::Iterator iter;
 	for(iter=leakCollection.begin(); iter != leakCollection.end(); iter++){
@@ -72,7 +76,14 @@ void _runtimeBacktraceEnter(void *ptr, const char *funcName, int verbose)
 	if(!started){
 		timer.start();
 		started = true;
+
+		char *p = getenv("SUPPRESS_RUNTIME_BACKTRACE");
+		if(p != NULL)
+			suppressRuntimeBacktrace = true;
 	}
+
+	if(suppressRuntimeBacktrace)
+		return;
 
 	timeStack.push(timer.elapsed());
 	inPrefix.append("> ");
@@ -92,6 +103,9 @@ void _runtimeBacktraceEnter(void *ptr, const char *funcName, int verbose)
 
 void _runtimeBacktraceLeave(void *ptr, const char *funcName, int verbose)
 {
+	if(suppressRuntimeBacktrace)
+		return;
+
 	int pop = timeStack.isEmpty() ? 0 : timeStack.pop();
 	fprintf(stderr, "%s%16s%s %12p %s%11.3fs %s%s%s %s",
 			COMPONENT_COLOR, COMPONENT_NAME, VT_TA_ALLOFF,

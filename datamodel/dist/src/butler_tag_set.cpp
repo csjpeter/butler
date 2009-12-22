@@ -15,8 +15,8 @@ namespace Butler
 
 	TagSet::TagSet()
 	{
-//		ENTER_FUNCTION();
-//		LEAVE_FUNCTION();
+		ENTER_FUNCTION();
+		LEAVE_FUNCTION();
 	}
 
 	TagSet::~TagSet()
