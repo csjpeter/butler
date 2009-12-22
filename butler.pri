@@ -5,7 +5,7 @@
 PREFIX = /opt/devroot
 
 # debug compilation options
-CONFIG = qt debug build_all warn_on -Wall -Werror
+CONFIG = qt debug build_all warn_on
 
 QT = core
 
@@ -39,10 +39,11 @@ DEFINES += PREFIX=$$PREFIX
 
 release {
 	CONFIG += silent
+	QMAKE_CXXFLAGS += -Werror
 }
 
 debug{
-	QMAKE_CXXFLAGS_DEBUG +=-O0
+	QMAKE_CXXFLAGS_DEBUG +=-O0 -Werror
 	DEFINES	+= DEBUG
 }
 
