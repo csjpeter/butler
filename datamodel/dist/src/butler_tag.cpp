@@ -45,7 +45,7 @@ namespace Butler {
 		return str == b.name;
 	}
 			
-	bool isLess(const Tag &a, const Tag &b)
+	bool Tag::isLess(const Tag &a, const Tag &b)
 	{
 		return QString::localeAwareCompare(a.name, b.name) < 0;
 	}
