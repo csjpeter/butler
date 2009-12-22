@@ -34,6 +34,17 @@ armel{
 	PREFIX = /usr
 }
 
+# if dpkg-buildpackage runs us use /usr prefix
+
+DPKG_BUILDPACKAGE_RUN = $$system(ls build-stamp)
+message(DPKG_BUILDPACKAGE_RUN:	$$DPKG_BUILDPACKAGE_RUN)
+!isEmpty(DPKG_BUILDPACKAGE_RUN){
+	PREFIX = /usr
+}
+
+
+# general settings ...
+
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
 

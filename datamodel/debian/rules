@@ -19,15 +19,14 @@ endif
 
 configure: clean
 	qmake
-	touch $@
+	touch configure-stamp
 
 build: configure
-	touch $@
+	touch build-stamp
 
 clean:
 	./clean.sh
 	rm -f build-stamp configure-stamp
-#	rm -fr debian/${PACKAGENAME}
 	dh_clean 
 
 install: build

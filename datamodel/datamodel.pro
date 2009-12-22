@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = dist test
+SUBDIRS = src test
 
 #include(debian/deb.pri)
 

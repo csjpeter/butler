@@ -4,8 +4,8 @@
 
 CONFIG += qtestlib
 QT += testlib
-INCLUDEPATH += ../../dist/src
-LIBS += -L../../dist/src/ -lbutler_datamodel
+INCLUDEPATH += ../../src
+LIBS += -L../../src/ -lbutler_datamodel
 
 
 message(------$(PWD)------)

@@ -2,7 +2,7 @@ TEMPLATE = lib
 
 VERSION = 0.0.1
 
-!include(../../../butler.pri){
+!include(../butler.pri){
 	message( "butler.pri can not found" )
 }
 
@@ -40,7 +40,7 @@ SOURCES		=	\
 
 TARGET		= butler_datamodel
 
-target.path = $$PREFIX/bin
+target.path = $$PREFIX/lib
 INSTALLS += target
 
 message(------compilation in $(PWD)------)

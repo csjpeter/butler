@@ -14,7 +14,7 @@ for tdir in $(ls -1 ./test/); do
 	if test ! -d ./test/$tdir; then
 		continue;
 	fi
-	LD_LIBRARY_PATH=./dist/src:$LD_LIBRARY_PATH ./test/$tdir/$tdir $BENCHMARK_BACKEND
+	LD_LIBRARY_PATH=./src:$LD_LIBRARY_PATH ./test/$tdir/$tdir $BENCHMARK_BACKEND
 done
 
 
