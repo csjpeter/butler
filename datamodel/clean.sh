@@ -4,7 +4,7 @@ function delete_file()
 {
 	filename=$1
 	if test ! -e $filename -a ! -h $filename; then
-		echo Error: file $filename does not exists
+#		echo Error: file $filename does not exists
 		return
 	fi
 
@@ -16,44 +16,48 @@ function delete_file()
 	}
 }
 
-echo Deleting target result files :
+echo Deleting target result files ...
 for tfile in $(find ./dist/src/ | grep "libbutler_datamodel\.so[\.0123456789]*"); do
 	delete_file $tfile
 done
 delete_file "./test/test_datamodel"
 
-echo Deleting makefiles :
+echo Deleting makefiles ...
 for mkfile in $(find . | grep Makefile); do
 	delete_file $mkfile
 done
 
-echo Deleting object files :
+echo Deleting object files ...
 for ofile in $(find . | grep "\.o$"); do
 	delete_file $ofile
 done
 
-echo Deleting editor backup files :
+echo Deleting editor backup files ...
 for bakfile in $(find . | grep "~$"); do
 	delete_file $bakfile
 done
 
-echo Deleting generated source files :
-if test ! -e "./dist/src/tmp"; then
+echo Deleting generated source files ...
+if test -e "./dist/src/tmp"; then
 	for srcfile in $(find ./dist/src/tmp/ | grep "\.cpp$"); do
 		delete_file $srcfile
 	done
 fi
 
+echo Deleting directories used for compilation ...
 delete_file "./dist/src/tmp"
 delete_file "./test/tmp"
+delete_file "./dist/tmp"
+delete_file "./tmp"
 
-echo Deleting preinstalled trees under debian directory :
+echo Deleting preinstalled trees under debian directory ...
 delete_file "./debian/butler-datamodel"
 delete_file "./debian/butler-datamodel-dbg"
 
-echo Deleting some generated file under debian directory :
+echo Deleting some generated file under debian directory ...
 delete_file "./debian/butler-datamodel.substvars"
 delete_file "./debian/files"
 
-echo datamodel clean done
-
+echo
+echo Datamodel clean done
+echo
