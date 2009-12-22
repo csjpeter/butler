@@ -16,7 +16,7 @@ namespace Butler {
 
 	class Tag : public QObject
 	{
-		private:
+		public:
 			Q_OBJECT;
 		public:
 			Tag();
@@ -24,22 +24,26 @@ namespace Butler {
 			explicit Tag(const Tag &tag);
 			~Tag();
 
+			Tag& operator=(const Tag& tag);
+
 			static bool isEqual(const Tag &a, const Tag &b);
-			static bool isEqual(const Tag &a, const QString &str);
-			static bool isEqual(const QString &str, const Tag &b);
 
 			static bool isLess(const Tag &a, const Tag &b);
+			static bool isMore(const Tag &a, const Tag &b);
 
 		public:
 			QString name;
 			bool checked;
+
+		private:
+			void equal(const Tag &tag);
 	};
 
 	bool operator==(const Tag &a, const Tag &b);
-	bool operator==(const Tag &a, const QString &str);
-	bool operator==(const QString &str, const Tag &b);
+	bool operator!=(const Tag &a, const Tag &b);
 
 	bool operator<(const Tag &a, const Tag &b);
+	bool operator>(const Tag &a, const Tag &b);
 }
 
 #endif

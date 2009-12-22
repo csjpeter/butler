@@ -12,6 +12,7 @@ namespace Butler {
 
 	Tag::Tag()
 	{
+		checked = false;
 	}
 
 	Tag::Tag(const QString &_name)
@@ -29,20 +30,16 @@ namespace Butler {
 	Tag::~Tag()
 	{
 	}
+			
+	Tag& Tag::operator=(const Tag& tag)
+	{
+		equal(tag);
+		return *this;
+	}
 
 	bool Tag::isEqual(const Tag &a, const Tag &b)
 	{
-		return a.name == b.name;
-	}
-
-	bool Tag::isEqual(const Tag &a, const QString &str)
-	{
-		return a.name == str;
-	}
-
-	bool Tag::isEqual(const QString &str, const Tag &b)
-	{
-		return str == b.name;
+		return (a.name == b.name) && (a.checked == b.checked);
 	}
 			
 	bool Tag::isLess(const Tag &a, const Tag &b)
@@ -50,24 +47,35 @@ namespace Butler {
 		return QString::localeAwareCompare(a.name, b.name) < 0;
 	}
 
+	bool Tag::isMore(const Tag &a, const Tag &b)
+	{
+		return 0 < QString::localeAwareCompare(a.name, b.name);
+	}
+			
+	void Tag::equal(const Tag &tag)
+	{
+		name = tag.name;
+		checked = tag.checked;
+	}
+
 	bool operator==(const Tag &a, const Tag &b)
 	{
 		return Tag::isEqual(a,b);
 	}
 
-	bool operator==(const Tag &a, const QString &str)
+	bool operator!=(const Tag &a, const Tag &b)
 	{
-		return Tag::isEqual(a,str);
-	}
-
-	bool operator==(const QString &str, const Tag &b)
-	{
-		return Tag::isEqual(str,b);
+		return !Tag::isEqual(a,b);
 	}
 
 	bool operator<(const Tag &a, const Tag &b)
 	{
 		return Tag::isLess(a, b);
+	}
+
+	bool operator>(const Tag &a, const Tag &b)
+	{
+		return Tag::isMore(a, b);
 	}
 }
 

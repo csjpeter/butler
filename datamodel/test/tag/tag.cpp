@@ -17,19 +17,97 @@ namespace Butler {
 		private:
 			Q_OBJECT;
 		private slots:
-			void defaultConstructor();
+			void construction();
+			void equality();
+			void comparison();
 	};
 
 
-	void TestTag::defaultConstructor()
+	void TestTag::construction()
 	{
-		Tag tag;
-
-		QCOMPARE(tag.name, QString(""));
-		QVERIFY(tag.checked == false);
-		QBENCHMARK {
+		/* default constructor*/
+		{
 			Tag tag;
+
+			QCOMPARE(tag.name, QString(""));
+			QVERIFY(tag.checked == false);
+			QBENCHMARK {
+				Tag tag;
+			}
 		}
+
+		/* parameterized constructor*/
+		{
+			Tag tag("tag-name");
+
+			QCOMPARE(tag.name, QString("tag-name"));
+			QVERIFY(tag.checked == false);
+			QBENCHMARK {
+				Tag tag("tag-name");
+			}
+		}
+
+		/* copy constructor*/
+		{
+			Tag t("tag-name");
+			t.checked = true;
+
+			Tag tag(t);
+
+			QCOMPARE(tag.name, t.name);
+			QVERIFY(tag.checked == t.checked);
+			QBENCHMARK {
+				Tag tag(t);
+			}
+		}
+	}
+
+	void TestTag::equality()
+	{
+		Tag a("a"), b("A");
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+
+		b.name = "a";
+		b.checked = true;
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+
+		a.checked = true;
+
+		QVERIFY(a == b);
+		QVERIFY(!(a != b));
+
+		a.checked = false;
+		a.name = "b";
+		a = b;
+
+		QVERIFY(a.name == b.name);
+		QVERIFY(a.checked == b.checked);
+	}
+
+	void TestTag::comparison()
+	{
+		/* dont test comparison itself, just consistency */
+		Tag a("a"), b("B");
+
+		/* one of < and > must be true */
+		QVERIFY(a < b || a > b);
+		/* result of < and > must be different */
+		QVERIFY(!(a < b && a > b));
+
+		a.name = "az3d";
+		b.name = "az3d";
+
+		QVERIFY(!(a < b || a > b));
+
+		a.name = "óa";
+		b.name = "oB";
+
+		QVERIFY(a < b || a > b);
+		QVERIFY(!(a < b && a > b));
 	}
 
 }
