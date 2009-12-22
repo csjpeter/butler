@@ -24,9 +24,12 @@ namespace Butler {
 	void TestTag::defaultConstructor()
 	{
 		Tag tag;
-		QVERIFY(tag.name == "");
+
 		QCOMPARE(tag.name, QString(""));
-		QCOMPARE(tag.checked, false);
+		QVERIFY(tag.checked == false);
+		QBENCHMARK {
+			Tag tag;
+		}
 	}
 
 }
