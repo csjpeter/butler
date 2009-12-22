@@ -3,7 +3,7 @@
 subdirs="datamodel "
 
 for dir in $subdirs; do
-	pushd $dir
+	pushd $dir > /dev/null
 	echo
 	echo Cleaning in $dir
 	echo
@@ -12,7 +12,35 @@ for dir in $subdirs; do
 		echo Aborting cleaning
 		exit
 	}
-	popd
+	popd > /dev/null
+done
+
+
+function delete_file()
+{
+	filename=$1
+	if test ! -e $filename -a ! -h $filename; then
+#		echo Error: file $filename does not exists
+		return
+	fi
+
+	echo -n "	$filename ... "
+	rm -fr $filename && {
+		echo done
+	} || {
+		echo failed
+	}
+}
+
+echo Deleting package files in main directory...
+packages="butler-datamodel"
+for file in $packages; do
+	for pfile in $(ls -d $file*); do
+		if test -d $pfile; then
+			continue;
+		fi
+		delete_file $pfile
+	done
 done
 
 echo
