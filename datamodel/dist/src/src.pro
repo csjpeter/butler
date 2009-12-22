@@ -1,10 +1,15 @@
 TEMPLATE = lib
 
-!include(../custom.pri){
-	message( "No custom build options specified" )
+VERSION = 0.0.1
+
+!include(../../../butler.pri){
+	message( "butler.pri can not found" )
 }
 
-QT = core sql
+debug{
+	DEFINES += COMPONENT_NAME=\\\"\"ButlerDataModel\\\"\"
+	DEFINES += COMPONENT_COLOR=\\\"\"VT_FG_CYAN\\\"\"
+}
 
 HEADERS		=	\
 			butler_tag.h \
@@ -34,19 +39,11 @@ SOURCES		=	\
 			butler_debug.cpp
 
 TARGET		= butler_datamodel
-VERSION		= 0.0.1
-
-INCLUDEPATH	= QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
-QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
-
-OBJECTS_DIR = ./tmp
-MOC_DIR = ./tmp
 
 target.path = $$PREFIX/bin
 INSTALLS += target
 
-message(------$(PWD)------)
-message(Butler project locations:)
+message(------compilation in $(PWD)------)
 message(Destdir:		$$DESTDIR)
 message(Prefix:			$$PREFIX)
 message(Qmake incdir:		$$QMAKE_INCDIR)
@@ -54,5 +51,6 @@ message(Qt Inc dir:		$$QMAKE_INCDIR_QT)
 message(Defines:		$$DEFINES)
 message(Config:			$$CONFIG)
 message(Qt:			$$QT)
-message(------------)
+message(------------------)
+
 
