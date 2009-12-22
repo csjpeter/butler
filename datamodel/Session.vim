@@ -40,6 +40,7 @@ set background=dark
 set backspace=indent,eol,start
 set backup
 set cinoptions=u2
+set completeopt=preview,menuone
 set fileencodings=ucs-bom,utf-8,default,latin1
 set helplang=en
 set history=200
@@ -79,16 +80,17 @@ badd +1 dist/src/butler_item.h
 badd +1 dist/src/butler_queryoptions_db.h
 badd +1 dist/src/butler_queryoptions.h
 badd +1 dist/src/butler_tag_db.h
-badd +13 dist/src/butler_tag.h
-badd +1 dist/src/butler_tag_set.h
+badd +25 dist/src/butler_tag.h
+badd +22 dist/src/butler_tag_set.h
 badd +25 dist/src/src.pro
 badd +1 dist/src/butler_debug.cpp
 badd +1 dist/src/butler_debug.h
 badd +1 dist/dist.pro
 badd +1 datamodel.pro
-badd +1 ../butler.pri
+badd +1 ~/sbox/prj/butler/butler.pri
 badd +0 test/test.pro
-badd +0 test/test_tag.cpp
+badd +0 test/tag/tag.cpp
+badd +0 test/tagset/tag_set.cpp
 args ~/sbox/prj/butler/datamodel/dist/src/butler_item.cpp ~/sbox/prj/butler/datamodel/dist/src/butler_queryoptions.cpp ~/sbox/prj/butler/datamodel/dist/src/butler_tag.cpp ~/sbox/prj/butler/datamodel/dist/src/butler_tag_set.cpp ~/sbox/prj/butler/datamodel/dist/src/butler_db.h ~/sbox/prj/butler/datamodel/dist/src/butler_item_db.h ~/sbox/prj/butler/datamodel/dist/src/butler_item.h ~/sbox/prj/butler/datamodel/dist/src/butler_queryoptions_db.h ~/sbox/prj/butler/datamodel/dist/src/butler_queryoptions.h ~/sbox/prj/butler/datamodel/dist/src/butler_tag_db.h ~/sbox/prj/butler/datamodel/dist/src/butler_tag.h ~/sbox/prj/butler/datamodel/dist/src/butler_tag_set.h
 set lines=41 columns=154
 edit dist/src/butler_item.cpp
@@ -101,8 +103,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 147 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 6 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -197,12 +199,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 41 - ((9 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-41
-normal! 01l
+1
+normal! 0
 wincmd w
 argglobal
 edit dist/src/butler_item.h
@@ -306,8 +308,8 @@ normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 147 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 6 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 tabedit dist/src/butler_queryoptions.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -318,8 +320,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 130 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 23 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 argglobal
 2argu
 setlocal keymap=
@@ -415,12 +417,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 34 - ((0 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-34
-normal! 01l
+1
+normal! 0
 wincmd w
 argglobal
 2argu
@@ -525,8 +527,8 @@ normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 130 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 23 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 tabedit dist/src/butler_tag.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -545,20 +547,26 @@ vsplit
 1wincmd h
 wincmd w
 wincmd w
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 30 + 20) / 41)
+exe '1resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 1resize ' . ((&columns * 36 + 77) / 154)
-exe '2resize ' . ((&lines * 7 + 20) / 41)
+exe '2resize ' . ((&lines * 30 + 20) / 41)
 exe 'vert 2resize ' . ((&columns * 36 + 77) / 154)
-exe '3resize ' . ((&lines * 30 + 20) / 41)
+exe '3resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 3resize ' . ((&columns * 36 + 77) / 154)
-exe '4resize ' . ((&lines * 30 + 20) / 41)
+exe '4resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 4resize ' . ((&columns * 80 + 77) / 154)
-exe '5resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 117 + 77) / 154)
+exe '5resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 5resize ' . ((&columns * 36 + 77) / 154)
+exe '6resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 6resize ' . ((&columns * 80 + 77) / 154)
 argglobal
 3argu
 setlocal keymap=
@@ -654,12 +662,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 15) / 30)
+let s:l = 38 - ((6 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 017l
+38
+normal! 010l
 wincmd w
 argglobal
 3argu
@@ -757,11 +765,11 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 41 - ((2 * winheight(0) + 3) / 7)
+let s:l = 18 - ((10 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-41
+18
 normal! 01l
 wincmd w
 argglobal
@@ -860,16 +868,222 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 32 - ((17 * winheight(0) + 15) / 30)
+let s:l = 25 - ((0 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-32
+25
 normal! 0
 wincmd w
 argglobal
 3argu
-edit test/test_tag.cpp
+edit test/tag/tag.cpp
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=u2
+setlocal cinwords=if,else,while,do,for,switch
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal completefunc=
+setlocal nocopyindent
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal noexpandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=marker
+setlocal foldmethod=marker
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+setlocal nonumber
+setlocal numberwidth=4
+setlocal omnifunc=omni#cpp#complete#Main
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=8
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=8
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=8
+setlocal tags=
+setlocal textwidth=300
+setlocal thesaurus=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+let s:l = 39 - ((6 * winheight(0) + 3) / 7)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+39
+normal! 013l
+wincmd w
+argglobal
+3argu
+edit dist/src/butler_tag_set.h
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=u2
+setlocal cinwords=if,else,while,do,for,switch
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal completefunc=
+setlocal nocopyindent
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal noexpandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=marker
+setlocal foldmethod=marker
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+setlocal nonumber
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=8
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=8
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=8
+setlocal tags=
+setlocal textwidth=80
+setlocal thesaurus=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+let s:l = 22 - ((0 * winheight(0) + 15) / 30)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+22
+normal! 0
+wincmd w
+argglobal
+3argu
+edit test/tagset/tag_set.cpp
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -970,120 +1184,19 @@ normal! zt
 1
 normal! 0
 wincmd w
-argglobal
-3argu
-edit dist/src/butler_tag_set.h
-setlocal keymap=
-setlocal noarabic
-setlocal autoindent
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=u2
-setlocal cinwords=if,else,while,do,for,switch
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal completefunc=
-setlocal nocopyindent
-setlocal nocursorcolumn
-setlocal nocursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal noexpandtab
-if &filetype != 'cpp'
-setlocal filetype=cpp
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=marker
-setlocal foldmethod=marker
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-setlocal nonumber
-setlocal numberwidth=4
-setlocal omnifunc=ccomplete#Complete
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=8
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=8
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != 'cpp'
-setlocal syntax=cpp
-endif
-setlocal tabstop=8
-setlocal tags=
-setlocal textwidth=80
-setlocal thesaurus=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 3) / 7)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-1
-normal! 0
-wincmd w
-4wincmd w
-exe '1resize ' . ((&lines * 30 + 20) / 41)
+6wincmd w
+exe '1resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 1resize ' . ((&columns * 36 + 77) / 154)
-exe '2resize ' . ((&lines * 7 + 20) / 41)
+exe '2resize ' . ((&lines * 30 + 20) / 41)
 exe 'vert 2resize ' . ((&columns * 36 + 77) / 154)
-exe '3resize ' . ((&lines * 30 + 20) / 41)
+exe '3resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 3resize ' . ((&columns * 36 + 77) / 154)
-exe '4resize ' . ((&lines * 30 + 20) / 41)
+exe '4resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 4resize ' . ((&columns * 80 + 77) / 154)
-exe '5resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 117 + 77) / 154)
+exe '5resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 5resize ' . ((&columns * 36 + 77) / 154)
+exe '6resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 6resize ' . ((&columns * 80 + 77) / 154)
 tabedit dist/src/butler_db.h
 set splitbelow splitright
 set nosplitbelow
@@ -1185,13 +1298,13 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 25 - ((12 * winheight(0) + 19) / 39)
+let s:l = 1 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-25
+1
 normal! 0
-4wincmd w
+6wincmd w
 tabedit dist/src/butler_debug.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -1299,12 +1412,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 66 - ((34 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+66
+normal! 024l
 wincmd w
 argglobal
 edit dist/src/butler_debug.h
@@ -1408,7 +1521,7 @@ normal! zt
 47
 normal! 014l
 wincmd w
-4wincmd w
+6wincmd w
 exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
 exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 tabedit dist/src/src.pro
@@ -1518,7 +1631,7 @@ exe s:l
 normal! zt
 1
 normal! 0
-4wincmd w
+6wincmd w
 tabedit dist/dist.pro
 set splitbelow splitright
 set nosplitbelow
@@ -1626,7 +1739,7 @@ exe s:l
 normal! zt
 1
 normal! 0
-4wincmd w
+6wincmd w
 tabedit datamodel.pro
 set splitbelow splitright
 set nosplitbelow
@@ -1728,13 +1841,13 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 39)
+let s:l = 28 - ((27 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+28
 normal! 0
-4wincmd w
+6wincmd w
 tabedit test/test.pro
 set splitbelow splitright
 set nosplitbelow
@@ -1836,21 +1949,21 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 39)
+let s:l = 6 - ((5 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+6
 normal! 0
-4wincmd w
-tabedit ../butler.pri
+6wincmd w
+tabedit ~/sbox/prj/butler/butler.pri
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
 argglobal
-edit ../butler.pri
+edit ~/sbox/prj/butler/butler.pri
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -1944,13 +2057,13 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 30 - ((29 * winheight(0) + 19) / 39)
+let s:l = 46 - ((32 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-30
-normal! 0
-4wincmd w
+46
+normal! 026l
+6wincmd w
 tabnext 3
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
