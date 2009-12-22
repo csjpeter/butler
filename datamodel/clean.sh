@@ -3,7 +3,8 @@
 function delete_file()
 {
 	filename=$1
-	if test ! -e $filename; then
+	if test ! -e $filename -a ! -h $filename; then
+		echo Error: file $filename does not exists
 		return
 	fi
 
@@ -14,6 +15,12 @@ function delete_file()
 		echo failed
 	}
 }
+
+echo Deleting target result files :
+for tfile in $(find ./dist/src/ | grep "libbutler_datamodel\.so[\.0123456789]*"); do
+	delete_file $tfile
+done
+delete_file "./test/test_datamodel"
 
 echo Deleting makefiles :
 for mkfile in $(find . | grep Makefile); do
