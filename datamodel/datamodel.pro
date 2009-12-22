@@ -5,11 +5,6 @@ SUBDIRS = dist test
 	message( "butler.pri can not found" )
 }
 
-
-QMAKE_EXTRA_TARGETS += test
-test.commands = @LD_LIBRARY_PATH=dist/src:$$(LD_LIBRARY_PATH) ./test/test_datamodel
-
-
 #CONFIG += ordered
 
 #include(debian/deb.pri)
