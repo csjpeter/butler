@@ -33,6 +33,7 @@ if test ! -e "./dist/src/tmp"; then
 fi
 
 delete_file "./dist/src/tmp"
+delete_file "./test/tmp"
 
 echo Deleting preinstalled trees under debian directory :
 delete_file "./debian/butler-datamodel"

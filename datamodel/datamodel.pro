@@ -6,8 +6,8 @@ SUBDIRS = dist test
 }
 
 
-#QMAKE_EXTRA_TARGETS += check
-#check.commands = @LD_LIBRARY_PATH=dist/src:$$(LD_LIBRARY_PATH) ./test/test_datamodel
+QMAKE_EXTRA_TARGETS += test
+test.commands = @LD_LIBRARY_PATH=dist/src:$$(LD_LIBRARY_PATH) ./test/test_datamodel
 
 
 #CONFIG += ordered
