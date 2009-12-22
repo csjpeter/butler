@@ -6,35 +6,36 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <ButlerTag>
+#include <ButlerTagSet>
 
 #include <QtTest/QtTest>
 
 namespace Butler {
 
-	class TestTag : public QObject
+	class TestTagSet : public QObject
 	{
 		private:
 			Q_OBJECT;
-			private slots:
-				void defaultConstructor();
+		private slots:
+			void defaultConstructor();
 	};
 
 
-	void TestTag::defaultConstructor()
+	void TestTagSet::defaultConstructor()
 	{
-		Tag tag;
+		TagSet ts;
 
-		QCOMPARE(tag.name, QString(""));
-		QVERIFY(tag.checked == false);
+/*		QCOMPARE(ts.name, QString(""));
+		QVERIFY(ts.checked == false);
+*/
 		QBENCHMARK {
-			Tag tag;
+			TagSet ts;
 		}
 	}
 
 }
 	
-QTEST_MAIN(Butler::TestTag);
+QTEST_MAIN(Butler::TestTagSet);
 
-#include "tmp/test_tag.moc"
+#include "tmp/tag_set.moc"
 
