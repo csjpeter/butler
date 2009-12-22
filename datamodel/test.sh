@@ -14,7 +14,14 @@ for tdir in $(ls -1 ./test/); do
 	if test ! -d ./test/$tdir; then
 		continue;
 	fi
-	LD_LIBRARY_PATH=./src:$LD_LIBRARY_PATH ./test/$tdir/$tdir $BENCHMARK_BACKEND
+	LD_LIBRARY_PATH=./src:$LD_LIBRARY_PATH ./test/$tdir/$tdir $BENCHMARK_BACKEND > test_result
+	num_of_failed="$(grep Total test_result | awk '{printf("%d", $4)}')"
+	cat test_result
+	rm test_result
+	if test ! "x$num_of_failed" = "x0"; then
+		echo Aborting tests because failed test found...
+		exit -1
+	fi
 done
 
 

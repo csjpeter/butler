@@ -29,14 +29,16 @@ configure:
 
 build: configure
 	$(MAKE)
-	./test.sh # build is ready iff tests are ok
 	touch build-stamp
+
+unittest:
+	./test.sh # will abort if any of the tests fails
 
 install: 
 	dh_installdirs
 	$(MAKE) INSTALL_ROOT=${DEBIAN_DESTDIR} install
 
-binary: install
+binary: unittest install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
@@ -67,5 +69,5 @@ binary: install
 	dh_md5sums
 	dh_builddeb
 
-#.PHONY: build clean binary install configure
+.PHONY: clean configure build test install binary
 
