@@ -63,7 +63,7 @@ void _reportLeakSuspections(){
 	QMap<QString, bool>::Iterator iter;
 	for(iter=leakCollection.begin(); iter != leakCollection.end(); iter++){
 		if(iter.value())
-			fprintf(stderr, qPrintable(iter.key()));
+			fprintf(stderr, "%s", qPrintable(iter.key()));
 	}
 }
 
