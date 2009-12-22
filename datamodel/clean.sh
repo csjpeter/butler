@@ -25,6 +25,11 @@ for ofile in $(find . | grep "\.o$"); do
 	delete_file $ofile
 done
 
+echo Deleting editor backup files :
+for bakfile in $(find . | grep "~$"); do
+	delete_file $bakfile
+done
+
 echo Deleting generated source files :
 if test ! -e "./dist/src/tmp"; then
 	for srcfile in $(find ./dist/src/tmp/ | grep "\.cpp$"); do
@@ -43,5 +48,5 @@ echo Deleting some generated file under debian directory :
 delete_file "./debian/butler-datamodel.substvars"
 delete_file "./debian/files"
 
-echo Done
+echo datamodel clean done
 
