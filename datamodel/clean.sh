@@ -52,14 +52,6 @@ for srcfile in $(find . | grep "/tmp$"); do
 	delete_file $srcfile
 done
 
-echo Deleting preinstalled trees under debian directory ...
-delete_file "./debian/butler-datamodel"
-delete_file "./debian/butler-datamodel-dbg"
-
-echo Deleting some generated file under debian directory ...
-delete_file "./debian/butler-datamodel.substvars"
-delete_file "./debian/files"
-
 echo Deleting editor backup files ...
 for bakfile in $(find . | grep "~$"); do
 	delete_file $bakfile

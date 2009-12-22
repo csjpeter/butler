@@ -6,65 +6,37 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
-
-# These are used for cross-compiling and for saving the configure script
-# from having to guess our platform (since we know it already)
+# Detect architecture for cross-compiling
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-CFLAGS=
-CFLAGS = -Wall -g
 PACKAGENAME = butler-datamodel
 DEBIAN_DESTDIR = $(CURDIR)/debian/${PACKAGENAME}
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-
-ifneq (,$(findstring logdebug,$(DEB_BUILD_OPTIONS)))
-	OPTS = --enable-debug=yes
-else
-	OPTS = --enable-debug=no
-endif
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
+configure: clean
 	qmake
-	touch configure-stamp
+	touch $@
 
-build: build-stamp
-build-stamp: configure-stamp 
-#	dh_testdir
-#	$(MAKE)
-#	touch $@
+build: configure
+	touch $@
 
 clean:
-	dh_testdir
-	dh_testroot
+	./clean.sh
 	rm -f build-stamp configure-stamp
-	rm -fr debian/${PACKAGENAME}
-#	qmake &>/dev/null
-	-$(MAKE) distclean
+#	rm -fr debian/${PACKAGENAME}
 	dh_clean 
 
 install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
 	dh_installdirs
-
 	$(MAKE) INSTALL_ROOT=${DEBIAN_DESTDIR} install
-#	$(MAKE) install
+	./clean.sh
 
 # Build architecture-independent files here.
-binary-indep: build install
+binary-indep:
 # We have nothing to do by default.
 
 # Build architecture-dependent files here.
@@ -101,3 +73,4 @@ binary-arch: build install
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
+
