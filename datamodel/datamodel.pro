@@ -1,12 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = dist test
 
-!include(../butler.pri){
-	message( "butler.pri can not found" )
-}
-
-#CONFIG += ordered
-
 #include(debian/deb.pri)
 
 message(------Qt informations-------)
@@ -23,7 +17,4 @@ message(Translation files:	$$[QT_INSTALL_TRANSLATIONS])
 message(Settings:		$$[QT_INSTALL_SETTINGS])
 message(Examples:		$$[QT_INSTALL_EXAMPLES])
 message(Demonstrations:		$$[QT_INSTALL_DEMOS])
-message(------Butler informations-------)
-message(Destdir:		$$DESTDIR)
-message(Prefix:			$$PREFIX)
 
