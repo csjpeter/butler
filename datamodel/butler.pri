@@ -1,4 +1,6 @@
 
+#FIXME it should be set from debian/rules whther to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
+
 # common project wide defaults
 
 # use development prefix by default on x86
