@@ -20,7 +20,12 @@ echo Deleting target result files ...
 for tfile in $(find ./dist/src/ | grep "libbutler_datamodel\.so[\.0123456789]*"); do
 	delete_file $tfile
 done
-delete_file "./test/test_datamodel"
+for tdir in $(ls -1 ./test/); do
+	if test ! -d ./test/$tdir; then
+		continue;
+	fi
+	delete_file "./test/$tdir/$tdir"
+done
 
 echo Deleting makefiles ...
 for mkfile in $(find . | grep Makefile); do
@@ -32,23 +37,20 @@ for ofile in $(find . | grep "\.o$"); do
 	delete_file $ofile
 done
 
-echo Deleting editor backup files ...
-for bakfile in $(find . | grep "~$"); do
-	delete_file $bakfile
+echo Deleting generated source files ...
+for srcfile in $(find . | grep "tmp/moc_.*\.cpp$"); do
+	delete_file $srcfile
 done
 
-echo Deleting generated source files ...
-if test -e "./dist/src/tmp"; then
-	for srcfile in $(find ./dist/src/tmp/ | grep "\.cpp$"); do
-		delete_file $srcfile
-	done
-fi
+echo Deleting generated moc files ...
+for srcfile in $(find . | grep "tmp/.*\.moc$"); do
+	delete_file $srcfile
+done
 
 echo Deleting directories used for compilation ...
-delete_file "./dist/src/tmp"
-delete_file "./test/tmp"
-delete_file "./dist/tmp"
-delete_file "./tmp"
+for srcfile in $(find . | grep "/tmp$"); do
+	delete_file $srcfile
+done
 
 echo Deleting preinstalled trees under debian directory ...
 delete_file "./debian/butler-datamodel"
@@ -57,6 +59,11 @@ delete_file "./debian/butler-datamodel-dbg"
 echo Deleting some generated file under debian directory ...
 delete_file "./debian/butler-datamodel.substvars"
 delete_file "./debian/files"
+
+echo Deleting editor backup files ...
+for bakfile in $(find . | grep "~$"); do
+	delete_file $bakfile
+done
 
 echo
 echo Datamodel clean done
