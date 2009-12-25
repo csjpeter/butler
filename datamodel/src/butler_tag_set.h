@@ -33,22 +33,24 @@ namespace Butler {
 			TagSet& operator=(const TagSet&);
 
 			void append(Tag *t);
-			void move(int from, int to);
 			void remove(int i);
 			void clear();
+			void move(int from, int to);
+			void swap(int i, int j);
 
-			const Tag& at(int i) const;
+			const Tag& query(int i) const;
 
 			bool empty() const;
 			int size() const;
 
 			void sort();
-			void swap(int i, int j);
 
 			static bool isEqual(const TagSet &a, const TagSet &b);
 
 		private:
 			void equal(const TagSet &ts);
+			static bool qSortIsLess(
+					const Tag* s1, const Tag* s2);
 
 			QList<Tag*> data;
 			QMap<const QString*, const Tag*> nameToPtr;
