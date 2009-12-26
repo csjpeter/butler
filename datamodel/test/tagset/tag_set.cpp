@@ -19,8 +19,8 @@ namespace Butler {
 		private slots:
 			void construction();
 			void insertion();
-			void copy();
 			void removation();
+			void copy();
 			void ordering();
 			void equality();
 	};
@@ -47,19 +47,6 @@ namespace Butler {
 		QVERIFY(q.name == "first");
 	}
 
-	void TestTagSet::copy()
-	{
-		Tag *t = new Tag("first");
-		TagSet ts;
-		ts.append(t);
-
-		TagSet ts_copy(ts);
-
-		QCOMPARE(ts_copy.size(), 1);
-		QVERIFY(ts_copy.empty() == false);
-		QVERIFY(ts.query(0) == ts_copy.query(0));
-	}
-
 	void TestTagSet::removation()
 	{
 		TagSet ts;
@@ -74,16 +61,65 @@ namespace Butler {
 		QVERIFY(ts.query(1).name == "third");
 	}
 
+	void TestTagSet::copy()
+	{
+		Tag *t = new Tag("first");
+		TagSet ts;
+		ts.append(t);
+
+		{
+			TagSet ts_copy(ts);
+
+			QCOMPARE(ts_copy.size(), 1);
+			QVERIFY(ts_copy.empty() == false);
+			QVERIFY(ts.query(0) == ts_copy.query(0));
+		}
+
+		{
+			TagSet ts_copy;
+			ts_copy.append(new Tag("old"));
+			ts_copy = ts;
+
+			QCOMPARE(ts_copy.size(), 1);
+			QVERIFY(ts_copy.empty() == false);
+			QVERIFY(ts.query(0) == ts_copy.query(0));
+		}
+	}
+
 	void TestTagSet::ordering()
 	{
-		TagSet ts;
-		ts.append(new Tag("xyz"));
-		ts.append(new Tag("uvw"));
-		ts.append(new Tag("rst"));
-		ts.sort();
-		QVERIFY(ts.query(0).name == "rst");
-		QVERIFY(ts.query(1).name == "uvw");
-		QVERIFY(ts.query(2).name == "xyz");
+		{
+			TagSet ts;
+			ts.append(new Tag("xyz"));
+			ts.append(new Tag("uvw"));
+			ts.append(new Tag("rst"));
+			ts.sort();
+			QVERIFY(ts.query(0).name == "rst");
+			QVERIFY(ts.query(1).name == "uvw");
+			QVERIFY(ts.query(2).name == "xyz");
+		}
+
+		{
+			TagSet ts;
+			ts.append(new Tag("xyz"));
+			ts.append(new Tag("uvw"));
+			ts.append(new Tag("rst"));
+			ts.move(2, 0);
+			QVERIFY(ts.query(0).name == "rst");
+			QVERIFY(ts.query(1).name == "xyz");
+			QVERIFY(ts.query(2).name == "uvw");
+		}
+
+		{
+			TagSet ts;
+			ts.append(new Tag("xyz"));
+			ts.append(new Tag("uvw"));
+			ts.append(new Tag("rst"));
+			ts.swap(0,2);
+			QVERIFY(ts.query(0).name == "rst");
+			QVERIFY(ts.query(1).name == "uvw");
+			QVERIFY(ts.query(2).name == "xyz");
+		}
 	}
 
 	void TestTagSet::equality()
@@ -94,7 +130,13 @@ namespace Butler {
 
 		QVERIFY(!(a == b));
 		QVERIFY(a != b);
-		
+
+		b.append(new Tag("xy"));
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+
+		b.clear();
 		b.append(new Tag("xyz"));
 
 		QVERIFY(a == b);
