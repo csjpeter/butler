@@ -12,6 +12,9 @@ debug{
 }
 
 HEADERS		=	\
+			butler_orderedset.h \
+			ButlerOrederedSet \
+			\
 			butler_tag.h \
 			ButlerTag \
 			butler_tag_set.h \
@@ -34,6 +37,8 @@ HEADERS		=	\
 			ButlerDebug
 
 SOURCES		=	\
+			butler_orderedset.cpp \
+			\
 			butler_tag.cpp \
 			butler_tag_set.cpp \
 			butler_item.cpp \

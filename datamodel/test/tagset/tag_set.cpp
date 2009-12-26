@@ -122,17 +122,6 @@ namespace Butler {
 			QVERIFY(ts.query(1).name == "xyz");
 			QVERIFY(ts.query(2).name == "uvw");
 		}
-
-		{
-			TagSet ts;
-			ts.append(new Tag("xyz"));
-			ts.append(new Tag("uvw"));
-			ts.append(new Tag("rst"));
-			ts.swap(0,2);
-			QVERIFY(ts.query(0).name == "rst");
-			QVERIFY(ts.query(1).name == "uvw");
-			QVERIFY(ts.query(2).name == "xyz");
-		}
 	}
 
 	void TestTagSet::equality()

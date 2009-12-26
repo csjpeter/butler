@@ -11,17 +11,16 @@
 
 #include <QObject>
 #include <QString>
-#include <QList>
 #include <QMap>
-#include <QVariant>
 
 #include <ButlerTag>
+#include <ButlerOrderedSet>
 
 namespace Butler {
 
 	/* Methods accepting pointers in their parameters will take the
 	 * ownership of the pointed object. */
-	class TagSet : public QObject
+	class TagSet : public QObject, public OrderedSet<Tag>
 	{
 		private:
 			Q_OBJECT;
@@ -30,34 +29,15 @@ namespace Butler {
 			~TagSet();
 
 			explicit TagSet(const TagSet &tagSet);
-			TagSet& operator=(const TagSet&);
+			TagSet& operator=(const TagSet &set);
 
 			void append(Tag *t);
 			void remove(int i);
 			void clear();
-			void move(int from, int to);
-			void swap(int i, int j);
-
-			const Tag& query(int i) const;
-
-			bool empty() const;
-			int size() const;
-
-			void sort();
-
-			static bool isEqual(const TagSet &a, const TagSet &b);
 
 		private:
-			void equal(const TagSet &ts);
-			static bool qSortIsLess(
-					const Tag* s1, const Tag* s2);
-
-			QList<Tag*> data;
 			QMap<const QString*, const Tag*> nameToPtr;
 	};
-
-	bool operator==(const TagSet &a, const TagSet &b);
-	bool operator!=(const TagSet &a, const TagSet &b);
 
 }
 
