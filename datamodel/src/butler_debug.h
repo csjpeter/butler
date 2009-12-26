@@ -90,11 +90,11 @@ void _runtimeBacktraceLeave(
 #define ENTER_CONSTRUCTOR() \
 	ENTER_FUNCTION()
 #define LEAVE_CONSTRUCTOR() LEAVE_FUNCTION(); \
-	_runtimeBacktraceLeaveConstructor((void*)(this), __CLASS__)
+	_runtimeBacktraceLeaveConstructor((void*)(this), __PRETTY_FUNCTION__)
 #define ENTER_DESTRUCTOR() \
 	ENTER_FUNCTION()
 #define LEAVE_DESTRUCTOR() LEAVE_FUNCTION(); \
-	_runtimeBacktraceLeaveDestructor((void*)(this), __CLASS__)
+	_runtimeBacktraceLeaveDestructor((void*)(this), __PRETTY_FUNCTION__)
 #else
 #define ENTER_STATIC_FUNCTION() ;
 #define LEAVE_STATIC_FUNCTION() ;

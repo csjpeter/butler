@@ -36,12 +36,12 @@ static QMap<QString, bool> leakCollection;
 /* big hack :( */
 void _nothing(){}
 
-/* Exception might happen while constructing, so only at leave we can sure a
+/* Exception might happen while constructing, so only at leave we can sure
  * the construction realy happened. */
 void _runtimeBacktraceLeaveConstructor(void *ptr, const char *funcName)
 {
 	QString str, funcNameStr = funcName;
-	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, 0)), ptr);
+	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, -2)), ptr);
 	if(!leakCollection.contains(str))
 		leakCollection.insert(str, true);
 	else {
@@ -55,7 +55,9 @@ void _runtimeBacktraceLeaveConstructor(void *ptr, const char *funcName)
 void _runtimeBacktraceLeaveDestructor(void *ptr, const char *funcName)
 {
 	QString str, funcNameStr = funcName;
-	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, 0)), ptr);
+	str.sprintf("%s %p", qPrintable(
+			  funcNameStr.section("::", 0, -2).section(" ", -1, -1)
+			  ), ptr);
 	leakCollection[str] = false;
 }
 
@@ -63,12 +65,13 @@ void _reportLeakSuspections(){
 	if(suppressRuntimeBacktrace)
 		return;
 
-	fprintf(stderr, "List of not yet destructed objects:");
+	fprintf(stderr, "List of not yet destructed objects:\n");
 	QMap<QString, bool>::Iterator iter;
 	for(iter=leakCollection.begin(); iter != leakCollection.end(); iter++){
 		if(iter.value())
-			fprintf(stderr, "%s", qPrintable(iter.key()));
+			fprintf(stderr, "\t%s\n", qPrintable(iter.key()));
 	}
+	fprintf(stderr, "\tend of list\n");
 }
 
 void _runtimeBacktraceEnter(void *ptr, const char *funcName, int verbose)
@@ -88,7 +91,7 @@ void _runtimeBacktraceEnter(void *ptr, const char *funcName, int verbose)
 	timeStack.push(timer.elapsed());
 	inPrefix.append("> ");
 	outPrefix.append("< ");
-	fprintf(stderr, "%s%16s%s %12p %s%12s %s%s%s %s",
+	fprintf(stderr, "%s%16s%s %14p %s%12s %s%s%s %s",
 			COMPONENT_COLOR, COMPONENT_NAME, VT_TA_ALLOFF,
 			ptr,
 			VT_FG_BLUE, qPrintable(
@@ -107,7 +110,7 @@ void _runtimeBacktraceLeave(void *ptr, const char *funcName, int verbose)
 		return;
 
 	int pop = timeStack.isEmpty() ? 0 : timeStack.pop();
-	fprintf(stderr, "%s%16s%s %12p %s%11.3fs %s%s%s %s",
+	fprintf(stderr, "%s%16s%s %14p %s%11.3fs %s%s%s %s",
 			COMPONENT_COLOR, COMPONENT_NAME, VT_TA_ALLOFF,
 			ptr,
 			VT_FG_MAGENTA, ((timer.elapsed()-pop) / 1000.0),
