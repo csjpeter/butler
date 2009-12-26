@@ -8,6 +8,8 @@
 
 #include <ButlerQueryOptions>
 
+#include <butler_debug.h>
+
 #include <QtTest/QtTest>
 
 namespace Butler {
@@ -17,11 +19,23 @@ namespace Butler {
 		private:
 			Q_OBJECT;
 		private slots:
+			void initTestCase();
+			void cleanupTestCase();
+			
 			void construction();
 			void equality();
 			void comparison();
 	};
 
+
+	void TestQueryOptions::initTestCase()
+	{
+	}
+
+	void TestQueryOptions::cleanupTestCase()
+	{
+		_reportLeakSuspections();
+	}
 
 	void TestQueryOptions::construction()
 	{

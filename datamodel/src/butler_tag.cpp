@@ -6,75 +6,110 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#include "butler_debug.h"
+
 #include "butler_tag.h"
 
 namespace Butler {
 
 	Tag::Tag()
 	{
+		ENTER_CONSTRUCTOR();
 		checked = false;
+		LEAVE_CONSTRUCTOR();
 	}
 
 	Tag::Tag(const QString &_name)
 	{
+		ENTER_CONSTRUCTOR();
 		name = _name;
 		checked = false;
+		LEAVE_CONSTRUCTOR();
 	}
 
 	Tag::Tag(const Tag &tag) : QObject()
 	{
+		ENTER_CONSTRUCTOR();
 		equal(tag);
+		LEAVE_CONSTRUCTOR();
 	}
 
 	Tag::~Tag()
 	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
 	}
 			
 	Tag& Tag::operator=(const Tag& tag)
 	{
+		ENTER_FUNCTION();
 		equal(tag);
+		LEAVE_FUNCTION();
 		return *this;
 	}
 
 	bool Tag::isEqual(const Tag &a, const Tag &b)
 	{
-		return (a.name == b.name) && (a.checked == b.checked);
+		ENTER_STATIC_FUNCTION();
+		bool ret = (a.name == b.name) && (a.checked == b.checked);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 			
 	bool Tag::isLess(const Tag &a, const Tag &b)
 	{
-		return QString::localeAwareCompare(a.name, b.name) < 0;
+		ENTER_STATIC_FUNCTION();
+		bool ret = QString::localeAwareCompare(a.name, b.name) < 0;
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 
 	bool Tag::isMore(const Tag &a, const Tag &b)
 	{
-		return 0 < QString::localeAwareCompare(a.name, b.name);
+		ENTER_STATIC_FUNCTION();
+		bool ret = 0 < QString::localeAwareCompare(a.name, b.name);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 			
 	void Tag::equal(const Tag &tag)
 	{
+		ENTER_FUNCTION();
 		name = tag.name;
 		checked = tag.checked;
+		LEAVE_FUNCTION();
 	}
 
 	bool operator==(const Tag &a, const Tag &b)
 	{
-		return Tag::isEqual(a,b);
+		ENTER_STATIC_FUNCTION();
+		bool ret = Tag::isEqual(a,b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 
 	bool operator!=(const Tag &a, const Tag &b)
 	{
-		return !Tag::isEqual(a,b);
+		ENTER_STATIC_FUNCTION();
+		bool ret = !Tag::isEqual(a,b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 
 	bool operator<(const Tag &a, const Tag &b)
 	{
-		return Tag::isLess(a, b);
+		ENTER_STATIC_FUNCTION();
+		bool ret = Tag::isLess(a, b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 
 	bool operator>(const Tag &a, const Tag &b)
 	{
-		return Tag::isMore(a, b);
+		ENTER_STATIC_FUNCTION();
+		bool ret = Tag::isMore(a, b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
 	}
 }
 

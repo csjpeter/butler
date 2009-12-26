@@ -28,9 +28,9 @@ namespace Butler
 
 	TagSet::TagSet(const TagSet &ts) : QObject()
 	{
-		ENTER_FUNCTION();
+		ENTER_CONSTRUCTOR();
 		equal(ts);
-		LEAVE_FUNCTION();
+		LEAVE_CONSTRUCTOR();
 	}
 			
 	TagSet& TagSet::operator=(const TagSet& ts)
