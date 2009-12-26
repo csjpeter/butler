@@ -8,7 +8,7 @@ VERSION = 0.0.1
 
 debug{
 	DEFINES += COMPONENT_NAME=\\\"\"ButlerDataModel\\\"\"
-	DEFINES += COMPONENT_COLOR=\\\"\"VT_FG_CYAN\\\"\"
+	DEFINES += COMPONENT_COLOR=VT_FG_CYAN
 }
 
 HEADERS		=	\
