@@ -43,6 +43,16 @@ namespace Butler {
 			ret = false;
 		return ret;
 	}
+			
+	bool QueryOptions::isLess(const QueryOptions &a, const QueryOptions &b)
+	{
+		return QString::localeAwareCompare(a.name, b.name) < 0;
+	}
+
+	bool QueryOptions::isMore(const QueryOptions &a, const QueryOptions &b)
+	{
+		return 0 < QString::localeAwareCompare(a.name, b.name);
+	}
 
 	void QueryOptions::equal(const QueryOptions &qo)
 	{
@@ -58,6 +68,16 @@ namespace Butler {
 	bool operator!=(const QueryOptions &a, const QueryOptions &b)
 	{
 		return !QueryOptions::isEqual(a,b);
+	}
+	
+	bool operator<(const QueryOptions &a, const QueryOptions &b)
+	{
+		return QueryOptions::isLess(a,b);
+	}
+
+	bool operator>(const QueryOptions &a, const QueryOptions &b)
+	{
+		return QueryOptions::isMore(a,b);
 	}
 }
 

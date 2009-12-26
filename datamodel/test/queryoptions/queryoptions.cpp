@@ -19,6 +19,7 @@ namespace Butler {
 		private slots:
 			void construction();
 			void equality();
+			void comparison();
 	};
 
 
@@ -76,6 +77,28 @@ namespace Butler {
 
 		QVERIFY(a.name == b.name);
 		QVERIFY(a.tags.size() == b.tags.size());
+	}
+
+	void TestQueryOptions::comparison()
+	{
+		/* dont test comparison itself, just consistency */
+		QueryOptions a("a"), b("B");
+
+		/* one of < and > must be true */
+		QVERIFY(a < b || a > b);
+		/* result of < and > must be different */
+		QVERIFY(!(a < b && a > b));
+
+		a.name = "az3d";
+		b.name = "az3d";
+
+		QVERIFY(!(a < b || a > b));
+
+		a.name = "óa";
+		b.name = "oB";
+
+		QVERIFY(a < b || a > b);
+		QVERIFY(!(a < b && a > b));
 	}
 
 }

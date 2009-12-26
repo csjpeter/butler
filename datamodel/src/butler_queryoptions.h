@@ -16,8 +16,6 @@
 
 namespace Butler {
 
-	class Tag;
-
 	class QueryOptions : public QObject
 	{
 		private:
@@ -32,6 +30,11 @@ namespace Butler {
 
 			static bool isEqual(const QueryOptions &a, const QueryOptions &b);
 
+			static bool isLess(
+					const QueryOptions &a, const QueryOptions &b);
+			static bool isMore(
+					const QueryOptions &a, const QueryOptions &b);
+
 		public:
 			QString name;
 			TagSet tags;
@@ -43,6 +46,8 @@ namespace Butler {
 	bool operator==(const QueryOptions &a, const QueryOptions &b);
 	bool operator!=(const QueryOptions &a, const QueryOptions &b);
 
+	bool operator<(const QueryOptions &a, const QueryOptions &b);
+	bool operator>(const QueryOptions &a, const QueryOptions &b);
 }
 
 #endif
