@@ -31,9 +31,6 @@ namespace Butler {
 
 			QCOMPARE(tag.name, QString(""));
 			QVERIFY(tag.checked == false);
-			QBENCHMARK {
-				Tag tag;
-			}
 		}
 
 		/* parameterized constructor*/
@@ -42,9 +39,6 @@ namespace Butler {
 
 			QCOMPARE(tag.name, QString("tag-name"));
 			QVERIFY(tag.checked == false);
-			QBENCHMARK {
-				Tag tag("tag-name");
-			}
 		}
 
 		/* copy constructor*/
@@ -56,9 +50,6 @@ namespace Butler {
 
 			QCOMPARE(tag.name, t.name);
 			QVERIFY(tag.checked == t.checked);
-			QBENCHMARK {
-				Tag tag(t);
-			}
 		}
 	}
 

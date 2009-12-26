@@ -32,10 +32,6 @@ namespace Butler {
 
 		QCOMPARE(ts.size(), 0);
 		QVERIFY(ts.empty() == true);
-
-		QBENCHMARK {
-			TagSet ts;
-		}
 	}
 	
 	void TestTagSet::insertion()
@@ -49,10 +45,6 @@ namespace Butler {
 		const Tag &q = ts.query(0);
 
 		QVERIFY(q.name == "first");
-
-		QBENCHMARK {
-			ts.append(new Tag("more"));
-		}
 	}
 
 	void TestTagSet::copy()
@@ -66,10 +58,6 @@ namespace Butler {
 		QCOMPARE(ts_copy.size(), 1);
 		QVERIFY(ts_copy.empty() == false);
 		QVERIFY(ts.query(0) == ts_copy.query(0));
-
-		QBENCHMARK {
-			TagSet ts_copy(ts);
-		}
 	}
 
 	void TestTagSet::removation()

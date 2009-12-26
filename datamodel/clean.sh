@@ -47,6 +47,19 @@ for srcfile in $(find . | grep "tmp/.*\.moc$"); do
 	delete_file $srcfile
 done
 
+echo Deleting coverage assistant files ...
+for srcfile in $(find . | grep "tmp/.*\.gcda$"); do
+	delete_file $srcfile
+done
+for srcfile in $(find . | grep "tmp/.*\.gcno$"); do
+	delete_file $srcfile
+done
+
+echo Deleting coverage result files ...
+for srcfile in $(find . | grep "\.gcov$"); do
+	delete_file $srcfile
+done
+
 echo Deleting directories used for compilation ...
 for srcfile in $(find . | grep "/tmp$"); do
 	delete_file $srcfile

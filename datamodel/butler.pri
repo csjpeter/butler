@@ -58,6 +58,8 @@ release {
 debug{
 	QMAKE_CXXFLAGS_DEBUG +=-O0 -Werror
 	DEFINES	+= DEBUG
+	QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs
+	LIBS += -lgcov
 }
 
 OBJECTS_DIR = ./tmp

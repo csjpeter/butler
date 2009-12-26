@@ -24,4 +24,17 @@ for tdir in $(ls -1 ./test/); do
 	fi
 done
 
+COVERAGE_AWK_PRG='{if($1=="#####:")uncovered++;else if($1=="-:");else covered++;} END{codelines = covered + uncovered; printf("covered %d lines of %d (%2f)\n", covered, codelines, covered*100/codelines);}'
+
+cd src
+gcov -o tmp/ *.cpp > /dev/null
+echo Test coverage of .cpp files...
+for cppfile in $(ls -1 *.cpp); do
+	if test ! -e $cppfile.gcov; then
+		continue;
+	fi
+	echo -n "	"$cppfile" : "
+	cat $cppfile.gcov | awk "$COVERAGE_AWK_PRG"
+done
+cd ..
 
