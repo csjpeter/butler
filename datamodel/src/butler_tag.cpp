@@ -23,8 +23,7 @@ namespace Butler {
 
 	Tag::Tag(const Tag &tag) : QObject()
 	{
-		name = tag.name;
-		checked = tag.checked;
+		equal(tag);
 	}
 
 	Tag::~Tag()
