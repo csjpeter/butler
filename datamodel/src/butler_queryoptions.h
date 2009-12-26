@@ -10,8 +10,9 @@
 #define BUTLER_QUERYOPTIONS_H
 
 #include <QObject>
-#include <QList>
 #include <QString>
+
+#include <ButlerTagSet>
 
 namespace Butler {
 
@@ -23,16 +24,24 @@ namespace Butler {
 			Q_OBJECT;
 		public:
 			QueryOptions();
-			QueryOptions(const QueryOptions &qo);
+			explicit QueryOptions(const QString &_name);
+			explicit QueryOptions(const QueryOptions &qo);
 			~QueryOptions();
 
+			QueryOptions& operator=(const QueryOptions& qo);
+
 			static bool isEqual(const QueryOptions &a, const QueryOptions &b);
-		private:
+
+		public:
 			QString name;
-			QList<Tag*> tags;
+			TagSet tags;
+
+		private:
+			void equal(const QueryOptions &qo);
 	};
 
 	bool operator==(const QueryOptions &a, const QueryOptions &b);
+	bool operator!=(const QueryOptions &a, const QueryOptions &b);
 
 }
 

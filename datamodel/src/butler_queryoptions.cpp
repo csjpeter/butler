@@ -14,23 +14,50 @@ namespace Butler {
 	{
 	}
 
+	QueryOptions::QueryOptions(const QString &_name) : QObject()
+	{
+		name = _name;
+	}
+
 	QueryOptions::QueryOptions(const QueryOptions &qo) : QObject()
 	{
-		tags = qo.tags;
+		equal(qo);
 	}
 
 	QueryOptions::~QueryOptions()
 	{
 	}
 
+	QueryOptions& QueryOptions::operator=(const QueryOptions& qo)
+	{
+		equal(qo);
+		return *this;
+	}
+
 	bool QueryOptions::isEqual(const QueryOptions &a, const QueryOptions &b)
 	{
-		return a.tags == b.tags;
+		bool ret = true;
+		if(a.name != b.name)
+			ret = false;
+		if(a.tags != b.tags)
+			ret = false;
+		return ret;
+	}
+
+	void QueryOptions::equal(const QueryOptions &qo)
+	{
+		name = qo.name;
+		tags = qo.tags;
 	}
 
 	bool operator==(const QueryOptions &a, const QueryOptions &b)
 	{
 		return QueryOptions::isEqual(a,b);
+	}
+
+	bool operator!=(const QueryOptions &a, const QueryOptions &b)
+	{
+		return !QueryOptions::isEqual(a,b);
 	}
 }
 
