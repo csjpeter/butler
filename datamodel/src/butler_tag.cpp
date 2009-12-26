@@ -48,26 +48,26 @@ namespace Butler {
 		return *this;
 	}
 
-	bool Tag::isEqual(const Tag &a, const Tag &b)
+	bool Tag::isEqual(const Tag &t) const
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = (a.name == b.name) && (a.checked == b.checked);
+		bool ret = (name == t.name) && (checked == t.checked);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
 			
-	bool Tag::isLess(const Tag &a, const Tag &b)
+	bool Tag::isLess(const Tag &t) const
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = QString::localeAwareCompare(a.name, b.name) < 0;
+		bool ret = QString::localeAwareCompare(name, t.name) < 0;
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
 
-	bool Tag::isMore(const Tag &a, const Tag &b)
+	bool Tag::isMore(const Tag &t) const
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = 0 < QString::localeAwareCompare(a.name, b.name);
+		bool ret = 0 < QString::localeAwareCompare(name, t.name);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -83,7 +83,7 @@ namespace Butler {
 	bool operator==(const Tag &a, const Tag &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = Tag::isEqual(a,b);
+		bool ret = a.isEqual(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -91,7 +91,7 @@ namespace Butler {
 	bool operator!=(const Tag &a, const Tag &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = !Tag::isEqual(a,b);
+		bool ret = !a.isEqual(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -99,7 +99,7 @@ namespace Butler {
 	bool operator<(const Tag &a, const Tag &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = Tag::isLess(a, b);
+		bool ret = a.isLess(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -107,9 +107,9 @@ namespace Butler {
 	bool operator>(const Tag &a, const Tag &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = Tag::isMore(a, b);
+		bool ret = a.isMore(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
-	}
+	}  
 }
 

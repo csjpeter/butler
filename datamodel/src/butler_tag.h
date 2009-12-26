@@ -26,10 +26,10 @@ namespace Butler {
 
 			Tag& operator=(const Tag& tag);
 
-			static bool isEqual(const Tag &a, const Tag &b);
+			bool isEqual(const Tag &t) const;
 
-			static bool isLess(const Tag &a, const Tag &b);
-			static bool isMore(const Tag &a, const Tag &b);
+			bool isLess(const Tag &t) const;
+			bool isMore(const Tag &t) const;
 
 		public:
 			QString name;
@@ -44,6 +44,7 @@ namespace Butler {
 
 	bool operator<(const Tag &a, const Tag &b);
 	bool operator>(const Tag &a, const Tag &b);
+
 }
 
 #endif
