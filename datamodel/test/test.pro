@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS  = tag tagset queryoptions
+SUBDIRS  = tag tagset queryoptions queryoptionsset
 

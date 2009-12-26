@@ -10,7 +10,7 @@ BENCHMARK_BACKEND=$1
 # avoid debug messages for function enter/leave and leak suspections
 export SUPPRESS_RUNTIME_BACKTRACE=
 
-TESTS_TO_RUN="tag tagset queryoptions"
+TESTS_TO_RUN="tag tagset queryoptions queryoptionsset"
 for tdir in $TESTS_TO_RUN; do
 	if test ! -d ./test/$tdir; then
 		continue;
