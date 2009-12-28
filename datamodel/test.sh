@@ -10,6 +10,13 @@ BENCHMARK_BACKEND=$1
 # avoid debug messages for function enter/leave and leak suspections
 export SUPPRESS_RUNTIME_BACKTRACE=
 
+echo Deleteing coverage result files...
+for srcfile in $(find . | grep "tmp/.*\.gcda$"); do
+	echo "	"$srcfile
+	rm $srcfile
+done
+echo "	"done
+
 TESTS_TO_RUN="tag tagset queryoptions queryoptionsset"
 for tdir in $TESTS_TO_RUN; do
 	if test ! -d ./test/$tdir; then
@@ -25,7 +32,7 @@ for tdir in $TESTS_TO_RUN; do
 	fi
 done
 
-COVERAGE_AWK_PRG='{if($1=="#####:")uncovered++;else if($1=="-:");else covered++;} END{codelines = covered + uncovered; printf("covered %d lines of %d (%2f)\n", covered, codelines, covered*100/codelines);}'
+COVERAGE_AWK_PRG='{if($1=="#####:")uncovered++;else if($1=="-:");else covered++;} END{codelines = covered + uncovered; if(codelines==0) codelines=1; printf("covered %d lines of %d (%2f)\n", covered, codelines, covered*100/codelines);}'
 
 cd src
 gcov -o tmp/ *.cpp > /dev/null
