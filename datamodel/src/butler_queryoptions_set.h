@@ -11,16 +11,17 @@
 
 #include <QObject>
 #include <QString>
+#include <QList>
 #include <QMap>
+#include <QVariant>
 
 #include <ButlerQueryOptions>
-#include <ButlerOrderedSet>
 
 namespace Butler {
 
 	/* Methods accepting pointers in their parameters will take the
 	 * ownership of the pointed object. */
-	class QueryOptionsSet : public QObject, public OrderedSet<QueryOptions>
+	class QueryOptionsSet : public QObject
 	{
 		private:
 			Q_OBJECT;
@@ -28,16 +29,35 @@ namespace Butler {
 			QueryOptionsSet();
 			~QueryOptionsSet();
 
-			explicit QueryOptionsSet(const QueryOptionsSet &);
-			QueryOptionsSet& operator=(const QueryOptionsSet &);
+			explicit QueryOptionsSet(const QueryOptionsSet &tagSet);
+			QueryOptionsSet& operator=(const QueryOptionsSet&);
 
-			void append(QueryOptions *);
+			void append(QueryOptions *qo);
 			void remove(int i);
 			void clear();
+			void move(int from, int to);
+			void swap(int i, int j);
+
+			const QueryOptions& query(int i) const;
+
+			bool empty() const;
+			int size() const;
+
+			void sort();
+
+			static bool isEqual(const QueryOptionsSet &a, const QueryOptionsSet &b);
 
 		private:
+			void equal(const QueryOptionsSet &ts);
+			static bool qSortIsLess(
+					const QueryOptions* s1, const QueryOptions* s2);
+
+			QList<QueryOptions*> data;
 			QMap<const QString*, const QueryOptions*> nameToPtr;
 	};
+
+	bool operator==(const QueryOptionsSet &a, const QueryOptionsSet &b);
+	bool operator!=(const QueryOptionsSet &a, const QueryOptionsSet &b);
 
 }
 

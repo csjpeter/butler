@@ -22,13 +22,14 @@ namespace Butler
 	QueryOptionsSet::~QueryOptionsSet()
 	{
 		ENTER_DESTRUCTOR();
+		clear();
 		LEAVE_DESTRUCTOR();
 	}
 
-	QueryOptionsSet::QueryOptionsSet(const QueryOptionsSet &qos) :
-		QObject(), OrderedSet<QueryOptions>(qos)
+	QueryOptionsSet::QueryOptionsSet(const QueryOptionsSet &ts) : QObject()
 	{
 		ENTER_CONSTRUCTOR();
+		equal(ts);
 		LEAVE_CONSTRUCTOR();
 	}
 			
@@ -44,7 +45,8 @@ namespace Butler
 	void QueryOptionsSet::append(QueryOptions *t)
 	{
 		ENTER_FUNCTION();
-		OrderedSet<QueryOptions>::append(t);
+		Q_ASSERT(t);
+		data.append(t);
 		nameToPtr.insert(&(t->name), t);
 		LEAVE_FUNCTION();
 	}
@@ -52,22 +54,144 @@ namespace Butler
 	void QueryOptionsSet::remove(int i)
 	{
 		ENTER_FUNCTION();
-		Q_ASSERT(i < size());
+		Q_ASSERT(i < data.size());
 		Q_ASSERT(0 <= i);
+		QueryOptions *qo = data.at(i);
 		int r;
-		r = nameToPtr.remove(&(query(i).name));
+		r = nameToPtr.remove(&(data.at(i)->name));
 		Q_ASSERT(r == 1);
-		OrderedSet<QueryOptions>::remove(i);
+		data.removeAt(i);
+		delete qo;
 		LEAVE_FUNCTION();
 	}
 
 	void QueryOptionsSet::clear()
 	{
 		ENTER_FUNCTION();
+		int s = data.size();
+		int i;
+		for(i=0; i < s; i++){
+			QueryOptions *qo = data.at(i);
+			delete qo;
+		}
 		nameToPtr.clear();
-		OrderedSet<QueryOptions>::clear();
+		data.clear();
 		LEAVE_FUNCTION();
 	}
 
+	void QueryOptionsSet::move(int from, int to)
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(from < data.size());
+		Q_ASSERT(0 <= from);
+		Q_ASSERT(to < data.size());
+		Q_ASSERT(0 <= to);
+		data.move(from, to);
+		LEAVE_FUNCTION();
+	}
+
+	void QueryOptionsSet::swap(int i, int j)
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(i < data.size());
+		Q_ASSERT(0 <= i);
+		Q_ASSERT(j < data.size());
+		Q_ASSERT(0 <= j);
+		data.swap(i, j);
+		LEAVE_FUNCTION();
+	}
+
+	const QueryOptions& QueryOptionsSet::query(int i) const
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(i<data.size());
+		QueryOptions *ret = data.at(i);
+		LEAVE_FUNCTION();
+		return *ret;
+	}
+
+	bool QueryOptionsSet::empty() const
+	{
+		ENTER_FUNCTION();
+		bool ret = data.isEmpty();
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	int QueryOptionsSet::size() const
+	{
+		ENTER_FUNCTION();
+		int ret = data.size();
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	void QueryOptionsSet::sort()
+	{
+		ENTER_FUNCTION();
+		qSort(data.begin(), data.end(), QueryOptionsSet::qSortIsLess);
+		LEAVE_FUNCTION();
+	}
+
+	bool QueryOptionsSet::isEqual(const QueryOptionsSet &a, const QueryOptionsSet &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		bool ret = true;
+		int s = a.size();
+
+		if(s != b.size())
+			ret = false;
+		else {
+			int i;
+			for(i=0; i < s; i++){
+				const QueryOptions &ta = a.query(i);
+				const QueryOptions &tb = b.query(i);
+				if(ta != tb){
+					ret = false;
+					break;
+				}
+			}
+		}
+
+		LEAVE_STATIC_FUNCTION();
+		return ret;
+	}
+			
+	void QueryOptionsSet::equal(const QueryOptionsSet &ts)
+	{
+		ENTER_FUNCTION();
+		int s = ts.size();
+		int i;
+		for(i=0; i < s; i++){
+			QueryOptions *qo = new QueryOptions(ts.query(i));
+			data.append(qo);
+			nameToPtr.insert(&(qo->name), qo);
+		}
+		LEAVE_FUNCTION();
+	}
+
+	bool QueryOptionsSet::qSortIsLess(const QueryOptions* s1, const QueryOptions* s2)
+	{
+		ENTER_STATIC_FUNCTION();
+		bool ret = *s1 < *s2;
+		LEAVE_STATIC_FUNCTION();
+		return ret;
+	}
+
+	bool operator==(const QueryOptionsSet &a, const QueryOptionsSet &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		bool ret = QueryOptionsSet::isEqual(a,b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
+	}
+	
+	bool operator!=(const QueryOptionsSet &a, const QueryOptionsSet &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		bool ret = !QueryOptionsSet::isEqual(a,b);
+		LEAVE_STATIC_FUNCTION();
+		return ret;
+	}
 }
 
