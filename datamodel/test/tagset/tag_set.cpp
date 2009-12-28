@@ -26,8 +26,6 @@ namespace Butler {
 			void insertion();
 			void removation();
 			void copy();
-			void ordering();
-			void equality();
 	};
 
 	void TestTagSet::initTestCase()
@@ -97,55 +95,6 @@ namespace Butler {
 			QVERIFY(ts_copy.empty() == false);
 			QVERIFY(ts.query(0) == ts_copy.query(0));
 		}
-	}
-
-	void TestTagSet::ordering()
-	{
-		{
-			TagSet ts;
-			ts.append(new Tag("xyz"));
-			ts.append(new Tag("uvw"));
-			ts.append(new Tag("rst"));
-			ts.sort();
-			QVERIFY(ts.query(0).name == "rst");
-			QVERIFY(ts.query(1).name == "uvw");
-			QVERIFY(ts.query(2).name == "xyz");
-		}
-
-		{
-			TagSet ts;
-			ts.append(new Tag("xyz"));
-			ts.append(new Tag("uvw"));
-			ts.append(new Tag("rst"));
-			ts.move(2, 0);
-			QVERIFY(ts.query(0).name == "rst");
-			QVERIFY(ts.query(1).name == "xyz");
-			QVERIFY(ts.query(2).name == "uvw");
-		}
-	}
-
-	void TestTagSet::equality()
-	{
-		TagSet a, b;
-		
-		a.append(new Tag("xyz"));
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		b.append(new Tag("xy"));
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		b.clear();
-		b.append(new Tag("xyz"));
-
-		QVERIFY(a == b);
-		QVERIFY(!(a != b));
-
-		QVERIFY(a.query(0) == b.query(0));
-		QVERIFY(a.size() == b.size());
 	}
 
 }

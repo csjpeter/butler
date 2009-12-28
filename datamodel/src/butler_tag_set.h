@@ -28,10 +28,10 @@ namespace Butler {
 			TagSet();
 			~TagSet();
 
-			explicit TagSet(const TagSet &tagSet);
-			TagSet& operator=(const TagSet &set);
+			explicit TagSet(const TagSet &);
+			TagSet& operator=(const TagSet &);
 
-			void append(Tag *t);
+			void append(Tag *);
 			void remove(int i);
 			void clear();
 

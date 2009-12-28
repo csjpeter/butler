@@ -28,7 +28,6 @@ namespace Butler
 	TagSet::TagSet(const TagSet &ts) : QObject(), OrderedSet<Tag>(ts)
 	{
 		ENTER_CONSTRUCTOR();
-//		equal(ts);
 		LEAVE_CONSTRUCTOR();
 	}
 	
