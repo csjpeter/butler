@@ -1,0 +1,10 @@
+#.gitignore
+src/libbutler_datamodel.so
+src/libbutler_datamodel.so.0
+src/libbutler_datamodel.so.0.0
+src/libbutler_datamodel.so.0.0.1
+test/orderedset/orderedset
+test/queryoptions/queryoptions
+test/queryoptionsset/queryoptionsset
+test/tag/tag
+test/tagset/tagset
