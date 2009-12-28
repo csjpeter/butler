@@ -8,3 +8,5 @@ test/queryoptions/queryoptions
 test/queryoptionsset/queryoptionsset
 test/tag/tag
 test/tagset/tagset
+test/item/item
+test/itemset/itemset
