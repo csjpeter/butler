@@ -71,7 +71,7 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +36 src/butler_item.cpp
-badd +57 src/butler_queryoptions.cpp
+badd +1 src/butler_queryoptions.cpp
 badd +1 src/butler_tag.cpp
 badd +1 src/butler_tag_set.cpp
 badd +1 src/butler_db.h
@@ -86,21 +86,20 @@ badd +25 src/src.pro
 badd +1 src/butler_debug.cpp
 badd +1 src/butler_debug.h
 badd +1 datamodel.pro
-badd +2 test/test.pro
+badd +1 test/test.pro
 badd +1 test/tag/tag.cpp
 badd +1 test/tagset/tag_set.cpp
 badd +1 butler.pri
 badd +1 src/butler_algorithms.cpp
 badd +1 src/butler_algorithms.h
 badd +60 test/queryoptions/queryoptions.cpp
-badd +0 src/butler_queryoptions_set.cpp
-badd +0 src/butler_queryoptions_set.h
-badd +0 test/queryoptionsset/queryoptions_set.cpp
-badd +1 src/butler_orderedset.cpp
-badd +0 src/butler_orderedset.h
-badd +0 test/test.pri
+badd +1 src/butler_queryoptions_set.cpp
+badd +1 src/butler_queryoptions_set.h
+badd +1 test/queryoptionsset/queryoptions_set.cpp
+badd +1 src/butler_orderedset.h
+badd +1 test/test.pri
 args ~/sbox/prj/butler/datamodel/src/butler_item.cpp ~/sbox/prj/butler/datamodel/src/butler_queryoptions.cpp ~/sbox/prj/butler/datamodel/src/butler_tag.cpp ~/sbox/prj/butler/datamodel/src/butler_tag_set.cpp ~/sbox/prj/butler/datamodel/src/butler_db.h ~/sbox/prj/butler/datamodel/src/butler_item_db.h ~/sbox/prj/butler/datamodel/src/butler_item.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions_db.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions.h ~/sbox/prj/butler/datamodel/src/butler_tag_db.h ~/sbox/prj/butler/datamodel/src/butler_tag.h ~/sbox/prj/butler/datamodel/src/butler_tag_set.h
-set lines=41 columns=154
+set lines=48 columns=180
 edit src/butler_item.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -111,8 +110,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 21 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 19 + 90) / 180)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -207,7 +206,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 19 - ((17 * winheight(0) + 19) / 38)
+let s:l = 19 - ((0 * winheight(0) + 75) / 151)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -309,15 +308,15 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 75) / 151)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 21 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 19 + 90) / 180)
 tabedit src/butler_queryoptions.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -343,18 +342,15 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
-exe '3resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 0 + 77) / 154)
-exe '4resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 0 + 77) / 154)
-exe '5resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 80 + 77) / 154)
-exe '6resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 80 + 77) / 154)
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 18 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 18 + 90) / 180)
+exe '3resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 3resize ' . ((&columns * 0 + 90) / 180)
+exe 'vert 4resize ' . ((&columns * 0 + 90) / 180)
+exe 'vert 5resize ' . ((&columns * 21 + 90) / 180)
+exe '6resize ' . ((&lines * 26 + 24) / 48)
+exe 'vert 6resize ' . ((&columns * 21 + 90) / 180)
 argglobal
 2argu
 setlocal keymap=
@@ -450,7 +446,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 28 - ((0 * winheight(0) + 3) / 7)
+let s:l = 28 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -553,7 +549,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 157 - ((24 * winheight(0) + 15) / 30)
+let s:l = 157 - ((0 * winheight(0) + 56) / 113)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -656,7 +652,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 13 - ((3 * winheight(0) + 3) / 7)
+let s:l = 13 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -759,7 +755,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 28 - ((0 * winheight(0) + 15) / 30)
+let s:l = 28 - ((0 * winheight(0) + 56) / 113)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -862,7 +858,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 11 - ((7 * winheight(0) + 15) / 30)
+let s:l = 11 - ((0 * winheight(0) + 62) / 124)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -965,25 +961,22 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 11 - ((1 * winheight(0) + 3) / 7)
+let s:l = 11 - ((0 * winheight(0) + 13) / 26)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 11
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
-exe '3resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 0 + 77) / 154)
-exe '4resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 0 + 77) / 154)
-exe '5resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 80 + 77) / 154)
-exe '6resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 80 + 77) / 154)
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 18 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 18 + 90) / 180)
+exe '3resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 3resize ' . ((&columns * 0 + 90) / 180)
+exe 'vert 4resize ' . ((&columns * 0 + 90) / 180)
+exe 'vert 5resize ' . ((&columns * 21 + 90) / 180)
+exe '6resize ' . ((&lines * 26 + 24) / 48)
+exe 'vert 6resize ' . ((&columns * 21 + 90) / 180)
 tabedit src/butler_tag.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -1010,18 +1003,18 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
-exe '3resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 0 + 77) / 154)
-exe '4resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 80 + 77) / 154)
-exe '5resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 80 + 77) / 154)
-exe '6resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 0 + 77) / 154)
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 39 + 90) / 180)
+exe '2resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 2resize ' . ((&columns * 39 + 90) / 180)
+exe '3resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 3resize ' . ((&columns * 0 + 90) / 180)
+exe '4resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 4resize ' . ((&columns * 139 + 90) / 180)
+exe '5resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 5resize ' . ((&columns * 0 + 90) / 180)
+exe '6resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 6resize ' . ((&columns * 139 + 90) / 180)
 argglobal
 3argu
 setlocal keymap=
@@ -1117,7 +1110,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 110 - ((5 * winheight(0) + 3) / 7)
+let s:l = 110 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1220,7 +1213,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 17 - ((15 * winheight(0) + 15) / 30)
+let s:l = 17 - ((0 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1323,7 +1316,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 17 - ((3 * winheight(0) + 3) / 7)
+let s:l = 17 - ((8 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1426,7 +1419,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 80 - ((0 * winheight(0) + 3) / 7)
+let s:l = 80 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1529,7 +1522,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 24 - ((8 * winheight(0) + 15) / 30)
+let s:l = 24 - ((0 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1632,139 +1625,31 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 121 - ((4 * winheight(0) + 15) / 30)
+let s:l = 121 - ((1 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 121
 normal! 01l
 wincmd w
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
-exe '3resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 0 + 77) / 154)
-exe '4resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 80 + 77) / 154)
-exe '5resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 80 + 77) / 154)
-exe '6resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 0 + 77) / 154)
-tabedit src/butler_orderedset.cpp
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 39 + 90) / 180)
+exe '2resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 2resize ' . ((&columns * 39 + 90) / 180)
+exe '3resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 3resize ' . ((&columns * 0 + 90) / 180)
+exe '4resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 4resize ' . ((&columns * 139 + 90) / 180)
+exe '5resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 5resize ' . ((&columns * 0 + 90) / 180)
+exe '6resize ' . ((&lines * 7 + 24) / 48)
+exe 'vert 6resize ' . ((&columns * 139 + 90) / 180)
+tabedit src/butler_orderedset.h
 set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 73 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
-argglobal
-edit src/butler_orderedset.cpp
-setlocal keymap=
-setlocal noarabic
-setlocal autoindent
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=u2
-setlocal cinwords=if,else,while,do,for,switch
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal completefunc=
-setlocal nocopyindent
-setlocal nocursorcolumn
-setlocal nocursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal noexpandtab
-if &filetype != 'cpp'
-setlocal filetype=cpp
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=marker
-setlocal foldmethod=marker
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-setlocal nonumber
-setlocal numberwidth=4
-setlocal omnifunc=omni#cpp#complete#Main
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=8
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=8
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != 'cpp'
-setlocal syntax=cpp
-endif
-setlocal tabstop=8
-setlocal tags=
-setlocal textwidth=300
-setlocal thesaurus=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-let s:l = 11 - ((9 * winheight(0) + 19) / 38)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-11
-normal! 0
-wincmd w
 argglobal
 edit src/butler_orderedset.h
 setlocal keymap=
@@ -1860,16 +1745,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 40 - ((18 * winheight(0) + 19) / 38)
+let s:l = 45 - ((44 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-40
-normal! 038l
-wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 73 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
+45
+normal! 02l
 tabedit src/butler_db.h
 set splitbelow splitright
 set nosplitbelow
@@ -1971,13 +1852,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 39)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
-2wincmd w
 tabedit src/butler_debug.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -1988,8 +1868,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 99 + 90) / 180)
 argglobal
 edit src/butler_debug.cpp
 setlocal keymap=
@@ -2085,12 +1965,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 59 - ((0 * winheight(0) + 19) / 38)
+let s:l = 37 - ((35 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-59
-normal! 05l
+37
+normal! 0
 wincmd w
 argglobal
 edit src/butler_debug.h
@@ -2187,16 +2067,15 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 61 - ((18 * winheight(0) + 19) / 38)
+let s:l = 17 - ((15 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-61
-normal! 0
+17
+normal! 01l
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 99 + 90) / 180)
 tabedit src/butler_algorithms.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -2207,8 +2086,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 21 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 19 + 90) / 180)
 argglobal
 edit src/butler_algorithms.cpp
 setlocal keymap=
@@ -2304,7 +2183,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 14 - ((13 * winheight(0) + 19) / 38)
+let s:l = 14 - ((13 * winheight(0) + 75) / 151)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -2406,16 +2285,15 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 75) / 151)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 21 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 19 + 90) / 180)
 tabedit src/src.pro
 set splitbelow splitright
 set nosplitbelow
@@ -2517,13 +2395,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 44 - ((18 * winheight(0) + 19) / 39)
+let s:l = 44 - ((43 * winheight(0) + 76) / 152)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 44
 normal! 016l
-2wincmd w
 tabedit datamodel.pro
 set splitbelow splitright
 set nosplitbelow
@@ -2625,13 +2502,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 20 - ((19 * winheight(0) + 19) / 39)
+let s:l = 20 - ((19 * winheight(0) + 76) / 152)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 20
 normal! 0
-2wincmd w
 tabedit test/test.pro
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -2642,8 +2518,9 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 41 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 41 + 90) / 180)
 argglobal
 edit test/test.pro
 setlocal keymap=
@@ -2739,7 +2616,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 2 - ((0 * winheight(0) + 3) / 7)
+let s:l = 2 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -2841,16 +2718,16 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 8 - ((7 * winheight(0) + 15) / 30)
+let s:l = 8 - ((0 * winheight(0) + 56) / 113)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 8
 normal! 020l
 wincmd w
-2wincmd w
-exe '1resize ' . ((&lines * 7 + 20) / 41)
-exe '2resize ' . ((&lines * 30 + 20) / 41)
+exe '1resize ' . ((&lines * 37 + 24) / 48)
+exe 'vert 1resize ' . ((&columns * 41 + 90) / 180)
+exe 'vert 2resize ' . ((&columns * 41 + 90) / 180)
 tabedit butler.pri
 set splitbelow splitright
 set nosplitbelow
@@ -2952,13 +2829,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 61 - ((33 * winheight(0) + 19) / 39)
+let s:l = 61 - ((60 * winheight(0) + 76) / 152)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 61
 normal! 0
-2wincmd w
 tabnext 4
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

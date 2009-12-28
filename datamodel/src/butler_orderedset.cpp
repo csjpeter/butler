@@ -6,11 +6,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QtGlobal>
-
 #include "butler_debug.h"
-
-#include "butler_orderedset.h"
 
 namespace Butler {
 
