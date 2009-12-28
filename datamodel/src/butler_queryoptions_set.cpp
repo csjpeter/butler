@@ -6,9 +6,9 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_debug.h"
+#include "ButlerDebug"
 
-#include "butler_queryoptions_set.h"
+#include "ButlerQueryOptionsSet"
 
 namespace Butler
 {
