@@ -26,8 +26,6 @@ namespace Butler {
 			void insertion();
 			void removation();
 			void copy();
-			void ordering();
-			void equality();
 	};
 
 
@@ -98,66 +96,6 @@ namespace Butler {
 			QVERIFY(qos_copy.empty() == false);
 			QVERIFY(qos.query(0) == qos_copy.query(0));
 		}
-	}
-
-	void TestQueryOptionsSet::ordering()
-	{
-		{
-			QueryOptionsSet qos;
-			qos.append(new QueryOptions("xyz"));
-			qos.append(new QueryOptions("uvw"));
-			qos.append(new QueryOptions("rst"));
-			qos.sort();
-			QVERIFY(qos.query(0).name == "rst");
-			QVERIFY(qos.query(1).name == "uvw");
-			QVERIFY(qos.query(2).name == "xyz");
-		}
-
-		{
-			QueryOptionsSet qos;
-			qos.append(new QueryOptions("xyz"));
-			qos.append(new QueryOptions("uvw"));
-			qos.append(new QueryOptions("rst"));
-			qos.move(2, 0);
-			QVERIFY(qos.query(0).name == "rst");
-			QVERIFY(qos.query(1).name == "xyz");
-			QVERIFY(qos.query(2).name == "uvw");
-		}
-
-		{
-			QueryOptionsSet qos;
-			qos.append(new QueryOptions("xyz"));
-			qos.append(new QueryOptions("uvw"));
-			qos.append(new QueryOptions("rst"));
-			qos.swap(0,2);
-			QVERIFY(qos.query(0).name == "rst");
-			QVERIFY(qos.query(1).name == "uvw");
-			QVERIFY(qos.query(2).name == "xyz");
-		}
-	}
-
-	void TestQueryOptionsSet::equality()
-	{
-		QueryOptionsSet a, b;
-		
-		a.append(new QueryOptions("xyz"));
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		b.append(new QueryOptions("xy"));
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		b.clear();
-		b.append(new QueryOptions("xyz"));
-
-		QVERIFY(a == b);
-		QVERIFY(!(a != b));
-
-		QVERIFY(a.query(0) == b.query(0));
-		QVERIFY(a.size() == b.size());
 	}
 
 }
