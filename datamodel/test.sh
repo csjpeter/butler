@@ -73,5 +73,6 @@ run_test	tag			butler_tag.cpp
 run_test	tagset			butler_tag_set.cpp
 run_test	queryoptions		butler_queryoptions.cpp
 run_test	queryoptionsset		butler_queryoptions_set.cpp
-
+run_test	item			butler_item.cpp
+run_test	itemset			butler_item_set.cpp
 
