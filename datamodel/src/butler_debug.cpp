@@ -40,8 +40,12 @@ void _nothing(){}
  * the construction realy happened. */
 void _runtimeBacktraceLeaveConstructor(void *ptr, const char *funcName)
 {
-	QString str, funcNameStr = funcName;
-	str.sprintf("%s %p", qPrintable(funcNameStr.section("::", 0, -2)), ptr);
+	QString str, funcNameStr, templFuncNameStr = funcName;
+	funcNameStr = templFuncNameStr.section("(", 0, 0);
+	str.sprintf("%s %s %p",
+			qPrintable(funcNameStr.section("::", 0, -2)),
+			qPrintable(templFuncNameStr.section(")", 1, 1)),
+			ptr);
 	if(!leakCollection.contains(str))
 		leakCollection.insert(str, true);
 	else {
@@ -50,15 +54,19 @@ void _runtimeBacktraceLeaveConstructor(void *ptr, const char *funcName)
 					"run yet.", qPrintable(str));
 		leakCollection[str] = true;
 	}
+/*	qCritical("-------Constructor for %s", qPrintable(str));*/
 }
 
 void _runtimeBacktraceLeaveDestructor(void *ptr, const char *funcName)
 {
-	QString str, funcNameStr = funcName;
-	str.sprintf("%s %p", qPrintable(
-			  funcNameStr.section("::", 0, -2).section(" ", -1, -1)
-			  ), ptr);
+	QString str, funcNameStr, templFuncNameStr = funcName;
+	funcNameStr = templFuncNameStr.section("(", 0, 0);
+	str.sprintf("%s %s %p",
+			qPrintable(funcNameStr.section("::", 0, -2).section(" ", -1, -1)),
+			qPrintable(templFuncNameStr.section(")", 1, 1)),
+			ptr);
 	leakCollection[str] = false;
+/*	qCritical("-------Destructor for %s", qPrintable(str));*/
 }
 
 void _reportLeakSuspections(){
