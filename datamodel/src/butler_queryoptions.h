@@ -28,12 +28,10 @@ namespace Butler {
 
 			QueryOptions& operator=(const QueryOptions& qo);
 
-			static bool isEqual(const QueryOptions &a, const QueryOptions &b);
+			bool isEqual(const QueryOptions &qo) const;
 
-			static bool isLess(
-					const QueryOptions &a, const QueryOptions &b);
-			static bool isMore(
-					const QueryOptions &a, const QueryOptions &b);
+			bool isLess(const QueryOptions &qo) const;
+			bool isMore(const QueryOptions &qo) const;
 
 		public:
 			QString name;

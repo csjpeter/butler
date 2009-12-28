@@ -46,30 +46,30 @@ namespace Butler {
 		return *this;
 	}
 
-	bool QueryOptions::isEqual(const QueryOptions &a, const QueryOptions &b)
+	bool QueryOptions::isEqual(const QueryOptions &qo) const
 	{
 		ENTER_STATIC_FUNCTION();
 		bool ret = true;
-		if(a.name != b.name)
+		if(name != qo.name)
 			ret = false;
-		if(a.tags != b.tags)
+		if(tags != qo.tags)
 			ret = false;
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
 			
-	bool QueryOptions::isLess(const QueryOptions &a, const QueryOptions &b)
+	bool QueryOptions::isLess(const QueryOptions &qo) const
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = QString::localeAwareCompare(a.name, b.name) < 0;
+		bool ret = QString::localeAwareCompare(name, qo.name) < 0;
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
 
-	bool QueryOptions::isMore(const QueryOptions &a, const QueryOptions &b)
+	bool QueryOptions::isMore(const QueryOptions &qo) const
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = 0 < QString::localeAwareCompare(a.name, b.name);
+		bool ret = 0 < QString::localeAwareCompare(name, qo.name);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -85,7 +85,7 @@ namespace Butler {
 	bool operator==(const QueryOptions &a, const QueryOptions &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = QueryOptions::isEqual(a,b);
+		bool ret = a.isEqual(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -93,7 +93,7 @@ namespace Butler {
 	bool operator!=(const QueryOptions &a, const QueryOptions &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = !QueryOptions::isEqual(a,b);
+		bool ret = !a.isEqual(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -101,7 +101,7 @@ namespace Butler {
 	bool operator<(const QueryOptions &a, const QueryOptions &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = QueryOptions::isLess(a,b);
+		bool ret = a.isLess(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
@@ -109,7 +109,7 @@ namespace Butler {
 	bool operator>(const QueryOptions &a, const QueryOptions &b)
 	{
 		ENTER_STATIC_FUNCTION();
-		bool ret = QueryOptions::isMore(a,b);
+		bool ret = a.isMore(b);
 		LEAVE_STATIC_FUNCTION();
 		return ret;
 	}
