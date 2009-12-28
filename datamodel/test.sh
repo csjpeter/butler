@@ -68,7 +68,7 @@ echo " "done
 echo
 echo Testing files in order :
 echo ~~~~~~~~~~~~~~~~~~~~~~~~
-#run_test	orderedset		butler_orderedset.h
+run_test	orderedset		butler_orderedset.h
 run_test	tag			butler_tag.cpp
 run_test	tagset			butler_tag_set.cpp
 run_test	queryoptions		butler_queryoptions.cpp
