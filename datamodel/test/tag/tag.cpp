@@ -6,11 +6,10 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <ButlerTag>
-
-#include <butler_debug.h>
-
 #include <QtTest/QtTest>
+
+#include <ButlerDebug>
+#include <ButlerTag>
 
 namespace Butler {
 
