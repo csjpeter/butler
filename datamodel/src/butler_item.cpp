@@ -10,46 +10,135 @@
 
 namespace Butler {
 
-	Item::Item()
+	Item::Item() :
+		name(""),
+		uploaded(0,0,0),
+		expectedPrice(0),
+		purchased(0,0,0),
+		paidPrice(0),
+		amortYears(0),
+		amortMonths(0),
+		amortDays(0),
+		comment("")
 	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
 	}
 
-	Item::Item(const Item &item) : QObject()
+	Item::Item(const QString &_name) : QObject(),
+		name(_name),
+		uploaded(0,0,0),
+		expectedPrice(0),
+		purchased(0,0,0),
+		paidPrice(0),
+		amortYears(0),
+		amortMonths(0),
+		amortDays(0),
+		comment("")
 	{
-		name = item.name;
-		uploaded = item.uploaded;
-		expectedPrice = item.expectedPrice;
-		purchased = item.purchased;
-		paidPrice = item.paidPrice;
-		amortYears = item.amortYears;
-		amortMonths = item.amortMonths;
-		amortDays = item.amortDays;
-		comment = item.comment;
-		tags = item.tags;
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	Item::Item(const Item &i) : QObject()
+	{
+		ENTER_CONSTRUCTOR();
+		equal(i);
+		LEAVE_CONSTRUCTOR();
 	}
 
 	Item::~Item()
 	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
 	}
 
-	bool Item::isEqual(const Item &a, const Item &b)
+	Item& Item::operator=(const Item &i)
 	{
-		if(a.name != b.name) return false;
-		if(a.uploaded != b.uploaded) return false;
-		if(a.expectedPrice != b.expectedPrice) return false;
-		if(a.purchased != b.purchased) return false;
-		if(a.paidPrice != b.paidPrice) return false;
-		if(a.amortYears != b.amortYears) return false;
-		if(a.amortMonths != b.amortMonths) return false;
-		if(a.amortDays != b.amortDays) return false;
-		if(a.comment != b.comment) return false;
-		if(a.tags != b.tags) return false;
+		ENTER_FUNCTION();
+		equal(i);
+		LEAVE_FUNCTION();
+		return *this;
+	}
+
+	bool Item::isEqual(const Item &i) const
+	{
+		ENTER_FUNCTION();
+		if(name != i.name) return false;
+		if(uploaded != i.uploaded) return false;
+		if(expectedPrice != i.expectedPrice) return false;
+		if(purchased != i.purchased) return false;
+		if(paidPrice != i.paidPrice) return false;
+		if(amortYears != i.amortYears) return false;
+		if(amortMonths != i.amortMonths) return false;
+		if(amortDays != i.amortDays) return false;
+		if(comment != i.comment) return false;
+
+		if(tags != i.tags) return false;
+
+		LEAVE_FUNCTION();
 		return true;
 	}
-	
+
+	bool Item::isLess(const Item &i) const
+	{
+		ENTER_FUNCTION();
+		bool ret = uploaded < i.uploaded;
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Item::isMore(const Item &i) const
+	{
+		ENTER_FUNCTION();
+		bool ret = uploaded > i.uploaded;
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	void Item::equal(const Item &i)
+	{
+		ENTER_FUNCTION();
+		name = i.name;
+		uploaded = i.uploaded;
+		expectedPrice = i.expectedPrice;
+		purchased = i.purchased;
+		paidPrice = i.paidPrice;
+		amortYears = i.amortYears;
+		amortMonths = i.amortMonths;
+		amortDays = i.amortDays;
+		comment = i.comment;
+
+		tags = i.tags;
+		LEAVE_FUNCTION();
+	}
+
 	bool operator==(const Item &a, const Item &b)
 	{
-		return Item::isEqual(a,b);
+		ENTER_STATIC_FUNCTION();
+		return a.isEqual(b);
+		LEAVE_STATIC_FUNCTION();
+	}
+
+	bool operator!=(const Item &a, const Item &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		return !a.isEqual(b);
+		LEAVE_STATIC_FUNCTION();
+	}
+
+	bool operator<(const Item &a, const Item &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		return a.isLess(b);
+		LEAVE_STATIC_FUNCTION();
+	}
+
+	bool operator>(const Item &a, const Item &b)
+	{
+		ENTER_STATIC_FUNCTION();
+		return a.isMore(b);
+		LEAVE_STATIC_FUNCTION();
 	}
 }
 

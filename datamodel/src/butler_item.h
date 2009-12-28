@@ -18,33 +18,46 @@
 
 namespace Butler {
 
-class Tag;
+	class Tag;
 
-class Item : public QObject
-{
-	Q_OBJECT
-public:
-	Item();
-	Item(const Item &item);
-	~Item();
+	class Item : public QObject
+	{
+		public:
+			Q_OBJECT;
+		public:
+			Item();
+			explicit Item(const QString &_name);
+			explicit Item(const Item &item);
+			~Item();
 
-	static bool isEqual(const Item &a, const Item &b);
+			Item& operator=(const Item& i);
 
-public:
-	QString name;
-	QDate uploaded;
-	int expectedPrice;
-	QDate purchased;
-	int paidPrice;
-	unsigned amortYears;
-	unsigned amortMonths;
-	unsigned amortDays;
-	QString comment;
+			bool isEqual(const Item &i) const;
 
-	TagSet tags;
-};
+			bool isLess(const Item &i) const;
+			bool isMore(const Item &i) const;
 
-bool operator==(const Item &a, const Item &b);
+		public:
+			QString name;
+			QDate uploaded;
+			int expectedPrice;
+			QDate purchased;
+			int paidPrice;
+			unsigned amortYears;
+			unsigned amortMonths;
+			unsigned amortDays;
+			QString comment;
+
+			TagSet tags;
+
+		private:
+			void equal(const Item &i);
+	};
+
+	bool operator==(const Item &a, const Item &b);
+	bool operator!=(const Item &a, const Item &b);
+	bool operator<(const Item &a, const Item &b);
+	bool operator>(const Item &a, const Item &b);
 
 }
 
