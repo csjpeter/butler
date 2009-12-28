@@ -38,7 +38,7 @@ namespace Butler {
 				LEAVE_CONSTRUCTOR();
 			}
 
-			OrderedSet& operator=(const OrderedSet &os)
+			virtual OrderedSet& operator=(const OrderedSet &os)
 			{
 				ENTER_FUNCTION();
 				clear();
@@ -55,7 +55,7 @@ namespace Butler {
 				LEAVE_FUNCTION();
 			}
 
-			void remove(int i)
+			virtual void remove(int i)
 			{
 				ENTER_FUNCTION();
 				Q_ASSERT(i < data.size());
@@ -66,7 +66,7 @@ namespace Butler {
 				LEAVE_FUNCTION();
 			}
 
-			void clear()
+			virtual void clear()
 			{
 				ENTER_FUNCTION();
 				int s = data.size();
@@ -79,7 +79,7 @@ namespace Butler {
 				LEAVE_FUNCTION();
 			}
 
-			void move(int from, int to)
+			virtual void move(int from, int to)
 			{
 				ENTER_FUNCTION();
 				Q_ASSERT(from < data.size());
