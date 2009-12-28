@@ -37,7 +37,6 @@ HEADERS		=	\
 			ButlerDebug
 
 SOURCES		=	\
-			butler_orderedset.cpp \
 			\
 			butler_tag.cpp \
 			butler_tag_set.cpp \
