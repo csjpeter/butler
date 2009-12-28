@@ -16,27 +16,34 @@ namespace Butler
 	QueryOptionsSet::QueryOptionsSet()
 	{
 		ENTER_CONSTRUCTOR();
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_CONSTRUCTOR();
 	}
 
 	QueryOptionsSet::~QueryOptionsSet()
 	{
 		ENTER_DESTRUCTOR();
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_DESTRUCTOR();
 	}
 
 	QueryOptionsSet::QueryOptionsSet(const QueryOptionsSet &qos) :
-		QObject(), OrderedSet<QueryOptions>(qos)
+		QObject(), OrderedSet<QueryOptions>()
 	{
 		ENTER_CONSTRUCTOR();
+		Q_ASSERT(size() == nameToPtr.size());
+		equal(qos);
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_CONSTRUCTOR();
 	}
 			
-	QueryOptionsSet& QueryOptionsSet::operator=(const QueryOptionsSet& ts)
+	QueryOptionsSet& QueryOptionsSet::operator=(const QueryOptionsSet& qos)
 	{
 		ENTER_FUNCTION();
+		Q_ASSERT(size() == nameToPtr.size());
 		clear();
-		equal(ts);
+		equal(qos);
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_FUNCTION();
 		return *this;
 	}
@@ -44,28 +51,34 @@ namespace Butler
 	void QueryOptionsSet::append(QueryOptions *t)
 	{
 		ENTER_FUNCTION();
+		Q_ASSERT(size() == nameToPtr.size());
 		OrderedSet<QueryOptions>::append(t);
 		nameToPtr.insert(&(t->name), t);
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_FUNCTION();
 	}
 
 	void QueryOptionsSet::remove(int i)
 	{
 		ENTER_FUNCTION();
+		Q_ASSERT(size() == nameToPtr.size());
 		Q_ASSERT(i < size());
 		Q_ASSERT(0 <= i);
 		int r;
 		r = nameToPtr.remove(&(query(i).name));
 		Q_ASSERT(r == 1);
 		OrderedSet<QueryOptions>::remove(i);
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_FUNCTION();
 	}
 
 	void QueryOptionsSet::clear()
 	{
 		ENTER_FUNCTION();
+		Q_ASSERT(size() == nameToPtr.size());
 		nameToPtr.clear();
 		OrderedSet<QueryOptions>::clear();
+		Q_ASSERT(size() == nameToPtr.size());
 		LEAVE_FUNCTION();
 	}
 
