@@ -1,18 +1,17 @@
 
 #FIXME it should be set from debian/rules whther to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
 
-# common project wide defaults
+#
+#	Default values ...
+#
 
 # use development prefix by default on x86
 PREFIX = /opt/devroot
 
-# debug compilation options
-CONFIG = qt debug build_all warn_on
 
-QT = core
-
-INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
-QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
+#
+#	Detections ...
+#
 
 # try to detect maemo environment 
 
@@ -45,10 +44,22 @@ PACKAGING_RUN = $$system(ls packaging-started)
 }
 
 
-# general settings ...
+#
+#	Configuration ...
+#
+
+CONFIG = qt debug build_all warn_on
+QT = core
+INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
+QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
+OBJECTS_DIR = ./tmp
+MOC_DIR = ./tmp
+
+VERSION = 0.0.1
 
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
+
 
 release {
 	CONFIG += silent
@@ -61,8 +72,5 @@ debug{
 	QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs
 	LIBS += -lgcov
 }
-
-OBJECTS_DIR = ./tmp
-MOC_DIR = ./tmp
 
 

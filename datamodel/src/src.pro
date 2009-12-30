@@ -1,7 +1,5 @@
 TEMPLATE = lib
 
-VERSION = 0.0.1
-
 !include(../butler.pri){
 	message( "butler.pri can not found" )
 }
