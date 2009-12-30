@@ -1,7 +1,17 @@
 #!/bin/sh
 
+VERSION_MAJOR=$(head -n 1 version)
+VERSION_MINOR=$(head -n 2 version | tail -n 1)
+VERSION_PATCH=$(head -n 3 version | tail -n 1)
+VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH
+
+if [ -d debian ]; then
+	cp debian/changelog debian/.changelog
+	cat debian/.changelog | sed '1 s/(.*)/('$VERSION')/' > debian/changelog
+	rm debian/.changelog
+fi
+
 dpkg-buildpackage -uc -us -sa -D -tc
 
 #DEB_BUILD_OPTIONS="noopt logdebug" dpkg-buildpackage -uc -us -sa -D -tc && dpkg -i ../*.deb
-
 
