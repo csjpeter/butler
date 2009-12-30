@@ -8,10 +8,6 @@
 # use development prefix by default on x86
 PREFIX = /opt/devroot
 
-VERSION_MAJOR = 0
-VERSION_MINOR = 3
-VERSION_PATCH = 1
-
 #
 #	Detections ...
 #
@@ -40,11 +36,16 @@ armel{
 
 # if packaging is in progress use /usr prefix
 
-PACKAGING_RUN = $$system(ls packaging-started)
-#message(PACKAGING_RUN:	$$PACKAGING_RUN)
+PACKAGING_RUN = $$system(ls packaging-started 2> /dev/null)
 !isEmpty(PACKAGING_RUN){
 	PREFIX = /usr
 }
+
+# read version number from version file
+
+VERSION_MAJOR = $$system(head -n 1 version)
+VERSION_MINOR = $$system(head -n 2 version | tail -n 1)
+VERSION_PATCH = $$system(head -n 3 version | tail -n 1)
 
 
 #
@@ -58,8 +59,8 @@ QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
 OBJECTS_DIR = ./tmp
 MOC_DIR = ./tmp
 
-APIVERSION = $$VERSION_MAJOR.$$VERSION_MINOR
-VERSION = $$APIVERSION.$$VERSION_PATCH
+APIVERSION = $$VERSION_MAJOR"."$$VERSION_MINOR
+VERSION = $$APIVERSION"."$$VERSION_PATCH
 
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
