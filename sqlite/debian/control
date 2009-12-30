@@ -1,0 +1,20 @@
+Source: butler-sqlite
+Section: user
+Priority: optional
+Maintainer: Császár Péter <csjpeter@gmail.com>
+Build-Depends: libqt4-core, libqt4-sql
+Standards-Version: 3.6.2.2
+
+Package: butler-sqlite
+Section: user
+Architecture: any
+Provides: butler-sqlite
+Depends: libqt4-core, libqt4-sql
+Description: Helper for home keeping via maintaining shoping lists.
+
+Package: butler-sqlite-dbg
+Section: devel
+Architecture: any
+Depends: butler-sqlite
+Description: Debug symbols for the butler.
+

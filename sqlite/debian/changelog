@@ -1,0 +1,6 @@
+butler-sqlite (0.0.1-0) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Császár Péter <csjpeter@gmail.com>  Thu, 30 Dec 2009 13:13:07 +0100
+

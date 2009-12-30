@@ -1,10 +1,10 @@
 #!/bin/bash
 
-subdirs="datamodel "
+subdirs="datamodel sqlite"
+packages="butler-datamodel butler-sqlite"
 
 for dir in $subdirs; do
 	pushd $dir > /dev/null
-	echo
 	echo Cleaning in $dir
 	echo
 	./clean.sh || {
@@ -33,9 +33,8 @@ function delete_file()
 }
 
 echo Deleting package files in main directory...
-packages="butler-datamodel"
 for file in $packages; do
-	for pfile in $(ls -d $file*); do
+	for pfile in $(ls -d $file* 2> /dev/null); do
 		if test -d $pfile; then
 			continue;
 		fi
