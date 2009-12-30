@@ -1,5 +1,5 @@
 
-#FIXME it should be set from debian/rules whther to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
+#FIXME it should be set from debian/rules whether to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
 
 #
 #	Default values ...
@@ -8,6 +8,9 @@
 # use development prefix by default on x86
 PREFIX = /opt/devroot
 
+VERSION_MAJOR = 0
+VERSION_MINOR = 3
+VERSION_PATCH = 1
 
 #
 #	Detections ...
@@ -55,7 +58,8 @@ QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
 OBJECTS_DIR = ./tmp
 MOC_DIR = ./tmp
 
-VERSION = 0.0.1
+APIVERSION = $$VERSION_MAJOR.$$VERSION_MINOR
+VERSION = $$APIVERSION.$$VERSION_PATCH
 
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
