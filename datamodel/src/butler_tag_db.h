@@ -9,19 +9,23 @@
 #ifndef BUTLER_TAG_DB_H
 #define BUTLER_TAG_DB_H
 
-#include "butler_item.h"
-#include "butler_tag.h"
-#include "butler_queryoptions.h"
+#include "ButlerTagSet"
+#include "ButlerQueryOptionsSet"
+#include "ButlerItemSet"
 
 namespace Butler {
 
 	class TagDb
 	{
 		public:
-			virtual QList<Tag*>* queryTags() = 0;
-			virtual QList<Tag*>* queryTags(const Item &item) = 0;
-			virtual QList<Tag*>* queryTags(const QueryOptions &qo) = 0;
-
+			/* a set of available tags */
+			virtual TagSet* queryTags() = 0;
+			/* a set of available tags with checked state of those
+			 * tags with which the item is marked */
+			virtual TagSet* queryTags(const Item &item) = 0;
+			/* a set of available tags with checked state of those
+			 * tags which belongs to the queryoptions */
+			virtual TagSet* queryTags(const QueryOptions &qo) = 0;
 	};
 
 }

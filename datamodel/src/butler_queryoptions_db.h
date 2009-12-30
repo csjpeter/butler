@@ -9,9 +9,9 @@
 #ifndef BUTLER_QUERYOPTIONS_DB_H
 #define BUTLER_QUERYOPTIONS_DB_H
 
-#include "butler_item.h"
-#include "butler_tag.h"
-#include "butler_queryoptions.h"
+/*#include "ButlerTag"*/
+#include "ButlerQueryOptions"
+/*#include "ButlerItem"*/
 
 namespace Butler {
 

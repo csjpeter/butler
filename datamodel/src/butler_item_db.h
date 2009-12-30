@@ -9,16 +9,15 @@
 #ifndef BUTLER_ITEM_DB_H
 #define BUTLER_ITEM_DB_H
 
-#include "butler_item.h"
-#include "butler_tag.h"
-#include "butler_queryoptions.h"
+#include "ButlerQueryOptions"
+#include "ButlerItemset"
 
 namespace Butler {
 
 	class ItemDb
 	{
 		public:
-			virtual QList<Item*>* queryItemList(const QueryOptions &qo) = 0;
+			virtual ItemSet* queryItems(const QueryOptions &qo) = 0;
 			/*	virtual bool buyItem(int id, int price) = 0;*/
 	};
 
