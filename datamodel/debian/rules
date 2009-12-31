@@ -11,7 +11,7 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 PACKAGENAME = butler-datamodel
-DEBIAN_DESTDIR = $(CURDIR)/debian/${PACKAGENAME}
+DEBIAN_DESTDIR = $(CURDIR)/debian/install
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
@@ -19,12 +19,13 @@ endif
 
 clean:
 	./clean.sh
-	rm -f packaging-started build-stamp configure-stamp
+	rm -f debian-packaging-started build-stamp configure-stamp
 	dh_clean 
 
 configure:
-	touch packaging-started
+	touch debian-packaging-started
 	qmake
+	./debian/config
 	touch configure-stamp
 
 build: configure
@@ -44,9 +45,9 @@ binary: unittest install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-	dh_install
+	dh_install --source=${DEBIAN_DESTDIR}
 #	dh_installmenu
-#	dh_installdebconf	
+#	dh_installdebconf
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
