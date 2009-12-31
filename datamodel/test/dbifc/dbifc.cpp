@@ -16,36 +16,43 @@
 
 namespace Butler {
 
-	class DbIfc : public ButlerDb
+	class DbIfc : public Db
 	{
-		DbIfc(){}
-		~DbIfc(){}
+		public:
+			DbIfc(){}
+			~DbIfc(){}
 
 
-		TagSet* queryTags()
-		{
-			return new TagSet();
-		}
+			TagSet* queryTags()
+			{
+				return new TagSet();
+			}
 
-		QueryOptions* queryQueryOptions(const QString &name)
-		{
-			return new QueryOptions(name);
-		}
+			QueryOptions* queryQueryOptions(const QString &name)
+			{
+				return new QueryOptions(name);
+			}
 
-		TagSet* queryTags(const QueryOptions &qo)
-		{
-			return new TagSet();
-		}
-		
-		ItemSet* queryItems(const QueryOptions &qo)
-		{
-			return new ItemSet();
-		}
+			TagSet* queryTags(const QueryOptions &qo)
+			{
+				Q_UNUSED(qo);
 
-		TagSet* queryTags(const Item &item)
-		{
-			return new TagSet();
-		}
+				return new TagSet();
+			}
+
+			ItemSet* queryItems(const QueryOptions &qo)
+			{
+				Q_UNUSED(qo);
+
+				return new ItemSet();
+			}
+
+			TagSet* queryTags(const Item &item)
+			{
+				Q_UNUSED(item);
+
+				return new TagSet();
+			}
 	};
 
 	class TestDbIfc : public QObject
@@ -77,29 +84,29 @@ namespace Butler {
 		Item _i("example");
 
 		TagSet *ts;
-		QueryOptionsSet *qos;
+		QueryOptions *qo;
 		ItemSet *is;
 
 
-		ts = queryTags();
-		Q_VERIFY(ts != NULL);
+		ts = ifc.queryTags();
+		QVERIFY(ts != NULL);
 		delete ts;
 
-		qos = queryQueryOptions("teszt");
-		Q_VERIFY(qos != NULL);
-		Q_VERIFY(qos->name == "teszt");
-		delete qos;
+		qo = ifc.queryQueryOptions("teszt");
+		QVERIFY(qo != NULL);
+		QVERIFY(qo->name == "teszt");
+		delete qo;
 
-		ts = queryTags(_qo);
-		Q_VERIFY(ts != NULL);
+		ts = ifc.queryTags(_qo);
+		QVERIFY(ts != NULL);
 		delete ts;
 
-		is = queryItems(_qo);
-		Q_VERIFY(is != NULL);
+		is = ifc.queryItems(_qo);
+		QVERIFY(is != NULL);
 		delete is;
 
-		ts = queryTags(_i);
-		Q_VERIFY(ts != NULL);
+		ts = ifc.queryTags(_i);
+		QVERIFY(ts != NULL);
 		delete ts;
 	}
 

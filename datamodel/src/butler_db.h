@@ -14,7 +14,6 @@
 #include <QString>
 #include <QList>
 #include <QVariant>
-#include <QSqlDatabase>
 
 #include "butler_item_db.h"
 #include "butler_tag_db.h"
@@ -25,8 +24,8 @@ namespace Butler {
 	class Db : public ItemDb, public TagDb, public QueryOptionsDb
 	{
 		public:
-			Db();
-			virtual ~Db();
+			Db(){}
+			virtual ~Db(){}
 	};
 
 }
