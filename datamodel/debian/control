@@ -18,3 +18,9 @@ Architecture: any
 Depends: butler-datamodel
 Description: Debug symbols for the butler-datamodel package.
 
+Package: butler-datamodel-dev
+Section: devel
+Architecture: any
+Depends: butler-datamodel-dbg
+Description: Development headers and files for butler-datamodel package.
+
