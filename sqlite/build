@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
 dpkg-buildpackage -uc -us -sa -D -tc
 
 #DEB_BUILD_OPTIONS="noopt logdebug" dpkg-buildpackage -uc -us -sa -D -tc && dpkg -i ../*.deb
-
 

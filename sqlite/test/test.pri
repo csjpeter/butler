@@ -1,11 +1,12 @@
-!include(../../butler.pri){
-        message( "butler.pri can not found" )
+PKGROOT="../.."
+!include($$PKGROOT/butler.pri){
+	message( "$$PKGROOT/butler.pri can not found" )
 }
 
 CONFIG += qtestlib
 QT += testlib
-INCLUDEPATH += ../../src
-LIBS += -L../../src/ -lbutler_datamodel
+INCLUDEPATH += $$PKGROOT/src
+LIBS += -L$$PKGROOT/src/ -lbutler_sqlite
 
 
 message(------$(PWD)------)

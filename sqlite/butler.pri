@@ -1,18 +1,22 @@
 
-#FIXME it should be set from debian/rules whther to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
+#FIXME it should be set from debian/rules whether to compile in debug mode or not. Note we need debug symbols but we dont want debug codes in release.
 
-# common project wide defaults
+#
+#	Default values ...
+#
 
 # use development prefix by default on x86
 PREFIX = /opt/devroot
-
-# debug compilation options
-CONFIG = qt debug build_all warn_on
-
+CONFIG = qt debug build_all warn_on butler-datamodel-0.1
 QT = core
-
 INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
 QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
+OBJECTS_DIR = ./tmp
+MOC_DIR = ./tmp
+
+#
+#	Detections ...
+#
 
 # try to detect maemo environment 
 
@@ -38,14 +42,26 @@ armel{
 
 # if packaging is in progress use /usr prefix
 
-PACKAGING_RUN = $$system(ls packaging-started)
-#message(PACKAGING_RUN:	$$PACKAGING_RUN)
-!isEmpty(PACKAGING_RUN){
+exists(debian-packaging-started){
 	PREFIX = /usr
+	CONFIG += debianpackage
 }
 
+# read version number from version file
 
-# general settings ...
+VERSION_MAJOR = $$system(head -n 1 version)
+VERSION_MINOR = $$system(head -n 2 version | tail -n 1)
+VERSION_PATCH = $$system(head -n 3 version | tail -n 1)
+
+
+#
+#	Configuration ...
+#
+
+PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
+
+APIVERSION = $$VERSION_MAJOR"."$$VERSION_MINOR
+VERSION = $$APIVERSION"."$$VERSION_PATCH
 
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
@@ -61,8 +77,5 @@ debug{
 	QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs
 	LIBS += -lgcov
 }
-
-OBJECTS_DIR = ./tmp
-MOC_DIR = ./tmp
 
 

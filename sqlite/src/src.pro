@@ -22,10 +22,18 @@ SOURCES		=	\
 
 QT += sql
 
-TARGET		= butler_sqlite
-
+TARGET =butler_sqlite
 target.path = $$PREFIX/lib
 INSTALLS += target
+
+dev_headers.path = $$PREFIX/include/butler/sqlite-$$APIVERSION
+dev_headers.files = $$HEADERS
+INSTALLS += dev_headers
+
+system(../gen_prf $$APIVERSION $$PREFIX)
+sqlite_prf.path = $$PRF_DIR
+sqlite_prf.files = butler-sqlite-$$APIVERSION"."prf
+INSTALLS += sqlite_prf
 
 message(------compilation in $(PWD)------)
 message(Destdir:		$$DESTDIR)
@@ -36,4 +44,5 @@ message(Defines:		$$DEFINES)
 message(Config:			$$CONFIG)
 message(Qt:			$$QT)
 message(------------------)
+
 

@@ -1,6 +1,6 @@
-butler-sqlite (0.0.1-0) unstable; urgency=low
+butler-sqlite (0.1.0) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * This file is only for debian packaging compatibility
 
- -- Császár Péter <csjpeter@gmail.com>  Thu, 30 Dec 2009 13:13:07 +0100
+ -- Császár Péter <csjpeter@gmail.com>  Tue, 22 Dec 2009 13:13:07 +0100
 

@@ -1,8 +1,4 @@
-#!/bin/sh
-
-#
-#	build package
-#
+#!/bin/bash
 
 dpkg-buildpackage -uc -us -sa -D -tc
 

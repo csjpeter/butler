@@ -1,7 +1,20 @@
 TEMPLATE = subdirs
 SUBDIRS = src test
 
-#include(debian/deb.pri)
+!include(butler.pri){
+	message( "butler.pri can not found" )
+}
+
+debianpackage{
+	system(rm debian/config.data)
+	system(echo "VERSION_MAJOR=$$VERSION_MAJOR" >> debian/config.data)
+	system(echo "VERSION_MINOR=$$VERSION_MINOR" >> debian/config.data)
+	system(echo "VERSION_PATCH=$$VERSION_PATCH" >> debian/config.data)
+	system(echo "APIVERSION=$$APIVERSION" >> debian/config.data)
+	system(echo "VERSION=$$VERSION" >> debian/config.data)
+	system(echo "PREFIX=$$PREFIX" >> debian/config.data)
+	system(echo "PRF_DIR=$$PRF_DIR" >> debian/config.data)
+}
 
 message(------Qt informations-------)
 message(Qt version:		$$[QT_VERSION])
@@ -17,4 +30,9 @@ message(Translation files:	$$[QT_INSTALL_TRANSLATIONS])
 message(Settings:		$$[QT_INSTALL_SETTINGS])
 message(Examples:		$$[QT_INSTALL_EXAMPLES])
 message(Demonstrations:		$$[QT_INSTALL_DEMOS])
+message(------Project informations-------)
+message(Prefix:			$$PREFIX)
+message(Api Version:		$$APIVERSION)
+message(Version:		$$VERSION)
+message(Defines:		$$DEFINES)
 

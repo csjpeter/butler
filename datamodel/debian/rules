@@ -20,6 +20,9 @@ endif
 clean:
 	./clean.sh
 	rm -f debian-packaging-started build-stamp configure-stamp
+	rm -f debian/config.data
+	rm -f debian/*.install
+	rm -fr debian/install/
 	dh_clean 
 
 configure:

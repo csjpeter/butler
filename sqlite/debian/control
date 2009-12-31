@@ -2,7 +2,7 @@ Source: butler-sqlite
 Section: user
 Priority: optional
 Maintainer: Császár Péter <csjpeter@gmail.com>
-Build-Depends: libqt4-core, libqt4-sql
+Build-Depends: libqt4-core, libqt4-sql, butler-datamodel-0.1
 Standards-Version: 3.6.2.2
 
 Package: butler-sqlite
@@ -10,11 +10,16 @@ Section: user
 Architecture: any
 Provides: butler-sqlite
 Depends: libqt4-core, libqt4-sql
-Description: Helper for home keeping via maintaining shoping lists.
+Description: Sqlite based backend library for the butler applications. Butler is a shopping list like basic home economy tool.
 
 Package: butler-sqlite-dbg
 Section: devel
 Architecture: any
 Depends: butler-sqlite
-Description: Debug symbols for the butler.
+Description: Debug symbols for the butler-sqlite package.
 
+Package: butler-sqlite-dev
+Section: devel
+Architecture: any
+Depends: butler-sqlite-dbg, butler-datamodel-dev-0.1
+Description: Development headers and files for the butler-sqlite package.
