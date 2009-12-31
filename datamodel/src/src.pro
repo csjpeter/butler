@@ -11,7 +11,7 @@ debug{
 
 HEADERS		=	\
 			butler_orderedset.h \
-			ButlerOrederedSet \
+			ButlerOrderedSet \
 			\
 			butler_tag.h \
 			ButlerTag \
@@ -55,9 +55,9 @@ dev_headers.path = $$PREFIX/include/butler/datamodel-$$APIVERSION
 dev_headers.files = $$HEADERS
 INSTALLS += dev_headers
 
-system(./gen_prf $$APIVERSION $$PREFIX)
+system(../gen_prf $$APIVERSION $$PREFIX)
 datamodel_prf.path = $$PRF_DIR
-datamodel_prf.files = butler-datamodel-$$APIVERSION.prf
+datamodel_prf.files = butler-datamodel-$$APIVERSION"."prf
 INSTALLS += datamodel_prf
 
 message(------compilation in $(PWD)------)

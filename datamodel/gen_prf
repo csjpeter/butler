@@ -3,7 +3,7 @@
 APIVERSION=$1
 PREFIX=${2//\//\\\/}
 
-cat butler-datamodel.prf.tpl | \
+cat ../butler-datamodel.prf.tpl | \
 	sed 's/@APIVERSION@/'$APIVERSION'/' | \
 	sed 's/@PREFIX@/'$PREFIX'/' > \
 	butler-datamodel-$APIVERSION.prf
