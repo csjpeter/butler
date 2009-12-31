@@ -1,14 +1,20 @@
 TEMPLATE = subdirs
 SUBDIRS = src test
 
-include(butler.pri)
+!include(butler.pri){
+	message( "butler.pri can not found" )
+}
 
-
-system(./gen_prf $$APIVERSION $$PREFIX)
-datamodel_prf.files = butler-datamodel-$$APIVERSION.prf
-datamodel_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
-INSTALLS += datamodel_prf
-
+debianpackage{
+	system(rm debian/config.data)
+	system(echo "VERSION_MAJOR=$$VERSION_MAJOR" >> debian/config.data)
+	system(echo "VERSION_MINOR=$$VERSION_MINOR" >> debian/config.data)
+	system(echo "VERSION_PATCH=$$VERSION_PATCH" >> debian/config.data)
+	system(echo "APIVERSION=$$APIVERSION" >> debian/config.data)
+	system(echo "VERSION=$$VERSION" >> debian/config.data)
+	system(echo "PREFIX=$$PREFIX" >> debian/config.data)
+	system(echo "PRF_DIR=$$PRF_DIR" >> debian/config.data)
+}
 
 message(------Qt informations-------)
 message(Qt version:		$$[QT_VERSION])

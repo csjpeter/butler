@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if test ! -e debian/config.data; then
+	echo Error: debian/config.data does not exists
+	exit -1
+fi
+
+. debian/config.data;
+PREFIX=${PREFIX/\//}
+PREFIX=${PREFIX//\//\\\/}
+PRF_DIR=${PRF_DIR/\//}
+PRF_DIR=${PRF_DIR//\//\\\/}
+
+#VERSION_MAJOR=$(head -n 1 version)
+#VERSION_MINOR=$(head -n 2 version | tail -n 1)
+#VERSION_PATCH=$(head -n 3 version | tail -n 1)
+#VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH
+
+#
+#	update debian/changelog
+#
+
+if [ -d debian ]; then
+	cp debian/changelog debian/.changelog
+	cat debian/.changelog | sed '1 s/(.*)/('$VERSION')/' > debian/changelog
+	rm debian/.changelog
+fi
+
+#
+#	generate .install files
+#
+
+cat debian/butler-datamodel-dev.install.tpl | \
+	sed 's/@PRF_DIR@/'$PRF_DIR'/' | \
+	sed 's/@APIVERSION@/'$APIVERSION'/' | \
+	sed 's/@PREFIX@/'$PREFIX'/' > \
+	debian/butler-datamodel-dev.install
+
+cat debian/butler-datamodel.install.tpl | \
+	sed 's/@APIVERSION@/'$APIVERSION'/' | \
+	sed 's/@PREFIX@/'$PREFIX'/' > \
+	debian/butler-datamodel.install
