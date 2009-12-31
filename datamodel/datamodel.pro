@@ -1,7 +1,14 @@
 TEMPLATE = subdirs
 SUBDIRS = src test
 
-#include(debian/deb.pri)
+include(butler.pri)
+
+
+system(./gen_prf $$APIVERSION $$PREFIX)
+datamodel_prf.files = butler-datamodel-$$APIVERSION.prf
+datamodel_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
+INSTALLS += datamodel_prf
+
 
 message(------Qt informations-------)
 message(Qt version:		$$[QT_VERSION])
@@ -17,4 +24,9 @@ message(Translation files:	$$[QT_INSTALL_TRANSLATIONS])
 message(Settings:		$$[QT_INSTALL_SETTINGS])
 message(Examples:		$$[QT_INSTALL_EXAMPLES])
 message(Demonstrations:		$$[QT_INSTALL_DEMOS])
+message(------Project informations-------)
+message(Prefix:			$$PREFIX)
+message(Api Version:		$$APIVERSION)
+message(Version:		$$VERSION)
+message(Defines:		$$DEFINES)
 

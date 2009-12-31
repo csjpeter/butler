@@ -2,5 +2,5 @@
 INCLUDEPATH += @PREFIX@/include/butler/datammodel-@APIVERSION@
 DEPENDPATH += @PREFIX@/include/butler/datammodel-@APIVERSION@
 
-LIBS += -lbutler-datamodel
+LIBS += -llibbutler-datamodel.so.@APIVERSION@
 
