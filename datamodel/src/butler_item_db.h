@@ -10,7 +10,7 @@
 #define BUTLER_ITEM_DB_H
 
 #include "ButlerQueryOptions"
-#include "ButlerItemset"
+#include "ButlerItemSet"
 
 namespace Butler {
 
