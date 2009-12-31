@@ -7,6 +7,12 @@
 
 # use development prefix by default on x86
 PREFIX = /opt/devroot
+CONFIG = qt debug build_all warn_on
+QT = core
+INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
+QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
+OBJECTS_DIR = ./tmp
+MOC_DIR = ./tmp
 
 #
 #	Detections ...
@@ -36,9 +42,9 @@ armel{
 
 # if packaging is in progress use /usr prefix
 
-PACKAGING_RUN = $$system(ls packaging-started 2> /dev/null)
-!isEmpty(PACKAGING_RUN){
+exists(debian-packaging-started){
 	PREFIX = /usr
+	CONFIG += debianpackage
 }
 
 # read version number from version file
@@ -52,19 +58,13 @@ VERSION_PATCH = $$system(head -n 3 version | tail -n 1)
 #	Configuration ...
 #
 
-CONFIG = qt debug build_all warn_on
-QT = core
-INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
-QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
-OBJECTS_DIR = ./tmp
-MOC_DIR = ./tmp
+PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 
 APIVERSION = $$VERSION_MAJOR"."$$VERSION_MINOR
 VERSION = $$APIVERSION"."$$VERSION_PATCH
 
 DEFINES += VERSION=$$VERSION
 DEFINES += PREFIX=$$PREFIX
-
 
 release {
 	CONFIG += silent
