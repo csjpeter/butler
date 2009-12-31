@@ -1,6 +1,14 @@
 #!/bin/bash
 
-dpkg-buildpackage -uc -us -sa -D -tc
+VERSION_MAJOR=$(head -n 1 version)
+VERSION_MINOR=$(head -n 2 version | tail -n 1)
+VERSION_PATCH=$(head -n 3 version | tail -n 1)
+VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH
+
+EMAIL=csjpeter@gmail.com dch --create --package butler-datamodel -v $VERSION "This file is only for debian packaging compatibility"
+
+dpkg-buildpackage -uc -us -sa -D -tc && rm debian/changelog 2> /dev/null
+
 
 #DEB_BUILD_OPTIONS="noopt logdebug" dpkg-buildpackage -uc -us -sa -D -tc && dpkg -i ../*.deb
 
