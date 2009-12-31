@@ -26,7 +26,7 @@ for tdir in $(ls -1 ./test/); do
 	fi
 	delete_file "./test/$tdir/$tdir"
 done
-for file in $(ls -1 *.prf 2> /dev/null); do
+for file in $(ls -1 ./src/*.prf 2> /dev/null); do
 	delete_file $file
 done
 
