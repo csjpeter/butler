@@ -51,6 +51,15 @@ TARGET		= butler_datamodel
 target.path = $$PREFIX/lib
 INSTALLS += target
 
+dev_headers.path = $$PREFIX/include/butler/datamodel-$$APIVERSION
+dev_headers.files = $$HEADERS
+INSTALLS += dev_headers
+
+system(./gen_prf $$APIVERSION $$PREFIX)
+datamodel_prf.path = $$PRF_DIR
+datamodel_prf.files = butler-datamodel-$$APIVERSION.prf
+INSTALLS += datamodel_prf
+
 message(------compilation in $(PWD)------)
 message(Destdir:		$$DESTDIR)
 message(Prefix:			$$PREFIX)
