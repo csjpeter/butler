@@ -12,6 +12,8 @@
 #include <ButlerDebug>
 #include <ButlerSqlite>
 
+#define DB_FILE "./TestSqlite.db"
+
 namespace Butler {
 
 	class TestSqlite : public QObject
@@ -32,7 +34,7 @@ namespace Butler {
 
 	void TestSqlite::cleanupTestCase()
 	{
-		QFile f("./TestSqlite.db");
+		QFile f(DB_FILE);
 		QVERIFY(f.remove());
 
 		_reportLeakSuspections();
@@ -41,14 +43,14 @@ namespace Butler {
 	void TestSqlite::connection()
 	{
 		{
-			Db *sql = new Sqlite("./TestSqlite.db");
+			Db *sql = new Sqlite(DB_FILE);
 
 			QVERIFY(sql->connect());
 
 			delete sql;
 		}
 		{
-			Db *sql = new Sqlite("./TestSqlite.db");
+			Db *sql = new Sqlite(DB_FILE);
 
 			QVERIFY(sql->connect());
 			QVERIFY(sql->open());
