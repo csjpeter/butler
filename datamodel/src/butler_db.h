@@ -26,6 +26,13 @@ namespace Butler {
 		public:
 			Db(){}
 			virtual ~Db(){}
+
+			virtual bool connect() = 0;
+			virtual bool open() = 0;
+			virtual bool close() = 0;
+
+		public:
+			QString lastError;
 	};
 
 }

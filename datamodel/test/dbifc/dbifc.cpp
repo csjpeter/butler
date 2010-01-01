@@ -22,6 +22,20 @@ namespace Butler {
 			DbIfc(){}
 			~DbIfc(){}
 
+			bool connect()
+			{
+				return true;
+			}
+
+			bool open()
+			{
+				return true;
+			}
+
+			bool close()
+			{
+				return true;
+			}
 
 			TagSet* queryTags()
 			{
@@ -79,6 +93,10 @@ namespace Butler {
 	void TestDbIfc::methodcalls()
 	{
 		DbIfc ifc;
+
+		ifc.connect();
+		ifc.open();
+		ifc.close();
 
 		QueryOptions _qo("default");
 		Item _i("example");
