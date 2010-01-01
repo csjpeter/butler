@@ -41,17 +41,21 @@ namespace Butler {
 	void TestSqlite::connection()
 	{
 		{
-			Sqlite sql("./TestSqlite.db");
+			Db *sql = new Sqlite("./TestSqlite.db");
 
-			QVERIFY(sql.connect());
+			QVERIFY(sql->connect());
+
+			delete sql;
 		}
 		{
-			Sqlite sql("./TestSqlite.db");
+			Db *sql = new Sqlite("./TestSqlite.db");
 
-			QVERIFY(sql.connect());
-			QVERIFY(sql.open());
-			QVERIFY(sql.close());
-			QVERIFY(sql.open());
+			QVERIFY(sql->connect());
+			QVERIFY(sql->open());
+			QVERIFY(sql->close());
+			QVERIFY(sql->open());
+			
+			delete sql;
 		}
 	}
 
