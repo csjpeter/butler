@@ -6,6 +6,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#include <QFile>
 #include <QtTest/QtTest>
 
 #include <ButlerDebug>
@@ -31,6 +32,9 @@ namespace Butler {
 
 	void TestSqlite::cleanupTestCase()
 	{
+		QFile f("./TestSqlite.db");
+		QVERIFY(f.remove());
+
 		_reportLeakSuspections();
 	}
 
