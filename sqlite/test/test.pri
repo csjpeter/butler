@@ -6,7 +6,8 @@ PKGROOT="../.."
 CONFIG += qtestlib
 QT += testlib
 INCLUDEPATH += $$PKGROOT/src
-LIBS += -L$$PKGROOT/src/ -lbutler_sqlite
+QMAKE_LIBDIR += -L$$PKGROOT/src/
+LIBS += -lbutler_sqlite
 
 
 message(------$(PWD)------)
