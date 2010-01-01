@@ -10,6 +10,10 @@
 #define BUTLER_DEBUG_H
 
 
+/* big hack :( */
+void _nothing();
+#define NOTHING _nothing()
+
 
 #ifdef DEBUG
 #ifndef DEBUG_VERBOSE_LEVEL
@@ -17,15 +21,17 @@
 #define DEBUG_VERBOSE_LEVEL 1
 #endif
 #define vDebug(v, ...) (DEBUG_VERBOSE_LEVEL <= v) ? \
-			qDebug(__VA_ARGS__) : ;
+			qDebug(__VA_ARGS__) : NOTHING
 #else
 #define vDebug(v, ...) ;
 #endif
-#define v1Debug(...) vDebug(1, __VA_AGRS__)
-#define v2Debug(...) vDebug(2, __VA_AGRS__)
-#define v3Debug(...) vDebug(3, __VA_AGRS__)
-#define v4Debug(...) vDebug(4, __VA_AGRS__)
-#define v5Debug(...) vDebug(5, __VA_AGRS__)
+#define v1Debug(...) vDebug(1, __VA_ARGS__)
+#define v2Debug(...) vDebug(2, __VA_ARGS__)
+#define v3Debug(...) vDebug(3, __VA_ARGS__)
+#define v4Debug(...) vDebug(4, __VA_ARGS__)
+#define v5Debug(...) vDebug(5, __VA_ARGS__)
+
+
 
 #ifndef DEBUG
 #define NO_RUNTIME_BACKTRACE
@@ -36,9 +42,7 @@
 #define RUNTIME_BACKTRACE_VERBOSE_LEVEL 1
 #endif
 
-/* big hack :( */
-void _nothing();
-#define NOTHING _nothing()
+
 
 #ifdef NO_COLOR
 #define VT_GRAPHICS_MODE(code) ""
@@ -70,6 +74,9 @@ void _nothing();
 #define VT_BG_MAGENTA       VT_GRAPHICS_MODE(45)
 #define VT_BG_CYAN          VT_GRAPHICS_MODE(46)
 #define VT_BG_WHITE         VT_GRAPHICS_MODE(47)
+
+
+
 
 #ifndef NO_RUNTIME_BACKTRACE
 void _runtimeBacktraceLeaveConstructor(
