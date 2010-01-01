@@ -90,7 +90,7 @@ namespace Butler {
 				LEAVE_FUNCTION();
 			}
 
-			const Type& query(int i) const
+			Type& query(int i) const
 			{
 				ENTER_FUNCTION();
 				Q_ASSERT(i<data.size());
