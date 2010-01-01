@@ -99,7 +99,7 @@ badd +1 src/butler_item_set.h
 badd +1 test/itemset/item_set.cpp
 badd +1 test/item/item.cpp
 badd +1 test/dbifc/dbifc.cpp
-badd +0 test/tagset/tagset.pro
+badd +1 test/tagset/tagset.pro
 args ~/sbox/prj/butler/datamodel/src/butler_item.cpp ~/sbox/prj/butler/datamodel/src/butler_queryoptions.cpp ~/sbox/prj/butler/datamodel/src/butler_tag.cpp ~/sbox/prj/butler/datamodel/src/butler_tag_set.cpp ~/sbox/prj/butler/datamodel/src/butler_db.h ~/sbox/prj/butler/datamodel/src/butler_item_db.h ~/sbox/prj/butler/datamodel/src/butler_item.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions_db.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions.h ~/sbox/prj/butler/datamodel/src/butler_tag_db.h ~/sbox/prj/butler/datamodel/src/butler_tag.h ~/sbox/prj/butler/datamodel/src/butler_tag_set.h
 set lines=41 columns=154
 edit src/butler_item.cpp
@@ -129,17 +129,17 @@ set nosplitright
 wincmd t
 set winheight=1 winwidth=1
 exe '1resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 21 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
 exe '2resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 21 + 77) / 154)
-exe '3resize ' . ((&lines * 1 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 126 + 77) / 154)
-exe '4resize ' . ((&lines * 1 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 5 + 77) / 154)
-exe '5resize ' . ((&lines * 36 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 126 + 77) / 154)
-exe '6resize ' . ((&lines * 36 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 5 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
+exe '3resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 3resize ' . ((&columns * 80 + 77) / 154)
+exe '4resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 4resize ' . ((&columns * 0 + 77) / 154)
+exe '5resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 5resize ' . ((&columns * 72 + 77) / 154)
+exe '6resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 6resize ' . ((&columns * 8 + 77) / 154)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -202,6 +202,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -303,6 +304,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -404,6 +406,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -435,12 +438,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 0) / 1)
+let s:l = 28 - ((1 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+28
+normal! 03l
 wincmd w
 argglobal
 edit test/item/item.cpp
@@ -505,6 +508,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -536,7 +540,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 0) / 1)
+let s:l = 1 - ((0 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -606,6 +610,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -637,7 +642,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+let s:l = 1 - ((0 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -707,6 +712,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -738,7 +744,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+let s:l = 1 - ((0 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -746,17 +752,17 @@ normal! zt
 normal! 0
 wincmd w
 exe '1resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 21 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
 exe '2resize ' . ((&lines * 7 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 21 + 77) / 154)
-exe '3resize ' . ((&lines * 1 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 126 + 77) / 154)
-exe '4resize ' . ((&lines * 1 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 5 + 77) / 154)
-exe '5resize ' . ((&lines * 36 + 20) / 41)
-exe 'vert 5resize ' . ((&columns * 126 + 77) / 154)
-exe '6resize ' . ((&lines * 36 + 20) / 41)
-exe 'vert 6resize ' . ((&columns * 5 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 72 + 77) / 154)
+exe '3resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 3resize ' . ((&columns * 80 + 77) / 154)
+exe '4resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 4resize ' . ((&columns * 0 + 77) / 154)
+exe '5resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 5resize ' . ((&columns * 72 + 77) / 154)
+exe '6resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 6resize ' . ((&columns * 8 + 77) / 154)
 tabedit src/butler_queryoptions.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -782,14 +788,14 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 21 + 77) / 154)
-exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 21 + 77) / 154)
+exe '1resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe '2resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
 exe '3resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 126 + 77) / 154)
+exe 'vert 3resize ' . ((&columns * 67 + 77) / 154)
 exe '4resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 126 + 77) / 154)
+exe 'vert 4resize ' . ((&columns * 67 + 77) / 154)
 exe '5resize ' . ((&lines * 18 + 20) / 41)
 exe 'vert 5resize ' . ((&columns * 5 + 77) / 154)
 exe '6resize ' . ((&lines * 19 + 20) / 41)
@@ -857,6 +863,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -888,7 +895,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 20 - ((0 * winheight(0) + 9) / 18)
+let s:l = 20 - ((0 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -959,6 +966,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -990,7 +998,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 11 - ((0 * winheight(0) + 9) / 19)
+let s:l = 11 - ((2 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -1061,6 +1069,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1163,6 +1172,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1265,6 +1275,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1367,6 +1378,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1405,14 +1417,14 @@ normal! zt
 51
 normal! 020l
 wincmd w
-exe '1resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 1resize ' . ((&columns * 21 + 77) / 154)
-exe '2resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 21 + 77) / 154)
+exe '1resize ' . ((&lines * 30 + 20) / 41)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe '2resize ' . ((&lines * 7 + 20) / 41)
+exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
 exe '3resize ' . ((&lines * 18 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 126 + 77) / 154)
+exe 'vert 3resize ' . ((&columns * 67 + 77) / 154)
 exe '4resize ' . ((&lines * 19 + 20) / 41)
-exe 'vert 4resize ' . ((&columns * 126 + 77) / 154)
+exe 'vert 4resize ' . ((&columns * 67 + 77) / 154)
 exe '5resize ' . ((&lines * 18 + 20) / 41)
 exe 'vert 5resize ' . ((&columns * 5 + 77) / 154)
 exe '6resize ' . ((&lines * 19 + 20) / 41)
@@ -1518,6 +1530,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1620,6 +1633,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1651,12 +1665,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 72 - ((12 * winheight(0) + 15) / 30)
+let s:l = 47 - ((17 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-72
-normal! 0
+47
+normal! 027l
 wincmd w
 argglobal
 3argu
@@ -1722,6 +1736,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1824,6 +1839,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1926,6 +1942,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -1957,12 +1974,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 38 - ((19 * winheight(0) + 15) / 30)
+let s:l = 43 - ((28 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-38
-normal! 08l
+43
+normal! 02l
 wincmd w
 argglobal
 3argu
@@ -2028,6 +2045,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2059,12 +2077,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 9 - ((8 * winheight(0) + 15) / 30)
+let s:l = 119 - ((19 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-9
-normal! 010l
+119
+normal! 016l
 wincmd w
 exe '1resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 1resize ' . ((&columns * 72 + 77) / 154)
@@ -2153,6 +2171,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2254,6 +2273,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2388,6 +2408,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2419,12 +2440,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 32 - ((20 * winheight(0) + 15) / 30)
+let s:l = 26 - ((21 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-32
-normal! 026l
+26
+normal! 08l
 wincmd w
 argglobal
 edit test/dbifc/dbifc.cpp
@@ -2489,6 +2510,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2520,7 +2542,7 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 103 - ((29 * winheight(0) + 15) / 30)
+let s:l = 103 - ((0 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -2590,6 +2612,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2621,12 +2644,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 22 - ((3 * winheight(0) + 3) / 7)
+let s:l = 20 - ((4 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-22
-normal! 0
+20
+normal! 08l
 wincmd w
 argglobal
 edit src/butler_queryoptions_db.h
@@ -2691,6 +2714,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2722,12 +2746,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 21 - ((5 * winheight(0) + 3) / 7)
+let s:l = 20 - ((4 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-21
-normal! 0
+20
+normal! 08l
 wincmd w
 argglobal
 edit src/butler_item_db.h
@@ -2792,6 +2816,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2823,12 +2848,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 20 - ((0 * winheight(0) + 3) / 7)
+let s:l = 19 - ((6 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-20
-normal! 0
+19
+normal! 08l
 wincmd w
 exe '1resize ' . ((&lines * 30 + 20) / 41)
 exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
@@ -2915,6 +2940,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -2946,12 +2972,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 37 - ((8 * winheight(0) + 19) / 38)
+let s:l = 40 - ((11 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-37
-normal! 0
+40
+normal! 01l
 wincmd w
 argglobal
 edit src/butler_debug.h
@@ -3016,6 +3042,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3047,12 +3074,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 30 - ((25 * winheight(0) + 19) / 38)
+let s:l = 24 - ((21 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-30
-normal! 012l
+24
+normal! 031l
 wincmd w
 exe 'vert 1resize ' . ((&columns * 73 + 77) / 154)
 exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
@@ -3066,8 +3093,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 73 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 argglobal
 edit src/butler_algorithms.cpp
 setlocal keymap=
@@ -3131,6 +3158,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3232,6 +3260,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3270,8 +3299,8 @@ normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 73 + 77) / 154)
-exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 1resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
 tabedit src/src.pro
 set splitbelow splitright
 set nosplitbelow
@@ -3341,6 +3370,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3372,12 +3402,12 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 1 - ((0 * winheight(0) + 19) / 39)
+let s:l = 39 - ((38 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 013l
+39
+normal! 0
 tabedit datamodel.pro
 set splitbelow splitright
 set nosplitbelow
@@ -3447,6 +3477,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3478,11 +3509,11 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 20 - ((0 * winheight(0) + 19) / 39)
+let s:l = 1 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-20
+1
 normal! 0
 tabedit test/test.pro
 set splitbelow splitright
@@ -3500,9 +3531,9 @@ wincmd t
 set winheight=1 winwidth=1
 exe '1resize ' . ((&lines * 7 + 20) / 41)
 exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
 exe '3resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 3resize ' . ((&columns * 73 + 77) / 154)
 argglobal
 edit test/test.pro
 setlocal keymap=
@@ -3566,6 +3597,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3667,6 +3699,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3698,11 +3731,11 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 12 - ((11 * winheight(0) + 15) / 30)
+let s:l = 14 - ((13 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-12
+14
 normal! 0
 wincmd w
 argglobal
@@ -3768,6 +3801,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3806,12 +3840,11 @@ normal! zt
 9
 normal! 0
 wincmd w
-3wincmd w
 exe '1resize ' . ((&lines * 7 + 20) / 41)
 exe '2resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 2resize ' . ((&columns * 73 + 77) / 154)
+exe 'vert 2resize ' . ((&columns * 80 + 77) / 154)
 exe '3resize ' . ((&lines * 30 + 20) / 41)
-exe 'vert 3resize ' . ((&columns * 80 + 77) / 154)
+exe 'vert 3resize ' . ((&columns * 73 + 77) / 154)
 tabedit butler.pri
 set splitbelow splitright
 set nosplitbelow
@@ -3881,6 +3914,7 @@ setlocal modifiable
 setlocal nrformats=octal,hex
 setlocal nonumber
 setlocal numberwidth=4
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -3912,14 +3946,13 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 35 - ((0 * winheight(0) + 19) / 39)
+let s:l = 34 - ((32 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
-normal! 0
-3wincmd w
-tabnext 10
+34
+normal! 08l
+tabnext 5
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif
