@@ -21,6 +21,11 @@
 #else
 #define vDebug(v, ...) ;
 #endif
+#define v1Debug(...) vDebug(1, __VA_AGRS__)
+#define v2Debug(...) vDebug(2, __VA_AGRS__)
+#define v3Debug(...) vDebug(3, __VA_AGRS__)
+#define v4Debug(...) vDebug(4, __VA_AGRS__)
+#define v5Debug(...) vDebug(5, __VA_AGRS__)
 
 #ifndef DEBUG
 #define NO_RUNTIME_BACKTRACE
