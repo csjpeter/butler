@@ -44,7 +44,7 @@ namespace Butler
 	{
 		ENTER_FUNCTION();
 		OrderedSet<Tag>::append(t);
-		nameToPtr.insert(&(t->name), t);
+		nameToIndex.insert(t->name, OrderedSet<Tag>::size()-1);
 		LEAVE_FUNCTION();
 	}
 
@@ -54,7 +54,7 @@ namespace Butler
 		Q_ASSERT(i < size());
 		Q_ASSERT(0 <= i);
 		int r;
-		r = nameToPtr.remove(&(query(i).name));
+		r = nameToIndex.remove(query(i).name);
 		Q_ASSERT(r == 1);
 		OrderedSet<Tag>::remove(i);
 		LEAVE_FUNCTION();
@@ -63,9 +63,27 @@ namespace Butler
 	void TagSet::clear()
 	{
 		ENTER_FUNCTION();
-		nameToPtr.clear();
+		nameToIndex.clear();
 		OrderedSet<Tag>::clear();
 		LEAVE_FUNCTION();
+	}
+			
+	int TagSet::indexByName(const QString &name)
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(nameToIndex.contains(name));
+		int ret = nameToIndex.value(name);
+		LEAVE_FUNCTION();
+		return ret;
+	}
+	
+	Tag& TagSet::queryByName(const QString &name)
+	{
+		ENTER_FUNCTION();
+		int i = indexByName(name);
+		Tag &ret = query(i);
+		LEAVE_FUNCTION();
+		return ret;
 	}
 }
 

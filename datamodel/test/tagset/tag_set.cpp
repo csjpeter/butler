@@ -8,7 +8,7 @@
 
 #include <ButlerTagSet>
 
-#include <butler_debug.h>
+#include <ButlerDebug>
 
 #include <QtTest/QtTest>
 
@@ -26,6 +26,7 @@ namespace Butler {
 			void insertion();
 			void removation();
 			void copy();
+			void query();
 	};
 
 	void TestTagSet::initTestCase()
@@ -97,6 +98,31 @@ namespace Butler {
 		}
 	}
 
+	void TestTagSet::query()
+	{
+		TagSet ts;
+		ts.append(new Tag("zeroth"));
+		ts.append(new Tag("first"));
+		ts.append(new Tag("second"));
+		ts.append(new Tag("third"));
+		ts.append(new Tag("forth"));
+		ts.append(new Tag("fifth"));
+		ts.append(new Tag("sixth"));
+
+		{
+			Tag &t = ts.queryByName("third");
+			QVERIFY(t.name == "third");
+		}
+
+		{
+			int i = ts.indexByName("forth");
+			QVERIFY(i == 4);
+
+			Tag &a = ts.query(i);
+			Tag &b = ts.queryByName("forth");
+			QVERIFY(a.name == b.name);
+		}
+	}
 }
 	
 QTEST_MAIN(Butler::TestTagSet);
