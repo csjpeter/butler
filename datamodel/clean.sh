@@ -17,7 +17,7 @@ function delete_file()
 }
 
 echo Deleting target result files ...
-for tfile in $(find ./src/ | grep "libbutler_datamodel\.so[\.0123456789]*"); do
+for tfile in $(find ./src/ | grep "libbutler-datamodel\.so[\.0123456789]*"); do
 	delete_file $tfile
 done
 for tdir in $(ls -1 ./test/); do

@@ -46,7 +46,7 @@ SOURCES		=	\
 			butler_item_set.cpp \
 			butler_debug.cpp
 
-TARGET		= butler_datamodel
+TARGET		= butler-datamodel
 
 target.path = $$PREFIX/lib
 INSTALLS += target
