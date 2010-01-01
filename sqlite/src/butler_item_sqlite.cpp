@@ -24,29 +24,26 @@ namespace Butler {
 		query.append("'");
 	}
 
-	QList<Item*>* Sqlite::queryItemList(const QueryOptions &qo)
+	ItemSet* Sqlite::queryItems(const QueryOptions &qo)
 	{
 		/* assemble query */
-		QString query("SELECT rowid,* FROM Items");
+		QString query("SELECT * FROM Items");
 
-		if(!qo.empty()){
+		if(!qo.tags.empty()){
 			query.append(" WHERE");
-			QueryOptions::const_iterator tag = qo.constBegin();
-			_append_tag_match_test(query, *tag);
-			for(QueryOptions::const_iterator tag = qo.constBegin();
-					tag != qo.constEnd();
-					tag++){
+			int i, s = qo.tags.size();
+			_append_tag_match_test(query, qo.tags.query(0).name);
+			for(i=1; i<s; i++){
 				query.append(" OR");
-				_append_tag_match_test(query, *tag);
+				_append_tag_match_test(query, qo.tags.query(i).name);
 			}
 		}
 
 		/* execute query */
-		QSqlQuery sqlQuery(query, *db);
+		QSqlQuery sqlQuery(query, db);
 		sqlQuery.exec();
 
 		/* evaluate query result */
-		int idNo = sqlQuery.record().indexOf("rowid");
 		int itemNo = sqlQuery.record().indexOf("item");
 		int uploadedNo = sqlQuery.record().indexOf("uploaded");
 		int expectedPriceNo = sqlQuery.record().indexOf("expected_price");
@@ -57,13 +54,11 @@ namespace Butler {
 		int amortDaysNo = sqlQuery.record().indexOf("amort_days");
 		int commentsNo = sqlQuery.record().indexOf("comments");
 
-		QList<Item*> *items = new QList<Item*>;
+		ItemSet *items = new ItemSet;
 
-		qDebug("----- Item query result:");
-
+		v1Debug("----- Item query result:");
 		while (sqlQuery.next()) {
 			Item *item = new Item();
-
 			item->name = sqlQuery.value(itemNo).toString();
 			item->uploaded = sqlQuery.value(uploadedNo).toDate();
 			item->expectedPrice = sqlQuery.value(expectedPriceNo).toInt();
@@ -72,14 +67,11 @@ namespace Butler {
 			item->amortYears = sqlQuery.value(amortYearsNo).toUInt();
 			item->amortMonths = sqlQuery.value(amortMonthsNo).toUInt();
 			item->amortDays = sqlQuery.value(amortDaysNo).toUInt();
-			item->comments = sqlQuery.value(commentsNo).toString();
-
+			item->comment = sqlQuery.value(commentsNo).toString();
 			items->append(item);
-
-			qDebug("Item: %s ", item->id, qPrintable(item->name));
+			v1Debug("Item: %s %s ", qPrintable(item->uploaded.toString()), qPrintable(item->name));
 		}
-
-		qDebug("-----");
+		v1Debug("-----");
 
 		return items;
 	}

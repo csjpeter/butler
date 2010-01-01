@@ -10,8 +10,9 @@
 #define BUTLER_SQLITE_H
 
 #include <QObject>
+#include <QSqlDatabase>
 
-#include <butler_db.h>
+#include <ButlerDb>
 
 class QSqlDatabase;
 
@@ -19,28 +20,25 @@ namespace Butler {
 
 	class Sqlite : public Db
 	{
-		private:
-			Q_OBJECT;
-
-		private:
-			Sqlite();
 		public:
 			Sqlite(const QString& path);
 			virtual ~Sqlite();
 
 			/*
+			 *	Db
+			 */
+
+			bool connect();
+			bool open();
+			bool close();
+
+			/*
 			 *	TagDb
 			 */
 
-			QList<Tag*>* queryTags();
-			QList<Tag*>* queryTags(const Item &item);
-			QList<Tag*>* queryTags(const QueryOptions &qo);
-
-			/*
-			 *	ItemDb
-			 */
-
-			QList<Item*>* queryItemList(const QueryOptions &qo);
+			TagSet* queryTags();
+			TagSet* queryTags(const Item &item);
+			TagSet* queryTags(const QueryOptions &qo);
 
 			/*
 			 *	QueryOptionsDb
@@ -49,30 +47,35 @@ namespace Butler {
 			QueryOptions* queryQueryOptions(const QString &name);
 
 			/*
-			 *	Db
+			 *	ItemDb
 			 */
 
-		private:
-
-			void reportSqlError();
-			void initializeTables();
-
-			void createItemsTable();
-			void checkItemsTable();
-			void createPurchasedItemsTable();
-			void checkPurchasedItemsTable();
-			void createTagsTable();
-			void checkTagsTable();
-			void createItemTagsTable();
-			void checkItemTagsTable();
-			void createQueriesTable();
-			void checkQueriesTable();
-			void createQueryTagsTable();
-			void checkQueryTagsTable();
+			ItemSet* queryItems(const QueryOptions &qo);
 
 		private:
-			QSqlDatabase *db;
-			QString path; /* path of db file */
+//			Sqlite();
+
+			bool reportSqlError();
+			bool initializeTables();
+
+			bool createTagsTable();
+			bool checkTagsTable();
+
+			bool createQueriesTable();
+			bool checkQueriesTable();
+			bool createQueryTagsTable();
+			bool checkQueryTagsTable();
+
+			bool createItemsTable();
+			bool checkItemsTable();
+			bool createItemTagsTable();
+			bool checkItemTagsTable();
+			bool createPurchasedItemsTable();
+			bool checkPurchasedItemsTable();
+
+		private:
+			QSqlDatabase db;
+			QString path;
 	};
 
 }

@@ -17,12 +17,11 @@ HEADERS		=	\
 SOURCES		=	\
 			butler_sqlite.cpp \
 			butler_tag_sqlite.cpp \
-			butler_item_sqlite.cpp \
-			butler_queryoptions_sqlite.cpp
+			butler_queryoptions_sqlite.cpp \
+			butler_item_sqlite.cpp
 
-QT += sql
 
-TARGET =butler_sqlite
+TARGET = butler-sqlite
 target.path = $$PREFIX/lib
 INSTALLS += target
 

@@ -8,7 +8,7 @@
 # use development prefix by default on x86
 PREFIX = /opt/devroot
 CONFIG = qt debug build_all warn_on butler-datamodel-0.1
-QT = core
+QT = core sql
 INCLUDEPATH = QMAKE_INCDIR QMAKE_INCDIR_QT QMAKE_INCDIR_THREAD
 QTDIR_build:REQUIRES="contains(QT_CONFIG, large-config)"
 OBJECTS_DIR = ./tmp

@@ -13,11 +13,14 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite.h"
+#include "ButlerQueryOptions"
+#include "ButlerSqlite"
 
 namespace Butler {
-	QueryOptions* queryQueryOptions(const QString &name);
+	QueryOptions* Sqlite::queryQueryOptions(const QString &name)
 	{
+		ENTER_FUNCTION();
+		Q_UNUSED(name);
 
 		/*	QList<Tag*>* Sqlite::queryQueryOptionTags()
 			{
@@ -61,6 +64,8 @@ namespace Butler {
 		   return NULL;
 		   }
 		   */
+		LEAVE_FUNCTION();
+		return new QueryOptions;
 	}
 }
 

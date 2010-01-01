@@ -13,81 +13,77 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite.h"
+#include <ButlerDebug>
+#include <ButlerSqlite>
 
 namespace Butler {
-	QList<Tag*>* Sqlite::queryTags()
+	TagSet* Sqlite::queryTags()
 	{
+		ENTER_FUNCTION();
 		/* assemble query */
 		QString query("SELECT name FROM Tags");
 
 		/* execute query */
-		QSqlQuery sqlQuery(query, *db);
+		QSqlQuery sqlQuery(query, db);
 		sqlQuery.exec();
 
 		/* evaluate query result */
 		int nameNo = sqlQuery.record().indexOf("name");
 
-		QList<Tag*> *tags = new QList<Tag*>;
+		TagSet *tags = new TagSet();
 
-		qDebug("----- Reading all tags from db:");
+		v1Debug("----- Reading all tags from db:");
 		while (sqlQuery.next()) {
 			Tag *tag = new Tag(sqlQuery.value(nameNo).toString());
 			tags->append(tag);
-			qDebug("Tag: %s", qPrintable(tag->name()));
+			v1Debug("Tag: %s", qPrintable(tag->name));
 		}
-		qDebug("-----");
+		v1Debug("-----");
+
+		LEAVE_FUNCTION();
+		return tags;
 	}
 
-	QList<Tag*>* Sqlite::queryTags(const Item& item)
+	TagSet* Sqlite::queryTags(const Item& item)
 	{
-		(void)item;
+		ENTER_FUNCTION();
+
+		/*FIXME: begin transaction*/
+
+		TagSet* tags = queryTags();
 
 		/* assemble query */
 		QString query("SELECT tag FROM ItemTags WHERE name=");
 		query.append(item.name);
 
 		/* execute query */
-		QSqlQuery sqlQuery(query, *db);
+		QSqlQuery sqlQuery(query, db);
 		sqlQuery.exec();
+
+		/*FIXME: end transaction*/
 
 		/* evaluate query result */
 		int tagNo = sqlQuery.record().indexOf("tag");
 
-		QList<Tag*>* tags = queryTags();
-
-		qDebug("----- Item tags query result:");
-
+		v1Debug("----- Item tags query result:");
 		while (sqlQuery.next()) {
-			QString name = QVariant(sqlQuery.value(tagNo).toString());
-
-			qFind(tags.begin(), tags.end(), name)
-
-			if(!tags->contains(name))
-
-			Tag *tag = new Tag();
-			tag->checked = true;
-
-			tags->append(tag);
-
-			qDebug("Tag: %s", qPrintable(tag->name.toString()));
+			Tag &tag = tags->queryByName(QVariant(
+					  sqlQuery.value(tagNo)).toString());
+			tag.checked = true;
+			v1Debug("Tag: %s", qPrintable(tag.name));
 		}
+		v1Debug("-----");
 
-		qDebug("-----");
-
-		/* merge tag cache with item tags */
-		for(QList<Tag*>::const_iterator cacheIter = tagList.constBegin();
-				cacheIter != tagList.constEnd();
-				cacheIter++){
-			if(!tags->contains(*cacheIter))
-				tags->append(*cacheIter);
-		}
-
+		LEAVE_FUNCTION();
 		return tags;
 	}
 
-	QList<Tag*>* Sqlite::queryTags(const QueryOptions &qo)
+	TagSet* Sqlite::queryTags(const QueryOptions &qo)
 	{
+		ENTER_FUNCTION();
+		Q_UNUSED(qo);
+		return new TagSet;
+		LEAVE_FUNCTION();
 	}
 }
 

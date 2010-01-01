@@ -6,184 +6,164 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QDir>
-#include <QSqlDatabase>
 #include <QStringList>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QVariant>
 
-#include "butler_sqlite.h"
+#include <ButlerDebug>
+#include <ButlerSqlite>
 
 #define CONNECTION_NAME "butler_sqlite_connection"
 
 namespace Butler {
 
-	Sqlite::Sqlite()
+	Sqlite::Sqlite(const QString& _path)
 	{
-	}
-
-	Sqlite::Sqlite(const QString& path)
-	{
-		db = new QSqlDatabase;
-		*db = QSqlDatabase::addDatabase("QSQLITE", CONNECTION_NAME);
-		reportSqlError();
-		db->setDatabaseName(path);
-		reportSqlError();
-		db->open();
-		reportSqlError();
-
-		this->path = path;
-		initializeTables();
+		ENTER_CONSTRUCTOR();
+		path = _path;
+		LEAVE_CONSTRUCTOR();
 	}
 
 	Sqlite::~Sqlite()
 	{
-		db->close();
-		reportSqlError();
-		delete db;
-		db = 0;
-		QSqlDatabase::removeDatabase(CONNECTION_NAME);
+		ENTER_DESTRUCTOR();
+		if(db.isOpen())
+			close();
+		if(db.isValid())
+			QSqlDatabase::removeDatabase(CONNECTION_NAME);
+		LEAVE_DESTRUCTOR();
+	}
+	
+	bool Sqlite::connect()
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(!db.isValid());
+		bool ret;
+
+		db = QSqlDatabase::addDatabase("QSQLITE", CONNECTION_NAME);
+		ret = reportSqlError();
+		Q_ASSERT(ret == db.isValid());
+
+		if(ret){
+			db.setDatabaseName(path);
+			ret = reportSqlError();
+		}
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::open()
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(db.isValid());
+		bool ret;
+
+		db.open();
+		ret = reportSqlError();
+		Q_ASSERT(ret == db.isOpen());
+		
+		if(ret && !initializeTables()){
+			close();
+			ret = false;
+			lastError = "Could not initialize tables for butler.";
+		}
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::close()
+	{
+		ENTER_FUNCTION();
+		Q_ASSERT(db.isOpen());
+		bool ret;
+
+		db.close();
+		ret = reportSqlError();
+		Q_ASSERT(ret = !db.isOpen());
+		
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
 	/*
 	 *	Private members
 	 */
-
-	void Sqlite::reportSqlError()
+	
+/*	Sqlite::Sqlite()
 	{
-		if(db->lastError().isValid()){
-			qCritical("%s", qPrintable(db->lastError().text()));
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+*/
+	bool Sqlite::reportSqlError()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+		if(db.lastError().isValid()){
+			lastError = db.lastError().text();
+			qCritical("%s", qPrintable(lastError));
+			ret = false;
 		}
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::initializeTables()
+	bool Sqlite::initializeTables()
 	{
-		QStringList tables = db->tables();
+		ENTER_FUNCTION();
+		bool ret = true;
 
-		if(!tables.contains("Items"))
-			createItemsTable();
-		else
-			checkItemsTable();
-
-		if(!tables.contains("PurchasedItems"))
-			createPurchasedItemsTable();
-		else
-			checkPurchasedItemsTable();
+		QStringList tables = db.tables();
 
 		if(!tables.contains("Tags"))
-			createTagsTable();
+			ret = createTagsTable() && ret;
 		else
-			checkTagsTable();
-
-		if(!tables.contains("ItemTags"))
-			createItemTagsTable();
-		else
-			checkItemTagsTable();
+			ret = checkTagsTable() && ret;
 
 		if(!tables.contains("Queries"))
-			createQueriesTable();
+			ret = createQueriesTable() && ret;
 		else
-			checkQueriesTable();
+			ret = checkQueriesTable() && ret;
 
 		if(!tables.contains("QueryTags"))
-			createQueryTagsTable();
+			ret = createQueryTagsTable() && ret;
 		else
-			checkQueryTagsTable();
+			ret = checkQueryTagsTable() && ret;
+
+		if(!tables.contains("Items"))
+			ret = createItemsTable() && ret;
+		else
+			ret = checkItemsTable() && ret;
+
+		if(!tables.contains("ItemTags"))
+			ret = createItemTagsTable() && ret;
+		else
+			ret = checkItemTagsTable() && ret;
+
+		if(!tables.contains("PurchasedItems"))
+			ret = createPurchasedItemsTable() && ret;
+		else
+			ret = checkPurchasedItemsTable() && ret;
+
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::createItemsTable()
+	bool Sqlite::createTagsTable()
 	{
-		QSqlQuery query(*db);
-		query.exec("CREATE TABLE Items ("
-				"item VARCHAR(256) NOT NULL, "
-				"uploaded DATE NOT NULL DEFAULT 'now', "
-				"expected_price INT NOT NULL DEFAULT 0, "
-				"purchased DATE NOT NULL DEFAULT 0, "
-				"paid_price INT NOT NULL DEFAULT 0, "
-				"amort_years INT NOT NULL DEFAULT 0, "
-				"amort_months INT NOT NULL DEFAULT 0, "
-				"amort_days INT NOT NULL DEFAULT 0, "
-				"comments TEXT NOT NULL DEFAULT '')"
-				);
-		reportSqlError();
-		if(!query.exec("INSERT INTO Items"
-				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES('kenyér', date('now'), 200, date('now'), 190, 0, 0, 0, '')")){
-			qCritical("SQL statement failed!");
-			reportSqlError();
-		}
+		ENTER_FUNCTION();
+		bool ret;
 
-		reportSqlError();
-		query.exec("INSERT INTO Items"
-				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES('tej', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
-		query.exec("INSERT INTO Items"
-				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES('bor', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
-		query.exec("INSERT INTO Items"
-				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES('pálinka', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
-	}
-
-	void Sqlite::checkItemsTable()
-	{
-		QSqlRecord table = db->record("Items");
-		if(		!table.contains("item") ||
-				!table.contains("uploaded") ||
-				!table.contains("amort_years") ||
-				!table.contains("amort_months") ||
-				!table.contains("amort_days") ||
-				!table.contains("comments")
-				) {
-			qCritical("Incompatible table Items in the openend database.");
-		}
-	}
-
-	void Sqlite::createPurchasedItemsTable()
-	{
-		QSqlQuery query(*db);
-		query.exec("CREATE TABLE PurchasedItems ("
-				"item_id INT NOT NULL REFERENCES Items(ROWID), "
-				"purchased DATE NOT NULL DEFAULT 0, "
-				"paid_price INT NOT NULL DEFAULT 0) "
-				);
-		reportSqlError();
-		if(!query.exec("INSERT INTO Items"
-				" (item_id, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES(2, date('now'), 200)")){
-			qCritical("SQL statement failed!");
-			reportSqlError();
-		}
-
-		if(!query.exec("INSERT INTO Items"
-				" (item_id, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
-				" VALUES(1, date('now'), 200)")){
-			qCritical("SQL statement failed!");
-			reportSqlError();
-		}
-	}
-
-	void Sqlite::checkPurchasedItemsTable()
-	{
-		QSqlRecord table = db->record("PurchasedItems");
-		if(		!table.contains("item_id") ||
-				!table.contains("purchased") ||
-				!table.contains("paid_price")
-				) {
-			qCritical("Incompatible table PurchasedItems in the openend database.");
-		}
-	}
-
-	void Sqlite::createTagsTable()
-	{
-		QSqlQuery query(*db);
+		QSqlQuery query(db);
 		query.exec("CREATE TABLE Tags ("
-				"name VARCHAR(32) PRIMARY KEY) "
+				"name VARCHAR(32) PRIMARY KEY "
 				")"
 				);
-		reportSqlError();
+		ret = reportSqlError();
+/*
 		query.exec("INSERT INTO Tags VALUES('élelmiszer')");
 		reportSqlError();
 		query.exec("INSERT INTO Tags VALUES('takarítószer')");
@@ -200,91 +180,253 @@ namespace Butler {
 		reportSqlError();
 		query.exec("INSERT INTO Tags VALUES('ruházat')");
 		reportSqlError();
+*/
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::checkTagsTable()
+	bool Sqlite::checkTagsTable()
 	{
-		QSqlRecord table = db->record("Tags");
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("Tags");
 		if(		!table.contains("name")
 				) {
-			qCritical("Incompatible table Tags in the openend database.");
+			ret = false;
+			qCritical("Incompatible table Tags "
+					"in the openend database.");
 		}
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::createItemTagsTable()
+	bool Sqlite::createQueriesTable()
 	{
-		QSqlQuery query(*db);
-		query.exec("CREATE TABLE ItemTags ("
-				"item_id INT NOT NULL REFERENCES Items(ROWID), "
-				"tag VARCHAR(32) REFERENCES Tags(name)"
-				")"
-				);
-		reportSqlError();
-		query.exec("INSERT INTO ItemTags VALUES(1, 'élelmiszer')");
-		reportSqlError();
-		query.exec("INSERT INTO ItemTags VALUES(2, 'szeszesital')");
-		reportSqlError();
-	}
+		ENTER_FUNCTION();
+		bool ret;
 
-	void Sqlite::checkItemTagsTable()
-	{
-		QSqlRecord table = db->record("ItemTags");
-		if(		!table.contains("item_id") ||
-				!table.contains("tag")
-				) {
-			qCritical("Incompatible table ItemTags in the openend database.");
-		}
-	}
-
-	void Sqlite::createQueriesTable()
-	{
-		QSqlQuery query(*db);
+		QSqlQuery query(db);
 		query.exec("CREATE TABLE Queries ("
 				"query_name VARCHAR(64) NOT NULL, "
 				"start_date DATE NOT NULL, "
 				"end_date DATE NOT NULL"
 				")"
 				);
-		reportSqlError();
+		ret = reportSqlError();
 		/* the default query is planned to be tha last one, saved on exit */
-		query.exec("INSERT INTO Queries VALUES('default', '2000-01-01', '2009-12-31')");
+/*		query.exec("INSERT INTO Queries VALUES('default', '2000-01-01', '2009-12-31')");
 		reportSqlError();
+*/
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::checkQueriesTable()
+	bool Sqlite::checkQueriesTable()
 	{
-		QSqlRecord table = db->record("Queries");
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("Queries");
 		if(		!table.contains("query_name") ||
 				!table.contains("start_date") ||
 				!table.contains("end_date")
 				) {
-			qCritical("Incompatible table Queries in the openend database.");
+			ret = false;
+			qCritical("Incompatible table Queries "
+					"in the openend database.");
 		}
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::createQueryTagsTable()
+	bool Sqlite::createQueryTagsTable()
 	{
-		QSqlQuery query(*db);
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
 		query.exec("CREATE TABLE QueryTags ("
 				"query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name), "
 				"tag VARCHAR(32) REFERENCES Tags(name)"
 				")"
 				);
-		reportSqlError();
+		ret = reportSqlError();
+/*
 		query.exec("INSERT INTO ItemTags VALUES('default', 'élelmiszer')");
 		reportSqlError();
 		query.exec("INSERT INTO ItemTags VALUES('default', 'szeszesital')");
 		reportSqlError();
+*/
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
-	void Sqlite::checkQueryTagsTable()
+	bool Sqlite::checkQueryTagsTable()
 	{
-		QSqlRecord table = db->record("QueryTags");
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("QueryTags");
 		if(		!table.contains("query_name") ||
 				!table.contains("tag")
 				) {
-			qCritical("Incompatible table QueryTags in the openend database.");
+			ret = false;
+			qCritical("Incompatible table QueryTags "
+					"in the openend database.");
 		}
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::createItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
+		query.exec("CREATE TABLE Items ("
+				"item VARCHAR(256) NOT NULL, "
+				"uploaded DATE NOT NULL DEFAULT 'now', "
+				"expected_price INT NOT NULL DEFAULT 0, "
+				"purchased DATE NOT NULL DEFAULT 0, "
+				"paid_price INT NOT NULL DEFAULT 0, "
+				"amort_years INT NOT NULL DEFAULT 0, "
+				"amort_months INT NOT NULL DEFAULT 0, "
+				"amort_days INT NOT NULL DEFAULT 0, "
+				"comments TEXT NOT NULL DEFAULT '')"
+				);
+		ret = reportSqlError();
+/*		if(!query.exec("INSERT INTO Items"
+				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES('kenyér', date('now'), 200, date('now'), 190, 0, 0, 0, '')")){
+			qCritical("SQL statement failed!");
+			reportSqlError();
+		}
+
+		reportSqlError();
+
+		query.exec("INSERT INTO Items"
+				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES('tej', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
+		query.exec("INSERT INTO Items"
+				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES('bor', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
+		query.exec("INSERT INTO Items"
+				" (item, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES('pálinka', date('now'), 200, date('now'), 190, 0, 0, 0, '')");
+		*/
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::checkItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("Items");
+		if(		!table.contains("item") ||
+				!table.contains("uploaded") ||
+				!table.contains("amort_years") ||
+				!table.contains("amort_months") ||
+				!table.contains("amort_days") ||
+				!table.contains("comments")
+				) {
+			ret = false;
+			qCritical("Incompatible table Items "
+					"in the openend database.");
+		}
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::createItemTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
+		query.exec("CREATE TABLE ItemTags ("
+				"item_id INT NOT NULL REFERENCES Items(ROWID), "
+				"tag VARCHAR(32) REFERENCES Tags(name)"
+				")"
+				);
+		ret = reportSqlError();
+/*
+		query.exec("INSERT INTO ItemTags VALUES(1, 'élelmiszer')");
+		reportSqlError();
+		query.exec("INSERT INTO ItemTags VALUES(2, 'szeszesital')");
+		reportSqlError();
+*/
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::checkItemTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("ItemTags");
+		if(		!table.contains("item_id") ||
+				!table.contains("tag")
+				) {
+			ret = false;
+			qCritical("Incompatible table ItemTags "
+					"in the openend database.");
+		}
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::createPurchasedItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
+		query.exec("CREATE TABLE PurchasedItems ("
+				"item_id INT NOT NULL REFERENCES Items(ROWID), "
+				"purchased DATE NOT NULL DEFAULT 0, "
+				"paid_price INT NOT NULL DEFAULT 0) "
+				);
+		ret = reportSqlError();
+/*
+		if(!query.exec("INSERT INTO Items"
+				" (item_id, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES(2, date('now'), 200)")){
+			qCritical("SQL statement failed!");
+			reportSqlError();
+		}
+
+		if(!query.exec("INSERT INTO Items"
+				" (item_id, uploaded, expected_price, purchased, paid_price, amort_years, amort_months, amort_days, comments)"
+				" VALUES(1, date('now'), 200)")){
+			qCritical("SQL statement failed!");
+			reportSqlError();
+		}
+*/
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::checkPurchasedItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("PurchasedItems");
+		if(		!table.contains("item_id") ||
+				!table.contains("purchased") ||
+				!table.contains("paid_price")
+				) {
+			ret = false;
+			qCritical("Incompatible table PurchasedItems "
+					"in the openend database.");
+		}
+		LEAVE_FUNCTION();
+		return ret;
 	}
 }
 
