@@ -9,6 +9,19 @@
 #ifndef BUTLER_DEBUG_H
 #define BUTLER_DEBUG_H
 
+
+
+#ifdef DEBUG
+#ifndef DEBUG_VERBOSE_LEVEL
+/* The higher value causes less debug messages. */
+#define DEBUG_VERBOSE_LEVEL 1
+#endif
+#define vDebug(v, ...) (DEBUG_VERBOSE_LEVEL <= v) ? \
+			qDebug(__VA_ARGS__) : ;
+#else
+#define vDebug(v, ...) ;
+#endif
+
 #ifndef DEBUG
 #define NO_RUNTIME_BACKTRACE
 #endif
