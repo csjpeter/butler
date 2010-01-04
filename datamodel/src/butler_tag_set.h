@@ -35,8 +35,10 @@ namespace Butler {
 			void remove(int i);
 			void clear();
 
-			int indexByName(const QString &);
-			Tag& queryByName(const QString &);
+			int indexByName(const QString &) const;
+			Tag& queryByName(const QString &) const;
+	
+			bool hasByName(const QString &name) const;
 
 		private:
 			QMap<QString, int> nameToIndex;

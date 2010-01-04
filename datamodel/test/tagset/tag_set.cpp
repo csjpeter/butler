@@ -53,6 +53,7 @@ namespace Butler {
 		ts.append(t);
 
 		QVERIFY(ts.size() == 1);
+		QVERIFY(ts.hasByName("first"));
 
 		const Tag &q = ts.query(0);
 

@@ -68,7 +68,7 @@ namespace Butler
 		LEAVE_FUNCTION();
 	}
 			
-	int TagSet::indexByName(const QString &name)
+	int TagSet::indexByName(const QString &name) const
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(nameToIndex.contains(name));
@@ -77,11 +77,19 @@ namespace Butler
 		return ret;
 	}
 	
-	Tag& TagSet::queryByName(const QString &name)
+	Tag& TagSet::queryByName(const QString &name) const
 	{
 		ENTER_FUNCTION();
 		int i = indexByName(name);
 		Tag &ret = query(i);
+		LEAVE_FUNCTION();
+		return ret;
+	}
+	
+	bool TagSet::hasByName(const QString &name) const
+	{
+		ENTER_FUNCTION();
+		bool ret = nameToIndex.contains(name);
 		LEAVE_FUNCTION();
 		return ret;
 	}
