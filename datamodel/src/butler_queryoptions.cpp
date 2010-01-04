@@ -52,6 +52,10 @@ namespace Butler {
 		bool ret = true;
 		if(name != qo.name)
 			ret = false;
+		if(startDate != qo.startDate)
+			ret = false;
+		if(endDate != qo.endDate)
+			ret = false;
 		if(tags != qo.tags)
 			ret = false;
 		LEAVE_STATIC_FUNCTION();
@@ -78,6 +82,8 @@ namespace Butler {
 	{
 		ENTER_FUNCTION();
 		name = qo.name;
+		startDate = qo.startDate;
+		endDate = qo.endDate;
 		tags = qo.tags;
 		LEAVE_FUNCTION();
 	}

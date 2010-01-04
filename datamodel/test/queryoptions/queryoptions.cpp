@@ -58,38 +58,57 @@ namespace Butler {
 		{
 			QueryOptions qo("default");
 			qo.tags.append(new Tag("tag-name"));
+			qo.startDate = QDate(2000, 1, 1);
+			qo.endDate = QDate(2000, 11, 11);
 
 			QueryOptions qo_copy(qo);
 
 			QVERIFY(qo_copy.name == "default");
 			QVERIFY(qo_copy.tags.size() == 1);
+			QVERIFY(qo_copy.startDate == QDate(2000, 1, 1));
+			QVERIFY(qo_copy.endDate == QDate(2000, 11, 11));
 		}
 	}
 
 	void TestQueryOptions::equality()
 	{
-		QueryOptions a("a"), b("A");
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		b.name = "a";
+		QueryOptions a, b;
+		
+		b.name = "b";
 		b.tags.append(new Tag("tag-name"));
-
-		QVERIFY(!(a == b));
-		QVERIFY(a != b);
-
-		a.tags.append(new Tag("tag-name"));
-
+		b.startDate = QDate(2000, 1, 1);
+		b.endDate = QDate(2000, 11, 11);
+		a = b;
+		
+		QVERIFY(a.name == b.name);
+		QVERIFY(a.tags.size() == b.tags.size());
+		QVERIFY(a.startDate == b.startDate);
+		QVERIFY(a.endDate == b.endDate);
 		QVERIFY(a == b);
 		QVERIFY(!(a != b));
 
-		b.name = "b";
-		a.tags.clear();
-		a = b;
+		b.name = "B";
 
-		QVERIFY(a.name == b.name);
-		QVERIFY(a.tags.size() == b.tags.size());
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+
+		b = a;
+		b.tags.append(new Tag("tag-name2"));
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+
+		b = a;
+		b.startDate = QDate(2000, 1, 2);
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
+		
+		b = a;
+		b.endDate = QDate(2000, 1, 2);
+
+		QVERIFY(!(a == b));
+		QVERIFY(a != b);
 	}
 
 	void TestQueryOptions::comparison()

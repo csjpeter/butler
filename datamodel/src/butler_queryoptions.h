@@ -11,6 +11,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QDate>
 
 #include <ButlerTagSet>
 
@@ -35,6 +36,8 @@ namespace Butler {
 
 		public:
 			QString name;
+			QDate startDate;
+			QDate endDate;
 			TagSet tags;
 
 		private:
