@@ -17,17 +17,100 @@
 #include <ButlerSqlite>
 
 namespace Butler {
+
+	bool Sqlite::createTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
+		query.exec("CREATE TABLE Tags ("
+				"name VARCHAR(32) PRIMARY KEY "
+				")"
+				);
+		ret = reportSqlError();
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::checkTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("Tags");
+		if(		!table.contains("name")
+				) {
+			ret = false;
+			qCritical("Incompatible table Tags "
+					"in the openend database.");
+		}
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::insertTag(const Tag &t)
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "INSERT INTO Tags VALUES('";
+		query += t.name;
+		query += "')";
+		sqlQuery.exec(query);
+		ret = reportSqlError();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::updateTag(const Tag &orig, const Tag &modified)
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "UPDATE Tags SET name = '";
+		query += orig.name;
+		query += "' ";
+		query += "WHERE name = '";
+		query += modified.name;
+		query += "')";
+		sqlQuery.exec(query);
+		ret = reportSqlError();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::deleteTag(const Tag &t)
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "DELETE FROM Tags WHERE name = '";
+		query += t.name;
+		query += "')";
+		sqlQuery.exec(query);
+		ret = reportSqlError();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
 	TagSet* Sqlite::queryTags()
 	{
 		ENTER_FUNCTION();
-		/* assemble query */
 		QString query("SELECT name FROM Tags");
 
-		/* execute query */
 		QSqlQuery sqlQuery(query, db);
 		sqlQuery.exec();
 
-		/* evaluate query result */
 		int nameNo = sqlQuery.record().indexOf("name");
 
 		TagSet *tags = new TagSet();
@@ -42,48 +125,6 @@ namespace Butler {
 
 		LEAVE_FUNCTION();
 		return tags;
-	}
-
-	TagSet* Sqlite::queryTags(const Item& item)
-	{
-		ENTER_FUNCTION();
-
-		/*FIXME: begin transaction*/
-
-		TagSet* tags = queryTags();
-
-		/* assemble query */
-		QString query("SELECT tag FROM ItemTags WHERE name=");
-		query.append(item.name);
-
-		/* execute query */
-		QSqlQuery sqlQuery(query, db);
-		sqlQuery.exec();
-
-		/*FIXME: end transaction*/
-
-		/* evaluate query result */
-		int tagNo = sqlQuery.record().indexOf("tag");
-
-		v1Debug("----- Item tags query result:");
-		while (sqlQuery.next()) {
-			Tag &tag = tags->queryByName(QVariant(
-					  sqlQuery.value(tagNo)).toString());
-			tag.checked = true;
-			v1Debug("Tag: %s", qPrintable(tag.name));
-		}
-		v1Debug("-----");
-
-		LEAVE_FUNCTION();
-		return tags;
-	}
-
-	TagSet* Sqlite::queryTags(const QueryOptions &qo)
-	{
-		ENTER_FUNCTION();
-		Q_UNUSED(qo);
-		return new TagSet;
-		LEAVE_FUNCTION();
 	}
 }
 

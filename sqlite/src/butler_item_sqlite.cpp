@@ -13,15 +13,188 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite.h"
+#include "ButlerSqlite"
 
 namespace Butler {
 
-	static void _append_tag_match_test(QString& query, const QString& tag)
+	bool Sqlite::createItemsTable()
 	{
-		query.append(" tag = '");
-		query.append(tag);
-		query.append("'");
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db);
+		query.exec("CREATE TABLE Items ("
+				"name VARCHAR(256) NOT NULL, "
+				"uploaded DATE NOT NULL DEFAULT 'now', "
+				"expected_price INT NOT NULL DEFAULT 0, "
+				"amort_years INT NOT NULL DEFAULT 0, "
+				"amort_months INT NOT NULL DEFAULT 0, "
+				"amort_days INT NOT NULL DEFAULT 0, "
+				"comment TEXT NOT NULL DEFAULT '')"
+				);
+		ret = reportSqlError();
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::checkItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+
+		QSqlRecord table = db.record("Items");
+		if(		!table.contains("name") ||
+				!table.contains("uploaded") ||
+				!table.contains("expected_price") ||
+				!table.contains("amort_years") ||
+				!table.contains("amort_months") ||
+				!table.contains("amort_days") ||
+				!table.contains("comment")
+				) {
+			ret = false;
+			qCritical("Incompatible table Items "
+					"in the openend database.");
+		}
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::insertItem(const Item &i)
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "INSERT INTO Items ("
+				"name, uploaded, expected_price, "
+				"amort_years, amort_months, amort_days, "
+				"comment"
+				") "
+				"VALUES('";
+				query += i.name;
+				query += "', '";
+				query += i.uploaded.toString();
+				query += "', '";
+				query += i.expectedPrice;
+				query += "', '";
+				query += i.amortYears;
+				query += "', '";
+				query += i.amortMonths;
+				query += "', '";
+				query += i.amortDays;
+				query += "', '";
+				query += i.comment;
+				query += "')";
+		sqlQuery.exec(query);
+		ret = reportSqlError();
+
+		if(ret)
+			ret = insertItemTags(i);
+		if(ret && i.uploaded <= i.purchased) /* means: purchased/paid */
+			ret = insertItemPurchased(i);
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::updateItem(const Item &orig, const Item &modified)
+	{
+		ENTER_FUNCTION();
+		bool ret = true;
+		int diffs = 0;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "UPDATE QueryOptions SET ";
+		if(orig.name != modified.name){
+			diffs++;
+			query += "name = '";
+			query += modified.name;
+			query += "'";
+		}
+		if(orig.uploaded != modified.uploaded){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += " uploaded = '";
+			query += modified.uploaded.toString();
+			query += "'";
+		}
+		if(orig.expectedPrice != modified.expectedPrice){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += "expected_price = '";
+			query += modified.expectedPrice;
+			query += "'";
+		}
+		if(orig.amortYears != modified.amortYears){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += "amort_years = '";
+			query += modified.amortYears;
+			query += "'";
+		}
+		if(orig.amortMonths != modified.amortMonths){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += "amort_months = '";
+			query += modified.amortMonths;
+			query += "'";
+		}
+		if(orig.amortDays != modified.amortDays){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += "amort_days = '";
+			query += modified.amortDays;
+			query += "'";
+		}
+		if(orig.comment != modified.comment){
+			if(diffs)
+				query += ", ";
+			diffs++;
+			query += "comment = '";
+			query += modified.comment;
+			query += "'";
+		}
+		query += " WHERE name = '";
+		query += orig.name;
+		query += "') ";
+		if(diffs){
+			sqlQuery.exec(query);
+			ret = reportSqlError();
+		}
+
+		if(ret) {
+		}
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool Sqlite::deleteItem(const Item &i)
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery sqlQuery(db);
+		QString query;
+		query = "DELETE FROM Items WHERE uploaded = '";
+		query += i.uploaded.toString();
+		query += "')";
+		sqlQuery.exec(query);
+		ret = reportSqlError();
+	
+		/* should be done automatically by a good SQL server */
+		if(ret) {
+		}
+
+		LEAVE_FUNCTION();
+		return ret;
 	}
 
 	ItemSet* Sqlite::queryItems(const QueryOptions &qo)
@@ -32,10 +205,14 @@ namespace Butler {
 		if(!qo.tags.empty()){
 			query.append(" WHERE");
 			int i, s = qo.tags.size();
-			_append_tag_match_test(query, qo.tags.query(0).name);
+			query += " tag = '";
+			query += qo.tags.query(0).name;
+			query += "'";
 			for(i=1; i<s; i++){
-				query.append(" OR");
-				_append_tag_match_test(query, qo.tags.query(i).name);
+				query += " OR";
+				query += " tag = '";
+				query += qo.tags.query(i).name;
+				query += "'";
 			}
 		}
 
@@ -44,7 +221,7 @@ namespace Butler {
 		sqlQuery.exec();
 
 		/* evaluate query result */
-		int itemNo = sqlQuery.record().indexOf("item");
+		int itemNo = sqlQuery.record().indexOf("name");
 		int uploadedNo = sqlQuery.record().indexOf("uploaded");
 		int expectedPriceNo = sqlQuery.record().indexOf("expected_price");
 		int purchasedNo = sqlQuery.record().indexOf("purchased");
@@ -52,7 +229,7 @@ namespace Butler {
 		int amortYearsNo = sqlQuery.record().indexOf("amort_years");
 		int amortMonthsNo = sqlQuery.record().indexOf("amort_months");
 		int amortDaysNo = sqlQuery.record().indexOf("amort_days");
-		int commentsNo = sqlQuery.record().indexOf("comments");
+		int commentNo = sqlQuery.record().indexOf("comment");
 
 		ItemSet *items = new ItemSet;
 
@@ -67,7 +244,7 @@ namespace Butler {
 			item->amortYears = sqlQuery.value(amortYearsNo).toUInt();
 			item->amortMonths = sqlQuery.value(amortMonthsNo).toUInt();
 			item->amortDays = sqlQuery.value(amortDaysNo).toUInt();
-			item->comment = sqlQuery.value(commentsNo).toString();
+			item->comment = sqlQuery.value(commentNo).toString();
 			items->append(item);
 			v1Debug("Item: %s %s ", qPrintable(item->uploaded.toString()), qPrintable(item->name));
 		}

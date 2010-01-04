@@ -18,60 +18,114 @@ class QSqlDatabase;
 
 namespace Butler {
 
+	/* TODO :
+	 * - use datetime for uploaded field (not just date)
+	 * - check date to string conversion to be consistent with db and
+	 *   independent of locale
+	 * - escape strings going into tables
+	 * - ensure transactionality
+	 * - begin and close and rollback transactions automatically
+	 * - update of tag(name) should result in update of every occurances of
+	 *   that tag in the database. Is there some help for this in SQL?
+	 * - check if object has changed in database before
+	 *   insert/update/delete operations
+	 */
+
 	class Sqlite : public Db
 	{
 		public:
 			Sqlite(const QString& path);
 			virtual ~Sqlite();
+		private:
+			Sqlite();
 
 			/*
 			 *	Db
 			 */
 
+		public:
 			bool connect();
 			bool open();
 			bool close();
+		private:
+			bool reportSqlError();
+			bool initializeTables();
 
 			/*
 			 *	TagDb
 			 */
 
+		public:
+			bool insertTag(const Tag &t);
+			bool updateTag(const Tag &orig, const Tag &modified);
+			bool deleteTag(const Tag &t);
 			TagSet* queryTags();
-			TagSet* queryTags(const Item &item);
-			TagSet* queryTags(const QueryOptions &qo);
+		private:
+			bool createTagsTable();
+			bool checkTagsTable();
 
 			/*
 			 *	QueryOptionsDb
 			 */
 
+		public:
+			bool insertQueryOptions(const QueryOptions &qo);
+			bool updateQueryOptions(
+					const QueryOptions &orig,
+					const QueryOptions &modified);
+			bool deleteQueryOptions(const QueryOptions &qo);
+			TagSet* queryTags(const QueryOptions &qo);
 			QueryOptions* queryQueryOptions(const QString &name);
+		private:
+			bool createQueriesTable();
+			bool checkQueriesTable();
+			bool createQueryTagsTable();
+			bool checkQueryTagsTable();
+			bool insertQueryTag(
+					const QueryOptions &qo, const Tag &t);
+			bool deleteQueryTag(
+					const QueryOptions &qo, const Tag &t);
+			bool insertQueryTags(const QueryOptions &qo);
+			bool updateQueryTags(
+					const QueryOptions &orig,
+					const QueryOptions &modified);
+			bool deleteQueryTags(const QueryOptions &qo);
 
 			/*
 			 *	ItemDb
 			 */
 
+		public:
+			TagSet* queryTags(const Item &item);
 			ItemSet* queryItems(const QueryOptions &qo);
-
 		private:
-//			Sqlite();
-
-			bool reportSqlError();
-			bool initializeTables();
-
-			bool createTagsTable();
-			bool checkTagsTable();
-
-			bool createQueriesTable();
-			bool checkQueriesTable();
-			bool createQueryTagsTable();
-			bool checkQueryTagsTable();
-
 			bool createItemsTable();
 			bool checkItemsTable();
+			bool insertItem(const Item &i);
+			bool deleteItem(const Item &i);
+			bool updateItem(
+					const Item &orig,
+					const Item &modified);
 			bool createItemTagsTable();
 			bool checkItemTagsTable();
+			bool insertItemTag(const Item &i, const Tag &t);
+			bool deleteItemTag(const Item &i, const Tag &t);
+			bool insertItemTags(const Item &i);
+			bool updateItemTags(
+					const Item &orig,
+					const Item &modified);
+			bool deleteItemTags(const Item &i);
 			bool createPurchasedItemsTable();
 			bool checkPurchasedItemsTable();
+			bool insertItemPurchased(const Item &i);
+			bool updateItemPurchased(
+					const Item &orig,
+					const Item &modified);
+			bool deleteItemPurchased(const Item &i);
+
+			/*
+			 *	Members
+			 */
 
 		private:
 			QSqlDatabase db;
