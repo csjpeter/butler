@@ -7,7 +7,7 @@ CONFIG += qtestlib
 QT += testlib
 INCLUDEPATH += $$PKGROOT/src
 QMAKE_LIBDIR += $$PKGROOT/src/
-LIBS += -lbutler_datamodel
+LIBS += -lbutler-datamodel
 
 
 message(------$(PWD)------)
