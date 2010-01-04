@@ -17,6 +17,12 @@ namespace Butler {
 	class ItemDb
 	{
 		public:
+			virtual bool insertItem(const Item &) = 0;
+			virtual bool updateItem(
+					const Item &orig,
+					const Item &modified) = 0;
+			virtual bool deleteItem(const Item &) = 0;
+
 			virtual ItemSet* queryItems(const QueryOptions &qo) = 0;
 			/*	virtual bool buyItem(int id, int price) = 0;*/
 	};

@@ -37,9 +37,59 @@ namespace Butler {
 				return true;
 			}
 
+			/*
+			 * Tags
+			 */
+
+			bool insertTag(const Tag &t)
+			{
+				Q_UNUSED(t);
+				return true;
+			}
+
+			bool updateTag(
+				const Tag &orig,
+				const Tag &modified)
+			{
+				Q_UNUSED(orig);
+				Q_UNUSED(modified);
+				return true;
+			}
+
+			bool deleteTag(const Tag &t)
+			{
+				Q_UNUSED(t);
+				return true;
+			}
+
 			TagSet* queryTags()
 			{
 				return new TagSet();
+			}
+
+			/*
+			 * QueryOptions
+			 */
+
+			bool insertQueryOptions(const QueryOptions &qo)
+			{
+				Q_UNUSED(qo);
+				return true;
+			}
+
+			bool updateQueryOptions(
+				const QueryOptions &orig,
+				const QueryOptions &modified)
+			{
+				Q_UNUSED(orig);
+				Q_UNUSED(modified);
+				return true;
+			}
+
+			bool deleteQueryOptions(const QueryOptions &qo)
+			{
+				Q_UNUSED(qo);
+				return true;
 			}
 
 			QueryOptions* queryQueryOptions(const QString &name)
@@ -52,6 +102,31 @@ namespace Butler {
 				Q_UNUSED(qo);
 
 				return new TagSet();
+			}
+
+			/*
+			 * Items
+			 */
+
+			bool insertItem(const Item &i)
+			{
+				Q_UNUSED(i);
+				return true;
+			}
+
+			bool updateItem(
+				const Item &orig,
+				const Item &modified)
+			{
+				Q_UNUSED(orig);
+				Q_UNUSED(modified);
+				return true;
+			}
+
+			bool deleteItem(const Item &i)
+			{
+				Q_UNUSED(i);
+				return true;
 			}
 
 			ItemSet* queryItems(const QueryOptions &qo)
@@ -77,7 +152,10 @@ namespace Butler {
 			void initTestCase();
 			void cleanupTestCase();
 			
-			void methodcalls();
+			void db();
+			void tags();
+			void queryoptions();
+			void items();
 	};
 
 
@@ -90,39 +168,71 @@ namespace Butler {
 		_reportLeakSuspections();
 	}
 
-	void TestDbIfc::methodcalls()
+	void TestDbIfc::db()
 	{
 		DbIfc ifc;
 
 		ifc.connect();
 		ifc.open();
 		ifc.close();
+	}
+	
+	void TestDbIfc::tags()
+	{
+		DbIfc ifc;
 
-		QueryOptions _qo("default");
-		Item _i("example");
+		Tag a, b;
+		ifc.insertTag(a);
+		ifc.updateTag(a, b);
+		ifc.deleteTag(a);
 
 		TagSet *ts;
-		QueryOptions *qo;
-		ItemSet *is;
-
-
 		ts = ifc.queryTags();
 		QVERIFY(ts != NULL);
 		delete ts;
+	}
+	
+	void TestDbIfc::queryoptions()
+	{
+		DbIfc ifc;
 
+		QueryOptions a, b;
+		ifc.insertQueryOptions(a);
+		ifc.updateQueryOptions(a, b);
+		ifc.deleteQueryOptions(a);
+
+		QueryOptions _qo("default");
+		TagSet *ts;
+		
+		ts = ifc.queryTags(_qo);
+		QVERIFY(ts != NULL);
+		delete ts;
+		
+		QueryOptions *qo;
 		qo = ifc.queryQueryOptions("teszt");
 		QVERIFY(qo != NULL);
 		QVERIFY(qo->name == "teszt");
 		delete qo;
+	}
+	
+	void TestDbIfc::items()
+	{
+		DbIfc ifc;
 
-		ts = ifc.queryTags(_qo);
-		QVERIFY(ts != NULL);
-		delete ts;
+		Item a, b;
+		ifc.insertItem(a);
+		ifc.updateItem(a, b);
+		ifc.deleteItem(a);
 
+		TagSet *ts;
+		ItemSet *is;
+
+		QueryOptions _qo("default");
 		is = ifc.queryItems(_qo);
 		QVERIFY(is != NULL);
 		delete is;
 
+		Item _i("example");
 		ts = ifc.queryTags(_i);
 		QVERIFY(ts != NULL);
 		delete ts;

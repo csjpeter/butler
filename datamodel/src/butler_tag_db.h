@@ -18,6 +18,12 @@ namespace Butler {
 	class TagDb
 	{
 		public:
+			virtual bool insertTag(const Tag &) = 0;
+			virtual bool updateTag(
+					const Tag &orig,
+					const Tag &modified) = 0;
+			virtual bool deleteTag(const Tag &) = 0;
+
 			/* a set of available tags */
 			virtual TagSet* queryTags() = 0;
 			/* a set of available tags with checked state of those

@@ -18,6 +18,14 @@ namespace Butler {
 	class QueryOptionsDb
 	{
 		public:
+			virtual bool insertQueryOptions(
+					const QueryOptions &) = 0;
+			virtual bool updateQueryOptions(
+					const QueryOptions &orig,
+					const QueryOptions &modified) = 0;
+			virtual bool deleteQueryOptions(
+					const QueryOptions &) = 0;
+
 			virtual QueryOptions* queryQueryOptions(const QString &name) = 0;
 	};
 
