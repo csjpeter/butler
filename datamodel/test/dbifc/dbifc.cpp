@@ -37,6 +37,12 @@ namespace Butler {
 				return true;
 			}
 
+			const QString& lastError()
+			{
+				static QString err("no-error");
+				return err;
+			}
+
 			/*
 			 * Tags
 			 */
@@ -175,6 +181,7 @@ namespace Butler {
 		ifc.connect();
 		ifc.open();
 		ifc.close();
+		ifc.lastError();
 	}
 	
 	void TestDbIfc::tags()
