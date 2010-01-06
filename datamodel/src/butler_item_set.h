@@ -6,8 +6,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_QUERYOPTIONS_SET_H
-#define BUTLER_QUERYOPTIONS_SET_H
+#ifndef BUTLER_ITEM_SET_H
+#define BUTLER_ITEM_SET_H
 
 #include <QObject>
 #include <QString>
