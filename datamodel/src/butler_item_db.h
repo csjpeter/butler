@@ -23,6 +23,9 @@ namespace Butler {
 					const Item &modified) = 0;
 			virtual bool deleteItem(const Item &) = 0;
 
+			/* a set of available tags with checked state of those
+			 * tags with which the item is marked */
+			virtual TagSet* queryItemTags(const Item &item) = 0;
 			virtual ItemSet* queryItems(const Query &qo) = 0;
 			/*	virtual bool buyItem(int id, int price) = 0;*/
 	};

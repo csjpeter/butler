@@ -103,7 +103,7 @@ namespace Butler {
 				return new Query(name);
 			}
 
-			TagSet* queryTags(const Query &qo)
+			TagSet* queryQueryTags(const Query &qo)
 			{
 				Q_UNUSED(qo);
 
@@ -142,7 +142,7 @@ namespace Butler {
 				return new ItemSet();
 			}
 
-			TagSet* queryTags(const Item &item)
+			TagSet* queryItemTags(const Item &item)
 			{
 				Q_UNUSED(item);
 
@@ -211,7 +211,7 @@ namespace Butler {
 		Query _qo("default");
 		TagSet *ts;
 		
-		ts = ifc.queryTags(_qo);
+		ts = ifc.queryQueryTags(_qo);
 		QVERIFY(ts != NULL);
 		delete ts;
 		
@@ -240,7 +240,7 @@ namespace Butler {
 		delete is;
 
 		Item _i("example");
-		ts = ifc.queryTags(_i);
+		ts = ifc.queryItemTags(_i);
 		QVERIFY(ts != NULL);
 		delete ts;
 	}

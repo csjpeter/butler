@@ -26,12 +26,6 @@ namespace Butler {
 
 			/* a set of available tags */
 			virtual TagSet* queryTags() = 0;
-			/* a set of available tags with checked state of those
-			 * tags with which the item is marked */
-			virtual TagSet* queryTags(const Item &item) = 0;
-			/* a set of available tags with checked state of those
-			 * tags which belongs to the query */
-			virtual TagSet* queryTags(const Query &qo) = 0;
 	};
 
 }

@@ -26,6 +26,9 @@ namespace Butler {
 			virtual bool deleteQuery(
 					const Query &) = 0;
 
+			/* a set of available tags with checked state of those
+			 * tags which belongs to the query */
+			virtual TagSet* queryQueryTags(const Query &qo) = 0;
 			virtual Query* queryQuery(const QString &name) = 0;
 	};
 
