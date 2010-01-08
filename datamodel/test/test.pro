@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS  = dbifc orderedset tag tagset queryoptions queryoptionsset item itemset
+SUBDIRS  = dbifc orderedset tag tagset query queryset item itemset
 

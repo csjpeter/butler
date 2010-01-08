@@ -12,7 +12,7 @@
 #include <ButlerDb>
 #include <ButlerItemSet>
 #include <ButlerTagSet>
-#include <ButlerQueryOptions>
+#include <ButlerQuery>
 
 namespace Butler {
 
@@ -74,36 +74,36 @@ namespace Butler {
 			}
 
 			/*
-			 * QueryOptions
+			 * Query
 			 */
 
-			bool insertQueryOptions(const QueryOptions &qo)
+			bool insertQuery(const Query &qo)
 			{
 				Q_UNUSED(qo);
 				return true;
 			}
 
-			bool updateQueryOptions(
-				const QueryOptions &orig,
-				const QueryOptions &modified)
+			bool updateQuery(
+				const Query &orig,
+				const Query &modified)
 			{
 				Q_UNUSED(orig);
 				Q_UNUSED(modified);
 				return true;
 			}
 
-			bool deleteQueryOptions(const QueryOptions &qo)
+			bool deleteQuery(const Query &qo)
 			{
 				Q_UNUSED(qo);
 				return true;
 			}
 
-			QueryOptions* queryQueryOptions(const QString &name)
+			Query* queryQuery(const QString &name)
 			{
-				return new QueryOptions(name);
+				return new Query(name);
 			}
 
-			TagSet* queryTags(const QueryOptions &qo)
+			TagSet* queryTags(const Query &qo)
 			{
 				Q_UNUSED(qo);
 
@@ -135,7 +135,7 @@ namespace Butler {
 				return true;
 			}
 
-			ItemSet* queryItems(const QueryOptions &qo)
+			ItemSet* queryItems(const Query &qo)
 			{
 				Q_UNUSED(qo);
 
@@ -160,7 +160,7 @@ namespace Butler {
 			
 			void db();
 			void tags();
-			void queryoptions();
+			void query();
 			void items();
 	};
 
@@ -199,24 +199,24 @@ namespace Butler {
 		delete ts;
 	}
 	
-	void TestDbIfc::queryoptions()
+	void TestDbIfc::query()
 	{
 		DbIfc ifc;
 
-		QueryOptions a, b;
-		ifc.insertQueryOptions(a);
-		ifc.updateQueryOptions(a, b);
-		ifc.deleteQueryOptions(a);
+		Query a, b;
+		ifc.insertQuery(a);
+		ifc.updateQuery(a, b);
+		ifc.deleteQuery(a);
 
-		QueryOptions _qo("default");
+		Query _qo("default");
 		TagSet *ts;
 		
 		ts = ifc.queryTags(_qo);
 		QVERIFY(ts != NULL);
 		delete ts;
 		
-		QueryOptions *qo;
-		qo = ifc.queryQueryOptions("teszt");
+		Query *qo;
+		qo = ifc.queryQuery("teszt");
 		QVERIFY(qo != NULL);
 		QVERIFY(qo->name == "teszt");
 		delete qo;
@@ -234,7 +234,7 @@ namespace Butler {
 		TagSet *ts;
 		ItemSet *is;
 
-		QueryOptions _qo("default");
+		Query _qo("default");
 		is = ifc.queryItems(_qo);
 		QVERIFY(is != NULL);
 		delete is;

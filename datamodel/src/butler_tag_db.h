@@ -10,7 +10,7 @@
 #define BUTLER_TAG_DB_H
 
 #include "ButlerTagSet"
-#include "ButlerQueryOptionsSet"
+#include "ButlerQuerySet"
 #include "ButlerItemSet"
 
 namespace Butler {
@@ -30,8 +30,8 @@ namespace Butler {
 			 * tags with which the item is marked */
 			virtual TagSet* queryTags(const Item &item) = 0;
 			/* a set of available tags with checked state of those
-			 * tags which belongs to the queryoptions */
-			virtual TagSet* queryTags(const QueryOptions &qo) = 0;
+			 * tags which belongs to the query */
+			virtual TagSet* queryTags(const Query &qo) = 0;
 	};
 
 }

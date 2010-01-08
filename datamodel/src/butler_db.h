@@ -17,11 +17,11 @@
 
 #include "butler_item_db.h"
 #include "butler_tag_db.h"
-#include "butler_queryoptions_db.h"
+#include "butler_query_db.h"
 
 namespace Butler {
 
-	class Db : public ItemDb, public TagDb, public QueryOptionsDb
+	class Db : public ItemDb, public TagDb, public QueryDb
 	{
 		public:
 			Db(){}

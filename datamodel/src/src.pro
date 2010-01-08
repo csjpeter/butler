@@ -17,10 +17,10 @@ HEADERS		=	\
 			ButlerTag \
 			butler_tag_set.h \
 			ButlerTagSet \
-			butler_queryoptions.h \
-			ButlerQueryOptions \
-			butler_queryoptions_set.h \
-			ButlerQueryOptionsSet \
+			butler_query.h \
+			ButlerQuery \
+			butler_query_set.h \
+			ButlerQuerySet \
 			butler_item.h \
 			ButlerItem \
 			butler_item_set.h \
@@ -28,7 +28,7 @@ HEADERS		=	\
 			\
 			butler_tag_db.h \
 			butler_item_db.h \
-			butler_queryoptions_db.h \
+			butler_query_db.h \
 			\
 			butler_db.h \
 			ButlerDb \
@@ -40,8 +40,8 @@ SOURCES		=	\
 			\
 			butler_tag.cpp \
 			butler_tag_set.cpp \
-			butler_queryoptions.cpp \
-			butler_queryoptions_set.cpp \
+			butler_query.cpp \
+			butler_query_set.cpp \
 			butler_item.cpp \
 			butler_item_set.cpp \
 			butler_debug.cpp

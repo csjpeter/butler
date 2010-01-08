@@ -66,14 +66,14 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +19 src/butler_item.cpp
-badd +1 src/butler_queryoptions.cpp
+badd +1 src/butler_query.cpp
 badd +1 src/butler_tag.cpp
 badd +1 src/butler_tag_set.cpp
 badd +1 src/butler_db.h
 badd +1 src/butler_item_db.h
 badd +1 src/butler_item.h
-badd +1 src/butler_queryoptions_db.h
-badd +31 src/butler_queryoptions.h
+badd +1 src/butler_query_db.h
+badd +31 src/butler_query.h
 badd +1 src/butler_tag_db.h
 badd +25 src/butler_tag.h
 badd +22 src/butler_tag_set.h
@@ -87,10 +87,10 @@ badd +1 test/tagset/tag_set.cpp
 badd +1 butler.pri
 badd +1 src/butler_algorithms.cpp
 badd +1 src/butler_algorithms.h
-badd +60 test/queryoptions/queryoptions.cpp
-badd +1 src/butler_queryoptions_set.cpp
-badd +1 src/butler_queryoptions_set.h
-badd +1 test/queryoptionsset/queryoptions_set.cpp
+badd +60 test/query/query.cpp
+badd +1 src/butler_query_set.cpp
+badd +1 src/butler_query_set.h
+badd +1 test/queryset/query_set.cpp
 badd +1 src/butler_orderedset.h
 badd +9 test/test.pri
 badd +1 test/orderedset/orderedset.cpp
@@ -100,7 +100,7 @@ badd +1 test/itemset/item_set.cpp
 badd +1 test/item/item.cpp
 badd +1 test/dbifc/dbifc.cpp
 badd +1 test/tagset/tagset.pro
-args ~/sbox/prj/butler/datamodel/src/butler_item.cpp ~/sbox/prj/butler/datamodel/src/butler_queryoptions.cpp ~/sbox/prj/butler/datamodel/src/butler_tag.cpp ~/sbox/prj/butler/datamodel/src/butler_tag_set.cpp ~/sbox/prj/butler/datamodel/src/butler_db.h ~/sbox/prj/butler/datamodel/src/butler_item_db.h ~/sbox/prj/butler/datamodel/src/butler_item.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions_db.h ~/sbox/prj/butler/datamodel/src/butler_queryoptions.h ~/sbox/prj/butler/datamodel/src/butler_tag_db.h ~/sbox/prj/butler/datamodel/src/butler_tag.h ~/sbox/prj/butler/datamodel/src/butler_tag_set.h
+args ~/sbox/prj/butler/datamodel/src/butler_item.cpp ~/sbox/prj/butler/datamodel/src/butler_query.cpp ~/sbox/prj/butler/datamodel/src/butler_tag.cpp ~/sbox/prj/butler/datamodel/src/butler_tag_set.cpp ~/sbox/prj/butler/datamodel/src/butler_db.h ~/sbox/prj/butler/datamodel/src/butler_item_db.h ~/sbox/prj/butler/datamodel/src/butler_item.h ~/sbox/prj/butler/datamodel/src/butler_query_db.h ~/sbox/prj/butler/datamodel/src/butler_query.h ~/sbox/prj/butler/datamodel/src/butler_tag_db.h ~/sbox/prj/butler/datamodel/src/butler_tag.h ~/sbox/prj/butler/datamodel/src/butler_tag_set.h
 set lines=41 columns=154
 edit src/butler_item.cpp
 set splitbelow splitright
@@ -763,7 +763,7 @@ exe '5resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 5resize ' . ((&columns * 72 + 77) / 154)
 exe '6resize ' . ((&lines * 7 + 20) / 41)
 exe 'vert 6resize ' . ((&columns * 8 + 77) / 154)
-tabedit src/butler_queryoptions.cpp
+tabedit src/butler_query.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -904,7 +904,7 @@ normal! 0
 wincmd w
 argglobal
 2argu
-edit src/butler_queryoptions_set.cpp
+edit src/butler_query_set.cpp
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -1007,7 +1007,7 @@ normal! 021l
 wincmd w
 argglobal
 2argu
-edit src/butler_queryoptions.h
+edit src/butler_query.h
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -1110,7 +1110,7 @@ normal! 03l
 wincmd w
 argglobal
 2argu
-edit src/butler_queryoptions_set.h
+edit src/butler_query_set.h
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -1213,7 +1213,7 @@ normal! 0
 wincmd w
 argglobal
 2argu
-edit test/queryoptions/queryoptions.cpp
+edit test/query/query.cpp
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -1316,7 +1316,7 @@ normal! 0
 wincmd w
 argglobal
 2argu
-edit test/queryoptionsset/queryoptions_set.cpp
+edit test/queryset/query_set.cpp
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -2652,7 +2652,7 @@ normal! zt
 normal! 08l
 wincmd w
 argglobal
-edit src/butler_queryoptions_db.h
+edit src/butler_query_db.h
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
