@@ -13,32 +13,61 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "ButlerSqlite"
+#include "butler_sqlite_itemtags.h"
 
 namespace Butler {
+namespace Sqlite {
 
-	bool Sqlite::createItemTagsTable()
+	ItemTagsDb::ItemTagsDb(Db &_db, TagDb &_tagDb) :
+		db(_db),
+		tagDb(_tagDb)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	ItemTagsDb::~ItemTagsDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool ItemTagsDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
+		if(!tables.contains("ItemTags"))
+			ret = createItemTagsTable() && ret;
+		else
+			ret = checkItemTagsTable() && ret;
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool ItemTagsDb::createItemTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
 		query.exec("CREATE TABLE ItemTags ("
 				"uploaded DATE NOT NULL REFERENCES Items(uploaded), "
 				"tag VARCHAR(32) REFERENCES Tags(name)"
 				")"
 				);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkItemTagsTable()
+	bool ItemTagsDb::checkItemTagsTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("ItemTags");
+		QSqlRecord table = db.db.record("ItemTags");
 		if(		!table.contains("item_id") ||
 				!table.contains("tag")
 				) {
@@ -50,12 +79,12 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertItemTag(const Item &i, const Tag &t)
+	bool ItemTagsDb::insertItemTag(const Item &i, const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "INSERT INTO ItemTags (uploaded, tag) VALUES('";
 		query += i.uploaded.toString();
@@ -63,18 +92,18 @@ namespace Butler {
 		query += t.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::deleteItemTag(const Item &i, const Tag &t)
+	bool ItemTagsDb::deleteItemTag(const Item &i, const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM ItemTags WHERE uploaded = '";
 		query += i.uploaded.toString();
@@ -82,13 +111,13 @@ namespace Butler {
 		query += t.name;
 		query += "'";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::insertItemTags(const Item &it)
+	bool ItemTagsDb::insertItemTags(const Item &it)
 	{
 		ENTER_FUNCTION();
 		bool ret;
@@ -107,13 +136,13 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::updateItemTags(
+	bool ItemTagsDb::updateItemTags(
 			const Item &orig, const Item &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 
 		int i, s = modified.tags.size();
@@ -145,18 +174,18 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::deleteItemTags(const Item &i)
+	bool ItemTagsDb::deleteItemTags(const Item &i)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 	
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM ItemTags WHERE query_name = '";
 		query += i.name;
 		query += "'";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
@@ -165,20 +194,20 @@ namespace Butler {
 
 
 
-	TagSet* Sqlite::queryTags(const Item& item)
+	TagSet* ItemTagsDb::queryItemTags(const Item& item)
 	{
 		ENTER_FUNCTION();
 
 		/*FIXME: begin transaction*/
 
-		TagSet* tags = queryTags();
+		TagSet* tags = tagDb.queryTags();
 
 		/* assemble query */
 		QString query("SELECT tag FROM ItemTags WHERE name=");
 		query.append(item.name);
 
 		/* execute query */
-		QSqlQuery sqlQuery(query, db);
+		QSqlQuery sqlQuery(query, db.db);
 		sqlQuery.exec();
 
 		/*FIXME: end transaction*/
@@ -198,5 +227,6 @@ namespace Butler {
 		LEAVE_FUNCTION();
 		return tags;
 	}
+}
 }
 

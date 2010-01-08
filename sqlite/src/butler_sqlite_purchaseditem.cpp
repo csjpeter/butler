@@ -13,33 +13,61 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "ButlerSqlite"
+#include "butler_sqlite_purchaseditem.h"
 
 namespace Butler {
-	
-	bool Sqlite::createPurchasedItemsTable()
+namespace Sqlite {
+
+	PurchasedItemDb::PurchasedItemDb(Db &_db) :
+		db(_db)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	PurchasedItemDb::~PurchasedItemDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool PurchasedItemDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
+		if(!tables.contains("PurchasedItems"))
+			ret = createPurchasedItemsTable() && ret;
+		else
+			ret = checkPurchasedItemsTable() && ret;
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+	
+	bool PurchasedItemDb::createPurchasedItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
 		query.exec("CREATE TABLE PurchasedItems ("
 				"uploaded DATE NOT NULL REFERENCES Items(uploaded), "
 				"purchased DATE NOT NULL DEFAULT 0, "
 				"paid_price INT NOT NULL DEFAULT 0) "
 				);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkPurchasedItemsTable()
+	bool PurchasedItemDb::checkPurchasedItemsTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("PurchasedItems");
+		QSqlRecord table = db.db.record("PurchasedItems");
 		if(		!table.contains("item_id") ||
 				!table.contains("purchased") ||
 				!table.contains("paid_price")
@@ -53,7 +81,7 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertItemPurchased(const Item &i)
+	bool PurchasedItemDb::insertPurchasedItem(const Item &i)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
@@ -64,7 +92,7 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::updateItemPurchased(const Item &orig, const Item &modified)
+	bool PurchasedItemDb::updatePurchasedItem(const Item &orig, const Item &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
@@ -76,7 +104,7 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::deleteItemPurchased(const Item &i)
+	bool PurchasedItemDb::deletePurchasedItem(const Item &i)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
@@ -86,6 +114,6 @@ namespace Butler {
 		LEAVE_FUNCTION();
 		return ret;
 	}
-
+}
 }
 

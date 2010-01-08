@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS  = sqlite tag
+SUBDIRS  = db tag sqlitedb
 

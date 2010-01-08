@@ -12,20 +12,20 @@
 #include <QSqlRecord>
 
 #include <ButlerDebug>
-#include <ButlerSqlite>
+#include "butler_sqlite_db.h"
 
 #define CONNECTION_NAME "butler_sqlite_connection"
 
 namespace Butler {
 
-	Sqlite::Sqlite(const QString& _path)
+	Sqlite::Db::Db(const QString& _path)
 	{
 		ENTER_CONSTRUCTOR();
 		path = _path;
 		LEAVE_CONSTRUCTOR();
 	}
 
-	Sqlite::~Sqlite()
+	Sqlite::Db::~Db()
 	{
 		ENTER_DESTRUCTOR();
 		if(db.isOpen())
@@ -35,7 +35,7 @@ namespace Butler {
 		LEAVE_DESTRUCTOR();
 	}
 	
-	bool Sqlite::connect()
+	bool Sqlite::Db::connect()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(!db.isValid());
@@ -54,7 +54,7 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::open()
+	bool Sqlite::Db::open()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(db.isValid());
@@ -63,18 +63,12 @@ namespace Butler {
 		db.open();
 		ret = reportSqlError();
 		Q_ASSERT(ret == db.isOpen());
-		
-		if(ret && !initializeTables()){
-			close();
-			ret = false;
-			lastError = "Could not initialize tables for butler.";
-		}
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::close()
+	bool Sqlite::Db::close()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(db.isOpen());
@@ -87,67 +81,33 @@ namespace Butler {
 		LEAVE_FUNCTION();
 		return ret;
 	}
+			
+	const QString& Sqlite::Db::lastError()
+	{
+		ENTER_FUNCTION();
+		LEAVE_FUNCTION();
+		return lastErr;
+	}
 
 	/*
 	 *	Private members
 	 */
 	
-/*	Sqlite::Sqlite()
+/*	Db::Db()
 	{
 		ENTER_CONSTRUCTOR();
 		LEAVE_CONSTRUCTOR();
 	}
 */
-	bool Sqlite::reportSqlError()
+	bool Sqlite::Db::reportSqlError() const
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 		if(db.lastError().isValid()){
-			lastError = db.lastError().text();
-			qCritical("%s", qPrintable(lastError));
+			(QString)lastErr = db.lastError().text();
+			qCritical("%s", qPrintable(lastErr));
 			ret = false;
 		}
-		LEAVE_FUNCTION();
-		return ret;
-	}
-
-	bool Sqlite::initializeTables()
-	{
-		ENTER_FUNCTION();
-		bool ret = true;
-
-		QStringList tables = db.tables();
-
-		if(!tables.contains("Tags"))
-			ret = createTagsTable() && ret;
-		else
-			ret = checkTagsTable() && ret;
-
-		if(!tables.contains("Queries"))
-			ret = createQueriesTable() && ret;
-		else
-			ret = checkQueriesTable() && ret;
-
-		if(!tables.contains("QueryTags"))
-			ret = createQueryTagsTable() && ret;
-		else
-			ret = checkQueryTagsTable() && ret;
-
-		if(!tables.contains("Items"))
-			ret = createItemsTable() && ret;
-		else
-			ret = checkItemsTable() && ret;
-
-		if(!tables.contains("ItemTags"))
-			ret = createItemTagsTable() && ret;
-		else
-			ret = checkItemTagsTable() && ret;
-
-		if(!tables.contains("PurchasedItems"))
-			ret = createPurchasedItemsTable() && ret;
-		else
-			ret = checkPurchasedItemsTable() && ret;
-
 		LEAVE_FUNCTION();
 		return ret;
 	}

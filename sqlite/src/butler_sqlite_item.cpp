@@ -13,16 +13,51 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "ButlerSqlite"
+#include "butler_sqlite_item.h"
 
 namespace Butler {
+namespace Sqlite {
+	
+	ItemDb::ItemDb(
+			Db &_db,
+			TagDb &_tagDb) :
+		db(_db),
+		itemTagsDb(_db, _tagDb),
+		purchasedItemDb(_db)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
 
-	bool Sqlite::createItemsTable()
+	ItemDb::~ItemDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool ItemDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
+		if(!tables.contains("Items"))
+			ret = createItemsTable() && ret;
+		else
+			ret = checkItemsTable() && ret;
+
+		ret = ret && itemTagsDb.initializeTables(tables);
+		ret = ret && purchasedItemDb.initializeTables(tables);
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool ItemDb::createItemsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
 		query.exec("CREATE TABLE Items ("
 				"name VARCHAR(256) NOT NULL, "
 				"uploaded DATE NOT NULL DEFAULT 'now', "
@@ -32,17 +67,17 @@ namespace Butler {
 				"amort_days INT NOT NULL DEFAULT 0, "
 				"comment TEXT NOT NULL DEFAULT '')"
 				);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkItemsTable()
+	bool ItemDb::checkItemsTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("Items");
+		QSqlRecord table = db.db.record("Items");
 		if(		!table.contains("name") ||
 				!table.contains("uploaded") ||
 				!table.contains("expected_price") ||
@@ -59,12 +94,12 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertItem(const Item &i)
+	bool ItemDb::insertItem(const Item &i)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "INSERT INTO Items ("
 				"name, uploaded, expected_price, "
@@ -87,24 +122,24 @@ namespace Butler {
 				query += i.comment;
 				query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		if(ret)
-			ret = insertItemTags(i);
+			ret = itemTagsDb.insertItemTags(i);
 		if(ret && i.uploaded <= i.purchased) /* means: purchased/paid */
-			ret = insertItemPurchased(i);
+			ret = purchasedItemDb.insertPurchasedItem(i);
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::updateItem(const Item &orig, const Item &modified)
+	bool ItemDb::updateItem(const Item &orig, const Item &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 		int diffs = 0;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "UPDATE QueryOptions SET ";
 		if(orig.name != modified.name){
@@ -166,7 +201,7 @@ namespace Butler {
 		query += "') ";
 		if(diffs){
 			sqlQuery.exec(query);
-			ret = reportSqlError();
+			ret = db.reportSqlError();
 		}
 
 		if(ret) {
@@ -176,18 +211,18 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::deleteItem(const Item &i)
+	bool ItemDb::deleteItem(const Item &i)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM Items WHERE uploaded = '";
 		query += i.uploaded.toString();
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 	
 		/* should be done automatically by a good SQL server */
 		if(ret) {
@@ -197,27 +232,29 @@ namespace Butler {
 		return ret;
 	}
 
-	ItemSet* Sqlite::queryItems(const QueryOptions &qo)
+	ItemSet* ItemDb::queryItems(const Query &q)
 	{
+		ENTER_FUNCTION();
+
 		/* assemble query */
 		QString query("SELECT * FROM Items");
 
-		if(!qo.tags.empty()){
+		if(!q.tags.empty()){
 			query.append(" WHERE");
-			int i, s = qo.tags.size();
+			int i, s = q.tags.size();
 			query += " tag = '";
-			query += qo.tags.query(0).name;
+			query += q.tags.query(0).name;
 			query += "'";
 			for(i=1; i<s; i++){
 				query += " OR";
 				query += " tag = '";
-				query += qo.tags.query(i).name;
+				query += q.tags.query(i).name;
 				query += "'";
 			}
 		}
 
 		/* execute query */
-		QSqlQuery sqlQuery(query, db);
+		QSqlQuery sqlQuery(query, db.db);
 		sqlQuery.exec();
 
 		/* evaluate query result */
@@ -250,8 +287,9 @@ namespace Butler {
 		}
 		v1Debug("-----");
 
+		LEAVE_FUNCTION();
 		return items;
 	}
 }
-
+}
 

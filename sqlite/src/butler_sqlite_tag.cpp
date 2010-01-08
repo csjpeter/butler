@@ -14,31 +14,59 @@
 #include <QVariant>
 
 #include <ButlerDebug>
-#include <ButlerSqlite>
+#include "butler_sqlite_tag.h"
 
 namespace Butler {
+namespace Sqlite {
 
-	bool Sqlite::createTagsTable()
+	TagDb::TagDb(Db &_db) :
+		db(_db)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	TagDb::~TagDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool TagDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
-		query.exec("CREATE TABLE Tags ("
-				"name VARCHAR(32) PRIMARY KEY "
-				")"
-				);
-		ret = reportSqlError();
+		if(!tables.contains("Tags"))
+			ret = createTagsTable() && ret;
+		else
+			ret = checkTagsTable() && ret;
+
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkTagsTable()
+	bool TagDb::createTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
+		query.exec("CREATE TABLE Tags ("
+				"name VARCHAR(32) PRIMARY KEY "
+				")"
+				);
+		ret = db.reportSqlError();
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool TagDb::checkTagsTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("Tags");
+		QSqlRecord table = db.db.record("Tags");
 		if(		!table.contains("name")
 				) {
 			ret = false;
@@ -49,29 +77,29 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertTag(const Tag &t)
+	bool TagDb::insertTag(const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "INSERT INTO Tags VALUES('";
 		query += t.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::updateTag(const Tag &orig, const Tag &modified)
+	bool TagDb::updateTag(const Tag &orig, const Tag &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "UPDATE Tags SET name = '";
 		query += orig.name;
@@ -80,35 +108,35 @@ namespace Butler {
 		query += modified.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::deleteTag(const Tag &t)
+	bool TagDb::deleteTag(const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM Tags WHERE name = '";
 		query += t.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	TagSet* Sqlite::queryTags()
+	TagSet* TagDb::queryTags()
 	{
 		ENTER_FUNCTION();
 		QString query("SELECT name FROM Tags");
 
-		QSqlQuery sqlQuery(query, db);
+		QSqlQuery sqlQuery(query, db.db);
 		sqlQuery.exec();
 
 		int nameNo = sqlQuery.record().indexOf("name");
@@ -126,5 +154,6 @@ namespace Butler {
 		LEAVE_FUNCTION();
 		return tags;
 	}
+}
 }
 

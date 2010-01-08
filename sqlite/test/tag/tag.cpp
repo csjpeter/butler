@@ -9,11 +9,12 @@
 #include <QtTest/QtTest>
 
 #include <ButlerDebug>
-#include <ButlerSqlite>
+#include "butler_sqlite_tag.h"
 
 #define DB_FILE "./TestSqlite.db"
 
 namespace Butler {
+namespace Sqlite {
 
 	class TestTag : public QObject
 	{
@@ -41,7 +42,7 @@ namespace Butler {
 
 	void TestTag::insertion()
 	{
-		Db *sql = new Sqlite(DB_FILE);
+		Db *sql = new Db(DB_FILE);
 
 		QVERIFY(sql->connect());
 		QVERIFY(sql->open());
@@ -50,10 +51,10 @@ namespace Butler {
 			
 		delete sql;
 	}
-
+}
 }
 	
-QTEST_MAIN(Butler::TestTag);
+QTEST_MAIN(Butler::Sqlite::TestTag);
 
 #include "tmp/tag.moc"
 

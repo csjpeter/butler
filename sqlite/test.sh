@@ -68,6 +68,7 @@ echo " "done
 echo
 echo Testing files in order :
 echo ~~~~~~~~~~~~~~~~~~~~~~~~
-run_test	sqlite			butler_sqlite.cpp
-run_test	tag			butler_tag_sqlite.cpp
+run_test	db			butler_sqlite_db.cpp
+run_test	tag			butler_sqlite_tag.cpp
+run_test	sqlitedb		butler_sqlitedb.cpp
 

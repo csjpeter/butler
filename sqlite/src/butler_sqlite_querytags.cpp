@@ -13,34 +13,63 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "ButlerQueryOptions"
-#include "ButlerSqlite"
+#include "ButlerQuery"
+#include "butler_sqlite_querytags.h"
 
 namespace Butler {
+namespace Sqlite {
 
-	bool Sqlite::createQueryTagsTable()
+	QueryTagsDb::QueryTagsDb(Db &_db, TagDb &_tagDb) :
+		db(_db),
+		tagDb(_tagDb)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	QueryTagsDb::~QueryTagsDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool QueryTagsDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
-		query.exec("CREATE TABLE QueryTags ("
-				"query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name), "
-				"tag VARCHAR(32) REFERENCES Tags(name)"
-				")"
-				);
-		ret = reportSqlError();
+		if(!tables.contains("QueryTags"))
+			ret = createQueryTagsTable() && ret;
+		else
+			ret = checkQueryTagsTable() && ret;
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkQueryTagsTable()
+	bool QueryTagsDb::createQueryTagsTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
+		query.exec("CREATE TABLE QueryTags ("
+				"query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name), "
+				"tag VARCHAR(32) REFERENCES Tags(name)"
+				")"
+				);
+		ret = db.reportSqlError();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool QueryTagsDb::checkQueryTagsTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("QueryTags");
+		QSqlRecord table = db.db.record("QueryTags");
 		if(		!table.contains("query_name") ||
 				!table.contains("tag")
 				) {
@@ -53,55 +82,55 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertQueryTag(const QueryOptions &qo, const Tag &t)
+	bool QueryTagsDb::insertQueryTag(const Query &q, const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "INSERT INTO QueryTags (query_name, tag) VALUES('";
-		query += qo.name;
+		query += q.name;
 		query += "', '";
 		query += t.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::deleteQueryTag(const QueryOptions &qo, const Tag &t)
+	bool QueryTagsDb::deleteQueryTag(const Query &q, const Tag &t)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM QueryTags WHERE query_name = '";
-		query += qo.name;
+		query += q.name;
 		query += "' AND tag = '";
 		query += t.name;
 		query += "'";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::insertQueryTags(const QueryOptions &qo)
+	bool QueryTagsDb::insertQueryTags(const Query &q)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		int i, s = qo.tags.size();
+		int i, s = q.tags.size();
 		for(i=0; i<s; i++){
-			const Tag &t = qo.tags.query(i);
+			const Tag &t = q.tags.query(i);
 			if(!t.checked)
 				continue;
-			ret = insertQueryTag(qo, t);
+			ret = insertQueryTag(q, t);
 			if(!ret)
 				break;
 		}
@@ -110,13 +139,13 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::updateQueryTags(
-			const QueryOptions &orig, const QueryOptions &modified)
+	bool QueryTagsDb::updateQueryTags(
+			const Query &orig, const Query &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 
 		int i, s = modified.tags.size();
@@ -148,34 +177,34 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::deleteQueryTags(const QueryOptions &qo)
+	bool QueryTagsDb::deleteQueryTags(const Query &q)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 	
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
 		query = "DELETE FROM QueryTags WHERE query_name = '";
-		query += qo.name;
+		query += q.name;
 		query += "'";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
 
-	TagSet* Sqlite::queryTags(const QueryOptions &qo)
+	TagSet* QueryTagsDb::queryQueryTags(const Query &q)
 	{
 		ENTER_FUNCTION();
-		Q_UNUSED(qo);
+		Q_UNUSED(q);
 
 		TagSet *ret = new TagSet;
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
-
+}
 }
 

@@ -1,0 +1,6 @@
+
+INCLUDEPATH += /opt/devroot/include/butler/sqlite-0.1
+DEPENDPATH += /opt/devroot/include/butler/sqlite-0.1
+
+LIBS += -lbutler-sqlite
+

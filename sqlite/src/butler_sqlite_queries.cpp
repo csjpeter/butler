@@ -13,35 +13,67 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "ButlerQueryOptions"
-#include "ButlerSqlite"
+#include "ButlerQuery"
+#include "butler_sqlite_queries.h"
 
 namespace Butler {
+namespace Sqlite {
 
-	bool Sqlite::createQueriesTable()
+	QueryDb::QueryDb(Db &_db, TagDb &_tagDb) :
+		db(_db),
+		tagDb(_tagDb),
+		queryTagsDb(_db, _tagDb)
+	{
+		ENTER_CONSTRUCTOR();
+		LEAVE_CONSTRUCTOR();
+	}
+
+	QueryDb::~QueryDb()
+	{
+		ENTER_DESTRUCTOR();
+		LEAVE_DESTRUCTOR();
+	}
+
+	bool QueryDb::initializeTables(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery query(db);
+		if(!tables.contains("Queries"))
+			ret = createQueriesTable() && ret;
+		else
+			ret = checkQueriesTable() && ret;
+
+		ret = ret && queryTagsDb.initializeTables(tables);
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool QueryDb::createQueriesTable()
+	{
+		ENTER_FUNCTION();
+		bool ret;
+
+		QSqlQuery query(db.db);
 		query.exec("CREATE TABLE Queries ("
 				"query_name VARCHAR(64) NOT NULL, "
 				"start_date DATE NOT NULL, "
 				"end_date DATE NOT NULL"
 				")"
 				);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::checkQueriesTable()
+	bool QueryDb::checkQueriesTable()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.record("Queries");
+		QSqlRecord table = db.db.record("Queries");
 		if(		!table.contains("query_name") ||
 				!table.contains("start_date") ||
 				!table.contains("end_date")
@@ -55,40 +87,40 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::insertQueryOptions(const QueryOptions &qo)
+	bool QueryDb::insertQuery(const Query &q)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
-		query = "INSERT INTO QueryOptions (query_name, start_date, end_date) VALUES('";
-		query += qo.name;
+		query = "INSERT INTO Queries (query_name, start_date, end_date) VALUES('";
+		query += q.name;
 		query += "','";
-		query += qo.startDate.toString();
+		query += q.startDate.toString();
 		query += "','";
-		query += qo.endDate.toString();
+		query += q.endDate.toString();
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 
 		if(ret)
-			ret = insertQueryTags(qo);
+			ret = queryTagsDb.insertQueryTags(q);
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::updateQueryOptions(const QueryOptions &orig, const QueryOptions &modified)
+	bool QueryDb::updateQuery(const Query &orig, const Query &modified)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 		
 		int diffs = 0;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
-		query = "UPDATE QueryOptions SET ";
+		query = "UPDATE Queries SET ";
 		if(orig.name != modified.name){
 			diffs++;
 			query += "name = '";
@@ -116,43 +148,43 @@ namespace Butler {
 		query += "') ";
 		if(diffs){
 			sqlQuery.exec(query);
-			ret = reportSqlError();
+			ret = db.reportSqlError();
 		}
 
 		if(ret)
-			ret = updateQueryTags(orig, modified);
+			ret = queryTagsDb.updateQueryTags(orig, modified);
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::deleteQueryOptions(const QueryOptions &qo)
+	bool QueryDb::deleteQuery(const Query &q)
 	{
 		ENTER_FUNCTION();
 		bool ret;
 
-		QSqlQuery sqlQuery(db);
+		QSqlQuery sqlQuery(db.db);
 		QString query;
-		query = "DELETE FROM QueryOptions WHERE name = '";
-		query += qo.name;
+		query = "DELETE FROM Queries WHERE name = '";
+		query += q.name;
 		query += "')";
 		sqlQuery.exec(query);
-		ret = reportSqlError();
+		ret = db.reportSqlError();
 	
 		/* the following should be done automatically by a good SQL server */
 		if(ret)
-			deleteQueryTags(qo);
+			queryTagsDb.deleteQueryTags(q);
 
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	QueryOptions* Sqlite::queryQueryOptions(const QString &name)
+	Query* QueryDb::queryQuery(const QString &name)
 	{
 		ENTER_FUNCTION();
 		Q_UNUSED(name);
 
-		/*	QList<Tag*>* Sqlite::queryQueryOptionTags()
+		/*	QList<Tag*>* QueryDb::queryQueryOptionTags()
 			{
 			*/
 		/* rewrite this to use Queries and QueryTags table instead */
@@ -196,7 +228,8 @@ namespace Butler {
 		   */
 		
 		LEAVE_FUNCTION();
-		return new QueryOptions;
+		return new Query;
 	}
+}
 }
 

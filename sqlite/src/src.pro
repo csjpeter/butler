@@ -12,19 +12,32 @@ debug{
 }
 
 HEADERS		=	\
-			butler_sqlite.h
+			butler_sqlite_db.h \
+			\
+			butler_sqlite_tag.h \
+			\
+			butler_sqlite_querytags.h \
+			butler_sqlite_queries.h \
+			\
+			butler_sqlite_itemtags.h \
+			butler_sqlite_purchaseditem.h \
+			butler_sqlite_item.h \
+			\
+			butler_sqlitedb.h
 
 SOURCES		=	\
-			butler_sqlite.cpp \
+			butler_sqlite_db.cpp \
 			\
-			butler_tag_sqlite.cpp \
+			butler_sqlite_tag.cpp \
 			\
-			butler_querytags_sqlite.cpp \
-			butler_queryoptions_sqlite.cpp \
+			butler_sqlite_querytags.cpp \
+			butler_sqlite_queries.cpp \
 			\
-			butler_itemtags_sqlite.cpp \
-			butler_purchaseditems_sqlite.cpp \
-			butler_item_sqlite.cpp
+			butler_sqlite_itemtags.cpp \
+			butler_sqlite_purchaseditem.cpp \
+			butler_sqlite_item.cpp \
+			\
+			butler_sqlitedb.cpp
 
 
 TARGET = butler-sqlite
@@ -32,7 +45,7 @@ target.path = $$PREFIX/lib
 INSTALLS += target
 
 dev_headers.path = $$PREFIX/include/butler/sqlite-$$APIVERSION
-dev_headers.files = $$HEADERS
+dev_headers.files = butler_sqlitedb.h
 INSTALLS += dev_headers
 
 system(../gen_prf $$APIVERSION $$PREFIX)

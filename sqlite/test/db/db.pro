@@ -4,6 +4,6 @@ TEMPLATE = app
         message( "test.pri can not found" )
 }
 
-TARGET = sqlite
-SOURCES = sqlite.cpp
+TARGET = db
+SOURCES = db.cpp
 
