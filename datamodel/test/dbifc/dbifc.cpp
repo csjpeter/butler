@@ -37,6 +37,21 @@ namespace Butler {
 				return true;
 			}
 
+			bool create()
+			{
+				return true;
+			}
+
+			bool check()
+			{
+				return true;
+			}
+
+			bool update()
+			{
+				return true;
+			}
+
 			const QString& lastError()
 			{
 				static QString err("no-error");
@@ -181,6 +196,9 @@ namespace Butler {
 		ifc.connect();
 		ifc.open();
 		ifc.close();
+		ifc.create();
+		ifc.check();
+		ifc.update();
 		ifc.lastError();
 	}
 	

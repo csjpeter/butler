@@ -30,6 +30,9 @@ namespace Butler {
 			virtual bool connect() = 0;
 			virtual bool open() = 0;
 			virtual bool close() = 0;
+			virtual bool create() = 0;
+			virtual bool check() = 0;
+			virtual bool update() = 0;
 			virtual const QString& lastError() = 0;
 	};
 
