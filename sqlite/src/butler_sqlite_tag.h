@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "butler_sqlite_db.h"
 
@@ -37,6 +38,11 @@ namespace Sqlite {
 
 		private:
 			Db &db;
+			QSqlQuery *insertQuery;
+			QSqlQuery *updateQuery;
+			QSqlQuery *deleteQuery;
+			QSqlQuery *selectOneQuery;
+			QSqlQuery *selectAllQuery;
 	};
 }
 }

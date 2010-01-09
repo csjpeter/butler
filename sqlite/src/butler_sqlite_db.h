@@ -34,6 +34,12 @@ namespace Sqlite {
 	 *   insert/update/delete operations
 	 */
 
+	/* Idea :
+	 * - when update fails the error string or code should set to:
+	 *   OBJECT_DELETED / OBJECT_CHANGED / UNSPECIFIED in order to notify
+	 *   gui about app logic related situations. 
+	 */
+
 	class Db
 	{
 		public:

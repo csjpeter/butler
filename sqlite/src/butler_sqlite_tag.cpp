@@ -20,7 +20,12 @@ namespace Butler {
 namespace Sqlite {
 
 	TagDb::TagDb(Db &_db) :
-		db(_db)
+		db(_db),
+		insertQuery(0),
+		updateQuery(0),
+		deleteQuery(0),
+		selectOneQuery(0),
+		selectAllQuery(0)
 	{
 		ENTER_CONSTRUCTOR();
 		LEAVE_CONSTRUCTOR();
@@ -29,6 +34,16 @@ namespace Sqlite {
 	TagDb::~TagDb()
 	{
 		ENTER_DESTRUCTOR();
+		if(!insertQuery)
+			delete insertQuery;
+		if(!updateQuery)
+			delete updateQuery;
+		if(!deleteQuery)
+			delete deleteQuery;
+		if(!selectOneQuery)
+			delete selectOneQuery;
+		if(!selectAllQuery)
+			delete selectAllQuery;
 		LEAVE_DESTRUCTOR();
 	}
 
@@ -134,22 +149,26 @@ namespace Sqlite {
 	TagSet* TagDb::queryTags()
 	{
 		ENTER_FUNCTION();
-		QString query("SELECT name FROM Tags");
 
-		QSqlQuery sqlQuery(query, db.db);
-		sqlQuery.exec();
+		if(selectAllQuery == NULL){
+			selectAllQuery = new QSqlQuery(db.db);
+			selectAllQuery->setForwardOnly(true);
+			selectAllQuery->prepare("SELECT name FROM Tags");
+		}
 
-		int nameNo = sqlQuery.record().indexOf("name");
+		selectAllQuery->exec();
 
 		TagSet *tags = new TagSet();
 
 		v1Debug("----- Reading all tags from db:");
-		while (sqlQuery.next()) {
-			Tag *tag = new Tag(sqlQuery.value(nameNo).toString());
+		while (selectAllQuery->next()) {
+			Tag *tag = new Tag(selectAllQuery->value(0).toString());
 			tags->append(tag);
 			v1Debug("Tag: %s", qPrintable(tag->name));
 		}
 		v1Debug("-----");
+
+		selectAllQuery->finish();
 
 		LEAVE_FUNCTION();
 		return tags;
