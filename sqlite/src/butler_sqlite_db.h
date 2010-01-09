@@ -47,7 +47,7 @@ namespace Sqlite {
 			bool open();
 			bool close();
 			const QString& lastError();
-			bool reportSqlError() const;
+			bool reportSqlError();
 
 		public:
 			QSqlDatabase db;

@@ -34,8 +34,8 @@ namespace Butler {
 
 	void TestSqliteDb::cleanupTestCase()
 	{
-/*		QFile f(DB_FILE);
-		QVERIFY(f.remove());*/
+		QFile f(DB_FILE);
+		QVERIFY(f.remove());
 
 		_reportLeakSuspections();
 	}
@@ -49,7 +49,7 @@ namespace Butler {
 
 			delete sql;
 		}
-/*		{
+		{
 			Db *sql = new SqliteDb(DB_FILE);
 
 			QVERIFY(sql->connect());
@@ -59,7 +59,7 @@ namespace Butler {
 			
 			delete sql;
 		}
-*/
+
 	}
 
 }

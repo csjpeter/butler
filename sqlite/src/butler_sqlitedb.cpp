@@ -218,6 +218,7 @@ namespace Sqlite {
 
 		Q_UNUSED(q);
 		ret = false;
+		/* FIXME may be no need to be part of ifc */
 /*		ret = priv->db.queryTags(q);*/
 
 		LEAVE_FUNCTION();
@@ -277,6 +278,7 @@ namespace Sqlite {
 
 		ret = false;
 		Q_UNUSED(item);
+		/* FIXME may be no need to be part of ifc */
 /*		ret = priv->db.queryTags(item);*/
 
 		LEAVE_FUNCTION();

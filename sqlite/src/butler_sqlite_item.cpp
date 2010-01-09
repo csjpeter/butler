@@ -41,9 +41,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("Items"))
-			ret = createItemsTable() && ret;
+			ret = createItemsTable();
 		else
-			ret = checkItemsTable() && ret;
+			ret = checkItemsTable();
 
 		ret = ret && itemTagsDb.initializeTables(tables);
 		ret = ret && purchasedItemDb.initializeTables(tables);

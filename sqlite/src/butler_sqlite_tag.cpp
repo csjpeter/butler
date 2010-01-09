@@ -38,9 +38,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("Tags"))
-			ret = createTagsTable() && ret;
+			ret = createTagsTable();
 		else
-			ret = checkTagsTable() && ret;
+			ret = checkTagsTable();
 
 		LEAVE_FUNCTION();
 		return ret;

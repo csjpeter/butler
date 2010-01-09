@@ -7,6 +7,7 @@
  */
 
 #include <QFile>
+#include <QSqlError>
 #include <QtTest/QtTest>
 
 #include <ButlerDebug>
@@ -26,6 +27,7 @@ namespace Sqlite {
 			void cleanupTestCase();
 
 			void connection();
+			void errorDetection();
 	};
 
 
@@ -60,6 +62,16 @@ namespace Sqlite {
 
 			delete sql;
 		}
+	}
+
+	void TestDb::errorDetection()
+	{
+		Db *sql = new Db(DB_FILE);
+		sql->db.commit();
+		bool ret = sql->reportSqlError();
+		QVERIFY(ret == false);
+		QVERIFY(sql->lastError() == qPrintable(sql->db.lastError().text()));
+		delete sql;
 	}
 }
 }

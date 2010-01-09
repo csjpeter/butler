@@ -37,9 +37,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("PurchasedItems"))
-			ret = createPurchasedItemsTable() && ret;
+			ret = createPurchasedItemsTable();
 		else
-			ret = checkPurchasedItemsTable() && ret;
+			ret = checkPurchasedItemsTable();
 
 		LEAVE_FUNCTION();
 		return ret;
@@ -68,7 +68,7 @@ namespace Sqlite {
 		bool ret = true;
 
 		QSqlRecord table = db.db.record("PurchasedItems");
-		if(		!table.contains("item_id") ||
+		if(		!table.contains("uploaded") ||
 				!table.contains("purchased") ||
 				!table.contains("paid_price")
 				) {

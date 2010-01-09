@@ -38,9 +38,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("ItemTags"))
-			ret = createItemTagsTable() && ret;
+			ret = createItemTagsTable();
 		else
-			ret = checkItemTagsTable() && ret;
+			ret = checkItemTagsTable();
 
 		LEAVE_FUNCTION();
 		return ret;
@@ -68,7 +68,7 @@ namespace Sqlite {
 		bool ret = true;
 
 		QSqlRecord table = db.db.record("ItemTags");
-		if(		!table.contains("item_id") ||
+		if(		!table.contains("uploaded") ||
 				!table.contains("tag")
 				) {
 			ret = false;

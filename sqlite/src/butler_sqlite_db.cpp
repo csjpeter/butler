@@ -7,6 +7,7 @@
  */
 
 #include <QStringList>
+#include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -17,44 +18,58 @@
 #define CONNECTION_NAME "butler_sqlite_connection"
 
 namespace Butler {
+namespace Sqlite {
 
-	Sqlite::Db::Db(const QString& _path)
+#ifdef DEBUG
+	void listAvailableFeatures(const QSqlDatabase &db);
+#endif
+
+	Db::Db(const QString& _path)
 	{
 		ENTER_CONSTRUCTOR();
 		path = _path;
 		LEAVE_CONSTRUCTOR();
 	}
 
-	Sqlite::Db::~Db()
+	Db::~Db()
 	{
 		ENTER_DESTRUCTOR();
 		if(db.isOpen())
 			close();
-		if(db.isValid())
-			QSqlDatabase::removeDatabase(CONNECTION_NAME);
 		LEAVE_DESTRUCTOR();
 	}
 	
-	bool Sqlite::Db::connect()
+	bool Db::connect()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(!db.isValid());
 		bool ret;
 
-		db = QSqlDatabase::addDatabase("QSQLITE", CONNECTION_NAME);
-		ret = reportSqlError();
+		if(!QSqlDatabase::contains(CONNECTION_NAME)){
+			db = QSqlDatabase::addDatabase(
+					"QSQLITE", CONNECTION_NAME);
+			ret = reportSqlError();
+		} else {
+			db = QSqlDatabase::database(CONNECTION_NAME, false);
+			ret = reportSqlError();
+		}
 		Q_ASSERT(ret == db.isValid());
-
+		
 		if(ret){
 			db.setDatabaseName(path);
 			ret = reportSqlError();
 		}
 
+#ifdef DEBUG
+		if(ret)
+			listAvailableFeatures(db);
+#endif
+
 		LEAVE_FUNCTION();
 		return ret;
 	}
 
-	bool Sqlite::Db::open()
+	bool Db::open()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(db.isValid());
@@ -68,7 +83,7 @@ namespace Butler {
 		return ret;
 	}
 
-	bool Sqlite::Db::close()
+	bool Db::close()
 	{
 		ENTER_FUNCTION();
 		Q_ASSERT(db.isOpen());
@@ -82,7 +97,7 @@ namespace Butler {
 		return ret;
 	}
 			
-	const QString& Sqlite::Db::lastError()
+	const QString& Db::lastError()
 	{
 		ENTER_FUNCTION();
 		LEAVE_FUNCTION();
@@ -99,18 +114,71 @@ namespace Butler {
 		LEAVE_CONSTRUCTOR();
 	}
 */
-	bool Sqlite::Db::reportSqlError() const
+	bool Db::reportSqlError()
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 		if(db.lastError().isValid()){
-			(QString)lastErr = db.lastError().text();
+			lastErr = db.lastError().text();
 			qCritical("%s", qPrintable(lastErr));
 			ret = false;
 		}
 		LEAVE_FUNCTION();
 		return ret;
 	}
+
+#ifdef DEBUG
+	void listAvailableFeatures(const QSqlDatabase &db)
+	{
+		static bool featuresListed = false;
+
+		if(featuresListed)
+			return;
+
+		QSqlDriver *drv = db.driver();
+		Q_ASSERT(drv != NULL);
+		QString format = "QSqlDriver features for connection %s :";
+		int i;
+		for(i=0; i<14; i++)
+			format += "\n\t%-25s%3d";
+
+		qDebug(qPrintable(format),
+				CONNECTION_NAME,
+				"Transactions",
+				drv->hasFeature(QSqlDriver::Transactions),
+				"QuerySize",
+				drv->hasFeature(QSqlDriver::QuerySize),
+				"BLOB",
+				drv->hasFeature(QSqlDriver::BLOB),
+				"Unicode",
+				drv->hasFeature(QSqlDriver::Unicode),
+				"PreparedQueries",
+				drv->hasFeature(QSqlDriver::PreparedQueries),
+				"NamedPlaceholders",
+				drv->hasFeature(QSqlDriver::NamedPlaceholders),
+				"PositionalPlaceholders",
+				drv->hasFeature(QSqlDriver::PositionalPlaceholders),
+				"LastInsertId",
+				drv->hasFeature(QSqlDriver::LastInsertId),
+				"BatchOperations",
+				drv->hasFeature(QSqlDriver::BatchOperations),
+				"SimpleLocking",
+				drv->hasFeature(QSqlDriver::SimpleLocking),
+				"LowPrecisionNumbers",
+				drv->hasFeature(QSqlDriver::LowPrecisionNumbers),
+				"EventNotifications",
+				drv->hasFeature(QSqlDriver::EventNotifications),
+				"FinishQuery",
+				drv->hasFeature(QSqlDriver::FinishQuery),
+				"MultipleResultSets",
+				drv->hasFeature(QSqlDriver::MultipleResultSets)
+			);
+
+		featuresListed = true;
+	}
+#endif
+
+}
 }
 
 

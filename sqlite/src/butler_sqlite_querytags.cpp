@@ -39,9 +39,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("QueryTags"))
-			ret = createQueryTagsTable() && ret;
+			ret = createQueryTagsTable();
 		else
-			ret = checkQueryTagsTable() && ret;
+			ret = checkQueryTagsTable();
 
 		LEAVE_FUNCTION();
 		return ret;

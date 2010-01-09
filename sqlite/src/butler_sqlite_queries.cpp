@@ -40,9 +40,9 @@ namespace Sqlite {
 		bool ret;
 
 		if(!tables.contains("Queries"))
-			ret = createQueriesTable() && ret;
+			ret = createQueriesTable();
 		else
-			ret = checkQueriesTable() && ret;
+			ret = checkQueriesTable();
 
 		ret = ret && queryTagsDb.initializeTables(tables);
 
