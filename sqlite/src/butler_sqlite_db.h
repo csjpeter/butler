@@ -35,9 +35,11 @@ namespace Sqlite {
 	 */
 
 	/* Idea :
-	 * - when update fails the error string or code should set to:
-	 *   OBJECT_DELETED / OBJECT_CHANGED / UNSPECIFIED in order to notify
-	 *   gui about app logic related situations. 
+	 * - ERR values to support:
+	 *   UPDATE_ERROR_OBJECT_NOT_EXISTS
+	 *   UPDATE_ERROR_OBJECT_CHANGED
+	 *   UNSPECIFIED_ERROR
+	 *   OPEN_ERROR_OLD_DATABASE_SCHEMA
 	 */
 
 	class Db

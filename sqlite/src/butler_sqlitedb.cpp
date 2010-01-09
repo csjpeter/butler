@@ -100,6 +100,7 @@ namespace Sqlite {
 	
 		/* Better not init here, but in order to have init ifc, need
 		 * some proper planning before. */
+		/* FIXME do just a version check here */
 		if(ret && !priv->initializeTables()){
 			close();
 			ret = false;
