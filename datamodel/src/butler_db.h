@@ -21,6 +21,13 @@
 
 namespace Butler {
 
+	enum UserDbError {
+		UNSPECIFIED_USER_ERROR = 0,
+		UPDATE_ERROR_OBJECT_NOT_EXISTS,
+		UPDATE_ERROR_OBJECT_CHANGED,
+		OPEN_ERROR_OLD_DATABASE_SCHEMA
+	};
+
 	class Db : public ItemDb, public TagDb, public QueryDb
 	{
 		public:
@@ -33,6 +40,19 @@ namespace Butler {
 			virtual bool create() = 0;
 			virtual bool check() = 0;
 			virtual bool update() = 0;
+
+			/* Use this to identify what kind of error happened. */
+			virtual enum UserDbError lastUserErrorId() = 0;
+
+			/* If lastUserErrorId reports other than unspecified,
+			 * this will return the explanation of the error. */
+			virtual const QString& lastUserError() = 0;
+
+			/* In case lastUserErrorId reports unspecified, an
+			 * unexpected db error happened that might be because
+			 * of a database backend implementation error. The
+			 * original databaseengine/database server reported
+			 * error is given by this method. */
 			virtual const QString& lastError() = 0;
 	};
 

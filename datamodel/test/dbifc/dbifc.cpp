@@ -52,6 +52,17 @@ namespace Butler {
 				return true;
 			}
 
+			enum UserDbError lastUserErrorId()
+			{
+				return Butler::UNSPECIFIED_USER_ERROR;
+			}
+
+			const QString& lastUserError()
+			{
+				static QString err("no-error");
+				return err;
+			}
+
 			const QString& lastError()
 			{
 				static QString err("no-error");
@@ -199,6 +210,8 @@ namespace Butler {
 		ifc.create();
 		ifc.check();
 		ifc.update();
+		ifc.lastUserErrorId();
+		ifc.lastUserError();
 		ifc.lastError();
 	}
 	
