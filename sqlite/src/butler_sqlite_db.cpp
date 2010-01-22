@@ -24,10 +24,13 @@ namespace Sqlite {
 	void listAvailableFeatures(const QSqlDatabase &db);
 #endif
 
-	Db::Db(const QString& _path)
+	Db::Db(const QString& _path) :
+		path(_path),
+		lastUserErrId(Butler::UNSPECIFIED_USER_ERROR),
+		lastUserErr(""),
+		lastErr("")
 	{
 		ENTER_CONSTRUCTOR();
-		path = _path;
 		LEAVE_CONSTRUCTOR();
 	}
 
@@ -96,6 +99,20 @@ namespace Sqlite {
 		LEAVE_FUNCTION();
 		return ret;
 	}
+
+	enum Butler::UserDbError Db::lastUserErrorId()
+	{
+		ENTER_FUNCTION();
+		LEAVE_FUNCTION();
+		return lastUserErrId;
+	}
+
+	const QString& Db::lastUserError()
+	{
+		ENTER_FUNCTION();
+		LEAVE_FUNCTION();
+		return lastUserErr;
+	}
 			
 	const QString& Db::lastError()
 	{
@@ -120,6 +137,8 @@ namespace Sqlite {
 		bool ret = true;
 		if(db.lastError().isValid()){
 			lastErr = db.lastError().text();
+			lastUserErr = "";
+			lastUserErrId = Butler::UNSPECIFIED_USER_ERROR;
 			qCritical("%s", qPrintable(lastErr));
 			ret = false;
 		}

@@ -14,6 +14,8 @@ debug{
 HEADERS		=	\
 			butler_sqlite_db.h \
 			\
+			butler_sqlite_schemaversion.h \
+			\
 			butler_sqlite_tag.h \
 			\
 			butler_sqlite_querytags.h \
@@ -27,6 +29,8 @@ HEADERS		=	\
 
 SOURCES		=	\
 			butler_sqlite_db.cpp \
+			\
+			butler_sqlite_schemaversion.cpp \
 			\
 			butler_sqlite_tag.cpp \
 			\

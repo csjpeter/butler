@@ -34,14 +34,6 @@ namespace Sqlite {
 	 *   insert/update/delete operations
 	 */
 
-	/* Idea :
-	 * - ERR values to support:
-	 *   UPDATE_ERROR_OBJECT_NOT_EXISTS
-	 *   UPDATE_ERROR_OBJECT_CHANGED
-	 *   UNSPECIFIED_ERROR
-	 *   OPEN_ERROR_OLD_DATABASE_SCHEMA
-	 */
-
 	class Db
 	{
 		public:
@@ -54,12 +46,16 @@ namespace Sqlite {
 			bool connect();
 			bool open();
 			bool close();
+			enum Butler::UserDbError lastUserErrorId();
+			const QString& lastUserError();
 			const QString& lastError();
 			bool reportSqlError();
 
 		public:
 			QSqlDatabase db;
 			QString path;
+			enum Butler::UserDbError lastUserErrId;
+			QString lastUserErr;
 			QString lastErr;
 	};
 }

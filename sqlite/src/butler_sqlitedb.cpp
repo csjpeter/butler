@@ -12,25 +12,25 @@
 #include <QSqlRecord>
 
 #include <ButlerDebug>
-//#include "butler_sqlite_tag.h"
+#include "butler_sqlite_schemaversion.h"
+#include "butler_sqlite_tag.h"
 #include "butler_sqlite_queries.h"
 #include "butler_sqlite_item.h"
 #include "butler_sqlitedb.h"
 
 namespace Butler {
-namespace Sqlite {
+using namespace Butler::Sqlite;
 
 	class Private
 	{
 		public:
 			Private(const QString &path);
 			~Private();
-			bool initializeTables();
 		public:
-			Db db;
-			Butler::Sqlite::TagDb tagDb;
-			Butler::Sqlite::QueryDb queryDb;
-			Butler::Sqlite::ItemDb itemDb;
+			Sqlite::Db db;
+			Sqlite::TagDb tagDb;
+			Sqlite::QueryDb queryDb;
+			Sqlite::ItemDb itemDb;
 	};
 
 	Private::Private(const QString &path) :
@@ -49,27 +49,10 @@ namespace Sqlite {
 		LEAVE_DESTRUCTOR();
 	}
 
-	bool Private::initializeTables()
-	{
-		ENTER_FUNCTION();
-		bool ret = true;
-
-		QStringList tables = db.db.tables();
-
-		ret = tagDb.initializeTables(tables);
-		ret = ret && queryDb.initializeTables(tables);
-		ret = ret && itemDb.initializeTables(tables);
-
-		LEAVE_FUNCTION();
-		return ret;
-	}
-
-}
-
 	SqliteDb::SqliteDb(const QString& _path)
 	{
 		ENTER_CONSTRUCTOR();
-		priv = new Sqlite::Private(_path);
+		priv = new Private(_path);
 		LEAVE_CONSTRUCTOR();
 	}
 
@@ -97,15 +80,22 @@ namespace Sqlite {
 		bool ret;
 
 		ret = priv->db.open();
-	
-		/* Better not init here, but in order to have init ifc, need
-		 * some proper planning before. */
-		/* FIXME do just a version check here */
-		if(ret && !priv->initializeTables()){
-			close();
-			ret = false;
-			priv->db.lastErr =
-				"Could not initialize tables for butler.";
+
+		if(ret){
+			SchemaVersion ver;
+			SchemaVersionDb verDb(priv->db);
+			ver = verDb.querySchemaVersion();
+			if(
+			(ver.major != BUTLER_SQLITE_SCHEMA_VERSION_MAJOR) ||
+			(ver.minor < BUTLER_SQLITE_SCHEMA_VERSION_MINOR)
+			){
+				ret = false;
+				priv->db.lastUserErrId =
+					INCOMPATIBLE_DATABASE_SCHEMA;
+				priv->db.lastUserErr = "Incompatible database "
+					"schema version in db";
+				priv->db.close();
+			}
 		}
 
 		LEAVE_FUNCTION();
@@ -123,6 +113,73 @@ namespace Sqlite {
 		return ret;
 	}
 	
+	bool SqliteDb::create()
+	{
+		ENTER_FUNCTION();
+
+		/* do not create anything on an already opened db */
+		bool ret = priv->db.db.isOpen() ? false : true;
+
+		ret = ret && priv->db.open();
+		ret = ret && priv->tagDb.create();
+/*		ret = ret && priv->queryDb.create();
+		ret = ret && priv->itemDb.create();*/
+		ret = priv->db.close() && ret;
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool SqliteDb::check()
+	{
+		ENTER_FUNCTION();
+		bool ret = priv->db.db.isOpen();
+
+		QStringList tables = priv->db.db.tables();
+
+		ret = ret && priv->tagDb.check(tables);
+/*		ret = ret && priv->queryDb.check(tables);
+		ret = ret && priv->itemDb.check(tables);*/
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	bool SqliteDb::update()
+	{
+		ENTER_FUNCTION();
+		bool ret = priv->db.db.isOpen() ? false : true;
+
+		ret = ret && priv->db.open();
+		ret = ret && priv->tagDb.update();
+/*		ret = ret && priv->queryDb.update();
+		ret = ret && priv->itemDb.update();*/
+		ret = priv->db.close() && ret;
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	enum Butler::UserDbError SqliteDb::lastUserErrorId()
+	{
+		ENTER_FUNCTION();
+
+		enum UserDbError ret = priv->db.lastUserErrorId();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
+	const QString& SqliteDb::lastUserError()
+	{
+		ENTER_FUNCTION();
+
+		const QString &ret = priv->db.lastUserError();
+
+		LEAVE_FUNCTION();
+		return ret;
+	}
+
 	const QString& SqliteDb::lastError()
 	{
 		ENTER_FUNCTION();

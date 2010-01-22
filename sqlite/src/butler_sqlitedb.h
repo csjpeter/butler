@@ -13,7 +13,7 @@
 
 namespace Butler {
 
-	namespace Sqlite { class Private;}
+	class Private;
 
 	class SqliteDb : public Db
 	{
@@ -25,6 +25,11 @@ namespace Butler {
 			bool connect();
 			bool open();
 			bool close();
+			bool create();
+			bool check();
+			bool update();
+			enum Butler::UserDbError lastUserErrorId();
+			const QString& lastUserError();
 			const QString& lastError();
 
 			/*
@@ -68,7 +73,7 @@ namespace Butler {
 			 */
 
 		private:
-			Sqlite::Private *priv;
+			Private *priv;
 	};
 
 }

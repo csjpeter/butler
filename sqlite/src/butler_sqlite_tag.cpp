@@ -47,21 +47,7 @@ namespace Sqlite {
 		LEAVE_DESTRUCTOR();
 	}
 
-	bool TagDb::initializeTables(QStringList &tables)
-	{
-		ENTER_FUNCTION();
-		bool ret;
-
-		if(!tables.contains("Tags"))
-			ret = createTagsTable();
-		else
-			ret = checkTagsTable();
-
-		LEAVE_FUNCTION();
-		return ret;
-	}
-
-	bool TagDb::createTagsTable()
+	bool TagDb::create()
 	{
 		ENTER_FUNCTION();
 		bool ret;
@@ -76,20 +62,30 @@ namespace Sqlite {
 		return ret;
 	}
 
-	bool TagDb::checkTagsTable()
+	bool TagDb::check(QStringList &tables)
 	{
 		ENTER_FUNCTION();
 		bool ret = true;
 
-		QSqlRecord table = db.db.record("Tags");
-		if(		!table.contains("name")
-				) {
-			ret = false;
-			qCritical("Incompatible table Tags "
-					"in the openend database.");
+		ret = tables.contains("Tags");
+
+		if(ret){
+			QSqlRecord table = db.db.record("Tags");
+			if(		!table.contains("name")
+			  ) {
+				ret = false;
+				qCritical("Incompatible table Tags "
+						"in the openend database.");
+			}
 		}
+
 		LEAVE_FUNCTION();
 		return ret;
+	}
+
+	bool TagDb::update()
+	{
+		return true;
 	}
 
 	bool TagDb::insertTag(const Tag &t)

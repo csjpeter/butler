@@ -6,8 +6,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_TAG_DB_H
-#define BUTLER_SQLITE_TAG_DB_H
+#ifndef BUTLER_SQLITE_SCHEMAVERSION_DB_H
+#define BUTLER_SQLITE_SCHEMAVERSION_DB_H
 
 #include <QObject>
 #include <QStringList>
@@ -16,35 +16,37 @@
 
 #include "butler_sqlite_db.h"
 
+#define BUTLER_SQLITE_SCHEMA_VERSION_MAJOR 0
+#define BUTLER_SQLITE_SCHEMA_VERSION_MINOR 1
+#define BUTLER_SQLITE_SCHEMA_VERSION_PATCH 0
+
 namespace Butler {
 namespace Sqlite {
 
-	class TagDb
+	struct SchemaVersion {
+		int major;
+		int minor;
+		int patch;
+	};
+
+	class SchemaVersionDb
 	{
 		public:
-			TagDb(Db &_db);
-			virtual ~TagDb();
+			SchemaVersionDb(Db &_db);
+			virtual ~SchemaVersionDb();
 		private:
-			TagDb();
+			SchemaVersionDb();
 
 		public:
 			bool create();
 			bool check(QStringList &tables);
 			bool update();
-			bool insertTag(const Tag &t);
-			bool updateTag(const Tag &orig, const Tag &modified);
-			bool deleteTag(const Tag &t);
-			TagSet* queryTags();
+			bool updateSchemaVersion(const SchemaVersion &version);
+			SchemaVersion querySchemaVersion();
 
 		private:
 			Db &db;
-			QSqlQuery *insertQuery;
-			QSqlQuery *updateQuery;
-			QSqlQuery *deleteQuery;
-			QSqlQuery *selectOneQuery;
-			QSqlQuery *selectAllQuery;
 	};
-
 }
 }
 

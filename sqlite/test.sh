@@ -69,6 +69,7 @@ echo
 echo Testing files in order :
 echo ~~~~~~~~~~~~~~~~~~~~~~~~
 run_test	db			butler_sqlite_db.cpp
+run_test	schemaversion		butler_sqlite_schemaversion.cpp
 run_test	tag			butler_sqlite_tag.cpp
 run_test	sqlitedb		butler_sqlitedb.cpp
 
