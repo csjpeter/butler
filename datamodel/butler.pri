@@ -72,6 +72,7 @@ release {
 }
 
 debug{
+	CONFIG += silent
 	QMAKE_CXXFLAGS_DEBUG +=-O0 -Werror
 	DEFINES	+= DEBUG
 	QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs
