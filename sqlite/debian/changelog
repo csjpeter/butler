@@ -1,6 +1,0 @@
-butler-sqlite (0.1.0) unstable; urgency=low
-
-  * This file is only for debian packaging compatibility
-
- -- Császár Péter <csjpeter@gmail.com>  Tue, 22 Dec 2009 13:13:07 +0100
-

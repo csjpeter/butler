@@ -1,0 +1,158 @@
+/* vim:set noet sw=8 ts=8 sts=8: */
+#include "style.inc"
+
+digraph class_butler_sqlite {
+	DEFAULTS;
+
+	/*
+	 *  Declaration and organization
+	 */
+
+	{ CONCEPT FOREIGN
+		{ rank=max;
+			DataDbConcept;
+		}
+	}
+
+	subgraph clusterButler {
+		label="Namespace: Butler";
+
+		{ INTERFACE FOREIGN
+			DbIfc;
+			TagDbIfc;
+			QueryDbIfc;
+			ItemDbIfc;
+		}
+
+		{ CLASS
+			Db;
+
+			subgraph clusterSqlite {
+				label="Namespace: Sqlite";
+
+				{ PRIVATE
+					ItemDb;
+					QueryDb;
+					TagDb;
+
+					ItemTable;
+					ItemTagsTable;
+
+					QueryTable;
+					QueryTagsTable;
+
+					TagTable;
+
+					Sql;
+					SqlQuery;
+					SchemaVersionDb;
+				}
+
+				{ rank=same;
+					ItemDb;
+					QueryDb;
+					TagDb;
+					Sql;
+				}
+			}
+		}
+
+		{ rank=min;
+		}
+
+		{ rank=same;
+		}
+
+		{ rank=max;
+		}
+	}
+
+	/*
+	 *  Relations
+	 */
+
+	{ KNOWLEDGE
+		DbIfc -> TagDbIfc;
+		DbIfc -> QueryDbIfc;
+		DbIfc -> ItemDbIfc;
+	}
+
+	{ COMPOSITION
+		PRIVATE
+		Db -> TagDb;
+		Db -> QueryDb;
+		Db -> ItemDb;
+
+		ItemDb -> ItemTagsTable;
+		ItemDb -> ItemTable;
+
+		QueryDb -> QueryTagsTable;
+		QueryDb -> QueryTable;
+
+		TagDb -> TagTable;
+
+		Db -> Sql;
+
+		ItemTagsTable -> SqlQuery;
+		ItemTable -> SqlQuery;
+
+		QueryTagsTable -> SqlQuery;
+		QueryTable -> SqlQuery;
+
+		TagTable -> SqlQuery;
+	}
+
+	{ CONFORMANCE
+		TagDbIfc -> DataDbConcept;
+		QueryDbIfc -> DataDbConcept;
+		ItemDbIfc -> DataDbConcept;
+
+//		ItemTagsDb -> DataDbConcept;
+//		QueryTagsDb -> DataDbConcept;
+	}
+
+	{ IMPLEMENTATION
+		Db -> DbIfc;
+		TagDb -> TagDbIfc;
+		QueryDb -> QueryDbIfc;
+		ItemDb -> ItemDbIfc;
+	}
+
+	{ DEPENDENCY PRIVATE
+		ItemDb ->Sql;
+		QueryDb -> Sql;
+		TagDb -> Sql;
+
+		ItemTable ->Sql;
+		ItemTagsTable -> Sql;
+
+		QueryTagsTable -> Sql;
+		QueryTable -> Sql;
+
+		TagTable -> Sql;
+
+		SqlQuery -> Sql;
+
+		Db -> SchemaVersionDb;
+	}
+
+	/*
+	 *  Definition of classes
+	 */
+
+#ifndef OVERVIEW
+
+	DataDbConcept[label="{DataDb (Concept)}"];
+
+	DbIfc[label="{Db (Interface)}"];
+
+	TagDbIfc[label="{TagDb (Interface)}"];
+
+	QueryDbIfc[label="{QueryDb (Interface)}"];
+
+	ItemDbIfc[label="{ItemDb (Interface)}"];
+#endif
+
+}
+
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PRJNAME=libcsjp
+
+VERSION_MAJOR=0
+VERSION_MINOR=4
+VERSION_PATCH=0
+VERSION_API=${VERSION_MAJOR}.${VERSION_MINOR}
+VERSION=${VERSION_API}.${VERSION_PATCH}
+
+PKGNAME_BASE=${PRJNAME}${VERSION_API}
+
+PRJDESC="Butler - shopping list and home accounting."
+PRJDESCRIPTION=" Butler is a shopping list like basic home\n\
+ accounting tool."
+
+DEVELOPMENT_START_YEAR=2009
+
+AUTHOR="Peter Csaszar"
+EMAIL=csjpeter@gmail.com
+

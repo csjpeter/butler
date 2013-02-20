@@ -1,0 +1,57 @@
+.\" Process this file with
+.\" groff -man -Tascii man-file-name
+.\" For help: http://www.schweikhardt.net/man_page_howto.html
+.TH @PKGNAME@ 1 "@DEVELOPMENT_START_YEAR@-@CURRENT_YEAR@" @PRJNAME@ "User Manuals"
+
+.SH NAME
+@PKGNAME@ \- @PRJDESC@
+
+.SH SYNOPSIS
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-string_chunk
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-string
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-time
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-file
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-mutex
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-thread
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-btree
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-container
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-sorter_container
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-owner_list
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-map
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-object_tree
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-ini
+.br
+.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-json
+.br
+.RS
+.B [--logDir|-l
+.I log-directory
+.B ] [--verbose|-v]
+
+.SH DESCRIPTION
+Test binaries for library @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@.
+These test binaries should also work with @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@.
+
+.SH OPTIONS
+.IP "--logDir|-l log-directory"
+Use the given directory for logging. With no
+.I log-directory specified
+, there will be no logging.
+.IP "--verbose|-v"
+Do write log messages as well to stdout.
+
+.SH AUTHOR
+@AUTHOR@ <@EMAIL@>
+

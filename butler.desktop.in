@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=ButlerQt @VERSION_API@
+Caption=Butler
+GenericName=@PRJDESC@
+MimeType=application/butler
+Exec=/usr/bin/@PKGNAME@
+Type=Application
+Encoding=UTF-8
+Version=@VERSION@
+Categories=Application;Office;Qt;User
+Icon=@PKGNAME@
+X-Window-Icon=@PKGNAME@
+X-Window-Icon-Dimmed=@PKGNAME@
+X-Osso-Service=@PKGNAME@
+X-Osso-Type=application/x-executable

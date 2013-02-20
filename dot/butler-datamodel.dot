@@ -1,0 +1,338 @@
+/* vim:set noet sw=8 ts=8 sts=8: */
+#include "style.inc"
+/* define API to hide parts not belongs to api */
+/*#define API*/
+/* define OVERVIEW to hide members of components */
+//#define OVERVIEW 
+
+digraph class_butler_datamodel {
+	DEFAULTS;
+
+	/*
+	 *  Declaration and organization
+	 */
+
+	subgraph clusterData {
+		label="Data";
+		{ CONCEPT
+			DataConcept;
+			SetConcept;
+			DataDbConcept;
+		}
+	}
+
+	subgraph clusterButler {
+		label="Namespace: Butler";
+
+		{ CLASS PRIVATE
+			OrderedSet;
+		}
+
+		subgraph clusterTag {
+			label="Tag";
+			{ CLASS
+				Tag;
+				TagSet;
+			}
+			{ INTERFACE
+				TagDb;
+			}
+		}
+
+		subgraph clusterQuery {
+			label="Query";
+			{ CLASS
+				Query;
+				QuerySet;
+			}
+			{ INTERFACE
+				QueryDb;
+			}
+		}
+
+		subgraph clusterItem {
+			label="Item";
+			{ CLASS
+				Item;
+				ItemSet;
+			}
+			{ INTERFACE
+				ItemDb;
+			}
+		}
+
+		{ INTERFACE
+			Db;
+		}
+
+#ifndef OVERVIEW
+
+       		{ rank=min;
+			Db;
+			OrderedSet;
+       		}
+
+		{ rank=same;
+		}
+
+       		{ rank=same;
+/*			TagSet;
+			ItemSet;
+			QuerySet;
+       			ItemDb;
+       			QueryDb;
+       			TagDb;
+			Tag;
+       			Query;
+			Item;
+*/		}
+
+       		{ rank=max;
+       		}
+
+#endif
+	}
+
+	/*
+	 *  Relations
+	 */
+
+	{ KNOWLEDGE
+		Db -> TagDb;
+		Db -> QueryDb;
+		Db -> ItemDb;
+
+		SetConcept -> DataConcept;
+		DataDbConcept -> DataConcept;
+		DataDbConcept -> SetConcept;
+	}
+
+	{ DEPENDENCY
+		TagDb -> Tag;
+		QueryDb -> Query;
+		ItemDb -> Item;
+		TagDb -> TagSet;
+		QueryDb -> QuerySet;
+		ItemDb -> ItemSet;
+	}
+
+	{ COMPOSITION PRIVATE
+		TagSet -> OrderedSet;
+		QuerySet -> OrderedSet;
+		ItemSet -> OrderedSet;
+	}
+
+	{ AGGREGATION
+		TagSet -> Tag;
+		QuerySet -> Query;
+		ItemSet -> Item;
+
+	}
+
+	{ CONFORMANCE
+		Tag -> DataConcept;
+		Query -> DataConcept;
+		Item -> DataConcept;
+
+		TagSet -> SetConcept;
+		QuerySet -> SetConcept;
+		ItemSet -> SetConcept;
+
+		TagDb -> DataDbConcept;
+		QueryDb -> DataDbConcept;
+		ItemDb -> DataDbConcept;
+	}
+
+	/*
+	 *  Definition of classes
+	 */
+
+#ifndef OVERVIEW
+
+	DataDbConcept[label="{DataDb (Concept)\
+		|\
+		virtual bool insert(const Data &) = 0;\n\
+		virtual bool update(const Data &orig, const Data &modified) = 0;\n\
+		virtual bool del(const Data &) = 0;\n\
+		virtual DataSet* query() = 0;\
+	}"];
+
+	DataConcept[label="{Data (Concept)\
+		|\
+		Data();\n\
+		~Data();\n\
+		explicit Data(const Data &);\n\
+		Data & operator=(const Data &);\n\
+		bool isEqual(const Data &) const;\n\
+		bool isLess(const Data &) const;\n\
+		bool isMore(const Data &) const;\
+		|\
+		global:\
+		|\
+		bool operator==(const Data &a, const Data &b);\n\
+		bool operator!=(const Data &a, const Data &b);\n\
+		bool operator\<(const Data &a, const Data &b);\n\
+		bool operator\>(const Data &a, const Data &b);\
+	}"];
+	
+	SetConcept[label="{DataSet (Concept)\
+		|\
+		Set();\n\
+		~Set();\n\
+		explicit Set(const Set &);\n\
+		Set & operator=(const Set &);\n\
+		void append(Data *);\n\
+		void append(const Set &);\n\
+		void remove(int index);\n\
+		void clear();\n\
+		Data & query(int index) const;\n\
+		bool empty() const;\n\
+		int size() const;\n\
+		bool isEqual(const Set &) const;\
+		|\
+		global:\
+		|\
+		bool operator==(const Set &a, const Set &b);\n\
+		bool operator!=(const Set &a, const Set &b);\
+	}"];
+
+	OrderedSet[label="{OrderedSet\<Type\>\
+		|\
+		OrderedSet();\n\
+		virtual ~OrderedSet();\n\
+		explicit OrderedSet(const OrderedSet &os);\n\
+		virtual OrderedSet & operator=(const OrderedSet &os);\n\
+		virtual void append(Type *t);\n\
+		virtual void remove(int i);\n\
+		virtual void clear();\n\
+		virtual void move(int from, int to);\n\
+		Type & query(int i) const;\n\
+		bool empty() const;\n\
+		int size() const;\n\
+		void sort();\n\
+		bool isEqual(const OrderedSet &os) const;\
+		|\
+		protected:\
+		|\
+		void equal(const OrderedSet &os);\
+		|\
+		private:\
+		|\
+		static bool qSortIsLess(const Type* s1, const Type* s2);\
+		|\
+		QList\<Type*\> data;\
+		|\
+		global:\
+		|\
+		template \<typename Type\> bool operator==(\n\
+			const OrderedSet\<Type\> &a, const OrderedSet\<Type\> &b);\n\
+		template \<typename Type\> bool operator!=(\n\
+			const OrderedSet\<Type\> &a, const OrderedSet\<Type\> &b);\
+	}"];
+
+	Tag[label="{Tag : QObject\
+		|\
+		explicit Tag(const QString &_name);\
+		|\
+		QString name;\n\
+		bool checked;\
+		}"];
+
+	Query[label="{Query : QObject\
+		|\
+		explicit Tag(const QString &_name);\
+		|\
+		QString name;\n\
+		QDate startDate;\n\
+		QDate endDate;\n\
+		TagSet tags;\
+		}"];
+
+	Item[label="{Item : QObject\
+		|\
+		explicit Tag(const QString &_name);\
+		|\
+		QString name;\n\
+		QDate uploaded;\n\
+		QDate purchased;\n\
+		int price;\n\
+		int quantity;\n\
+		bool onStock;\n\
+		unsigned amortYears;\n\
+		unsigned amortMonths;\n\
+		unsigned amortDays;\n\
+		QString comment;\n\
+		TagSet tags;\
+		}"];
+
+	TagSet[label="{TagSet : QObject\
+		|\
+		int indexByName(const QString &) const;\n\
+		Tag & queryByName(const QString &) const;\n\
+		bool hasByName(const QString &name) const;\
+		|\
+		private:\
+		|\
+		QMap\<QString, int\> nameToIndex;\n\
+		OrderedSet\<Tag\> data;\
+		}"];
+
+	QuerySet[label="{QuerySet : QObject\
+		|\
+		private:\
+		|\
+		QMap\<const QString*, const Query*\> nameToPtr;\n\
+		OrderedSet\<Query\> data;\
+		}"];
+
+	ItemSet[label="{ItemSet : QObject\
+		|\
+		private:\
+		|\
+		QMap\<const QString*, const Item*\> nameToPtr;\n\
+		OrderedSet\<Item\> data;\
+		}"];
+
+	Db[label="{Db (Interface)\
+		|{\
+		enum UserError\
+		|\
+			UNSPECIFIED_USER_ERROR = 0,\n\
+			UPDATE_ERROR_OBJECT_NOT_EXISTS,\n\
+			UPDATE_ERROR_OBJECT_CHANGED,\n\
+			OPEN_ERROR_OLD_DATABASE_SCHEMA,\n\
+			INCOMPATIBLE_DATABASE_SCHEMA\
+		}|\
+		Db();\n\
+		virtual ~Db();\n\
+		virtual bool connect() = 0;\n\
+		virtual bool open() = 0;\n\
+		virtual bool close() = 0;\n\
+		virtual bool create() = 0;\n\
+		virtual bool check() = 0;\n\
+		virtual bool update() = 0;\n\
+		virtual enum UserError lastUserErrorId() = 0;\n\
+		virtual const QString & lastUserError() = 0;\n\
+		virtual const QString & lastError() = 0;\n\
+		virtual ItemDb & item() = 0;\n\
+		virtual TagDb & tag() = 0;\n\
+		virtual QueryDb & query() = 0;\
+		}"];
+
+	TagDb[label="{TagDb (Interface)\
+		|\
+		}"];
+
+	QueryDb[label="{QueryDb (Interface)\
+		|\
+		virtual TagSet* query(const Query &) = 0;\
+		}"];
+
+	ItemDb[label="{ItemDb (Interface)\
+		|\
+		virtual TagSet* query(const Item &) = 0;\
+		}"];
+#endif
+}
+
+

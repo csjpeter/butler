@@ -1,0 +1,14 @@
+
+- ware nevének módosítása módosítsa a már megvásárolt termékek neveit is
+  hiba következmény: nem lehet olyan árúra keresni ami nem létezik az árulistában
+- gyors keresés ware, shop és tag listában
+- a query view-ban kilépés és újraindítás után más van kijelölve mint előtte, ha az újraindítás során változik a tag-lista. Valószínű pozíció szerint van mentve a választott tag.
+- keresőben tag-ek és/vagy kapcsolatban való használata, esetleg tiltó használat is, azaz, minden ami nem a megadott tag
+
+- accounting view shop combobox az új üzleteket nem illeszti be az abc sorend szerinti helyükre, csupán a lista végére
+- custom view-hoz olyan új termék is hozzáadódik felvitelkor, ami nem felel meg a keresési paramétereknek
+- a custom view-ban az ár szerinti rendezés darabáron van, nem pedig a kiírt összáron
+- query view-ban a select all button az alapértelmezett az ok helyett
+- asztalváltáskor/ablakfrissítéskor az accounting view-ban a kiválasztott bolt semmis lesz, ismét ki kell választani
+- asztal visszaváltáskor két sql query fut le
+

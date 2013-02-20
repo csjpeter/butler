@@ -1,0 +1,360 @@
+
+# We dont want to use built in rules. Those are ineffective and we
+# can never know all of them, thus those can be unexpected as well.
+
+.SUFFIXES:
+
+MAKEFLAGS += --no-builtin-rules --no-builtin-variables
+EMPTY=
+COMMA=,
+SPACE=$(EMPTY) $(EMPTY)
+SHELL=bash
+
+#
+#	Configuration part
+#
+
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+STATICS=@STATICS@
+DEFINES=@DEFINES@
+INCLUDES=@INCLUDES@
+CC=@CC@
+CXX=@CXX@
+CPP=@CPP@
+LD=@LD@
+STRIP=@STRIP@
+OBJCOPY=@OBJCOPY@
+MOC=@MOC@
+RANLIB=@RANLIB@
+PKGCONFIG=@PKGCONFIG@
+
+#
+# some tool
+#
+
+#cpp -dM /dev/null
+COMPILE=$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES)
+LINK=$(CXX) $(LDFLAGS) $^ $(STATICS) $(LIBS) -o $@
+LINK_DYNAMIC=$(CXX) -shared -Bdynamic $(LDFLAGS) $^ $(LIBS) \
+	     -Wl,-soname,$(basename $(notdir $@)) -o $@
+LINK_STATIC=ar cqs $@ $^
+
+TESTDIR=tmp/@PKGNAME@/test/
+
+tmp/src/test/%.o: src/test/%.cpp
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
+
+tmp/src/%.o: src/%.cpp
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) -o $@ $<
+
+@TCROOT@@PREFIX@include/@PKGNAME@/%.h: src/%.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp -pd $< $@
+
+#
+# build goals
+#
+
+TEST_BINARIES=\
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-string_chunk \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-string \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-time \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-file \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-mutex \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-thread \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-btree \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-container \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-sorter_container \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-owner_list \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-map \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-object_tree \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-ini \
+	@TCROOT@@PREFIX@bin/test-@PKGNAME@-json
+
+TEST_BINARIES_MAN_PAGES=\
+	@MANDIR@/test-@PKGNAME@-string_chunk.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-string.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-time.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-file.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-mutex.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-thread.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-btree.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-container.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-sorter_container.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-owner_list.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-map.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-object_tree.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-ini.@MANSECTION@ \
+	@MANDIR@/test-@PKGNAME@-json.@MANSECTION@
+
+DEVEL_HEADERS= \
+	@HEADERDIR@/devel/csjp_test.h \
+	@HEADERDIR@/devel/csjp_logger.h \
+	@HEADERDIR@/devel/csjp_exception.h \
+	@HEADERDIR@/devel/csjp_struct.h \
+	@HEADERDIR@/devel/csjp_object.h \
+	@HEADERDIR@/devel/csjp_cputimemeter.h \
+	@HEADERDIR@/devel/csjp_leak_hunter.h \
+	@HEADERDIR@/devel/csjp_utility.h
+
+ifneq (,$(findstring win32,@CONFIG@))
+	DEVEL_HEADERS+= @HEADERDIR@/devel/csjp_win32.h
+endif
+
+CONTAINER_HEADERS= \
+	@HEADERDIR@/container/csjp_btree.h \
+	@HEADERDIR@/container/csjp_ownerbtree.h \
+	@HEADERDIR@/container/csjp_container.h \
+	@HEADERDIR@/container/csjp_owner_container.h \
+	@HEADERDIR@/container/csjp_reference_container.h \
+	@HEADERDIR@/container/csjp_sorter_container.h \
+	@HEADERDIR@/container/csjp_sorter_owner_container.h \
+	@HEADERDIR@/container/csjp_sorter_reference_container.h \
+	@HEADERDIR@/container/csjp_owner_list.h \
+	@HEADERDIR@/container/csjp_map_entry.h \
+	@HEADERDIR@/container/csjp_map.h
+
+CORE_HEADERS= \
+	@HEADERDIR@/core/csjp_string_chunk.h \
+	@HEADERDIR@/core/csjp_string.h \
+	@HEADERDIR@/core/csjp_time.h \
+	@HEADERDIR@/core/csjp_file.h \
+	@HEADERDIR@/core/csjp_mutex.h \
+	@HEADERDIR@/core/csjp_thread.h
+
+OBJECT_TREE_HEADERS= \
+	@HEADERDIR@/object_tree/csjp_abstract_object_tree.h \
+	@HEADERDIR@/object_tree/csjp_object_tree.h \
+	@HEADERDIR@/object_tree/csjp_ini.h \
+	@HEADERDIR@/object_tree/csjp_json.h
+
+SSL_HEADERS= \
+	@HEADERDIR@/ssl/csjp_ssl_utils.h \
+	@HEADERDIR@/ssl/csjp_x509_certificate.h \
+	@HEADERDIR@/ssl/csjp_x509_certificate_chain.h
+
+ifneq (,$(findstring multicultural,@CONFIG@))
+	HUMAN_HEADERS= \
+	@HEADERDIR@/human/csjp_unichar.h \
+	@HEADERDIR@/human/csjp_text.h \
+	@HEADERDIR@/human/csjp_gregorian_datetime.h
+else
+	HUMAN_HEADERS=
+endif
+
+HEADERS=\
+	$(DEVEL_HEADERS) \
+	$(CONTAINER_HEADERS) \
+	$(CORE_HEADERS) \
+	$(OBJECT_TREE_HEADERS) \
+	$(HUMAN_HEADERS) \
+	$(SSL_HEADERS)
+
+#
+# temporary files
+#
+
+-include $(DEVEL_OBJECTS:.o=.d)
+
+DEVEL_OBJECTS= \
+	tmp/src/devel/csjp_logger.o \
+	tmp/src/devel/csjp_exception.o \
+	tmp/src/devel/csjp_cputimemeter.o \
+	tmp/src/devel/csjp_leak_hunter.o
+
+ifneq (,$(findstring win32,@CONFIG@))
+	DEVEL_OBJECTS+= tmp/src/devel/csjp_win32.o
+endif
+
+-include $(CORE_OBJECTS:.o=.d)
+
+CORE_OBJECTS= \
+	tmp/src/core/csjp_string_chunk.o \
+	tmp/src/core/csjp_string.o \
+	tmp/src/core/csjp_time.o \
+	tmp/src/core/csjp_file.o \
+	tmp/src/core/csjp_mutex.o \
+	tmp/src/core/csjp_thread.o
+
+-include $(HUMAN_OBJECTS:.o=.d)
+
+ifneq (,$(findstring multicultural,@CONFIG@))
+HUMAN_OBJECTS= \
+	tmp/src/human/csjp_unichar.o \
+	tmp/src/human/csjp_text.o \
+	tmp/src/human/csjp_gregorian_datetime.o
+else
+HUMAN_OBJECTS=
+endif
+
+-include $(OBJECT_TREE_OBJECTS:.o=.d)
+
+OBJECT_TREE_OBJECTS= \
+	tmp/src/object_tree/csjp_ini.o \
+	tmp/src/object_tree/csjp_json.o \
+	tmp/src/object_tree/csjp_object_tree.o
+
+-include $(SSL_OBJECTS:.o=.d)
+
+SSL_OBJECTS= \
+	tmp/src/ssl/csjp_x509_identity.o \
+	tmp/src/ssl/csjp_x509_identity_private.o \
+	tmp/src/ssl/csjp_x509_certificate_private.o \
+	tmp/src/ssl/csjp_x509_certificate.o \
+	tmp/src/ssl/csjp_x509_certificate_chain_private.o \
+	tmp/src/ssl/csjp_x509_certificate_chain.o \
+	tmp/src/ssl/csjp_key_private.o \
+	tmp/src/ssl/csjp_key.o \
+	tmp/src/ssl/csjp_server_private.o \
+	tmp/src/ssl/csjp_server.o \
+	tmp/src/ssl/csjp_transporter_private.o \
+	tmp/src/ssl/csjp_transporter.o \
+	tmp/src/ssl/csjp_crypto_algorithms.o
+
+-include $(TEST_OBJECTS:.o=.d)
+
+TEST_OBJECTS= \
+	tmp/src/test/string_chunk.o \
+	tmp/src/test/string.o \
+	tmp/src/test/time.o \
+	tmp/src/test/file.o \
+	tmp/src/test/mutex.o \
+	tmp/src/test/thread.o \
+	tmp/src/test/btree.o \
+	tmp/src/test/container.o \
+	tmp/src/test/sorter_container.o \
+	tmp/src/owner_list.o \
+	tmp/src/test/map.o \
+	tmp/src/object_tree.o \
+	tmp/src/test/ini.o \
+	tmp/src/test/json.o \
+	tmp/src/test/unichar.o \
+	tmp/src/test/text.o \
+	tmp/src/test/datetime.o
+
+#
+# main rules
+#
+
+all: \
+	build \
+	doxygen \
+	debian/@PKGNAME@.install \
+	debian/@PKGNAME@-dev.install \
+	debian/@PKGNAME@-doc.install \
+	debian/@PKGNAME@-test.install
+
+build: \
+	$(HEADERS) \
+	@TCROOT@@STATIC_LIBCSJP@ \
+	@TCROOT@@DYNAMIC_LIBCSJP@ \
+	@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@ \
+	@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@ \
+	@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_MAJOR@ \
+	$(TEST_BINARIES) \
+	$(TEST_BINARIES_MAN_PAGES)
+
+clean:
+	test "x" = "x$(shell find . | grep \\~$$)" || rm $(shell find . | grep \\~$$)
+	test "x" = "x$(shell find . | grep \\.swp$$)" || rm $(shell find . | grep \\.swp$$)
+	test "x" = "x$(shell find . | grep \\.log$$)" || rm $(shell find . | grep \\.log$$)
+	! test -d tmp || rm -fr tmp
+	! test -d @PREFIX@lib || rm -fr @PREFIX@lib
+	! test -d @PREFIX@share || rm -fr @PREFIX@share
+	! test -d @PREFIX@test || rm -fr @PREFIX@test
+	! test -d @PREFIX@include || rm -fr @PREFIX@include
+	test "x" = "x@PREFIX@" || { ! test -d @PREFIX@ || rmdir @PREFIX@ ; }
+	! test -e Makefile || rm Makefile
+	! test -e doxyfile || rm doxyfile
+
+install: build
+	test -d $(DESTDIR) || mkdir -p $(DESTDIR)
+	test -d $(DESTDIR)/@PREFIX@ || mkdir -p $(DESTDIR)/@PREFIX@
+	cp -pdr @TCROOT@@PREFIX@lib $(DESTDIR)/@PREFIX@lib
+	cp -pdr @TCROOT@@PREFIX@share $(DESTDIR)/@PREFIX@share
+	cp -pdr @TCROOT@@PREFIX@bin $(DESTDIR)/@PREFIX@bin
+	cp -pdr @TCROOT@@PREFIX@include $(DESTDIR)/@PREFIX@include
+
+check: $(TEST_BINARIES)
+	@let RET=0; \
+	mkdir -p $(TESTDIR); \
+	for t in $(TEST_BINARIES); do \
+		LD_LIBRARY_PATH=@TCROOT@@PREFIX@lib $$t || let RET=$$?; \
+	done; \
+	test $$RET -eq 0 || { \
+		echo -e "\e[31m"; \
+		echo "There was some failure during testing !"; \
+		echo -e "\e[0m"; \
+		false ; \
+	}
+
+@DOCDIR@/html/index.html: $(HEADERS)
+	@test -d @DOCDIR@ || mkdir -p @DOCDIR@
+	doxygen - < doxyfile
+
+doxygen: @DOCDIR@/html/index.html
+
+debian: FORCE
+	debuild -nc
+
+debian-src: FORCE
+	debuild -S
+
+FORCE:
+
+#
+#	build rules
+#
+
+@TCROOT@@STATIC_LIBCSJP@: \
+		$(DEVEL_OBJECTS) \
+		$(CORE_OBJECTS) \
+		$(TEXT_OBJECTS) \
+		$(OBJECT_TREE_OBJECTS) \
+		$(SSL_OBJECTS)
+	test -d $(dir $@) || mkdir -p $(dir $@)
+	$(LINK_STATIC)
+	$(RANLIB) $@
+
+@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@: \
+		$(DEVEL_OBJECTS) \
+		$(CORE_OBJECTS) \
+		$(TEXT_OBJECTS) \
+		$(OBJECT_TREE_OBJECTS) \
+		$(SSL_OBJECTS)
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(LINK_DYNAMIC)
+#	@test -d $(dir @TCROOT@@PREFIX@lib/debug/@DYNAMIC_LIBCSJP@.@VERSION@) || \
+#		mkdir -p $(dir @TCROOT@@PREFIX@lib/debug/@DYNAMIC_LIBCSJP@.@VERSION@)
+#	$(OBJCOPY) --only-keep-debug $@ @TCROOT@@PREFIX@lib/debug/@DYNAMIC_LIBCSJP@.@VERSION@
+#	$(STRIP) --strip-debug $@
+	#$(LD) -shared -as-needed $(LIBS) $^ -o $@
+	#$(OBJCOPY) --add-gnu-debuglink=@TCROOT@@PREFIX@lib/debug/@DYNAMIC_LIBCSJP@.@VERSION@ $@
+
+@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@ : \
+		| @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@
+	ln -s $(notdir @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@) $@
+
+@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_MAJOR@ : \
+		| @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@
+	ln -s $(notdir @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@) $@
+
+@TCROOT@@DYNAMIC_LIBCSJP@ : \
+		| @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@
+	ln -s $(notdir @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@) $@
+
+@TCROOT@@PREFIX@bin/test-@PKGNAME@-% : \
+		tmp/src/test/%.o \
+		@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(CXX) $(LDFLAGS) tmp/src/test/$*.o \
+		@TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@ $(STATICS) $(LIBS) -o $@
+
+@MANDIR@/test-@PKGNAME@-%.@MANSECTION@ :
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	echo ".so man@MANSECTION@/@PKGNAME@-test.@MANSECTION@" > $@
+

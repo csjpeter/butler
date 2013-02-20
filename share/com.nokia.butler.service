@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.nokia.butler
+Exec=/usr/bin/butler

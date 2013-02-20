@@ -1,0 +1,64 @@
+/* vim:set noet sw=8 ts=8 sts=8: */
+#include "style.inc"
+
+digraph class_butler {
+	DEFAULTS;
+
+	/*
+	 *  Declaration and organization
+	 */
+
+	{ PACKAGE FOREIGN
+		sqlite3;
+	}
+
+	subgraph clusterQt { PACKAGE FOREIGN
+		label="Qt4"
+		qt4_core;
+		qt4_sql;
+		qt4_gui;
+	}
+
+	subgraph clusterButler {
+		label="Butler";
+		{ PACKAGE LAYER(package)
+			butler_datamodel;
+			butler_sqlite;
+			butler_gui;
+		}
+	}
+
+	{ rank=min;
+	}
+
+	{ rank=same;
+	}
+
+	{ rank=max;
+	}
+
+	/*
+	 *  Relations
+	 */
+
+	{ DEPENDENCY
+
+		qt4_gui -> qt4_core;
+		qt4_sql -> qt4_core;
+
+		butler_datamodel -> qt4_core;
+		butler_sqlite -> sqlite3;
+		butler_sqlite -> qt4_core;
+		butler_sqlite -> qt4_sql;
+		butler_sqlite -> butler_datamodel;
+
+		butler_gui -> butler_sqlite;
+		butler_gui -> butler_datamodel;
+	}
+
+	{ KNOWLEDGE
+		qt4_sql -> sqlite3 [headlabel="backend"];
+	}
+
+}
+

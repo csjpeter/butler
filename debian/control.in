@@ -1,0 +1,43 @@
+Source: @PKGNAME@
+Section: devel
+Priority: optional
+Maintainer: @AUTHOR@ <@EMAIL@>
+Standards-Version: 3.9.3
+Build-Depends: make (>=3.0.0), dpkg (>=1.15.0), gawk | mawk, tar (>=1.0.0), gzip (>=1.0.0),
+ debhelper (>= 9), pkg-config (>= 0.25), libc6 (>=2.0.0)
+
+Package: @PKGNAME@
+Section: libs
+Architecture: @DEBIAN_ARCH@
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: @PRJDESC@
+@PRJDESCRIPTION@
+
+Package: @PKGNAME@-dbg
+Section: debug
+Priority: extra
+Architecture: @DEBIAN_ARCH@
+Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}
+Description: Debug files for @PKGNAME@
+@PRJDESCRIPTION@
+
+Package: @PKGNAME@-test
+Section: devel
+Architecture: @DEBIAN_ARCH@
+Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Description: Test binaries for @PKGNAME@
+@PRJDESCRIPTION@
+
+Package: @PKGNAME@-dev
+Section: libdevel
+Architecture: @DEBIAN_ARCH@
+Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}
+Description: Development files for @PKGNAME@
+@PRJDESCRIPTION@
+
+Package: @PKGNAME@-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: Documentation for @PKGNAME@
+@PRJDESCRIPTION@

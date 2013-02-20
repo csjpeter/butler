@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# param 1 : inflie
+# param 2 : outfile
+function configure ()
+{
+	cat $1 | sed \
+		-e "s|@PREFIX@|${PREFIX}|g" \
+		-e "s|@TCROOT@|${TCROOT}|g" \
+		-e "s|@INCLUDES@|${INCLUDES}|g" \
+		-e "s|@CFLAGS@|${CFLAGS}|g" \
+		-e "s|@LDFLAGS@|${LDFLAGS}|g" \
+		-e "s|@LIBS@|${LIBS}|g" \
+		-e "s|@STATICS@|${STATICS}|g" \
+		-e "s|@DEFINES@|${DEFINES}|g" \
+		-e "s|@CXX@|${CXX}|g" \
+		-e "s|@CC@|${CC}|g" \
+		-e "s|@CPP@|${CPP}|g" \
+		-e "s|@LD@|${LD}|g" \
+		-e "s|@STRIP@|${STRIP}|g" \
+		-e "s|@RANLIB@|${RANLIB}|g" \
+		-e "s|@OBJCOPY@|${OBJCOPY}|g" \
+		-e "s|@MOC@|${MOC}|g" \
+		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
+		-e "s|@CONFIG@|${CONFIG}|g" \
+		-e "s|@HEADERDIR@|${HEADERDIR}|g" \
+		-e "s|@DOCDIR@|${DOCDIR}|g" \
+		-e "s|@STATIC_LIBCSJP@|${STATIC_LIBCSJP}|g" \
+		-e "s|@DYNAMIC_LIBCSJP@|${DYNAMIC_LIBCSJP}|g" \
+		-e "s|@PKGCONFIGDIR@|${PKGCONFIGDIR}|g" \
+		-e "s|@MANSECTION@|${MANSECTION}|g" \
+		-e "s|@MANDIR@|${MANDIR}|g" \
+		> $2 || exit $?
+}
+
+source config
+
+PKGNAME=@PKGNAME@
+
+PREFIX=usr
+
+DEBUG=no
+
+while ! test "x$1" = "x"; do
+	KEY=$(echo $1 | sed 's|=.*||g')
+	VALUE=$(echo $1 | sed 's|.*=||g')
+
+	case ${KEY} in
+		(--build)
+			! test "x${VALUE}" = "x" || {
+				echo "Missing build architecture value."
+				exit $?
+			}
+			BUILD_ARCH="${VALUE}"
+		;;
+		(--host)
+			! test "x${VALUE}" = "x" || {
+				echo "Missing host architecture value."
+				exit $?
+			}
+			HOST_ARCH="${VALUE}"
+		;;
+		(--target)
+			! test "x${VALUE}" = "x" || {
+				echo "Missing target architecture value."
+				exit $?
+			}
+			TARGET_ARCH="${VALUE}"
+		;;
+		(--prefix)
+			PREFIX="${VALUE}"
+		;;
+		(--tcroot)
+			TCROOT="${VALUE}"
+		;;
+		(--multicultural)
+			LIBS="${LIBS} $(${PKGCONFIG} --libs icu-uc)"
+			CONFIG="${CONFIG} multicultural"
+			DEFINES="${DEFINES} -DSTLCOMPATIBLE"
+			#LIBS+=-licuuc -licudata
+		;;
+		(--debug)
+			CFLAGS="${CFLAGS} -fno-builtin -O0"
+			DEFINES="${DEFINES} -DDEBUG"
+			DEBUG=yes
+		;;
+		(--gnu-source)
+			CFLAGS="${CFLAGS} -D_GNU_SOURCE"
+		;;
+		(--fpic)
+			CFLAGS="${CFLAGS} -fPIC"
+		;;
+		(--win32)
+			DEFINES="${DEFINES} -DWIN32COMPAT"
+			CONFIG="${CONFIG} win32"
+		;;
+		(--perfmode)
+			DEFINES="${DEFINES} -DPERFMODE"
+		;;
+		(--stlcompatible)
+			DEFINES="${DEFINES} -DSTLCOMPATIBLE"
+		;;
+		(*)
+			echo "Invalid argument ($1) found on command line."
+			exit 1
+		;;
+	esac
+	shift
+done
+
+! test ${DEBUG} = "no" || { CFLAGS="${CFLAGS} -O2" ; }
+
+! test "x${HOST_ARCH}" = "x" || { HOST_ARCH=${BUILD_ARCH} ; }
+! test "x${TARGET_ARCH}" = "x" || { TARGET_ARCH=${HOST_ARCH} ; }
+
+test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
+	CXX=g++
+	CC=cc
+	CPP=cpp
+	LD=ld
+	STRIP=strip
+	OBJCOPY=objcopy
+	MOC=moc
+	RANLIB=ranlib
+	PKGCONFIG=pkg-config
+} || {
+	CXX=${TARGET_ARCH}-g++
+	CC=${TARGET_ARCH}-cc
+	CPP=${TARGET_ARCH}-cpp
+	LD=${TARGET_ARCH}-ld
+	STRIP=${TARGET_ARCH}-strip
+	OBJCOPY=${TARGET_ARCH}-objcopy
+	MOC=${TARGET_ARCH}-moc
+	RANLIB=${TARGET_ARCH}-ranlib
+	PKGCONFIG=${TARGET_ARCH}-pkg-config
+}
+
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libssl)"
+LIBS="${LIBS} $(${PKGCONFIG} --libs libssl)"
+LIBS="${LIBS} $(${PKGCONFIG} --libs libcrypto)"
+
+INCLUDES="${INCLUDES} -Isrc \
+-Isrc/devel -Isrc/container -Isrc/core -Isrc/human -Isrc/object_tree -Isrc/ssl"
+
+DEFINES="${DEFINES} -DVERSION=\"${VERSION}\" -DPREFIX=\"${PREFIX}\" -DPKGNAME=\"${PKGNAME}\" \
+-DAUTHOR=\"${AUTHOR}\" -DEMAIL=\"${EMAIL}\""
+
+TCROOT="${TCROOT}"
+
+LDFLAGS="${LDFLAGS} -Wl,--as-needed"
+STATICS="${STATICS}"
+
+CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
+
+# Adjusting PREFIX and TCROOT if non-empty
+test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
+test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
+
+HEADERDIR=${TCROOT}${PREFIX}include/${PKGNAME}
+DOCDIR=${TCROOT}${PREFIX}/share/doc/${PKGNAME}
+
+STATIC_LIBCSJP=${PREFIX}lib/${PKGNAME}.a
+DYNAMIC_LIBCSJP=${PREFIX}lib/${PRJNAME}.so
+
+PKGCONFIGDIR=${TCROOT}${PREFIX}lib/pkgconfig
+MANSECTION=1
+MANDIR=${TCROOT}${PREFIX}share/man/man${MANSECTION}
+
+configure Makefile.in Makefile || exit $?
+configure doxyfile.in doxyfile || exit $?
+configure debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
+configure debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
+configure debian/${PKGNAME}-test.install.in debian/${PKGNAME}-test.install || exit $?
+configure debian/${PKGNAME}-dev.install.in debian/${PKGNAME}-dev.install || exit $?
+configure debian/${PKGNAME}-doc.install.in debian/${PKGNAME}-doc.install || exit $?
+
+test -d ${PKGCONFIGDIR} || { mkdir -p ${PKGCONFIGDIR} || exit $? ; }
+configure pc.in ${PKGCONFIGDIR}/${PKGNAME}.pc || exit $?
+
+test -d ${MANDIR} || { mkdir -p ${MANDIR} || exit $? ; }
+configure test.man.in ${MANDIR}/${PKGNAME}-test.${MANSECTION} || exit $?
+
