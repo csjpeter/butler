@@ -95,8 +95,8 @@ configure Makefile.in ${DIST_DIR}/Makefile.in || exit $?
 configure license.in ${DIST_DIR}/license.binary || exit $?
 configure srclicense.in ${DIST_DIR}/license.source || exit $?
 configure doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
-configure pc.in ${DIST_DIR}/pc.in || exit $?
-configure test.man.in ${DIST_DIR}/test.man.in || exit $?
+configure butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
+configure butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 
 for f in $(find src -name *.h); do
 	make -f source.mk DIST_DIR=${DIST_DIR} ${DIST_DIR}/$f -s

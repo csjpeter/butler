@@ -12,7 +12,7 @@ export LIBS="-lgnurx -lpthread"
 	--tcroot=opt/csjp/mxe/i686-pc-mingw32 \
 	--gnu-source \
 	--win32 \
-	--stlcompatible
+	--stlcompatible || exit $?
 
 export PATH=${PATH}:${PWD}/precise-x-mxe/opt/csjp/mxe/i686-pc-mingw32/lib
 pushd precise-x-mxe > /dev/null || exit $?

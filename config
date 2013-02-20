@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRJNAME=libcsjp
+PRJNAME=butler
 
 VERSION_MAJOR=0
 VERSION_MINOR=4

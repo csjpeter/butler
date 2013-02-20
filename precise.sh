@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./dist-config.sh -- --fpic --gnu-source
+./dist-config.sh -- --fpic --gnu-source || exit $?
 
 pushd precise > /dev/null || exit $?
 make $1

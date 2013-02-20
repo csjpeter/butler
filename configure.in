@@ -159,10 +159,8 @@ test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 HEADERDIR=${TCROOT}${PREFIX}include/${PKGNAME}
 DOCDIR=${TCROOT}${PREFIX}/share/doc/${PKGNAME}
 
-STATIC_LIBCSJP=${PREFIX}lib/${PKGNAME}.a
-DYNAMIC_LIBCSJP=${PREFIX}lib/${PRJNAME}.so
-
 PKGCONFIGDIR=${TCROOT}${PREFIX}lib/pkgconfig
+APPSDIR=${TCROOT}${PREFIX}share/applications
 MANSECTION=1
 MANDIR=${TCROOT}${PREFIX}share/man/man${MANSECTION}
 
@@ -174,9 +172,9 @@ configure debian/${PKGNAME}-test.install.in debian/${PKGNAME}-test.install || ex
 configure debian/${PKGNAME}-dev.install.in debian/${PKGNAME}-dev.install || exit $?
 configure debian/${PKGNAME}-doc.install.in debian/${PKGNAME}-doc.install || exit $?
 
-test -d ${PKGCONFIGDIR} || { mkdir -p ${PKGCONFIGDIR} || exit $? ; }
-configure pc.in ${PKGCONFIGDIR}/${PKGNAME}.pc || exit $?
+test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
+configure butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 
 test -d ${MANDIR} || { mkdir -p ${MANDIR} || exit $? ; }
-configure test.man.in ${MANDIR}/${PKGNAME}-test.${MANSECTION} || exit $?
+configure butler.man.in ${MANDIR}/${PKGNAME}-test.${MANSECTION} || exit $?
 
