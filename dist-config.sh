@@ -126,9 +126,6 @@ echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
 
 configure debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
 configure debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
-configure debian/test.install.in ${DIST_DIR}/debian/${PKGNAME}-test.install.in || exit $?
-configure debian/dev.install.in ${DIST_DIR}/debian/${PKGNAME}-dev.install.in || exit $?
-configure debian/doc.install.in ${DIST_DIR}/debian/${PKGNAME}-doc.install.in || exit $?
 
 # auto calling configure
 test "x$1" = "x" || { cd ${DIST_DIR} && ./configure.sh "$@" || exit $? ; }

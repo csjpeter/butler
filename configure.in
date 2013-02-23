@@ -134,17 +134,17 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags csjp-00.3)"
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.4)"
 echo "${CONFIG}" | grep win32 && {
 #	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtCore)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtSql)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtGui)"
-	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs csjp-00.3)"
+	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs libcsjp0.4)"
 } || {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)"
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)"
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)"
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs csjp-00.3)"
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.4)"
 }
 
 DEFINES="${DEFINES} -DVERSION=\"${VERSION}\" -DPREFIX=\"${PREFIX}\" -DPKGNAME=\"${PKGNAME}\" \

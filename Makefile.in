@@ -95,22 +95,22 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 #
 
 TEST_BINARIES=\
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-dbifc \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-item \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-item_set \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-query \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-query_set \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-shop \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-shop_set \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-tag \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-tag_set \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-ware \
-	@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-ware_set \
-	@TCROOT@tmp/bin/test-@PKGNAME@-sqlite-item \
-	@TCROOT@tmp/bin/test-@PKGNAME@-sqlite-query \
-	@TCROOT@tmp/bin/test-@PKGNAME@-sqlite-shop \
-	@TCROOT@tmp/bin/test-@PKGNAME@-sqlite-tag \
-	@TCROOT@tmp/bin/test-@PKGNAME@-sqlite-ware
+	tmp/bin/test-@PKGNAME@-datamodel-dbifc \
+	tmp/bin/test-@PKGNAME@-datamodel-item \
+	tmp/bin/test-@PKGNAME@-datamodel-item_set \
+	tmp/bin/test-@PKGNAME@-datamodel-query \
+	tmp/bin/test-@PKGNAME@-datamodel-query_set \
+	tmp/bin/test-@PKGNAME@-datamodel-shop \
+	tmp/bin/test-@PKGNAME@-datamodel-shop_set \
+	tmp/bin/test-@PKGNAME@-datamodel-tag \
+	tmp/bin/test-@PKGNAME@-datamodel-tag_set \
+	tmp/bin/test-@PKGNAME@-datamodel-ware \
+	tmp/bin/test-@PKGNAME@-datamodel-ware_set \
+	tmp/bin/test-@PKGNAME@-sqlite-item \
+	tmp/bin/test-@PKGNAME@-sqlite-query \
+	tmp/bin/test-@PKGNAME@-sqlite-shop \
+	tmp/bin/test-@PKGNAME@-sqlite-tag \
+	tmp/bin/test-@PKGNAME@-sqlite-ware
 
 #
 # temporary files
@@ -119,16 +119,16 @@ TEST_BINARIES=\
 -include $(DATAMODEL_OBJECTS:.o=.d)
 
 DATAMODEL_OBJECTS= \
-	@TCROOT@tmp/src/datamodel/butler_item.opp \
-	@TCROOT@tmp/src/datamodel/butler_item_set.opp \
-	@TCROOT@tmp/src/datamodel/butler_query.opp \
-	@TCROOT@tmp/src/datamodel/butler_query_set.opp \
-	@TCROOT@tmp/src/datamodel/butler_shop.opp \
-	@TCROOT@tmp/src/datamodel/butler_shop_set.opp \
-	@TCROOT@tmp/src/datamodel/butler_tag.opp \
-	@TCROOT@tmp/src/datamodel/butler_tag_set.opp \
-	@TCROOT@tmp/src/datamodel/butler_ware.opp \
-	@TCROOT@tmp/src/datamodel/butler_ware_set.opp
+	tmp/src/datamodel/butler_item.opp \
+	tmp/src/datamodel/butler_item_set.opp \
+	tmp/src/datamodel/butler_query.opp \
+	tmp/src/datamodel/butler_query_set.opp \
+	tmp/src/datamodel/butler_shop.opp \
+	tmp/src/datamodel/butler_shop_set.opp \
+	tmp/src/datamodel/butler_tag.opp \
+	tmp/src/datamodel/butler_tag_set.opp \
+	tmp/src/datamodel/butler_ware.opp \
+	tmp/src/datamodel/butler_ware_set.opp
 
 DATAMODEL_INCLUDES=-Isrc/datamodel
 
@@ -137,26 +137,26 @@ STATIC_LIBDATAMODEL=@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-datamodel.a
 -include $(SQLITE_OBJECTS:.o=.d)
 
 SQLITE_OBJECTS= \
-	@TCROOT@tmp/src/sqlite/butler_sqlitedb.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_itembought.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_item.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_item_db.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_queries.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_queries_db.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_queryshops.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_querytags.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_querywares.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_schemaversion.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_shop.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_shop_db.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_sql.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_sqlquery.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_tag.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_tag_db.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_warecategories.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_ware.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_ware_db.opp \
-	@TCROOT@tmp/src/sqlite/butler_sqlite_waretags.opp
+	tmp/src/sqlite/butler_sqlitedb.opp \
+	tmp/src/sqlite/butler_sqlite_itembought.opp \
+	tmp/src/sqlite/butler_sqlite_item.opp \
+	tmp/src/sqlite/butler_sqlite_item_db.opp \
+	tmp/src/sqlite/butler_sqlite_queries.opp \
+	tmp/src/sqlite/butler_sqlite_queries_db.opp \
+	tmp/src/sqlite/butler_sqlite_queryshops.opp \
+	tmp/src/sqlite/butler_sqlite_querytags.opp \
+	tmp/src/sqlite/butler_sqlite_querywares.opp \
+	tmp/src/sqlite/butler_sqlite_schemaversion.opp \
+	tmp/src/sqlite/butler_sqlite_shop.opp \
+	tmp/src/sqlite/butler_sqlite_shop_db.opp \
+	tmp/src/sqlite/butler_sqlite_sql.opp \
+	tmp/src/sqlite/butler_sqlite_sqlquery.opp \
+	tmp/src/sqlite/butler_sqlite_tag.opp \
+	tmp/src/sqlite/butler_sqlite_tag_db.opp \
+	tmp/src/sqlite/butler_sqlite_warecategories.opp \
+	tmp/src/sqlite/butler_sqlite_ware.opp \
+	tmp/src/sqlite/butler_sqlite_ware_db.opp \
+	tmp/src/sqlite/butler_sqlite_waretags.opp
 
 SQLITE_INCLUDES=-Isrc/sqlite
 
@@ -165,67 +165,67 @@ STATIC_LIBSQLITE=@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-sqlite.a
 -include $(BUTLERQT_OBJECTS:.o=.d)
 
 BUTLERQT_OBJECTS= \
-	@TCROOT@tmp/src/qt/butler_accountingview.opp \
-	@TCROOT@tmp/src/qt/butler_application.opp \
-	@TCROOT@tmp/src/qt/butler_buyitemview.opp \
-	@TCROOT@tmp/src/qt/butler_config.opp \
-	@TCROOT@tmp/src/qt/butler_custommodel.opp \
-	@TCROOT@tmp/src/qt/butler_customview.opp \
-	@TCROOT@tmp/src/qt/butler_edititemview.opp \
-	@TCROOT@tmp/src/qt/butler_editshopview.opp \
-	@TCROOT@tmp/src/qt/butler_edittagview.opp \
-	@TCROOT@tmp/src/qt/butler_editwareview.opp \
-	@TCROOT@tmp/src/qt/butler_itemsmodel.opp \
-	@TCROOT@tmp/src/qt/butler_localdb.opp \
-	@TCROOT@tmp/src/qt/butler_mainview.opp \
-	@TCROOT@tmp/src/qt/butler_newitemview.opp \
-	@TCROOT@tmp/src/qt/butler_newshopview.opp \
-	@TCROOT@tmp/src/qt/butler_newtagview.opp \
-	@TCROOT@tmp/src/qt/butler_newwareview.opp \
-	@TCROOT@tmp/src/qt/butler_queryoptionsview.opp \
-	@TCROOT@tmp/src/qt/butler_shoppingmodel.opp \
-	@TCROOT@tmp/src/qt/butler_shoppingview.opp \
-	@TCROOT@tmp/src/qt/butler_shopsmodel.opp \
-	@TCROOT@tmp/src/qt/butler_shopsview.opp \
-	@TCROOT@tmp/src/qt/butler_stockmodel.opp \
-	@TCROOT@tmp/src/qt/butler_stockview.opp \
-	@TCROOT@tmp/src/qt/butler_tagfilterview.opp \
-	@TCROOT@tmp/src/qt/butler_tagsmodel.opp \
-	@TCROOT@tmp/src/qt/butler_tagsview.opp \
-	@TCROOT@tmp/src/qt/butler_tagwidget.opp \
-	@TCROOT@tmp/src/qt/butler_waresmodel.opp \
-	@TCROOT@tmp/src/qt/butler_waresview.opp \
-	@TCROOT@tmp/src/qt/main.opp \
-	@TCROOT@tmp/src/qt/moc/butler_accountingview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_application.opp \
-	@TCROOT@tmp/src/qt/moc/butler_buyitemview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_config.opp \
-	@TCROOT@tmp/src/qt/moc/butler_custommodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_customview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_edititemview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_editshopview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_edittagview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_editwareview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_itemsmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_localdb.opp \
-	@TCROOT@tmp/src/qt/moc/butler_mainview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_newitemview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_newshopview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_newtagview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_newwareview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_queryoptionsview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_shoppingmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_shoppingview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_shopsmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_shopsview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_stockmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_stockview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_tagfilterview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_tagsmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_tagsview.opp \
-	@TCROOT@tmp/src/qt/moc/butler_tagwidget.opp \
-	@TCROOT@tmp/src/qt/moc/butler_waresmodel.opp \
-	@TCROOT@tmp/src/qt/moc/butler_waresview.opp
+	tmp/src/qt/butler_accountingview.opp \
+	tmp/src/qt/butler_application.opp \
+	tmp/src/qt/butler_buyitemview.opp \
+	tmp/src/qt/butler_config.opp \
+	tmp/src/qt/butler_custommodel.opp \
+	tmp/src/qt/butler_customview.opp \
+	tmp/src/qt/butler_edititemview.opp \
+	tmp/src/qt/butler_editshopview.opp \
+	tmp/src/qt/butler_edittagview.opp \
+	tmp/src/qt/butler_editwareview.opp \
+	tmp/src/qt/butler_itemsmodel.opp \
+	tmp/src/qt/butler_localdb.opp \
+	tmp/src/qt/butler_mainview.opp \
+	tmp/src/qt/butler_newitemview.opp \
+	tmp/src/qt/butler_newshopview.opp \
+	tmp/src/qt/butler_newtagview.opp \
+	tmp/src/qt/butler_newwareview.opp \
+	tmp/src/qt/butler_queryoptionsview.opp \
+	tmp/src/qt/butler_shoppingmodel.opp \
+	tmp/src/qt/butler_shoppingview.opp \
+	tmp/src/qt/butler_shopsmodel.opp \
+	tmp/src/qt/butler_shopsview.opp \
+	tmp/src/qt/butler_stockmodel.opp \
+	tmp/src/qt/butler_stockview.opp \
+	tmp/src/qt/butler_tagfilterview.opp \
+	tmp/src/qt/butler_tagsmodel.opp \
+	tmp/src/qt/butler_tagsview.opp \
+	tmp/src/qt/butler_tagwidget.opp \
+	tmp/src/qt/butler_waresmodel.opp \
+	tmp/src/qt/butler_waresview.opp \
+	tmp/src/qt/main.opp \
+	tmp/src/qt/moc/butler_accountingview.opp \
+	tmp/src/qt/moc/butler_application.opp \
+	tmp/src/qt/moc/butler_buyitemview.opp \
+	tmp/src/qt/moc/butler_config.opp \
+	tmp/src/qt/moc/butler_custommodel.opp \
+	tmp/src/qt/moc/butler_customview.opp \
+	tmp/src/qt/moc/butler_edititemview.opp \
+	tmp/src/qt/moc/butler_editshopview.opp \
+	tmp/src/qt/moc/butler_edittagview.opp \
+	tmp/src/qt/moc/butler_editwareview.opp \
+	tmp/src/qt/moc/butler_itemsmodel.opp \
+	tmp/src/qt/moc/butler_localdb.opp \
+	tmp/src/qt/moc/butler_mainview.opp \
+	tmp/src/qt/moc/butler_newitemview.opp \
+	tmp/src/qt/moc/butler_newshopview.opp \
+	tmp/src/qt/moc/butler_newtagview.opp \
+	tmp/src/qt/moc/butler_newwareview.opp \
+	tmp/src/qt/moc/butler_queryoptionsview.opp \
+	tmp/src/qt/moc/butler_shoppingmodel.opp \
+	tmp/src/qt/moc/butler_shoppingview.opp \
+	tmp/src/qt/moc/butler_shopsmodel.opp \
+	tmp/src/qt/moc/butler_shopsview.opp \
+	tmp/src/qt/moc/butler_stockmodel.opp \
+	tmp/src/qt/moc/butler_stockview.opp \
+	tmp/src/qt/moc/butler_tagfilterview.opp \
+	tmp/src/qt/moc/butler_tagsmodel.opp \
+	tmp/src/qt/moc/butler_tagsview.opp \
+	tmp/src/qt/moc/butler_tagwidget.opp \
+	tmp/src/qt/moc/butler_waresmodel.opp \
+	tmp/src/qt/moc/butler_waresview.opp
 
 BUTLERQT_INCLUDES=-Isrc/qt
 
