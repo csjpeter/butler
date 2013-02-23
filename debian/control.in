@@ -20,24 +20,3 @@ Architecture: @DEBIAN_ARCH@
 Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}
 Description: Debug files for @PKGNAME@
 @PRJDESCRIPTION@
-
-Package: @PKGNAME@-test
-Section: devel
-Architecture: @DEBIAN_ARCH@
-Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-Description: Test binaries for @PKGNAME@
-@PRJDESCRIPTION@
-
-Package: @PKGNAME@-dev
-Section: libdevel
-Architecture: @DEBIAN_ARCH@
-Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}
-Description: Development files for @PKGNAME@
-@PRJDESCRIPTION@
-
-Package: @PKGNAME@-doc
-Section: doc
-Architecture: all
-Depends: ${misc:Depends}
-Description: Documentation for @PKGNAME@
-@PRJDESCRIPTION@

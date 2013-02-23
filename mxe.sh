@@ -14,7 +14,6 @@ export LIBS="-lgnurx -lpthread"
 	--win32 \
 	--stlcompatible || exit $?
 
-export PATH=${PATH}:${PWD}/precise-x-mxe/opt/csjp/mxe/i686-pc-mingw32/lib
 pushd precise-x-mxe > /dev/null || exit $?
 make $1
 let RET=$?

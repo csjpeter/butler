@@ -2,7 +2,7 @@
 Name=ButlerQt @VERSION_API@
 Caption=Butler
 GenericName=@PRJDESC@
-MimeType=application/butler
+MimeType=application/@PRJNAME@
 Exec=/usr/bin/@PKGNAME@
 Type=Application
 Encoding=UTF-8

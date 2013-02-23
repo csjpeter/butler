@@ -21,13 +21,9 @@ function configure ()
 		-e "s|@RANLIB@|${RANLIB}|g" \
 		-e "s|@OBJCOPY@|${OBJCOPY}|g" \
 		-e "s|@MOC@|${MOC}|g" \
+		-e "s|@DOCDIR@|${DOCDIR}|g" \
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
-		-e "s|@HEADERDIR@|${HEADERDIR}|g" \
-		-e "s|@DOCDIR@|${DOCDIR}|g" \
-		-e "s|@STATIC_LIBCSJP@|${STATIC_LIBCSJP}|g" \
-		-e "s|@DYNAMIC_LIBCSJP@|${DYNAMIC_LIBCSJP}|g" \
-		-e "s|@PKGCONFIGDIR@|${PKGCONFIGDIR}|g" \
 		-e "s|@MANSECTION@|${MANSECTION}|g" \
 		-e "s|@MANDIR@|${MANDIR}|g" \
 		> $2 || exit $?
@@ -135,15 +131,25 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 	PKGCONFIG=${TARGET_ARCH}-pkg-config
 }
 
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libssl)"
-LIBS="${LIBS} $(${PKGCONFIG} --libs libssl)"
-LIBS="${LIBS} $(${PKGCONFIG} --libs libcrypto)"
-
-INCLUDES="${INCLUDES} -Isrc \
--Isrc/devel -Isrc/container -Isrc/core -Isrc/human -Isrc/object_tree -Isrc/ssl"
+#CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags csjp-00.3)"
+echo "${CONFIG}" | grep win32 && {
+#	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtCore)"
+	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtSql)"
+	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtGui)"
+	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs csjp-00.3)"
+} || {
+#	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)"
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)"
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)"
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs csjp-00.3)"
+}
 
 DEFINES="${DEFINES} -DVERSION=\"${VERSION}\" -DPREFIX=\"${PREFIX}\" -DPKGNAME=\"${PKGNAME}\" \
--DAUTHOR=\"${AUTHOR}\" -DEMAIL=\"${EMAIL}\""
+-DAUTHOR=\"${AUTHOR}\" -DEMAIL=\"${EMAIL}\" \
+-DICONS_PATH='\"/${PREFIX}/share/${PKGNAME}/icons/\"'"
 
 TCROOT="${TCROOT}"
 
@@ -156,7 +162,6 @@ CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
 test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 
-HEADERDIR=${TCROOT}${PREFIX}include/${PKGNAME}
 DOCDIR=${TCROOT}${PREFIX}/share/doc/${PKGNAME}
 
 PKGCONFIGDIR=${TCROOT}${PREFIX}lib/pkgconfig
@@ -168,13 +173,10 @@ configure Makefile.in Makefile || exit $?
 configure doxyfile.in doxyfile || exit $?
 configure debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
 configure debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
-configure debian/${PKGNAME}-test.install.in debian/${PKGNAME}-test.install || exit $?
-configure debian/${PKGNAME}-dev.install.in debian/${PKGNAME}-dev.install || exit $?
-configure debian/${PKGNAME}-doc.install.in debian/${PKGNAME}-doc.install || exit $?
 
 test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
 configure butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 
 test -d ${MANDIR} || { mkdir -p ${MANDIR} || exit $? ; }
-configure butler.man.in ${MANDIR}/${PKGNAME}-test.${MANSECTION} || exit $?
+configure butler.man.in ${MANDIR}/${PKGNAME}.${MANSECTION} || exit $?
 
