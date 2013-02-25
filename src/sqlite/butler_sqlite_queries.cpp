@@ -59,8 +59,7 @@ bool QueryTable::check(QStringList &tables)
 				!table.contains("end_date")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table Queries "
-					"in the openend database.");
+			LOG("Incompatible table Queries in the openend database.");
 		}
 	}
 

@@ -75,6 +75,7 @@ public:
 	double avgPrice;
 	double cheapestUnitPrice;
 	double mostExpUnitPrice;
+	double queryTime; /** How much time the query took. */
 };
 
 #endif

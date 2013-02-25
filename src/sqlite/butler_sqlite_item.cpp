@@ -58,8 +58,7 @@ bool ItemTable::check(QStringList &tables)
 				!table.contains("comment")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table Items "
-					"in the openend database.");
+			LOG("Incompatible table Items in the openend database.");
 		}
 	}
 

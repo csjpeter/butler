@@ -52,8 +52,7 @@ bool WareTable::check(QStringList &tables)
 				!table.contains("unit")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table Wares "
-					"in the openend database.");
+			LOG("Incompatible table Wares in the openend database.");
 		}
 	}
 
@@ -143,4 +142,3 @@ bool WareTable::query(WareSet &wares)
 }
 
 }
-

@@ -57,8 +57,7 @@ bool ShopTable::check(QStringList &tables)
 				!table.contains("company")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table Shops "
-					"in the openend database.");
+			LOG("Incompatible table Shops in the openend database.");
 		}
 	}
 

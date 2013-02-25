@@ -86,6 +86,9 @@ while ! test "x$1" = "x"; do
 		(--fpic)
 			CFLAGS="${CFLAGS} -fPIC"
 		;;
+		(--static)
+			CONFIG="${CONFIG} staticbuild"
+		;;
 		(--win32)
 			DEFINES="${DEFINES} -DWIN32COMPAT"
 			CONFIG="${CONFIG} win32"
@@ -135,7 +138,7 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.4)"
-echo "${CONFIG}" | grep win32 && {
+echo "${CONFIG}" | grep staticbuild && {
 #	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtCore)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtSql)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtGui)"

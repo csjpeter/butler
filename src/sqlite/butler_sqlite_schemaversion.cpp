@@ -66,8 +66,7 @@ bool SchemaVersion::check(QStringList &tables)
 				!table.contains("patch")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table SchemaVersion "
-					"in the openend database.");
+			LOG("Incompatible table SchemaVersion in the openend database.");
 		}
 	}
 

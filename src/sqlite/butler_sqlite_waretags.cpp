@@ -61,8 +61,7 @@ bool WareTagsTable::check(QStringList &tables)
 				!table.contains("tag")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table WareTags "
-					"in the openend database.");
+			LOG("Incompatible table WareTags in the openend database.");
 		}
 	}
 
@@ -175,4 +174,3 @@ bool WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 }
 
 }
-

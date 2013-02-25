@@ -8,10 +8,7 @@
 
 #include <float.h>
 
-#include "csjp_debug.h"
-
 #include "butler_item.h"
-
 #include "butler_item_set.h"
 
 int ItemSet::compare(const Item &a, const Item &b) const

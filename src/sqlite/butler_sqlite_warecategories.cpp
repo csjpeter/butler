@@ -60,8 +60,7 @@ bool WareCategoriesTable::check(QStringList &tables)
 				!table.contains("category")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table WareCategories "
-					"in the openend database.");
+			LOG("Incompatible table WareCategories in the openend database.");
 		}
 	}
 
@@ -170,4 +169,3 @@ bool WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 }
 
 }
-

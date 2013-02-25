@@ -63,8 +63,7 @@ bool QueryWaresTable::check(QStringList &tables)
 				!table.contains("ware")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table QueryWares "
-					"in the openend database.");
+			LOG("Incompatible table QueryWares in the openend database.");
 		}
 	}
 

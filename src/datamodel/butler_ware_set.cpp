@@ -6,8 +6,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "csjp_debug.h"
-
 #include "butler_ware_set.h"
 
 int WareSet::compare(const Ware &a, const Ware &b) const

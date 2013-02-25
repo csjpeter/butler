@@ -6,7 +6,5 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "csjp_debug.h"
-
 #include "butler_query_set.h"
 

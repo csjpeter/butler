@@ -63,8 +63,7 @@ bool QueryTagsTable::check(QStringList &tables)
 				!table.contains("tag")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table QueryTags "
-					"in the openend database.");
+			LOG("Incompatible table QueryTags in the openend database.");
 		}
 	}
 

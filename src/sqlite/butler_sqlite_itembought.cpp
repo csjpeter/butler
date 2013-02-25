@@ -8,14 +8,14 @@
 
 #include <float.h>
 
+//#include <csjp_time.h>
+
 #include <QSqlDatabase>
 #include <QStringList>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QVariant>
-
-#include <csjp_cputimemeter.h>
 
 #include "butler_sqlite_itembought.h"
 
@@ -64,8 +64,7 @@ bool ItemBoughtTable::check(QStringList &tables)
 				!table.contains("on_stock")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table ItemsBought "
-					"in the openend database.");
+			LOG("Incompatible table ItemsBought in the openend database.");
 		}
 	}
 
@@ -139,11 +138,9 @@ bool ItemBoughtTable::del(const Item &i)
 
 bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 {
-	csjp::CpuTimeMeter ctm("Custom item query");
+//	csjp::Time stopper = csjp::Time::unixTime();
 	bool ret = true;
 	SqlQuery sqlQuery(sql);
-
-	ctm.event("Assembling query...");
 
 	/* assemble command */
 	QString cmd("SELECT * FROM ItemsBought"
@@ -258,13 +255,9 @@ bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		cmd += " HAVING COUNT(*) = ";
 		cmd += QString::number(q.withTags.size());
 	}
-	
-	ctm.event("Executing query: %s", qPrintable(cmd));
 
 	DBG("Assembled select query: %s", qPrintable(cmd));
 	ret = ret && sqlQuery.exec(cmd);
-
-	ctm.event("Evaluating query results...");
 
 	if(ret){
 		items.clear();
@@ -329,8 +322,8 @@ bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 
 		DBG("-----");
 	}
-	
-	ctm.event("%u items queried", items.size());
+
+//	stat.queryTime = stopper - csjp::Time::unixTime();
 
 	return ret;
 }

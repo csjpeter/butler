@@ -63,8 +63,7 @@ bool QueryShopsTable::check(QStringList &tables)
 				!table.contains("shop")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table QueryShops "
-					"in the openend database.");
+			LOG("Incompatible table QueryShops in the openend database.");
 		}
 	}
 

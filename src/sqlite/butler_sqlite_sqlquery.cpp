@@ -15,8 +15,6 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-#include <csjp_debug.h>
-
 #include "butler_sqlite_sqlquery.h"
 
 namespace Sqlite {
@@ -119,9 +117,8 @@ unsigned SqlQuery::colIndex(const QString &name)
 
 	int ret = qQuery->record().indexOf(name);
 	if(ret < 0){
-		CRITICAL("There is no column %s in table %s.",
-				qPrintable(name),
-				"FIXME-unknown");
+		LOG("There is no column %s in table %s.",
+				qPrintable(name), "FIXME-unknown");
 		ret = 0; /* FIXME throw exception */
 	}
 

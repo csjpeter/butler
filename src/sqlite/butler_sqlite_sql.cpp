@@ -14,8 +14,6 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-#include <csjp_debug.h>
-
 #include "butler_sqlite_sql.h"
 
 #define CONNECTION_NAME "butler_sqlite_connection"
@@ -48,7 +46,7 @@ Sql::Sql(const QString& _path) :
 Sql::~Sql()
 {
 	if(db.isOpen()){
-		CRITICAL("Closing db connection at destruction time. "
+		LOG("Closing db connection at destruction time. "
 				"This can easily cause a crash.");
 		close();
 	}
@@ -109,7 +107,7 @@ bool Sql::open()
 			lastUserErr = "Reference constraits could not turned "
 				"on or not supported at all.";
 			lastUserErrId = Db::INCOMPATIBLE_DATABASE_ENGINE;
-			CRITICAL(qPrintable(lastUserErr));
+			LOG(qPrintable(lastUserErr));
 			ret = false;
 			db.close();
 		}
@@ -243,10 +241,8 @@ bool Sql::rollback()
 		notifySqlFinishListeners();
 #endif
 		ret = db.rollback();
-		if(!ret){
-			CRITICAL("Serious error happened: "
-					"Rolling back database changes failed. ");
-		}
+		if(!ret)
+			LOG("Serious error happened: Rolling back database changes failed. ");
 	}
 
 	if(ret)
@@ -263,7 +259,7 @@ bool Sql::reportSqlError()
 		lastErr = db.lastError().text();
 		lastUserErr = "";
 		lastUserErrId = Db::UNSPECIFIED_USER_ERROR;
-		CRITICAL("%s", qPrintable(lastErr));
+		LOG("%s", qPrintable(lastErr));
 		ret = false;
 	}
 	return ret;

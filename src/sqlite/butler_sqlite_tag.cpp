@@ -53,8 +53,7 @@ bool TagTable::check(QStringList &tables)
 			!table.contains("desc")
 		  ) {
 			ret = false;
-			CRITICAL("Incompatible table Tags "
-					"in the openend database.");
+			LOG("Incompatible table Tags in the openend database.");
 		}
 	}
 

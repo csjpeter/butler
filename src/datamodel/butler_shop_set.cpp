@@ -6,8 +6,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "csjp_debug.h"
-
 #include "butler_shop_set.h"
 
 int ShopSet::compare(const Shop &a, const Shop &b) const
