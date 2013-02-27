@@ -107,7 +107,7 @@ bool Sql::open()
 			lastUserErr = "Reference constraits could not turned "
 				"on or not supported at all.";
 			lastUserErrId = Db::INCOMPATIBLE_DATABASE_ENGINE;
-			LOG(qPrintable(lastUserErr));
+			LOG("%s", qPrintable(lastUserErr));
 			ret = false;
 			db.close();
 		}

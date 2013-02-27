@@ -13,8 +13,6 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include <csjp_debug.h>
-
 #include "butler_sqlite_schemaversion.h"
 
 namespace Sqlite {

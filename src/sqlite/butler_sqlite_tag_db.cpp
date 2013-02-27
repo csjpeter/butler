@@ -6,8 +6,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <csjp_debug.h>
-
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_tag_db.h"
 
