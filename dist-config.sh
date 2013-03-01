@@ -101,12 +101,7 @@ generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
 generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 
-for f in $(find src -name *.h); do
-	make -f source.mk DIST_DIR=${DIST_DIR} ${DIST_DIR}/$f -s
-done
-for f in $(find src -name *.cpp); do
-	make -f source.mk DIST_DIR=${DIST_DIR} ${DIST_DIR}/$f -s
-done
+make -f source.mk DIST_DIR=${DIST_DIR} source -s
 
 #
 # debian packaging directory

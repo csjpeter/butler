@@ -9,7 +9,6 @@
 #include <QFile>
 
 #include <csjp_test.h>
-#include <csjp_debug.h>
 
 #include <butler_db.h>
 
@@ -65,10 +64,8 @@ void TestQuery::insert()
 	VERIFY(db.query().query(qs));
 
 	VERIFY(qs.size() == 1);
-	CRITICAL("Start date: %s",
-			qPrintable(qs.queryAt(0).startDate.toString(Qt::ISODate)));
-	CRITICAL("End date: %s",
-			qPrintable(qs.queryAt(0).endDate.toString(Qt::ISODate)));
+	LOG("Start date: %s", qPrintable(qs.queryAt(0).startDate.toString(Qt::ISODate)));
+	LOG("End date: %s", qPrintable(qs.queryAt(0).endDate.toString(Qt::ISODate)));
 	VERIFY(q == qs.queryAt(0));
 
 	/* Lets clean up */

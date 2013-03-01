@@ -21,7 +21,7 @@ namespace Butler {
 Application::Application(int &argc, char *argv[]) :
 	QApplication(argc, argv)
 {
-	QCoreApplication::setOrganizationName("Peter, Csaszar");
+	QCoreApplication::setOrganizationName(STRING(AUTHOR));
 	QCoreApplication::setOrganizationDomain("no.domain");
 	QCoreApplication::setApplicationName("ButlerQt");
 }

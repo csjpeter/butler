@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 #include <csjp_test.h>
-#include <csjp_debug.h>
 
 #include <butler_query_set.h>
 

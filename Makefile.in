@@ -231,6 +231,23 @@ BUTLERQT_INCLUDES=-Isrc/qt
 
 .PRECIOUS: $(BUTLERQT_OBJECTS)
 
+BUTLER_IMAGES=\
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/copyright \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/accounting.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/add.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/buy.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/custom.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/delete.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/edit.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/query.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/shop.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/shopping.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/stock.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/tag.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/trash.png \
+	@TCROOT@@PREFIX@share/@PKGNAME@/icons/ware.png \
+	@TCROOT@@PREFIX@share/pixmaps/@PRJNAME@.png
+
 #
 # main rules
 #
@@ -242,6 +259,7 @@ all: \
 build: \
 	$(STATIC_LIBDATAMODEL) \
 	$(STATIC_LIBSQLITE) \
+	$(BUTLER_IMAGES) \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME@ \
 	@TCROOT@@PREFIX@bin/@PKGNAME@
 
@@ -252,6 +270,7 @@ clean:
 	test "x" = "x$(shell find . | grep \\.swp$$)" || rm $(shell find . | grep \\.swp$$)
 	test "x" = "x$(shell find . | grep \\.log$$)" || rm $(shell find . | grep \\.log$$)
 	! test -d tmp || rm -fr tmp
+	! test -d @PREFIX@bin || rm -fr @PREFIX@bin
 	! test -d @PREFIX@lib || rm -fr @PREFIX@lib
 	! test -d @PREFIX@share || rm -fr @PREFIX@share
 	! test -d @PREFIX@test || rm -fr @PREFIX@test
@@ -330,4 +349,19 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME@: \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 #	$(CXX) $(LDFLAGS) $< $(STATICS) $(LIBS) -o $@
+
+@TCROOT@@PREFIX@share/pixmaps/@PRJNAME@.png: \
+		share/icons/butler.png
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
+@TCROOT@@PREFIX@share/@PKGNAME@/icons/%.png: \
+		share/icons/%.png
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
+@TCROOT@@PREFIX@share/@PKGNAME@/icons/copyright: \
+		share/icons/copyright
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
 

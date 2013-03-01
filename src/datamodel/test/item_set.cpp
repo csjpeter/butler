@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 #include <csjp_test.h>
-#include <csjp_debug.h>
 
 #include <butler_item_set.h>
 
@@ -105,16 +104,16 @@ void TestItemSet::query()
 	csjp::Object<Item> item;
 	QDateTime dt;
 
-	item = new Item("first");
+	item.ptr = new Item("first");
 	item->uploaded = QDateTime::currentDateTime().addDays(-1);
 	is.add(item);
 
-	item = new Item("second");
+	item.ptr = new Item("second");
 	item->uploaded = QDateTime::currentDateTime().addDays(-2);
 	dt = item->uploaded;
 	is.add(item);
 
-	item = new Item("third");
+	item.ptr = new Item("third");
 	item->uploaded = QDateTime::currentDateTime().addDays(-3);
 	is.add(item);
 
