@@ -229,6 +229,8 @@ BUTLERQT_OBJECTS= \
 
 BUTLERQT_INCLUDES=-Isrc/qt
 
+.PRECIOUS: $(BUTLERQT_OBJECTS)
+
 #
 # main rules
 #

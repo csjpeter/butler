@@ -9,6 +9,8 @@
 #ifndef BUTLER_LOCALDB_H
 #define BUTLER_LOCALDB_H
 
+#include <csjp_exception.h>
+
 #include <butler_db.h>
 #include <butler_item_set.h>
 
@@ -16,6 +18,8 @@
 class QSessionManager;
 
 namespace Butler {
+
+DECL_EXCEPTION(csjp::ResourceError, DbError);
 
 class LocalDb
 {

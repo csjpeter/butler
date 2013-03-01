@@ -5,7 +5,7 @@
 	--gnu-source || exit $?
 
 pushd precise > /dev/null || exit $?
-make $1
+./configure.sh && make $@
 let RET=$?
 popd > /dev/null
 exit ${RET}

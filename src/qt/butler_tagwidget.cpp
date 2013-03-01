@@ -73,13 +73,11 @@ namespace Butler {
 	
 	void TagWidget::getTags(TagNameSet &tags)
 	{
-		if(tagSet.size() != btnContainer.size()){
-			CRITICAL("Number of tags in TagSet since "
-					"opening view with TagWidget changed!\n"
+		if(tagSet.size() != btnContainer.size())
+			throw csjp::InvariantFailure("Number of tags in TagSet since "
+					"opening the view containing TagWidget changed!\n"
 					"You should use this widget only in "
 					"top-level dialogs!");
-			return;
-		}
 
 		unsigned i, s = tagSet.size();
 		for(i = 0; i < s; i++){

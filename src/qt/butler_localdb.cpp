@@ -48,28 +48,19 @@ LocalDb::LocalDb()
 		DBG("Db file path: %s", qPrintable(filepath));
 		_db = new SqliteDb(filepath);
 
-		if(!_db->connect()){
-			CRITICAL("Connect to database engine failed");
-			CRITICAL(qPrintable(error()));
-		}
+		if(!_db->connect())
+			throw DbError("Connect to database engine failed");
 
 		QFile f(filepath);
-		if(!f.exists()){
-			if(!_db->create()){
-				CRITICAL("Create database failed");
-				CRITICAL(qPrintable(error()));
-			}
-		}
+		if(!f.exists())
+			if(!_db->create())
+				throw DbError("Create database failed");
 
-		if(!_db->open()){
-			CRITICAL("Open database failed");
-			CRITICAL(qPrintable(error()));
-		}
+		if(!_db->open())
+			throw DbError("Open database failed");
 
-		if(!_db->check()){
-			CRITICAL("Check database schema validity failed");
-			CRITICAL(qPrintable(error()));
-		}
+		if(!_db->check())
+			throw DbError("Database schema validity check failed");
 	}
 
 	refCount++;
@@ -79,10 +70,8 @@ LocalDb::~LocalDb()
 {
 	refCount--;
 	if(!refCount){
-		if(!_db->close()){
-			CRITICAL("Close database failed");
-			CRITICAL(qPrintable(error()));
-		}
+		if(!_db->close())
+			csjp::msgLogger(stderr, "", VT_RED VT_TA_BOLD "Close database failed" VT_NORMAL);
 		delete _db;
 		_db = NULL;
 	}

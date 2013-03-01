@@ -49,6 +49,8 @@ while ! test "x$1" = "x"; do
 	shift
 done
 
+PRECONFIGURATION=$*
+
 test "x${HOST_DIST}" = "x${TARGET_DIST}" && {
 	PKGNAME=${PKGNAME_BASE}
 	DIST_DIR=${HOST_DIST}
@@ -59,7 +61,7 @@ test "x${HOST_DIST}" = "x${TARGET_DIST}" && {
 
 # param 1 : inflie
 # param 2 : outfile
-function configure ()
+function generate ()
 {
 	cat $1 | sed \
 		-e "s|@PRJNAME@|${PRJNAME}|g" \
@@ -79,6 +81,7 @@ function configure ()
 		-e "s|@DEBIAN_ARCH@|${DEBIAN_ARCH}|g" \
 		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \
 		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \
+                -e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
 		> $2 || exit $?
 }
 
@@ -89,14 +92,14 @@ function configure ()
 test -d ${DIST_DIR} || { mkdir -p ${DIST_DIR} || exit $? ; }
 
 cp -p config ${DIST_DIR}/config || exit $?
-configure configure.in ${DIST_DIR}/configure.sh || exit $?
+generate configure.in ${DIST_DIR}/configure.sh || exit $?
 chmod u+x ${DIST_DIR}/configure.sh || exit $?
-configure Makefile.in ${DIST_DIR}/Makefile.in || exit $?
-configure license.in ${DIST_DIR}/license.binary || exit $?
-configure srclicense.in ${DIST_DIR}/license.source || exit $?
-configure doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
-configure butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
-configure butler.man.in ${DIST_DIR}/butler.man.in || exit $?
+generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
+generate license.in ${DIST_DIR}/license.binary || exit $?
+generate srclicense.in ${DIST_DIR}/license.source || exit $?
+generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
+generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
+generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 
 for f in $(find src -name *.h); do
 	make -f source.mk DIST_DIR=${DIST_DIR} ${DIST_DIR}/$f -s
@@ -110,13 +113,13 @@ done
 #
 test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
 
-configure license.in ${DIST_DIR}/debian/copyright || exit $?
-configure debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
-configure debian/control.in ${DIST_DIR}/debian/control || exit $?
+generate license.in ${DIST_DIR}/debian/copyright || exit $?
+generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
+generate debian/control.in ${DIST_DIR}/debian/control || exit $?
 test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {
-	configure debian/rules.native.in ${DIST_DIR}/debian/rules || exit $?
+	generate debian/rules.native.in ${DIST_DIR}/debian/rules || exit $?
 } || {
-	configure debian/rules.cross.in ${DIST_DIR}/debian/rules || exit $?
+	generate debian/rules.cross.in ${DIST_DIR}/debian/rules || exit $?
 }
 chmod u+x ${DIST_DIR}/debian/rules || exit $?
 echo "5" > ${DIST_DIR}/debian/compat || exit $?
@@ -124,8 +127,8 @@ echo "5" > ${DIST_DIR}/debian/compat || exit $?
 test -d ${DIST_DIR}/debian/source || { mkdir -p ${DIST_DIR}/debian/source || exit $? ; }
 echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
 
-configure debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
-configure debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
+generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
+generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
 
 # auto calling configure
 test "x$1" = "x" || { cd ${DIST_DIR} && ./configure.sh "$@" || exit $? ; }

@@ -1,8 +1,14 @@
 #!/bin/bash
 
+source config
+
+PKGNAME=@PKGNAME@
+
+DEBUG=no
+
 # param 1 : inflie
 # param 2 : outfile
-function configure ()
+function generate ()
 {
 	cat $1 | sed \
 		-e "s|@PREFIX@|${PREFIX}|g" \
@@ -29,83 +35,82 @@ function configure ()
 		> $2 || exit $?
 }
 
-source config
+function configure ()
+{
+	while ! test "x$1" = "x"; do
+		KEY=$(echo $1 | sed 's|=.*||g')
+		VALUE=$(echo $1 | sed 's|.*=||g')
 
-PKGNAME=@PKGNAME@
+		case ${KEY} in
+			(--build)
+				! test "x${VALUE}" = "x" || {
+					echo "Missing build architecture value."
+					exit $?
+				}
+				BUILD_ARCH="${VALUE}"
+			;;
+			(--host)
+				! test "x${VALUE}" = "x" || {
+					echo "Missing host architecture value."
+					exit $?
+				}
+				HOST_ARCH="${VALUE}"
+			;;
+			(--target)
+				! test "x${VALUE}" = "x" || {
+					echo "Missing target architecture value."
+					exit $?
+				}
+				TARGET_ARCH="${VALUE}"
+			;;
+			(--prefix)
+				PREFIX="${VALUE}"
+			;;
+			(--tcroot)
+				TCROOT="${VALUE}"
+			;;
+			(--multicultural)
+				LIBS="${LIBS} $(${PKGCONFIG} --libs icu-uc)"
+				CONFIG="${CONFIG} multicultural"
+				DEFINES="${DEFINES} -DSTLCOMPATIBLE"
+				#LIBS+=-licuuc -licudata
+			;;
+			(--debug)
+				CFLAGS="${CFLAGS} -fno-builtin -O0"
+				DEFINES="${DEFINES} -DDEBUG"
+				DEBUG=yes
+			;;
+			(--gnu-source)
+				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
+			;;
+			(--fpic)
+				CFLAGS="${CFLAGS} -fPIC"
+			;;
+			(--static)
+				CONFIG="${CONFIG} staticbuild"
+			;;
+			(--win32)
+				DEFINES="${DEFINES} -DWIN32COMPAT"
+				CONFIG="${CONFIG} win32"
+			;;
+			(--perfmode)
+				DEFINES="${DEFINES} -DPERFMODE"
+			;;
+			(--stlcompatible)
+				DEFINES="${DEFINES} -DSTLCOMPATIBLE"
+			;;
+			(*)
+				echo "Invalid argument ($1) found on command line."
+				exit 1
+			;;
+		esac
+		shift
+	done
+}
 
-PREFIX=usr
-
-DEBUG=no
-
-while ! test "x$1" = "x"; do
-	KEY=$(echo $1 | sed 's|=.*||g')
-	VALUE=$(echo $1 | sed 's|.*=||g')
-
-	case ${KEY} in
-		(--build)
-			! test "x${VALUE}" = "x" || {
-				echo "Missing build architecture value."
-				exit $?
-			}
-			BUILD_ARCH="${VALUE}"
-		;;
-		(--host)
-			! test "x${VALUE}" = "x" || {
-				echo "Missing host architecture value."
-				exit $?
-			}
-			HOST_ARCH="${VALUE}"
-		;;
-		(--target)
-			! test "x${VALUE}" = "x" || {
-				echo "Missing target architecture value."
-				exit $?
-			}
-			TARGET_ARCH="${VALUE}"
-		;;
-		(--prefix)
-			PREFIX="${VALUE}"
-		;;
-		(--tcroot)
-			TCROOT="${VALUE}"
-		;;
-		(--multicultural)
-			LIBS="${LIBS} $(${PKGCONFIG} --libs icu-uc)"
-			CONFIG="${CONFIG} multicultural"
-			DEFINES="${DEFINES} -DSTLCOMPATIBLE"
-			#LIBS+=-licuuc -licudata
-		;;
-		(--debug)
-			CFLAGS="${CFLAGS} -fno-builtin -O0"
-			DEFINES="${DEFINES} -DDEBUG"
-			DEBUG=yes
-		;;
-		(--gnu-source)
-			CFLAGS="${CFLAGS} -D_GNU_SOURCE"
-		;;
-		(--fpic)
-			CFLAGS="${CFLAGS} -fPIC"
-		;;
-		(--static)
-			CONFIG="${CONFIG} staticbuild"
-		;;
-		(--win32)
-			DEFINES="${DEFINES} -DWIN32COMPAT"
-			CONFIG="${CONFIG} win32"
-		;;
-		(--perfmode)
-			DEFINES="${DEFINES} -DPERFMODE"
-		;;
-		(--stlcompatible)
-			DEFINES="${DEFINES} -DSTLCOMPATIBLE"
-		;;
-		(*)
-			echo "Invalid argument ($1) found on command line."
-			exit 1
-		;;
-	esac
-	shift
-done
+configure --prefix=usr
+configure @PRECONFIGURATION@
+configure $@
 
 ! test ${DEBUG} = "no" || { CFLAGS="${CFLAGS} -O2" ; }
 
@@ -139,6 +144,7 @@ CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.4)"
 echo "${CONFIG}" | grep staticbuild && {
+	LDFLAGS="${LDFLAGS} -static-libgcc -static-libstdc++"
 #	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtCore)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtSql)"
 	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtGui)"
@@ -172,14 +178,14 @@ APPSDIR=${TCROOT}${PREFIX}share/applications
 MANSECTION=1
 MANDIR=${TCROOT}${PREFIX}share/man/man${MANSECTION}
 
-configure Makefile.in Makefile || exit $?
-configure doxyfile.in doxyfile || exit $?
-configure debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
-configure debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
+generate Makefile.in Makefile || exit $?
+generate doxyfile.in doxyfile || exit $?
+generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
+generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
 
 test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
-configure butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
+generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 
 test -d ${MANDIR} || { mkdir -p ${MANDIR} || exit $? ; }
-configure butler.man.in ${MANDIR}/${PKGNAME}.${MANSECTION} || exit $?
+generate butler.man.in ${MANDIR}/${PKGNAME}.${MANSECTION} || exit $?
 

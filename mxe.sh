@@ -16,7 +16,7 @@ export LIBS="-lgnurx -lpthread"
 	--stlcompatible || exit $?
 
 pushd precise-x-mxe > /dev/null || exit $?
-make $1
+./configure.sh && make $@
 let RET=$?
 popd > /dev/null
 exit ${RET}

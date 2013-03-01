@@ -280,14 +280,23 @@ namespace Butler {
 				if(categoryEditor->text().size())
 					ware.categories.add(new QString(categoryEditor->text()));
 				if(!wm.addNew(ware)){
-					WARNING("Could not save new ware from edit item view.");
+					QMessageBox(	QMessageBox::Warning,
+							tr("Item saved to db, "
+							  "but adding new ware failed."),
+							wm.error(),
+							QMessageBox::Ok,
+							0, Qt::Dialog).exec();
 				}
 			} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
 				Ware modified(wm.ware(i));
 				modified.categories.add(new QString(categoryEditor->text()));
 				if(!wm.update(i, modified)){
-					WARNING("Could not save new ware category "
-							"from edit item view.");
+					QMessageBox(	QMessageBox::Warning,
+							tr("Item saved to db, "
+							  "but adding new ware category failed."),
+							wm.error(),
+							QMessageBox::Ok,
+							0, Qt::Dialog).exec();
 				}
 			}
 			/* May be it is better to jump to next record than as to close the view. */
