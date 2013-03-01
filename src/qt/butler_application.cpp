@@ -36,6 +36,9 @@ bool Application::notify(QObject * receiver, QEvent * event)
 
 	try {
 		return QApplication::notify(receiver, event);
+	} catch(csjp::Exception& e) {
+		EXCEPTION(e);
+		info = e.what();
 	} catch(std::exception& e) {
 		info = e.what();
 	}
