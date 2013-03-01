@@ -6,7 +6,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <syslog.h>
 #include <stdio.h>
 
 #include <QtGui>

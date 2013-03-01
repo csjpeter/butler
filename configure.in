@@ -99,6 +99,12 @@ function configure ()
 			(--stlcompatible)
 				DEFINES="${DEFINES} -DSTLCOMPATIBLE"
 			;;
+			(--libs)
+				LIBS="${LIBS} ${VALUE}"
+			;;
+			(--ldflags)
+				LDFLAGS="${LDFLAGS} ${VALUE}"
+			;;
 			(*)
 				echo "Invalid argument ($1) found on command line."
 				exit 1
@@ -143,12 +149,12 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.4)"
-echo "${CONFIG}" | grep staticbuild && {
+echo "${CONFIG}" | grep staticbuild > /dev/null && {
 	LDFLAGS="${LDFLAGS} -static-libgcc -static-libstdc++"
-#	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtCore)"
-	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtSql)"
-	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs QtGui)"
-	STATIC+="${STATIC} $(${PKGCONFIG} --static --libs libcsjp0.4)"
+#	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)"
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)"
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)"
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.4)"
 } || {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)"
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)"

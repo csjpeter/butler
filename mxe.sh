@@ -1,7 +1,8 @@
 #!/bin/bash
 
-export LDFLAGS="-Wl,-subsystem,console"
-export LIBS="-lgnurx -lpthread"
+#export LDFLAGS="-Wl,-subsystem,console"
+#export LIBS="-lpthread"
+#export LIBS="-lgnurx"
 
 #export PKG_CONFIG_SYSROOT_DIR=;
 #export PKG_CONFIG_LIBDIR=/$(MXE_TC)/lib/pkgconfig;
