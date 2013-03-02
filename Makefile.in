@@ -246,7 +246,7 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME@/icons/tag.png \
 	@TCROOT@@PREFIX@share/@PKGNAME@/icons/trash.png \
 	@TCROOT@@PREFIX@share/@PKGNAME@/icons/ware.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PRJNAME@.png
+	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME@.png
 
 #
 # main rules
@@ -350,7 +350,7 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME@: \
 	$(LINK)
 #	$(CXX) $(LDFLAGS) $< $(STATICS) $(LIBS) -o $@
 
-@TCROOT@@PREFIX@share/pixmaps/@PRJNAME@.png: \
+@TCROOT@@PREFIX@share/pixmaps/@PKGNAME@.png: \
 		share/icons/butler.png
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
