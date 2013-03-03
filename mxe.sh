@@ -12,7 +12,6 @@
 	--prefix= \
 	--tcroot=opt/csjp/mxe/i686-pc-mingw32 \
 	--gnu-source \
-	--win32 \
 	--static \
 	--stlcompatible || exit $?
 

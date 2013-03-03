@@ -100,6 +100,7 @@ generate srclicense.in ${DIST_DIR}/license.source || exit $?
 generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
 generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
+generate config.h.in ${DIST_DIR}/config.h.in || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source -s
 
@@ -124,7 +125,4 @@ echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
 
 generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
 generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
-
-# auto calling configure
-test "x$1" = "x" || { cd ${DIST_DIR} && ./configure.sh "$@" || exit $? ; }
 

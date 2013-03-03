@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ./dist-config.sh -- \
+	--pkg-config-path=/opt/ppa/lib/pkgconfig \
+	--prefix=opt/ppa \
 	--fpic \
 	--gnu-source || exit $?
 

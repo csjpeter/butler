@@ -89,10 +89,6 @@ function configure ()
 			(--static)
 				CONFIG="${CONFIG} staticbuild"
 			;;
-			(--win32)
-				DEFINES="${DEFINES} -DWIN32COMPAT"
-				CONFIG="${CONFIG} win32"
-			;;
 			(--perfmode)
 				DEFINES="${DEFINES} -DPERFMODE"
 			;;
@@ -104,6 +100,9 @@ function configure ()
 			;;
 			(--ldflags)
 				LDFLAGS="${LDFLAGS} ${VALUE}"
+			;;
+			(--pkg-config-path)
+				export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${VALUE}"
 			;;
 			(*)
 				echo "Invalid argument ($1) found on command line."
@@ -162,10 +161,6 @@ echo "${CONFIG}" | grep staticbuild > /dev/null && {
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.4)"
 }
 
-DEFINES="${DEFINES} -DVERSION=\"${VERSION}\" -DPREFIX=\"${PREFIX}\" -DPKGNAME=\"${PKGNAME}\" \
--DAUTHOR=\"${AUTHOR}\" -DEMAIL=\"${EMAIL}\" \
--DICONS_PATH='\"/${PREFIX}/share/${PKGNAME}/icons/\"'"
-
 TCROOT="${TCROOT}"
 
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
@@ -179,7 +174,6 @@ test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 
 DOCDIR=${TCROOT}${PREFIX}/share/doc/${PKGNAME}
 
-PKGCONFIGDIR=${TCROOT}${PREFIX}lib/pkgconfig
 APPSDIR=${TCROOT}${PREFIX}share/applications
 MANSECTION=1
 MANDIR=${TCROOT}${PREFIX}share/man/man${MANSECTION}
@@ -188,6 +182,7 @@ generate Makefile.in Makefile || exit $?
 generate doxyfile.in doxyfile || exit $?
 generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
 generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
+generate config.h.in src/config.h || exit $?
 
 test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
 generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
