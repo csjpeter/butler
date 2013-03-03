@@ -95,8 +95,9 @@ cp -p config ${DIST_DIR}/config || exit $?
 generate configure.in ${DIST_DIR}/configure.sh || exit $?
 chmod u+x ${DIST_DIR}/configure.sh || exit $?
 generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
-generate license.in ${DIST_DIR}/license.binary || exit $?
-generate srclicense.in ${DIST_DIR}/license.source || exit $?
+generate license.in ${DIST_DIR}/license || exit $?
+#generate binlicense.in ${DIST_DIR}/license.binary || exit $?
+#generate srclicense.in ${DIST_DIR}/license.source || exit $?
 generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
 generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
