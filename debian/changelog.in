@@ -1,5 +1,5 @@
 @PKGNAME@ (@VERSION@) @HOST_DIST@; urgency=low
 
-  * Shopping
+  * Initial release
 
  -- @AUTHOR@ <@EMAIL@>  @CURRENT_DATE@

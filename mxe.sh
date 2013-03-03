@@ -9,7 +9,7 @@
 
 ./dist-config.sh --target=mxe -- \
 	--target=i686-pc-mingw32 \
-	--prefix= \
+	--prefix= opt/butler0.1\
 	--tcroot=opt/csjp/mxe/i686-pc-mingw32 \
 	--gnu-source \
 	--static \

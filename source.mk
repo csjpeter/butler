@@ -20,6 +20,13 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_tag_set.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
+	$(DIST_DIR)/src/datamodel/butler_db.h \
+	$(DIST_DIR)/src/datamodel/butler_item_db.h \
+	$(DIST_DIR)/src/datamodel/butler_query_db.h \
+	$(DIST_DIR)/src/datamodel/butler_shop_db.h \
+	$(DIST_DIR)/src/datamodel/butler_ware_db.h \
+	$(DIST_DIR)/src/datamodel/butler_tag_db.h \
+	$(DIST_DIR)/src/datamodel/butler_macros.h \
 	$(DIST_DIR)/src/datamodel/test/dbifc.cpp \
 	$(DIST_DIR)/src/datamodel/test/item.cpp \
 	$(DIST_DIR)/src/datamodel/test/item_set.cpp \
