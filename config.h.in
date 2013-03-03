@@ -1,13 +1,12 @@
 /*
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2013 Csaszar, Peter
- * All rights reserved.
  */
 
-#define AUTHOR @AUTHOR@
-#define EMAIL @EMAIL@
-#define VERSION @VERSION@
-#define PREFIX @PREFIX@
-#define PKGNAME @PKGNAME@
+#define AUTHOR "@AUTHOR@"
+#define EMAIL "@EMAIL@"
+#define VERSION "@VERSION@"
+#define PREFIX "@PREFIX@"
+#define PKGNAME "@PKGNAME@"
 #define ICONS_PATH "/@PREFIX@/share/@PKGNAME@/icons/"
 

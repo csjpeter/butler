@@ -85,7 +85,7 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	cp $^ $@
 	$(STRIP) --remove-section=.comment --remove-section=.note --strip-debug $@
 
-@TCROOT@@PREFIX@lib/debug/@PREFIX@@TCROOT@bin/% : \
+@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/% : \
 	tmp/@TCROOT@@PREFIX@bin/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(OBJCOPY) --only-keep-debug $^ $@

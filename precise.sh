@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ./dist-config.sh -- \
-	--pkg-config-path=/opt/ppa/lib/pkgconfig \
-	--prefix=opt/ppa \
+	--pkg-config-path=/opt/csjp/lib/pkgconfig \
+	--prefix=opt/csjp \
 	--fpic \
 	--gnu-source || exit $?
 
