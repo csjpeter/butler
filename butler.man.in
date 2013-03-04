@@ -7,33 +7,33 @@
 @PKGNAME@ \- @PRJDESC@
 
 .SH SYNOPSIS
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-string_chunk
+.B bin/test-@PKGNAME@-string_chunk
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-string
+.B bin/test-@PKGNAME@-string
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-time
+.B bin/test-@PKGNAME@-time
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-file
+.B bin/test-@PKGNAME@-file
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-mutex
+.B bin/test-@PKGNAME@-mutex
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-thread
+.B bin/test-@PKGNAME@-thread
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-btree
+.B bin/test-@PKGNAME@-btree
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-container
+.B bin/test-@PKGNAME@-container
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-sorter_container
+.B bin/test-@PKGNAME@-sorter_container
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-owner_list
+.B bin/test-@PKGNAME@-owner_list
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-map
+.B bin/test-@PKGNAME@-map
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-object_tree
+.B bin/test-@PKGNAME@-object_tree
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-ini
+.B bin/test-@PKGNAME@-ini
 .br
-.B @TCROOT@@PREFIX@bin/test-@PKGNAME@-json
+.B bin/test-@PKGNAME@-json
 .br
 .RS
 .B [--logDir|-l
