@@ -83,7 +83,7 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	tmp/@TCROOT@@PREFIX@bin/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $^ $@
-	$(STRIP) --remove-section=.comment --remove-section=.note --strip-debug $@
+	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
 
 @TCROOT@@PREFIX@lib/debug/@PREFIX@@TCROOT@bin/% : \
 	tmp/@TCROOT@@PREFIX@bin/%
