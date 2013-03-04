@@ -2,7 +2,7 @@
 This binary package, @PKGNAME@ @VERSION@ was created by
 @AUTHOR@ <@EMAIL@> on @CURRENT_DATE@.
 
-The contained software (@PKGNAME@) is a simpla home accoutning tool.
+The contained software (@PKGNAME@) is a simple home accoutning tool.
 Copyright (C) @DEVELOPMENT_START_YEAR@-@CURRENT_YEAR@ @AUTHOR@ <@EMAIL@>
 All rights reserved.
 
