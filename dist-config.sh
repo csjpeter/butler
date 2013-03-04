@@ -92,8 +92,8 @@ function generate ()
 test -d ${DIST_DIR} || { mkdir -p ${DIST_DIR} || exit $? ; }
 
 cp -p config ${DIST_DIR}/config || exit $?
-generate configure.in ${DIST_DIR}/configure.sh || exit $?
-chmod u+x ${DIST_DIR}/configure.sh || exit $?
+generate configure.in ${DIST_DIR}/configure || exit $?
+chmod u+x ${DIST_DIR}/configure || exit $?
 generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
 generate license.in ${DIST_DIR}/license || exit $?
 #generate binlicense.in ${DIST_DIR}/license.binary || exit $?

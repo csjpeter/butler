@@ -16,7 +16,7 @@
 	--stlcompatible || exit $?
 
 pushd precise-x-mxe > /dev/null || exit $?
-./configure.sh && make $@
+./configure && make $@
 let RET=$?
 popd > /dev/null
 exit ${RET}

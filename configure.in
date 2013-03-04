@@ -30,8 +30,7 @@ function generate ()
 		-e "s|@DOCDIR@|${DOCDIR}|g" \
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
-		-e "s|@MANSECTION@|${MANSECTION}|g" \
-		-e "s|@MANDIR@|${MANDIR}|g" \
+		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
 		> $2 || exit $?
 }
 
@@ -64,7 +63,8 @@ function configure ()
 				TARGET_ARCH="${VALUE}"
 			;;
 			(--prefix)
-				PREFIX="${VALUE}"
+				PREFIX=$(echo ${VALUE} | sed 's|^/*||g')
+				prefix=$PREFIX # dh_auto_configure compatibility
 			;;
 			(--tcroot)
 				TCROOT="${VALUE}"
@@ -97,6 +97,29 @@ function configure ()
 			;;
 			(--pkg-config-path)
 				export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${VALUE}"
+			;;
+			(--includedir)
+			        INCLUDE_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--mandir)
+			        MAN_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--infodir)
+			        INFO_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--sysconfdir)
+			        SYSCONF_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--localstatedir)
+			        LOCALSTATE_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--libexecdir)
+			        LIBEXEC_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			# Some option we want to accept but do nothing for them
+			(--disable-maintainer-mode)
+			;;
+			(--disable-dependency-tracking)
 			;;
 			(*)
 				echo "Invalid argument ($1) found on command line."
@@ -168,11 +191,16 @@ CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
 test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 
-DOCDIR=${TCROOT}${PREFIX}/share/doc/${PKGNAME}
+test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${TCROOT}${PREFIX}include ; }
+test "x${MAN_DIR}" = "x" && { MAN_DIR=${TCROOT}${PREFIX}share/man ; }
+test "x${INFO_DIR}" = "x" && { INFO_DIR=${TCROOT}${PREFIX}share/info ; }
+test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=${TCROOT}etc ; }
+test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=${TCROOT}var ; }
+test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${TCROOT}${PREFIX}lib ; }
+
+DOCDIR=${TCROOT}${PREFIX}share/doc/${PKGNAME}
 
 APPSDIR=${TCROOT}${PREFIX}share/applications
-MANSECTION=1
-MANDIR=${TCROOT}${PREFIX}share/man/man${MANSECTION}
 
 generate Makefile.in Makefile || exit $?
 generate doxyfile.in doxyfile || exit $?
@@ -183,6 +211,6 @@ generate config.h.in src/config.h || exit $?
 test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
 generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 
-test -d ${MANDIR} || { mkdir -p ${MANDIR} || exit $? ; }
-generate butler.man.in ${MANDIR}/${PKGNAME}.${MANSECTION} || exit $?
+test -d ${MAN_DIR} || { mkdir -p ${MAN_DIR} || exit $? ; }
+generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
 
