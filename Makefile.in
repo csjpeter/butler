@@ -146,7 +146,6 @@ SQLITE_OBJECTS= \
 	tmp/src/sqlite/butler_sqlite_queryshops.opp \
 	tmp/src/sqlite/butler_sqlite_querytags.opp \
 	tmp/src/sqlite/butler_sqlite_querywares.opp \
-	tmp/src/sqlite/butler_sqlite_schemaversion.opp \
 	tmp/src/sqlite/butler_sqlite_shop.opp \
 	tmp/src/sqlite/butler_sqlite_shop_db.opp \
 	tmp/src/sqlite/butler_sqlite_sql.opp \

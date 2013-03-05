@@ -35,7 +35,7 @@ bool QueryShopsTable::create()
 	ret = ret && sql.exec("CREATE TABLE QueryShops ("
 			"query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
 				"ON DELETE CASCADE ON UPDATE CASCADE, "
-			"shop VARCHAR(64) NOT NULL REFERENCES Tags(name) "
+			"shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				"UNIQUE (query_name, shop)"
 			")"

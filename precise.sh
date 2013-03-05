@@ -2,7 +2,7 @@
 
 ./dist-config.sh -- \
 	--pkg-config-path=/opt/csjp/lib/pkgconfig \
-	--prefix=opt/csjp \
+	--prefix=opt/butler \
 	--fpic \
 	--gnu-source || exit $?
 

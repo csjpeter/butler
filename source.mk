@@ -47,7 +47,6 @@ source: \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_queryshops.cpp \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_querytags.cpp \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_querywares.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_schemaversion.cpp \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_shop.cpp \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_shop_db.cpp \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_sql.cpp \
@@ -67,7 +66,6 @@ source: \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_queryshops.h \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_querytags.h \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_querywares.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_schemaversion.h \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_shop.h \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_shop_db.h \
 	$(DIST_DIR)/src/sqlite/butler_sqlite_sql.h \

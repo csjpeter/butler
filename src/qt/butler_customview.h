@@ -31,7 +31,7 @@ class EditItemView;
 class QueryOptionsView;
 class EditWareView;
 
-class CustomView : public QWidget, public LocalDb
+class CustomView : public QWidget
 {
 private:
 	Q_OBJECT

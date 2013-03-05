@@ -21,7 +21,6 @@ public:
 	~Private();
 public:
 	Sqlite::Sql sql;
-	Sqlite::SchemaVersion schemaVersion;
 	Sqlite::TagDb tagDb;
 	Sqlite::QueryDb queryDb;
 	Sqlite::WareDb wareDb;
@@ -31,7 +30,6 @@ public:
 
 Private::Private(const QString &path) :
 	sql(path),
-	schemaVersion(sql),
 	tagDb(sql),
 	queryDb(sql, tagDb),
 	wareDb(sql, tagDb),
@@ -61,27 +59,7 @@ bool SqliteDb::connect()
 
 bool SqliteDb::open()
 {
-	bool ret;
-
-	ret = priv->sql.open();
-
-	if(ret){
-		Sqlite::Version ver;
-		ret = priv->schemaVersion.query(ver);
-		if(
-				(ver.major != BUTLER_SQLITE_SCHEMA_VERSION_MAJOR) ||
-				(ver.minor < BUTLER_SQLITE_SCHEMA_VERSION_MINOR)
-		  ){
-			ret = false;
-			priv->sql.lastUserErrId =
-				INCOMPATIBLE_DATABASE_SCHEMA;
-			priv->sql.lastUserErr = "Incompatible database "
-				"schema version in sql";
-			priv->sql.close();
-		}
-	}
-
-	return ret;
+	return priv->sql.open();
 }
 
 bool SqliteDb::close()
@@ -97,7 +75,6 @@ bool SqliteDb::create()
 	ret = ret && priv->sql.open();
 	if(ret){
 		ret = priv->sql.transaction();
-		ret = ret && priv->schemaVersion.create();
 		ret = ret && priv->tagDb.create();
 		ret = ret && priv->queryDb.create();
 		ret = ret && priv->shopDb.create();
@@ -117,7 +94,6 @@ bool SqliteDb::check()
 
 	QStringList tables = priv->sql.tables();
 
-	ret = ret && priv->schemaVersion.check(tables);
 	ret = ret && priv->tagDb.check(tables);
 	ret = ret && priv->queryDb.check(tables);
 	ret = ret && priv->shopDb.check(tables);
@@ -134,7 +110,6 @@ bool SqliteDb::update()
 	ret = ret && priv->sql.open();
 
 	ret = ret && priv->sql.transaction();
-	ret = ret && priv->schemaVersion.update();
 	ret = ret && priv->tagDb.update();
 	ret = ret && priv->queryDb.update();
 	ret = ret && priv->shopDb.update();
