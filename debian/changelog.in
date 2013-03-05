@@ -1,5 +1,5 @@
 @PKGNAME@ (@VERSION@) @HOST_DIST@; urgency=low
 
-  * Initial release
+  * Initial public release
 
  -- @AUTHOR@ <@EMAIL@>  @CURRENT_DATE@
