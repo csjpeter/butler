@@ -34,7 +34,7 @@ function generate ()
 		> $2 || exit $?
 }
 
-function configure ()
+function process_args ()
 {
 	while ! test "x$1" = "x"; do
 		KEY=$(echo $1 | sed 's|=.*||g')
@@ -130,9 +130,9 @@ function configure ()
 	done
 }
 
-configure --prefix=usr
-configure @PRECONFIGURATION@
-configure $@
+process_args --prefix=usr
+process_args @PRECONFIGURATION@
+process_args $@
 
 ! test ${DEBUG} = "no" || { CFLAGS="${CFLAGS} -O2" ; }
 
@@ -211,6 +211,6 @@ generate config.h.in src/config.h || exit $?
 test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
 generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 
-test -d ${MAN_DIR} || { mkdir -p ${MAN_DIR} || exit $? ; }
+test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
 generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
 
