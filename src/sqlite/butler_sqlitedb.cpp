@@ -6,7 +6,6 @@
 #include <QSqlError>
 
 #include "butler_sqlite_sql.h"
-#include "butler_sqlite_schemaversion.h"
 #include "butler_sqlite_tag_db.h"
 #include "butler_sqlite_queries_db.h"
 #include "butler_sqlite_item_db.h"
