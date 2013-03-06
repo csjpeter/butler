@@ -24,13 +24,12 @@ private:
 	ShopTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool insert(const Shop &);
-	bool update(const Shop &orig,
+	void check(QStringList &tables);
+	void insert(const Shop &);
+	void update(const Shop &orig,
 			const Shop &modified);
-	bool del(const Shop &);
-	bool query(ShopSet &);
+	void del(const Shop &);
+	void query(ShopSet &);
 
 private:
 	Sql &sql;

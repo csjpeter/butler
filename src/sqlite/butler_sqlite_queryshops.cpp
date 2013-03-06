@@ -28,149 +28,102 @@ QueryShopsTable::~QueryShopsTable()
 {
 }
 
-bool QueryShopsTable::create()
+
+void QueryShopsTable::check(QStringList &tables)
 {
-	bool ret = true;
-
-	ret = ret && sql.exec("CREATE TABLE QueryShops ("
-			"query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
-				"ON DELETE CASCADE ON UPDATE CASCADE, "
-			"shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
-				"UNIQUE (query_name, shop)"
-			")"
-			);
-	ret = ret && sql.exec("CREATE INDEX QueryShopsQueryNameIndex "
-			"ON QueryShops(query_name)");
-	ret = ret && sql.exec("CREATE INDEX QueryShopsTagIndex "
-			"ON QueryShops(shop)");
-
-	return ret;
-}
-
-bool QueryShopsTable::check(QStringList &tables)
-{
-	bool ret;
-
-	ret = tables.contains("QueryShops");
-
-	if(ret){
-		QSqlRecord table = sql.record("QueryShops");
-		if(		!table.contains("query_name") ||
-				!table.contains("shop")
-		  ) {
-			ret = false;
-			LOG("Incompatible table QueryShops in the openend database.");
-		}
+	if(!tables.contains("QueryShops")){
+		sql.exec("CREATE TABLE QueryShops ("
+				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
+				  "ON DELETE CASCADE ON UPDATE CASCADE, "
+				  "shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
+				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
+				  "UNIQUE (query_name, shop)"
+				  ")"
+			    );
+		sql.exec("CREATE INDEX QueryShopsQueryNameIndex ON QueryShops(query_name)");
+		sql.exec("CREATE INDEX QueryShopsTagIndex ON QueryShops(shop)");
 	}
 
-	return ret;
+	QSqlRecord table = sql.record("QueryShops");
+	if(		!table.contains("query_name") ||
+			!table.contains("shop")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table QueryShops in the openend database.");
 }
 
-bool QueryShopsTable::insert(const Query &q, const QString &shopName)
+void QueryShopsTable::insert(const Query &q, const QString &shopName)
 {
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO QueryShops "
+		insertQuery.prepare("INSERT INTO QueryShops "
 				"(query_name, shop) "
 				"VALUES (?, ?)");
 
 	insertQuery.bindValue(0, q.name);
 	insertQuery.bindValue(1, shopName);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool QueryShopsTable::del(const Query &q, const QString &shopName)
+void QueryShopsTable::del(const Query &q, const QString &shopName)
 {
-	bool ret = true;
-
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare(
+		deleteQuery.prepare(
 				"DELETE FROM QueryShops WHERE "
 				"query_name = ? AND shop = ?");
 
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.bindValue(1, shopName);
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool QueryShopsTable::insert(const Query &q)
+void QueryShopsTable::insert(const Query &q)
 {
-	bool ret = true;
-
 	unsigned i, s = q.shops.size();
 	for(i=0; i<s; i++){
 		const QString &t = q.shops.queryAt(i);
-		ret = insert(q, t);
-		if(!ret)
-			break;
+		insert(q, t);
 	}
-
-	return ret;
 }
 
-bool QueryShopsTable::update(const Query &orig, const Query &modified)
+void QueryShopsTable::update(const Query &orig, const Query &modified)
 {
-	bool ret = true;
-
 	unsigned i, s = modified.shops.size();
 	for(i=0; i<s; i++){
 		const QString &mTag = modified.shops.queryAt(i);
-		if(!orig.shops.has(mTag)){
-			ret = insert(modified, mTag);
-			if(!ret)
-				break;
-			continue;
-		}
+		if(!orig.shops.has(mTag))
+			insert(modified, mTag);
 	}
 
 	s = orig.shops.size();
 	for(i=0; i<s; i++){
 		const QString &oTag = orig.shops.queryAt(i);
-		if(!modified.shops.has(oTag)){
-			ret = del(orig, oTag);
-			if(!ret)
-				break;
-			continue;
-		}
+		if(!modified.shops.has(oTag))
+			del(orig, oTag);
 	}
-
-	return ret;
 }
 
-bool QueryShopsTable::query(const Query &q, ShopNameSet &shops)
+void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 {
-	bool ret = true;
-
 	if(!selectQuery.isPrepared())
-		ret = selectQuery.prepare("SELECT query_name, shop FROM QueryShops "
+		selectQuery.prepare("SELECT query_name, shop FROM QueryShops "
 				"WHERE query_name = ?");
 
 	selectQuery.bindValue(0, q.name);
-	ret = ret && selectQuery.exec();
+	selectQuery.exec();
 
-	if(ret){
-		shops.clear();
+	shops.clear();
 
-		int shopNo = selectQuery.colIndex("shop");
+	int shopNo = selectQuery.colIndex("shop");
 
-		DBG("----- Query shops query result:");
-		while (selectQuery.next()) {
-			DBG("Next row");
-			shops.add(new QString(selectQuery.value(shopNo).toString()));
-		}
-		DBG("-----");
+	DBG("----- Query shops query result:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		shops.add(new QString(selectQuery.value(shopNo).toString()));
 	}
+	DBG("-----");
 	selectQuery.finish();
-
-	return ret;
 }
 
 }

@@ -18,71 +18,37 @@ ShopDb::~ShopDb()
 {
 }
 
-bool ShopDb::create()
+void ShopDb::check(QStringList &tables)
 {
-	bool ret;
-
-	ret = shopTable.create();
-
-	return ret;
+	shopTable.check(tables);
 }
 
-bool ShopDb::check(QStringList &tables)
+void ShopDb::insert(const Shop &s)
 {
-	bool ret;
-
-	ret = shopTable.check(tables);
-
-	return ret;
+	sql.transaction();
+	shopTable.insert(s);
+	sql.commit();
 }
 
-bool ShopDb::update()
+void ShopDb::update(const Shop &orig, const Shop &modified)
 {
-	return true;
+	sql.transaction();
+	shopTable.update(orig, modified);
+	sql.commit();
 }
 
-bool ShopDb::insert(const Shop &s)
+void ShopDb::del(const Shop &s)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && shopTable.insert(s);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	shopTable.del(s);
+	sql.commit();
 }
 
-bool ShopDb::update(const Shop &orig, const Shop &modified)
+void ShopDb::query(ShopSet &ss)
 {
-	bool ret = true;
-
-	ret = sql.transaction();
-	ret = ret && shopTable.update(orig, modified);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool ShopDb::del(const Shop &s)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && shopTable.del(s);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool ShopDb::query(ShopSet &ss)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && shopTable.query(ss);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	shopTable.query(ss);
+	sql.commit();
 }
 
 }

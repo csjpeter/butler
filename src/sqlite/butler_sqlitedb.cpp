@@ -37,127 +37,31 @@ Private::Private(const QString &path) :
 {
 }
 
-Private::~Private()
+Private::~Private() {}
+
+SqliteDb::SqliteDb(const QString& _path) { priv = new Private(_path); }
+SqliteDb::~SqliteDb() { delete priv; }
+void SqliteDb::connect() { priv->sql.connect(); }
+void SqliteDb::open() { priv->sql.open(); }
+void SqliteDb::close() { priv->sql.close(); }
+
+void SqliteDb::check()
 {
-}
-
-SqliteDb::SqliteDb(const QString& _path)
-{
-	priv = new Private(_path);
-}
-
-SqliteDb::~SqliteDb()
-{
-	delete priv;
-}
-
-bool SqliteDb::connect()
-{
-	return priv->sql.connect();
-}
-
-bool SqliteDb::open()
-{
-	return priv->sql.open();
-}
-
-bool SqliteDb::close()
-{
-	return priv->sql.close();
-}
-
-bool SqliteDb::create()
-{
-	/* do not create anything on an already opened sql */
-	bool ret = priv->sql.isOpen() ? false : true;
-
-	ret = ret && priv->sql.open();
-	if(ret){
-		ret = priv->sql.transaction();
-		ret = ret && priv->tagDb.create();
-		ret = ret && priv->queryDb.create();
-		ret = ret && priv->shopDb.create();
-		ret = ret && priv->wareDb.create();
-		ret = ret && priv->itemDb.create();
-		ret = (ret && priv->sql.commit()) || priv->sql.rollback();
-
-		ret = priv->sql.close() && ret;
-	}
-
-	return ret;
-}
-
-bool SqliteDb::check()
-{
-	bool ret = priv->sql.isOpen();
-
 	QStringList tables = priv->sql.tables();
 
-	ret = ret && priv->tagDb.check(tables);
-	ret = ret && priv->queryDb.check(tables);
-	ret = ret && priv->shopDb.check(tables);
-	ret = ret && priv->wareDb.check(tables);
-	ret = ret && priv->itemDb.check(tables);
-
-	return ret;
+	priv->tagDb.check(tables);
+	priv->queryDb.check(tables);
+	priv->shopDb.check(tables);
+	priv->wareDb.check(tables);
+	priv->itemDb.check(tables);
 }
 
-bool SqliteDb::update()
-{
-	bool ret = priv->sql.isOpen() ? false : true;
-
-	ret = ret && priv->sql.open();
-
-	ret = ret && priv->sql.transaction();
-	ret = ret && priv->tagDb.update();
-	ret = ret && priv->queryDb.update();
-	ret = ret && priv->shopDb.update();
-	ret = ret && priv->wareDb.update();
-	ret = ret && priv->itemDb.update();
-	ret = (ret && priv->sql.commit()) || priv->sql.rollback();
-
-	ret = priv->sql.close() && ret;
-
-	return ret;
-}
-
-enum Db::UserError SqliteDb::lastUserErrorId()
-{
-	enum Db::UserError ret = priv->sql.lastUserErrorId();
-	return ret;
-}
-
-const QString& SqliteDb::lastUserError()
-{
-	return priv->sql.lastUserError();
-}
-
-const QString& SqliteDb::lastError()
-{
-	return priv->sql.lastError();
-}
-
-TagDb& SqliteDb::tag()
-{
-	return priv->tagDb;
-}
-
-QueryDb& SqliteDb::query()
-{
-	return priv->queryDb;
-}
-
-ItemDb& SqliteDb::item()
-{
-	return priv->itemDb;
-}
-
-WareDb& SqliteDb::ware()
-{
-	return priv->wareDb;
-}
-
-ShopDb& SqliteDb::shop()
-{
-	return priv->shopDb;
-}
+enum Db::UserError SqliteDb::lastUserErrorId() { enum Db::UserError ret =
+	priv->sql.lastUserErrorId(); return ret; }
+const QString& SqliteDb::lastUserError() { return priv->sql.lastUserError(); }
+const QString& SqliteDb::lastError() { return priv->sql.lastError(); }
+TagDb& SqliteDb::tag() { return priv->tagDb; }
+QueryDb& SqliteDb::query() { return priv->queryDb; }
+ItemDb& SqliteDb::item() { return priv->itemDb; }
+WareDb& SqliteDb::ware() { return priv->wareDb; }
+ShopDb& SqliteDb::shop() { return priv->shopDb; }

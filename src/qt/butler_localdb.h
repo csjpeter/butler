@@ -16,8 +16,6 @@ class QSessionManager;
 
 namespace Butler {
 
-DECL_EXCEPTION(csjp::ResourceError, DbError);
-
 class LocalDb
 {
 public:

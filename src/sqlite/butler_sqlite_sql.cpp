@@ -49,89 +49,89 @@ Sql::~Sql()
 	}
 }
 
-bool Sql::connect()
+void Sql::connect()
 {
 	ENSURE(!db.isValid(), csjp::LogicError);
-	bool ret;
 
 	if(!QSqlDatabase::contains(CONNECTION_NAME)){
 		db = QSqlDatabase::addDatabase(
 				"QSQLITE", CONNECTION_NAME);
-		ret = reportSqlError();
+		if(db.lastError().isValid())
+			throw DbError("Failed to add SQLITE database driver: %s",
+					C_STR(dbErrorString()));
 	} else {
 		db = QSqlDatabase::database(CONNECTION_NAME, false);
-		ret = reportSqlError();
+		if(db.lastError().isValid())
+			throw DbError("Failed to get database connection named '%s'.\nError: %s",
+					CONNECTION_NAME,
+					C_STR(dbErrorString()));
 	}
-	ENSURE(ret == db.isValid(), csjp::LogicError);
+	ENSURE(db.isValid(), csjp::LogicError);
 	
-	if(ret){
-		db.setDatabaseName(path);
-		ret = reportSqlError();
-	}
+	db.setDatabaseName(path);
+	if(db.lastError().isValid())
+		throw DbError("Failed to set database name to %s.\nError: %s",
+				C_STR(path),
+				C_STR(dbErrorString()));
 
 #ifdef DEBUG
-	if(ret)
-		listAvailableFeatures(db);
+	listAvailableFeatures(db);
 #endif
-
-	return ret;
 }
 
-bool Sql::open()
+void Sql::open()
 {
-	ENSURE(db.isValid(), csjp::LogicError);
-	bool ret;
+	if(db.isOpen()) return;
+
+//	ENSURE(db.isValid(), csjp::LogicError);
 
 	db.open();
-	ret = reportSqlError();
-	ENSURE(ret == db.isOpen(), csjp::LogicError);
-
-	if(ret)
-	{ /* Lets check if the sqlite on system is compatible with us. */
-
-		/* Lets turn on reference constraits */
-		QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
-		q = db.exec("PRAGMA foreign_keys");
-		ENSURE(q.isActive(), csjp::LogicError);
-		ENSURE(q.isSelect(), csjp::LogicError);
-
-		q.next();
-
-		DBG("Reference constraint support: %s",
-				(q.value(0).toInt()) ? "yes" : "no");
-
-		if(q.value(0).toInt() != 1){
-			lastUserErr = "Reference constraits could not turned "
-				"on or not supported at all.";
-			lastUserErrId = Db::INCOMPATIBLE_DATABASE_ENGINE;
-			LOG("%s", qPrintable(lastUserErr));
-			ret = false;
-			db.close();
-		}
-	}
-
-	return ret;
-}
-
-bool Sql::close()
-{
-	if(!db.isOpen()) /* I dont understand why this can happen, but lets count with it. */
-		return true;
+	if(db.lastError().isValid())
+		throw DbError("Failed to open database '%s'.\nError: %s",
+				C_STR(db.databaseName()),
+				C_STR(dbErrorString()));
 
 	ENSURE(db.isOpen(), csjp::LogicError);
-	bool ret;
+
+	/* Lets check if the sqlite on system is compatible with us. */
+
+	/* Lets turn on reference constraits */
+	QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
+	q = db.exec("PRAGMA foreign_keys");
+	ENSURE(q.isActive(), csjp::LogicError);
+	ENSURE(q.isSelect(), csjp::LogicError);
+
+	q.next();
+
+	DBG("Reference constraint support: %s",
+			(q.value(0).toInt()) ? "yes" : "no");
+
+	if(q.value(0).toInt() != 1){
+		db.close();
+		throw DbError("Reference constraits could not turned "
+			"on or not supported at all.");
+	}
+}
+
+void Sql::close()
+{
+	if(!db.isOpen()) return;
+
+	ENSURE(db.isOpen(), csjp::LogicError);
 
 	/* Lets notify all listener queries that db is about to be closed. */
 	notifySqlCloseListeners();
 
 	db.close();
-	ret = reportSqlError();
-	ENSURE(ret = !db.isOpen(), csjp::LogicError);
+	if(db.lastError().isValid())
+		throw DbError("Failed to close database '%s'.\nError: %s",
+				C_STR(db.databaseName()),
+				C_STR(dbErrorString()));
+
+	ENSURE(!db.isOpen(), csjp::LogicError);
 	
 	db = QSqlDatabase();
 	QSqlDatabase::removeDatabase(CONNECTION_NAME);
-	
-	return ret;
 }
 
 enum Db::UserError Sql::lastUserErrorId()
@@ -160,7 +160,10 @@ const QString& Sql::lastError()
 
 QSqlQuery* Sql::createQuery()
 {
-	return new QSqlQuery(db);
+	QSqlQuery * q = new QSqlQuery(db);
+	if(!q)
+		throw DbError("Failed to create QSqlQuery object");
+	return q;
 }
 
 bool Sql::exec(const QString &cmd)
@@ -256,10 +259,15 @@ bool Sql::reportSqlError()
 		lastErr = db.lastError().text();
 		lastUserErr = "";
 		lastUserErrId = Db::UNSPECIFIED_USER_ERROR;
-		LOG("%s", qPrintable(lastErr));
+		LOG("QSqlDatabase error: %s", qPrintable(lastErr));
 		ret = false;
 	}
 	return ret;
+}
+
+QString Sql::dbErrorString()
+{
+	return db.lastError().text();
 }
 
 void Sql::addSqlCloseListener(SqlCloseListener &l)
@@ -343,5 +351,3 @@ void listAvailableFeatures(const QSqlDatabase &db)
 #endif
 
 }
-
-

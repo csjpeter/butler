@@ -32,48 +32,35 @@ ItemBoughtTable::~ItemBoughtTable()
 {
 }
 
-bool ItemBoughtTable::create()
+void ItemBoughtTable::check(QStringList &tables)
 {
-	return sql.exec("CREATE TABLE ItemsBought ("
-			"uploaded DATE NOT NULL REFERENCES Items(uploaded) "
-				"ON DELETE CASCADE ON UPDATE CASCADE, "
-			"purchased DATE NOT NULL, "
-			"price REAL NOT NULL DEFAULT 0 CHECK(0 <= price), "
-			"shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
-			"on_stock INT NOT NULL DEFAULT 0 CHECK(on_stock = 0 OR on_stock = 1)"
-			")"
-			);
+	if(!tables.contains("ItemsBought"))
+		sql.exec("CREATE TABLE ItemsBought ("
+				  "uploaded DATE NOT NULL REFERENCES Items(uploaded) "
+				  "ON DELETE CASCADE ON UPDATE CASCADE, "
+				  "purchased DATE NOT NULL, "
+				  "price REAL NOT NULL DEFAULT 0 CHECK(0 <= price), "
+				  "shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
+				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
+				  "on_stock INT NOT NULL DEFAULT 0 CHECK(on_stock = 0 OR on_stock = 1)"
+				  ")"
+			    );
+
+	QSqlRecord table = sql.record("ItemsBought");
+	if(		!table.contains("uploaded") ||
+			!table.contains("purchased") ||
+			!table.contains("price") ||
+			!table.contains("shop") ||
+			!table.contains("on_stock")
+	  )
+		throw DbIncompatibleTableError(
+				"Incompatible table ItemsBought in the openend database.");
 }
 
-bool ItemBoughtTable::check(QStringList &tables)
+void ItemBoughtTable::insert(const Item &i)
 {
-	bool ret = true;
-
-	ret = tables.contains("ItemsBought");
-
-	if(ret){
-		QSqlRecord table = sql.record("ItemsBought");
-		if(		!table.contains("uploaded") ||
-				!table.contains("purchased") ||
-				!table.contains("price") ||
-				!table.contains("shop") ||
-				!table.contains("on_stock")
-		  ) {
-			ret = false;
-			LOG("Incompatible table ItemsBought in the openend database.");
-		}
-	}
-
-	return ret;
-}
-
-bool ItemBoughtTable::insert(const Item &i)
-{
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO ItemsBought "
+		insertQuery.prepare("INSERT INTO ItemsBought "
 				"(uploaded, purchased, "
 				"price, shop, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
@@ -83,23 +70,19 @@ bool ItemBoughtTable::insert(const Item &i)
 	insertQuery.bindValue(2, i.price);
 	insertQuery.bindValue(3, i.shop);
 	insertQuery.bindValue(4, i.onStock ? 1 : 0);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool ItemBoughtTable::update(const Item &orig, const Item &modified)
+void ItemBoughtTable::update(const Item &orig, const Item &modified)
 {
-	bool ret = true;
-
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
 	if(orig.uploaded.toString() != modified.uploaded.toString())
-		return false;
+		throw DbLogicError("The modified item is a different item than the original.");
 
 	if(!updateQuery.isPrepared())
-		ret = updateQuery.prepare("UPDATE ItemsBought SET "
+		updateQuery.prepare("UPDATE ItemsBought SET "
 				"purchased = ?, "
 				"price = ?, "
 				"shop = ?, "
@@ -111,32 +94,23 @@ bool ItemBoughtTable::update(const Item &orig, const Item &modified)
 	updateQuery.bindValue(2, modified.shop);
 	updateQuery.bindValue(3, modified.onStock ? 1 : 0);
 	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && updateQuery.exec();
+	updateQuery.exec();
 	updateQuery.finish();
-
-	return ret;
 }
 
-bool ItemBoughtTable::del(const Item &i)
+void ItemBoughtTable::del(const Item &i)
 {
-	bool ret = true;
-	
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare(
-				"DELETE FROM ItemsBought WHERE "
-				"uploaded = ?");
+		deleteQuery.prepare("DELETE FROM ItemsBought WHERE uploaded = ?");
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
+void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 {
 //	csjp::Time stopper = csjp::Time::unixTime();
-	bool ret = true;
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
@@ -254,75 +228,70 @@ bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	}
 
 	DBG("Assembled select query: %s", qPrintable(cmd));
-	ret = ret && sqlQuery.exec(cmd);
+	sqlQuery.exec(cmd);
 
-	if(ret){
-		items.clear();
+	items.clear();
 
-		/* evaluate query result */
-		int uploadedNo = sqlQuery.colIndex("uploaded");
-		int purchasedNo = sqlQuery.colIndex("purchased");
-		int quantityNo = sqlQuery.colIndex("quantity");
-		int priceNo = sqlQuery.colIndex("price");
-		int shopNo = sqlQuery.colIndex("shop");
-		int onStockNo = sqlQuery.colIndex("on_stock");
+	/* evaluate query result */
+	int uploadedNo = sqlQuery.colIndex("uploaded");
+	int purchasedNo = sqlQuery.colIndex("purchased");
+	int quantityNo = sqlQuery.colIndex("quantity");
+	int priceNo = sqlQuery.colIndex("price");
+	int shopNo = sqlQuery.colIndex("shop");
+	int onStockNo = sqlQuery.colIndex("on_stock");
+
+	/* statistics */
+	stat.itemCount = 0;
+	stat.sumQuantity = 0;
+	stat.sumPrice = 0;
+	stat.cheapestUnitPrice = DBL_MAX;
+	stat.mostExpUnitPrice = 0;
+	double sumPrice = 0;
+	double sumQuantity = 0;
+
+	DBG("----- Item query result:");
+	QDateTime dt;
+	while (sqlQuery.next()) {
+		DBG("Next row");
+		Item *item = new Item();
+
+		dt = sqlQuery.value(uploadedNo).toDateTime();
+		dt.setTimeSpec(Qt::UTC);
+		item->uploaded = dt.toLocalTime();
+
+		dt = sqlQuery.value(purchasedNo).toDateTime();
+		dt.setTimeSpec(Qt::UTC);
+		item->purchased = dt.toLocalTime();
+
+		item->quantity = sqlQuery.value(quantityNo).toDouble();
+		item->price = sqlQuery.value(priceNo).toDouble();
+		item->shop = sqlQuery.value(shopNo).toString();
+		item->onStock = sqlQuery.value(onStockNo).toBool();
+
+		item->bought = true;
 
 		/* statistics */
-		stat.itemCount = 0;
-		stat.sumQuantity = 0;
-		stat.sumPrice = 0;
-		stat.cheapestUnitPrice = DBL_MAX;
-		stat.mostExpUnitPrice = 0;
-		double sumPrice = 0;
-		double sumQuantity = 0;
+		stat.itemCount++;
+		stat.sumQuantity += item->quantity;
+		stat.sumPrice += item->price;
+		if(DBL_EPSILON <= item->quantity && DBL_EPSILON <= item->price){
+			sumQuantity += item->quantity;
+			sumPrice += item->price;
 
-		DBG("----- Item query result:");
-		QDateTime dt;
-		while (sqlQuery.next()) {
-			DBG("Next row");
-			Item *item = new Item();
-
-			dt = sqlQuery.value(uploadedNo).toDateTime();
-			dt.setTimeSpec(Qt::UTC);
-			item->uploaded = dt.toLocalTime();
-
-			dt = sqlQuery.value(purchasedNo).toDateTime();
-			dt.setTimeSpec(Qt::UTC);
-			item->purchased = dt.toLocalTime();
-
-			item->quantity = sqlQuery.value(quantityNo).toDouble();
-			item->price = sqlQuery.value(priceNo).toDouble();
-			item->shop = sqlQuery.value(shopNo).toString();
-			item->onStock = sqlQuery.value(onStockNo).toBool();
-
-			item->bought = true;
-
-			/* statistics */
-			stat.itemCount++;
-			stat.sumQuantity += item->quantity;
-			stat.sumPrice += item->price;
-			if(DBL_EPSILON <= item->quantity && DBL_EPSILON <= item->price){
-				sumQuantity += item->quantity;
-				sumPrice += item->price;
-
-				double unitPrice = item->price / item->quantity;
-				if(unitPrice < stat.cheapestUnitPrice)
-					stat.cheapestUnitPrice = unitPrice;
-				if(stat.mostExpUnitPrice < unitPrice)
-					stat.mostExpUnitPrice = unitPrice;
-			}
-
-			items.add(item);
+			double unitPrice = item->price / item->quantity;
+			if(unitPrice < stat.cheapestUnitPrice)
+				stat.cheapestUnitPrice = unitPrice;
+			if(stat.mostExpUnitPrice < unitPrice)
+				stat.mostExpUnitPrice = unitPrice;
 		}
-		
-		stat.avgPrice = sumPrice / sumQuantity;
 
-		DBG("-----");
+		items.add(item);
 	}
 
-//	stat.queryTime = stopper - csjp::Time::unixTime();
+	stat.avgPrice = sumPrice / sumQuantity;
 
-	return ret;
+	DBG("-----");
+//	stat.queryTime = stopper - csjp::Time::unixTime();
 }
 
 }

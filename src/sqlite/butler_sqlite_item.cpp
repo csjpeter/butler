@@ -28,46 +28,33 @@ ItemTable::~ItemTable()
 {
 }
 
-bool ItemTable::create()
+void ItemTable::check(QStringList &tables)
 {
-	return sql.exec("CREATE TABLE Items ("
-			"uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
-			"name VARCHAR(256) NOT NULL, "
-			"category VARCHAR(256) NOT NULL, "
-			"quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
-			"comment TEXT NOT NULL DEFAULT ''"
-			")"
-			);
+	if(!tables.contains("Items"))
+		sql.exec("CREATE TABLE Items ("
+				  "uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
+				  "name VARCHAR(256) NOT NULL, "
+				  "category VARCHAR(256) NOT NULL, "
+				  "quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
+				  "comment TEXT NOT NULL DEFAULT ''"
+				  ")"
+				  );
+
+	QSqlRecord table = sql.record("Items");
+	if(		!table.contains("name") ||
+			!table.contains("category") ||
+			!table.contains("uploaded") ||
+			!table.contains("quantity") ||
+			!table.contains("comment")
+	  )
+		throw DbIncompatibleTableError(
+				"Incompatible table Items in the openend database.");
 }
 
-bool ItemTable::check(QStringList &tables)
+void ItemTable::insert(const Item &i)
 {
-	bool ret = true;
-
-	ret = tables.contains("Items");
-
-	if(ret){
-		QSqlRecord table = sql.record("Items");
-		if(		!table.contains("name") ||
-				!table.contains("category") ||
-				!table.contains("uploaded") ||
-				!table.contains("quantity") ||
-				!table.contains("comment")
-		  ) {
-			ret = false;
-			LOG("Incompatible table Items in the openend database.");
-		}
-	}
-
-	return ret;
-}
-
-bool ItemTable::insert(const Item &i)
-{
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO Items "
+		insertQuery.prepare("INSERT INTO Items "
 				"(name, category, uploaded, "
 				"quantity, comment) "
 				"VALUES(?, ?, ?, ?, ?)");
@@ -77,23 +64,19 @@ bool ItemTable::insert(const Item &i)
 	insertQuery.bindValue(2, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(3, i.quantity);
 	insertQuery.bindValue(4, i.comment);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool ItemTable::update(const Item &orig, const Item &modified)
+void ItemTable::update(const Item &orig, const Item &modified)
 {
-	bool ret = true;
-
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
 	if(orig.uploaded.toString() != modified.uploaded.toString())
-		return false;
+		throw DbLogicError("The modified item is a different item than the original.");
 
 	if(!updateQuery.isPrepared())
-		ret = updateQuery.prepare("UPDATE Items SET "
+		updateQuery.prepare("UPDATE Items SET "
 				"name = ?, "
 				"category = ?, "
 				"quantity = ?, "
@@ -105,62 +88,50 @@ bool ItemTable::update(const Item &orig, const Item &modified)
 	updateQuery.bindValue(2, modified.quantity);
 	updateQuery.bindValue(3, modified.comment);
 	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && updateQuery.exec();
+	updateQuery.exec();
 	updateQuery.finish();
-
-	return ret;
 }
 
-bool ItemTable::del(const Item &i)
+void ItemTable::del(const Item &i)
 {
-	bool ret = true;
-	
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare(
+		deleteQuery.prepare(
 				"DELETE FROM Items WHERE "
 				"uploaded = ?");
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool ItemTable::query(Item& item)
+void ItemTable::query(Item& item)
 {
-	bool ret = true;
-
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT * FROM Items "
 				"WHERE uploaded = ?");
 
 	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && selectQuery.exec();
+	selectQuery.exec();
 
-	if(ret){
-		int nameNo = selectQuery.colIndex("name");
-		int categoryNo = selectQuery.colIndex("category");
-		int quantityNo = selectQuery.colIndex("quantity");
-		int commentNo = selectQuery.colIndex("comment");
+	int nameNo = selectQuery.colIndex("name");
+	int categoryNo = selectQuery.colIndex("category");
+	int quantityNo = selectQuery.colIndex("quantity");
+	int commentNo = selectQuery.colIndex("comment");
 
-		DBG("----- Item query result:");
-		if(selectQuery.next()) {
-			item.name = selectQuery.value(nameNo).toString();
-			item.category = selectQuery.value(categoryNo).toString();
-			item.quantity = selectQuery.value(quantityNo).toDouble();
-			item.comment = selectQuery.value(commentNo).toString();
-		}
-		DBG("-----");
+	DBG("----- Item query result:");
+	if(selectQuery.next()) {
+		item.name = selectQuery.value(nameNo).toString();
+		item.category = selectQuery.value(categoryNo).toString();
+		item.quantity = selectQuery.value(quantityNo).toDouble();
+		item.comment = selectQuery.value(commentNo).toString();
 	}
-	selectQuery.finish();
+	DBG("-----");
 
-	return ret;
+	selectQuery.finish();
 }
 
-bool ItemTable::query(const TagNameSet &tags, ItemSet &items)
+void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 {
-	bool ret = true;
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
@@ -187,37 +158,33 @@ bool ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	cmd += " GROUP BY Items.uploaded ORDER BY Items.uploaded DESC";
 
 	DBG("Assembled select query: %s", qPrintable(cmd));
-	ret = ret && sqlQuery.exec(cmd);
+	sqlQuery.exec(cmd);
 
-	if(ret){
-		items.clear();
+	items.clear();
 
-		int uploadedNo = sqlQuery.colIndex("uploaded");
-		int nameNo = sqlQuery.colIndex("name");
-		int categoryNo = sqlQuery.colIndex("category");
-		int quantityNo = sqlQuery.colIndex("quantity");
-		int commentNo = sqlQuery.colIndex("comment");
+	int uploadedNo = sqlQuery.colIndex("uploaded");
+	int nameNo = sqlQuery.colIndex("name");
+	int categoryNo = sqlQuery.colIndex("category");
+	int quantityNo = sqlQuery.colIndex("quantity");
+	int commentNo = sqlQuery.colIndex("comment");
 
-		DBG("----- Item query result:");
-		while (sqlQuery.next()) {
-			DBG("Next row");
-			QDateTime dt;
-			Item *item = new Item();
+	DBG("----- Item query result:");
+	while (sqlQuery.next()) {
+		DBG("Next row");
+		QDateTime dt;
+		Item *item = new Item();
 
-			dt = sqlQuery.value(uploadedNo).toDateTime();
-			dt.setTimeSpec(Qt::UTC);
-			item->uploaded = dt.toLocalTime();
+		dt = sqlQuery.value(uploadedNo).toDateTime();
+		dt.setTimeSpec(Qt::UTC);
+		item->uploaded = dt.toLocalTime();
 
-			item->name = sqlQuery.value(nameNo).toString();
-			item->category = sqlQuery.value(categoryNo).toString();
-			item->quantity = sqlQuery.value(quantityNo).toDouble();
-			item->comment = sqlQuery.value(commentNo).toString();
-			items.add(item);
-		}
-		DBG("-----");
+		item->name = sqlQuery.value(nameNo).toString();
+		item->category = sqlQuery.value(categoryNo).toString();
+		item->quantity = sqlQuery.value(quantityNo).toDouble();
+		item->comment = sqlQuery.value(commentNo).toString();
+		items.add(item);
 	}
-
-	return ret;
+	DBG("-----");
 }
 
 }

@@ -22,95 +22,56 @@ QueryDb::~QueryDb()
 {
 }
 
-bool QueryDb::create()
+void QueryDb::check(QStringList &tables)
 {
-	bool ret;
-
-	ret = queryTable.create();
-	ret = ret && queryTagsTable.create();
-	ret = ret && queryWaresTable.create();
-	ret = ret && queryShopsTable.create();
-
-	return ret;
+	queryTable.check(tables);
+	queryTagsTable.check(tables);
+	queryWaresTable.check(tables);
+	queryShopsTable.check(tables);
 }
 
-bool QueryDb::check(QStringList &tables)
+void QueryDb::insert(const Query &q)
 {
-	bool ret;
-
-	ret = queryTable.check(tables);
-	ret = ret && queryTagsTable.check(tables);
-	ret = ret && queryWaresTable.check(tables);
-	ret = ret && queryShopsTable.check(tables);
-
-	return ret;
+	sql.transaction();
+	queryTable.insert(q);
+	queryTagsTable.insert(q);
+	queryWaresTable.insert(q);
+	queryShopsTable.insert(q);
+	sql.commit();
 }
 
-bool QueryDb::update()
+void QueryDb::update(const Query &orig, const Query &modified)
 {
-	return true;
+	sql.transaction();
+	queryTable.update(orig, modified);
+	queryTagsTable.update(orig, modified);
+	queryWaresTable.update(orig, modified);
+	queryShopsTable.update(orig, modified);
+	sql.commit();
 }
 
-bool QueryDb::insert(const Query &q)
+void QueryDb::del(const Query &q)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && queryTable.insert(q);
-	ret = ret && queryTagsTable.insert(q);
-	ret = ret && queryWaresTable.insert(q);
-	ret = ret && queryShopsTable.insert(q);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	queryTable.del(q);
+	sql.commit();
 }
 
-bool QueryDb::update(const Query &orig, const Query &modified)
+void QueryDb::query(QuerySet &qs)
 {
-	bool ret;
+	sql.transaction();
+	queryTable.query(qs);
 
-	ret = sql.transaction();
-	ret = ret && queryTable.update(orig, modified);
-	ret = ret && queryTagsTable.update(orig, modified);
-	ret = ret && queryWaresTable.update(orig, modified);
-	ret = ret && queryShopsTable.update(orig, modified);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool QueryDb::del(const Query &q)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && queryTable.del(q);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool QueryDb::query(QuerySet &qs)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && queryTable.query(qs);
-
-	if(ret){
-		unsigned s = qs.size();
-		for(unsigned i=0; i<s && ret; i++){
-			Query &q = qs.queryAt(i);
-			/* FIXME : We need to upgrade the schema for this. */
-/*			ret = ret && queryTagsTable.query(q, q.withoutTags);*/
-			ret = ret && queryTagsTable.query(q, q.withTags);
-			ret = ret && queryWaresTable.query(q, q.wares);
-			ret = ret && queryShopsTable.query(q, q.shops);
-		}
+	unsigned s = qs.size();
+	for(unsigned i=0; i<s; i++){
+		Query &q = qs.queryAt(i);
+		/* FIXME : We need to upgrade the schema for this. */
+/*		queryTagsTable.query(q, q.withoutTags);*/
+		queryTagsTable.query(q, q.withTags);
+		queryWaresTable.query(q, q.wares);
+		queryShopsTable.query(q, q.shops);
 	}
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.commit();
 }
 
 }

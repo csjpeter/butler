@@ -50,9 +50,9 @@ private:
 	Sql();
 
 public:
-	bool connect();
-	bool open();
-	bool close();
+	void connect();
+	void open();
+	void close();
 	enum Db::UserError lastUserErrorId();
 	const QString& lastUserError();
 	const QString& lastError();
@@ -62,10 +62,11 @@ public:
 	QSqlRecord record(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
-	bool transaction();
-	bool commit();
-	bool rollback();
+	void transaction();
+	void commit();
+	void rollback();
 	bool reportSqlError();
+	QString dbErrorString();
 
 	void addSqlCloseListener(SqlCloseListener &l);
 	void removeSqlCloseListener(SqlCloseListener &l);

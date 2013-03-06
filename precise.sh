@@ -1,8 +1,9 @@
 #!/bin/bash
 
 ./dist-config.sh -- \
+	--debug \
 	--pkg-config-path=/opt/csjp/lib/pkgconfig \
-	--prefix=opt/butler \
+	--prefix=usr \
 	--fpic \
 	--gnu-source || exit $?
 

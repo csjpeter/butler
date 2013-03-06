@@ -29,46 +29,33 @@ QueryTable::~QueryTable()
 {
 }
 
-bool QueryTable::create()
+void QueryTable::check(QStringList &tables)
 {
-	return sql.exec("CREATE TABLE Queries ("
-			"query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
-			"stock_option INTEGER NOT NULL, "
-			"tag_option INTEGER NOT NULL, "
-			"start_date DATE NOT NULL, "
-			"end_date DATE NOT NULL"
-			")"
-			);
+	if(!tables.contains("Queries"))
+		sql.exec("CREATE TABLE Queries ("
+				  "query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
+				  "stock_option INTEGER NOT NULL, "
+				  "tag_option INTEGER NOT NULL, "
+				  "start_date DATE NOT NULL, "
+				  "end_date DATE NOT NULL"
+				  ")"
+			    );
+
+	QSqlRecord table = sql.record("Queries");
+	if(		!table.contains("query_name") ||
+			!table.contains("stock_option") ||
+			!table.contains("tag_option") ||
+			!table.contains("start_date") ||
+			!table.contains("end_date")
+	  )
+		throw DbIncompatibleTableError(
+				"Incompatible table Queries in the openend database.");
 }
 
-bool QueryTable::check(QStringList &tables)
+void QueryTable::insert(const Query &q)
 {
-	bool ret = true;
-
-	ret = tables.contains("Queries");
-
-	if(ret){
-		QSqlRecord table = sql.record("Queries");
-		if(		!table.contains("query_name") ||
-				!table.contains("stock_option") ||
-				!table.contains("tag_option") ||
-				!table.contains("start_date") ||
-				!table.contains("end_date")
-		  ) {
-			ret = false;
-			LOG("Incompatible table Queries in the openend database.");
-		}
-	}
-
-	return ret;
-}
-
-bool QueryTable::insert(const Query &q)
-{
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO Queries "
+		insertQuery.prepare("INSERT INTO Queries "
 			"(query_name, stock_option, tag_option, start_date, end_date) "
 			"VALUES (?, ?, ?, ?, ?)");
 
@@ -77,18 +64,14 @@ bool QueryTable::insert(const Query &q)
 	insertQuery.bindValue(2, q.tagOption);
 	insertQuery.bindValue(3, q.startDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(4, q.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool QueryTable::update(const Query &orig, const Query &modified)
+void QueryTable::update(const Query &orig, const Query &modified)
 {
-	bool ret = true;
-
 	if(!updateQuery.isPrepared())
-		ret = updateQuery.prepare("UPDATE Queries SET "
+		updateQuery.prepare("UPDATE Queries SET "
 				"query_name = ?, "
 				"stock_option = ?, "
 				"tag_option = ?, "
@@ -102,75 +85,63 @@ bool QueryTable::update(const Query &orig, const Query &modified)
 	updateQuery.bindValue(3, modified.startDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(4, modified.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(5, orig.name);
-	ret = ret && updateQuery.exec();
+	updateQuery.exec();
 	updateQuery.finish();
-
-	return ret;
 }
 
-bool QueryTable::del(const Query &q)
+void QueryTable::del(const Query &q)
 {
-	bool ret = true;
-
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare(
+		deleteQuery.prepare(
 				"DELETE FROM Queries WHERE "
 				"query_name = ?");
 
 	deleteQuery.bindValue(0, q.name);
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool QueryTable::query(QuerySet &queries)
+void QueryTable::query(QuerySet &queries)
 {
-	bool ret = true;
-
 	if(!selectAllQuery.isPrepared())
-		ret = selectAllQuery.prepare("SELECT "
+		selectAllQuery.prepare("SELECT "
 			"query_name, stock_option, tag_option, start_date, end_date "
 			"FROM Queries");
 
-	ret = ret && selectAllQuery.exec();
+	selectAllQuery.exec();
 
-	if(ret){
-		queries.clear();
+	queries.clear();
 
-		int queryNameNo = selectAllQuery.colIndex("query_name");
-		int stockOptionNo = selectAllQuery.colIndex("stock_option");
-		int tagOptionNo = selectAllQuery.colIndex("tag_option");
-		int startDateNo = selectAllQuery.colIndex("start_date");
-		int endDateNo = selectAllQuery.colIndex("end_date");
+	int queryNameNo = selectAllQuery.colIndex("query_name");
+	int stockOptionNo = selectAllQuery.colIndex("stock_option");
+	int tagOptionNo = selectAllQuery.colIndex("tag_option");
+	int startDateNo = selectAllQuery.colIndex("start_date");
+	int endDateNo = selectAllQuery.colIndex("end_date");
 
-		DBG("----- Query query result:");
-		QDateTime dt;
-		while (selectAllQuery.next()) {
-			DBG("Next row");
-			Query *query = new Query();
-			query->name = selectAllQuery.value(queryNameNo).toString();
-			query->stockOption = (enum Query::StockOptions)selectAllQuery.value(
-						stockOptionNo).toInt();
-			query->tagOption = (enum Query::TagOptions)selectAllQuery.value(
-						tagOptionNo).toInt();
-			
-			dt = selectAllQuery.value(startDateNo).toDateTime();
-			dt.setTimeSpec(Qt::UTC);
-			query->startDate = dt.toLocalTime();
+	DBG("----- Query query result:");
+	QDateTime dt;
+	while (selectAllQuery.next()) {
+		DBG("Next row");
+		Query *query = new Query();
+		query->name = selectAllQuery.value(queryNameNo).toString();
+		query->stockOption = (enum Query::StockOptions)selectAllQuery.value(
+				stockOptionNo).toInt();
+		query->tagOption = (enum Query::TagOptions)selectAllQuery.value(
+				tagOptionNo).toInt();
 
-			dt = selectAllQuery.value(endDateNo).toDateTime();
-			dt.setTimeSpec(Qt::UTC);
-			query->endDate = dt.toLocalTime();
+		dt = selectAllQuery.value(startDateNo).toDateTime();
+		dt.setTimeSpec(Qt::UTC);
+		query->startDate = dt.toLocalTime();
 
-			queries.add(query);
-		}
-		DBG("-----");
+		dt = selectAllQuery.value(endDateNo).toDateTime();
+		dt.setTimeSpec(Qt::UTC);
+		query->endDate = dt.toLocalTime();
+
+		queries.add(query);
 	}
+	DBG("-----");
 
 	selectAllQuery.finish();
-
-	return ret;
 }
 
 }

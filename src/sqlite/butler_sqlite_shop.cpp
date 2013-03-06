@@ -27,46 +27,33 @@ ShopTable::~ShopTable()
 {
 }
 
-bool ShopTable::create()
+void ShopTable::check(QStringList &tables)
 {
-	return sql.exec("CREATE TABLE Shops ("
-			"name VARCHAR(64) NOT NULL PRIMARY KEY, "
-			"store_name VARCHAR(256) NOT NULL, "
-			"city VARCHAR(64) NOT NULL, "
-			"address VARCHAR(256) NOT NULL, "
-			"company VARCHAR(256) NOT NULL "
-			")"
-			);
+	if(!tables.contains("Shops"))
+		sql.exec("CREATE TABLE Shops ("
+				"name VARCHAR(64) NOT NULL PRIMARY KEY, "
+				"store_name VARCHAR(256) NOT NULL, "
+				"city VARCHAR(64) NOT NULL, "
+				"address VARCHAR(256) NOT NULL, "
+				"company VARCHAR(256) NOT NULL "
+				")"
+			       );
+
+	QSqlRecord table = sql.record("Shops");
+	if(		!table.contains("name") ||
+			!table.contains("store_name") ||
+			!table.contains("city") ||
+			!table.contains("address") ||
+			!table.contains("company")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table Shops in the openend database.");
 }
 
-bool ShopTable::check(QStringList &tables)
+void ShopTable::insert(const Shop &s)
 {
-	bool ret = true;
-
-	ret = tables.contains("Shops");
-
-	if(ret){
-		QSqlRecord table = sql.record("Shops");
-		if(		!table.contains("name") ||
-				!table.contains("store_name") ||
-				!table.contains("city") ||
-				!table.contains("address") ||
-				!table.contains("company")
-		  ) {
-			ret = false;
-			LOG("Incompatible table Shops in the openend database.");
-		}
-	}
-
-	return ret;
-}
-
-bool ShopTable::insert(const Shop &s)
-{
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO Shops "
+		insertQuery.prepare("INSERT INTO Shops "
 				"(name, store_name, city, "
 				"address, company) "
 				"VALUES(?, ?, ?, ?, ?)");
@@ -76,18 +63,14 @@ bool ShopTable::insert(const Shop &s)
 	insertQuery.bindValue(2, s.city);
 	insertQuery.bindValue(3, s.address);
 	insertQuery.bindValue(4, s.company);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool ShopTable::update(const Shop &orig, const Shop &modified)
+void ShopTable::update(const Shop &orig, const Shop &modified)
 {
-	bool ret = true;
-
 	if(!updateQuery.isPrepared())
-		ret = updateQuery.prepare("UPDATE Shops SET "
+		updateQuery.prepare("UPDATE Shops SET "
 				"name = ?, "
 				"store_name = ?, "
 				"city = ?, "
@@ -101,63 +84,49 @@ bool ShopTable::update(const Shop &orig, const Shop &modified)
 	updateQuery.bindValue(3, modified.address);
 	updateQuery.bindValue(4, modified.company);
 	updateQuery.bindValue(5, orig.name);
-	ret = ret && updateQuery.exec();
+	updateQuery.exec();
 	updateQuery.finish();
-
-	return ret;
 }
 
-bool ShopTable::del(const Shop &s)
+void ShopTable::del(const Shop &s)
 {
-	bool ret = true;
-	
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare(
+		deleteQuery.prepare(
 				"DELETE FROM Shops WHERE "
 				"name = ?");
 
 	deleteQuery.bindValue(0, s.name);
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool ShopTable::query(ShopSet& ss)
+void ShopTable::query(ShopSet& ss)
 {
-	bool ret = true;
-
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT * FROM Shops");
 
-	ret = ret && selectQuery.exec();
+	selectQuery.exec();
 
-	if(ret){
-		ss.clear();
+	ss.clear();
 
-		int nameNo = selectQuery.colIndex("name");
-		int storeNameNo = selectQuery.colIndex("store_name");
-		int cityNo = selectQuery.colIndex("city");
-		int addressNo = selectQuery.colIndex("address");
-		int companyNo = selectQuery.colIndex("company");
+	int nameNo = selectQuery.colIndex("name");
+	int storeNameNo = selectQuery.colIndex("store_name");
+	int cityNo = selectQuery.colIndex("city");
+	int addressNo = selectQuery.colIndex("address");
+	int companyNo = selectQuery.colIndex("company");
 
-		DBG("----- Shop query result:");
-		while(selectQuery.next()) {
-			Shop *s = new Shop();
-			s->name = selectQuery.value(nameNo).toString();
-			s->storeName = selectQuery.value(storeNameNo).toString();
-			s->city = selectQuery.value(cityNo).toString();
-			s->address = selectQuery.value(addressNo).toString();
-			s->company = selectQuery.value(companyNo).toString();
+	DBG("----- Shop query result:");
+	while(selectQuery.next()) {
+		Shop *s = new Shop();
+		s->name = selectQuery.value(nameNo).toString();
+		s->storeName = selectQuery.value(storeNameNo).toString();
+		s->city = selectQuery.value(cityNo).toString();
+		s->address = selectQuery.value(addressNo).toString();
+		s->company = selectQuery.value(companyNo).toString();
 
-			ss.add(s);
-		}
-		DBG("-----");
+		ss.add(s);
 	}
-
-	return ret;
+	DBG("-----");
 }
 
 }
-
-

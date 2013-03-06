@@ -26,13 +26,12 @@ private:
 	WareTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool insert(const Ware &);
-	bool update(const Ware &orig,
+	void check(QStringList &tables);
+	void insert(const Ware &);
+	void update(const Ware &orig,
 			const Ware &modified);
-	bool del(const Ware &);
-	bool query(WareSet &);
+	void del(const Ware &);
+	void query(WareSet &);
 
 private:
 	Sql &sql;

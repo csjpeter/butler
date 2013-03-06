@@ -28,12 +28,12 @@ private:
 	SqlQuery();
 
 public:
-	bool exec(const QString &query);
+	void exec(const QString &query);
 
-	bool prepare(const QString &query);
+	void prepare(const QString &query);
 	bool isPrepared();
 	void bindValue(int pos, const QVariant &v);
-	bool exec();
+	void exec();
 	bool next();
 	unsigned colIndex(const QString &name);
 	QVariant value(int index);
@@ -41,6 +41,9 @@ public:
 
 	void sqlFinishNotification();
 	void sqlCloseNotification();
+
+private:
+	QString queryString();
 
 private:
 	Sql &sql;

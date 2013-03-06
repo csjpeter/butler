@@ -22,14 +22,12 @@ private:
 	QueryDb();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool update();
+	void check(QStringList &tables);
 
-	bool insert(const Query &q);
-	bool update(const Query &orig, const Query &modified);
-	bool del(const Query &q);
-	bool query(QuerySet &qs);
+	void insert(const Query &q);
+	void update(const Query &orig, const Query &modified);
+	void del(const Query &q);
+	void query(QuerySet &qs);
 
 private:
 	Sql &sql;

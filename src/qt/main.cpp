@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 {
 /*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
 
+	csjp::setLogDir("./");
+
 	Butler::Application app(argc, argv);
 
 	if(1 < argc){

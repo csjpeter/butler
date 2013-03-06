@@ -24,13 +24,12 @@ private:
 	ItemBoughtTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool insert(const Item &i);
-	bool update(const Item &orig,
+	void check(QStringList &tables);
+	void insert(const Item &i);
+	void update(const Item &orig,
 			const Item &modified);
-	bool del(const Item &item);
-	bool query(const Query &q, QueryStat &stat, ItemSet &items);
+	void del(const Item &item);
+	void query(const Query &q, QueryStat &stat, ItemSet &items);
 
 private:
 	Sql &sql;

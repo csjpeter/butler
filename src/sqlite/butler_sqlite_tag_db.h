@@ -21,14 +21,12 @@ private:
 	TagDb();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool update();
+	void check(QStringList &tables);
 
-	bool insert(const Tag &t);
-	bool update(const Tag &orig, const Tag &modified);
-	bool del(const Tag &t);
-	bool query(TagSet &ts);
+	void insert(const Tag &t);
+	void update(const Tag &orig, const Tag &modified);
+	void del(const Tag &t);
+	void query(TagSet &ts);
 
 private:
 	Sql &sql;

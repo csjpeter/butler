@@ -21,88 +21,50 @@ WareDb::~WareDb()
 {
 }
 
-bool WareDb::create()
+void WareDb::check(QStringList &tables)
 {
-	bool ret;
-
-	ret = wareTable.create();
-	ret = ret && wareTagsTable.create();
-	ret = ret && wareCategoriesTable.create();
-
-	return ret;
+	wareTable.check(tables);
+	wareTagsTable.check(tables);
+	wareCategoriesTable.check(tables);
 }
 
-bool WareDb::check(QStringList &tables)
+void WareDb::insert(const Ware &ware)
 {
-	bool ret;
-
-	ret = wareTable.check(tables);
-	ret = ret && wareTagsTable.check(tables);
-	ret = ret && wareCategoriesTable.check(tables);
-
-	return ret;
+	sql.transaction();
+	wareTable.insert(ware);
+	wareTagsTable.insert(ware);
+	wareCategoriesTable.insert(ware);
+	sql.commit();
 }
 
-bool WareDb::update()
+void WareDb::update(const Ware &orig, const Ware &modified)
 {
-	return true;
+	sql.transaction();
+	wareTable.update(orig, modified);
+	wareTagsTable.update(orig, modified);
+	wareCategoriesTable.update(orig, modified);
+	sql.commit();
 }
 
-bool WareDb::insert(const Ware &ware)
+void WareDb::del(const Ware &w)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && wareTable.insert(ware);
-	ret = ret && wareTagsTable.insert(ware);
-	ret = ret && wareCategoriesTable.insert(ware);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	wareTable.del(w);
+	sql.commit();
 }
 
-bool WareDb::update(const Ware &orig, const Ware &modified)
+void WareDb::query(WareSet &ws)
 {
-	bool ret = true;
+	sql.transaction();
+	wareTable.query(ws);
 
-	ret = sql.transaction();
-	ret = ret && wareTable.update(orig, modified);
-	ret = ret && wareTagsTable.update(orig, modified);
-	ret = ret && wareCategoriesTable.update(orig, modified);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool WareDb::del(const Ware &w)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && wareTable.del(w);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool WareDb::query(WareSet &ws)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && wareTable.query(ws);
-
-	if(ret){
-		unsigned i, s = ws.size();
-		for(i=0; i<s && ret; i++){
-			Ware &ware = ws.queryAt(i);
-			ret = ret && wareTagsTable.query(ware, ware.tags);
-			ret = ret && wareCategoriesTable.query(ware, ware.categories);
-		}
+	unsigned i, s = ws.size();
+	for(i=0; i<s; i++){
+		Ware &ware = ws.queryAt(i);
+		wareTagsTable.query(ware, ware.tags);
+		wareCategoriesTable.query(ware, ware.categories);
 	}
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.commit();
 }
 
 }

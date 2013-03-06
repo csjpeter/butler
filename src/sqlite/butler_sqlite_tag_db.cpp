@@ -18,63 +18,37 @@ TagDb::~TagDb()
 {
 }
 
-bool TagDb::create()
+void TagDb::check(QStringList &tables)
 {
-	return tagTable.create();
+	tagTable.check(tables);
 }
 
-bool TagDb::check(QStringList &tables)
+void TagDb::insert(const Tag &t)
 {
-	return tagTable.check(tables);
+	sql.transaction();
+	tagTable.insert(t);
+	sql.commit();
 }
 
-bool TagDb::update()
+void TagDb::update(const Tag &orig, const Tag &modified)
 {
-	return true;
+	sql.transaction();
+	tagTable.update(orig, modified);
+	sql.commit();
 }
 
-bool TagDb::insert(const Tag &t)
+void TagDb::del(const Tag &t)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && tagTable.insert(t);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	tagTable.del(t);
+	sql.commit();
 }
 
-bool TagDb::update(const Tag &orig, const Tag &modified)
+void TagDb::query(TagSet &ts)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && tagTable.update(orig, modified);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool TagDb::del(const Tag &t)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && tagTable.del(t);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
-}
-
-bool TagDb::query(TagSet &ts)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && tagTable.query(ts);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	tagTable.query(ts);
+	sql.commit();
 }
 
 }

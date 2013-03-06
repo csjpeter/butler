@@ -13,18 +13,18 @@ class ShopDb
 public:
 	/* The update field must have valid value and can not be
 	 * changed in future. */
-	virtual bool insert(const Shop &) = 0;
+	virtual void insert(const Shop &) = 0;
 
 	/* */
-	virtual bool update(
+	virtual void update(
 			const Shop &orig,
 			const Shop &modified) = 0;
 
 	/* */
-	virtual bool del(const Shop &) = 0;
+	virtual void del(const Shop &) = 0;
 
 	/* */
-	virtual bool query(ShopSet &) = 0;
+	virtual void query(ShopSet &) = 0;
 };
 
 #endif

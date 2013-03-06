@@ -31,23 +31,18 @@ SqlQuery::~SqlQuery()
 		delete qQuery;
 }
 
-bool SqlQuery::exec(const QString &query)
+void SqlQuery::exec(const QString &query)
 {
-	bool ret;
-
 	if(!qQuery){
 		qQuery = sql.createQuery();
 		qQuery->setForwardOnly(true);
-		ENSURE(qQuery, csjp::LogicError);
 	}
 
 	prepared = false;
-	ret = qQuery->exec(query);
-	ret = sql.reportSqlError() && ret;
-
-	DBG("SQL: %s", qPrintable(qQuery->executedQuery()));
-
-	return ret;
+	if(!qQuery->exec(query))
+		throw DbError("The below sql query failed:\n%swith error: %s",
+				C_STR(qQuery->executedQuery()),
+				C_STR(sql.dbErrorString()));
 }
 
 bool SqlQuery::isPrepared()
@@ -55,21 +50,17 @@ bool SqlQuery::isPrepared()
 	return prepared;
 }
 
-bool SqlQuery::prepare(const QString &query)
+void SqlQuery::prepare(const QString &query)
 {
-	bool ret;
-
 	if(!qQuery){
 		qQuery = sql.createQuery();
 		qQuery->setForwardOnly(true);
-		ENSURE(qQuery, csjp::LogicError);
 	}
 
-	ret = qQuery->prepare(query);
-	ret = sql.reportSqlError() && ret;
-	prepared = ret;
-
-	return ret;
+	if(!qQuery->prepare(query))
+		throw DbError("Failed to prepare query:\n%serror: %s",
+				C_STR(query),
+				C_STR(sql.dbErrorString()));
 }
 
 void SqlQuery::bindValue(int pos, const QVariant &v)
@@ -79,26 +70,13 @@ void SqlQuery::bindValue(int pos, const QVariant &v)
 	qQuery->bindValue(pos, v);
 }
 
-bool SqlQuery::exec()
+void SqlQuery::exec()
 {
 	ENSURE(qQuery, csjp::LogicError);
 
-	bool ret;
-
-	ret = qQuery->exec();
-	ret = sql.reportSqlError() && ret;
-
-#ifdef DEBUG
-//	DBG("SQL: %s", qPrintable(qQuery->executedQuery()));
-	DBG("SQL: %s", qPrintable(qQuery->lastQuery()));
-	QList<QVariant> list = qQuery->boundValues().values();
-	for (int i = 0; i < list.size(); ++i)
-		DBG("%d : [%s]", i, list.at(i).toString().toAscii().data());
-	if(!ret)
-		DBG("command failed");
-#endif
-
-	return ret;
+	if(!qQuery->exec())
+		throw DbError("The below sql query failed:\n%swith error: %s",
+			C_STR(queryString()), C_STR(sql.dbErrorString()));
 }
 
 bool SqlQuery::next()
@@ -113,11 +91,10 @@ unsigned SqlQuery::colIndex(const QString &name)
 	ENSURE(qQuery, csjp::LogicError);
 
 	int ret = qQuery->record().indexOf(name);
-	if(ret < 0){
-		LOG("There is no column %s in table %s.",
-				qPrintable(name), "FIXME-unknown");
-		ret = 0; /* FIXME throw exception */
-	}
+	if(ret < 0)
+		throw DbIncompatibleTableError(
+				"There is no column '%s' in the result for query:\n%s.",
+				C_STR(name), C_STR(queryString()));
 
 	return ret;
 }
@@ -151,6 +128,25 @@ void SqlQuery::sqlCloseNotification()
 {
 	if(qQuery)
 		qQuery->clear();
+}
+
+QString SqlQuery::queryString()
+{
+	ENSURE(qQuery, csjp::LogicError);
+
+	QString str;
+//	str += qQuery->executedQuery();
+	str += qQuery->lastQuery();
+	str += "\n";
+	QList<QVariant> list = qQuery->boundValues().values();
+	for (int i = 0; i < list.size(); ++i){
+		str += i;
+		str += " : ";
+		str += list.at(i).toString().toAscii().data();
+		str += "\n";
+	}
+
+	return str;
 }
 
 }

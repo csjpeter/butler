@@ -24,16 +24,15 @@ private:
 	QueryShopsTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
+	void check(QStringList &tables);
 
-	bool insert(const Query &q, const QString &shopName);
-	bool del(const Query &q, const QString &shopName);
+	void insert(const Query &q, const QString &shopName);
+	void del(const Query &q, const QString &shopName);
 
-	bool insert(const Query &q);
-	bool update(const Query &orig, const Query &modified);
-	bool del(const Query &q);
-	bool query(const Query &q, ShopNameSet &shops);
+	void insert(const Query &q);
+	void update(const Query &orig, const Query &modified);
+	void del(const Query &q);
+	void query(const Query &q, ShopNameSet &shops);
 
 private:
 	Sql &sql;

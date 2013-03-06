@@ -14,6 +14,10 @@
 #include <butler_ware_db.h>
 #include <butler_shop_db.h>
 
+DECL_EXCEPTION(csjp::ResourceError, DbError);
+DECL_EXCEPTION(DbError, DbLogicError);
+DECL_EXCEPTION(DbError, DbIncompatibleTableError);
+
 class Db
 {
 public:
@@ -24,7 +28,8 @@ public:
 		UPDATE_ERROR_OBJECT_CHANGED,
 		OPEN_ERROR_OLD_DATABASE_SCHEMA,
 		INCOMPATIBLE_DATABASE_SCHEMA,
-		INCOMPATIBLE_DATABASE_ENGINE
+		INCOMPATIBLE_DATABASE_ENGINE,
+		FAILED_TO_OPEN_DATABASE
 	};
 
 	Db(){}
@@ -32,24 +37,24 @@ public:
 
 	/* Connection needs to be estabilished before doing
 	 * anything else. */
-	virtual bool connect() = 0;
+	virtual void connect() = 0;
 
 	/* Opening databse is required for all but database
 	 * creation. */
-	virtual bool open() = 0;
+	virtual void open() = 0;
 	/* Every opened database needs to be closed. */
-	virtual bool close() = 0;
+	virtual void close() = 0;
 
 	/* Create needs to be called on a not yet opened
 	 * database. Open not neccessarily working on a
 	 * not yet created databse anyway. */
-	virtual bool create() = 0;
+	virtual void create() = 0;
 
 	/* Verifies the database schema. */
-	virtual bool check() = 0;
+	virtual void check() = 0;
 
 	/* Upgrades the database and it's tables. */
-	virtual bool update() = 0;
+	virtual void update() = 0;
 
 	/* Use this to identify what kind of error happened. */
 	virtual enum UserError lastUserErrorId() = 0;

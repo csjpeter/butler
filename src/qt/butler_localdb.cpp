@@ -46,8 +46,7 @@ LocalDb::LocalDb()
 		_db = new SqliteDb(filepath);
 
 		if(!_db->connect()){
-			QFile f(filepath);
-			if(!f.exists())
+			if(!QFile::exists(filepath))
 				if(!_db->create())
 					throw DbError("Create database failed");
 			if(!_db->connect())

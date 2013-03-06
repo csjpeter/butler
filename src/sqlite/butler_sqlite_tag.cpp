@@ -27,114 +27,80 @@ TagTable::~TagTable()
 {
 }
 
-bool TagTable::create()
+void TagTable::check(QStringList &tables)
 {
-	return sql.exec("CREATE TABLE Tags ("
-			"name VARCHAR(64) PRIMARY KEY, "
-			"desc TEXT NOT NULL DEFAULT ''"
-			")"
-			);
+	if(!tables.contains("Tags"))
+		sql.exec(	"CREATE TABLE Tags ("
+				"name VARCHAR(64) PRIMARY KEY, "
+				"desc TEXT NOT NULL DEFAULT ''"
+				")"
+				);
+
+	QSqlRecord table = sql.record("Tags");
+	if(	!table.contains("name") ||
+		!table.contains("desc")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table Tags in the openend database.");
 }
 
-bool TagTable::check(QStringList &tables)
+void TagTable::insert(const Tag &t)
 {
-	bool ret = true;
-
-	ret = tables.contains("Tags");
-
-	if(ret){
-		QSqlRecord table = sql.record("Tags");
-		if(	!table.contains("name") ||
-			!table.contains("desc")
-		  ) {
-			ret = false;
-			LOG("Incompatible table Tags in the openend database.");
-		}
-	}
-
-	return ret;
-}
-
-bool TagTable::alter()
-{
-	return true;
-}
-
-bool TagTable::insert(const Tag &t)
-{
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
-		ret = insertQuery.prepare("INSERT INTO Tags (name, desc) VALUES (?, ?)");
+		insertQuery.prepare("INSERT INTO Tags (name, desc) VALUES (?, ?)");
 
 	insertQuery.bindValue(0, t.name);
 	insertQuery.bindValue(1, t.description);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool TagTable::update(const Tag &orig, const Tag &modified)
+void TagTable::update(const Tag &orig, const Tag &modified)
 {
-	bool ret = true;
-
 	if(!updateQuery.isPrepared())
-		ret = updateQuery.prepare("UPDATE Tags SET name = ?, desc = ?"
+		updateQuery.prepare("UPDATE Tags SET name = ?, desc = ?"
 				" WHERE name = ?");
 
 	updateQuery.bindValue(0, modified.name);
 	updateQuery.bindValue(1, modified.description);
 	updateQuery.bindValue(2, orig.name);
-	ret = ret && updateQuery.exec();
+	updateQuery.exec();
 	updateQuery.finish();
-
-	return ret;
 }
 
-bool TagTable::del(const Tag &t)
+void TagTable::del(const Tag &t)
 {
-	bool ret = true;
-
 	if(!deleteQuery.isPrepared())
-		ret = deleteQuery.prepare("DELETE FROM Tags WHERE name = ?");
+		deleteQuery.prepare("DELETE FROM Tags WHERE name = ?");
 
 	deleteQuery.bindValue(0, t.name);
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool TagTable::query(TagSet &tags)
+void TagTable::query(TagSet &tags)
 {
-	bool ret = true;
-
 	if(!selectQuery.isPrepared())
-		ret = selectQuery.prepare("SELECT name, desc FROM Tags");
+		selectQuery.prepare("SELECT name, desc FROM Tags");
 
-	ret = ret && selectQuery.exec();
+	selectQuery.exec();
 
-	if(ret){
-		tags.clear();
-		
-		int nameNo = selectQuery.colIndex("name");
-		int descNo = selectQuery.colIndex("desc");
+	tags.clear();
+	
+	int nameNo = selectQuery.colIndex("name");
+	int descNo = selectQuery.colIndex("desc");
 
-		DBG("----- Reading all tags from db:");
-		while (selectQuery.next()) {
-			DBG("Next row");
-			Tag *tag = new Tag(selectQuery.value(nameNo).toString());
-			tag->description = selectQuery.value(descNo).toString();
-			tags.add(tag);
-//			tags.treeValidity();
-		}
-		DBG("-----");
+	DBG("----- Reading all tags from db:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		Tag *tag = new Tag(selectQuery.value(nameNo).toString());
+		tag->description = selectQuery.value(descNo).toString();
+		tags.add(tag);
+//		tags.treeValidity();
 	}
+	DBG("-----");
 
 	selectQuery.finish();
-
-	return ret;
 }
 
 }

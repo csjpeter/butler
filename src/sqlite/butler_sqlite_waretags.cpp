@@ -26,49 +26,31 @@ WareTagsTable::~WareTagsTable()
 {
 }
 
-bool WareTagsTable::create()
+void WareTagsTable::check(QStringList &tables)
 {
-	bool ret = true;
-
-	ret = ret && sql.exec("CREATE TABLE WareTags ("
-			"name VARCHAR(64) NOT NULL REFERENCES Wares(name) "
+	if(!tables.contains("WareTags")){
+		sql.exec("CREATE TABLE WareTags ("
+				"name VARCHAR(64) NOT NULL REFERENCES Wares(name) "
 				"ON DELETE CASCADE ON UPDATE CASCADE, "
-			"tag VARCHAR(64) NOT NULL REFERENCES Tags(name) "
+				"tag VARCHAR(64) NOT NULL REFERENCES Tags(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
-			"UNIQUE (name, tag) "
-			")"
-			);
-	ret = ret && sql.exec("CREATE INDEX WareTagsNameIndex "
-			"ON WareTags(name)");
-	ret = ret && sql.exec("CREATE INDEX WareTagsTagIndex "
-			"ON WareTags(tag)");
-
-	return ret;
-}
-
-bool WareTagsTable::check(QStringList &tables)
-{
-	bool ret = true;
-
-	ret = tables.contains("WareTags");
-
-	if(ret){
-		QSqlRecord table = sql.record("WareTags");
-		if(		!table.contains("name") ||
-				!table.contains("tag")
-		  ) {
-			ret = false;
-			LOG("Incompatible table WareTags in the openend database.");
-		}
+				"UNIQUE (name, tag) "
+				")"
+				);
+		sql.exec("CREATE INDEX WareTagsNameIndex ON WareTags(name)");
+		sql.exec("CREATE INDEX WareTagsTagIndex ON WareTags(tag)");
 	}
 
-	return ret;
+	QSqlRecord table = sql.record("WareTags");
+	if(		!table.contains("name") ||
+			!table.contains("tag")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table WareTags in the openend database.");
 }
 
-bool WareTagsTable::insert(const Ware &ware, const QString &tag)
+void WareTagsTable::insert(const Ware &ware, const QString &tag)
 {
-	bool ret = true;
-
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO WareTags "
 				"(name, tag) "
@@ -76,16 +58,12 @@ bool WareTagsTable::insert(const Ware &ware, const QString &tag)
 
 	insertQuery.bindValue(0, ware.name);
 	insertQuery.bindValue(1, tag);
-	ret = ret && insertQuery.exec();
+	insertQuery.exec();
 	insertQuery.finish();
-
-	return ret;
 }
 
-bool WareTagsTable::del(const Ware &ware, const QString &tag)
+void WareTagsTable::del(const Ware &ware, const QString &tag)
 {
-	bool ret = true;
-
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM WareTags WHERE "
@@ -94,80 +72,62 @@ bool WareTagsTable::del(const Ware &ware, const QString &tag)
 
 	deleteQuery.bindValue(0, ware.name);
 	deleteQuery.bindValue(1, tag);
-	ret = ret && deleteQuery.exec();
+	deleteQuery.exec();
 	deleteQuery.finish();
-
-	return ret;
 }
 
-bool WareTagsTable::insert(const Ware &ware)
+void WareTagsTable::insert(const Ware &ware)
 {
-	bool ret = true;
-
 	unsigned i, s = ware.tags.size();
 	for(i=0; i<s; i++){
 		const QString &t = ware.tags.queryAt(i);
-		ret = insert(ware, t);
-		if(!ret)
-			break;
+		insert(ware, t);
 	}
-
-	return ret;
 }
 
-bool WareTagsTable::update(const Ware &orig, const Ware &modified)
+void WareTagsTable::update(const Ware &orig, const Ware &modified)
 {
-	bool ret = true;
-
 	unsigned i, s;
 	
 	s = modified.tags.size();
-	for(i=0; i<s && ret; i++){
+	for(i=0; i<s; i++){
 		const QString &tag = modified.tags.queryAt(i);
 		if(!orig.tags.has(tag))
-			ret = insert(modified, tag);
+			insert(modified, tag);
 	}
 	
 	s = orig.tags.size();
-	for(i=0; i<s && ret; i++){
+	for(i=0; i<s; i++){
 		const QString &tag = orig.tags.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If Wares table is updated already.) */
 		if(!modified.tags.has(tag))
-			ret = del(modified, tag);
+			del(modified, tag);
 	}
-
-	return ret;
 }
 
-bool WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
+void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 {
-	bool ret = true;
-
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT tag FROM WareTags "
 				"WHERE name = ?");
 
 	selectQuery.bindValue(0, ware.name);
-	ret = ret && selectQuery.exec();
+	selectQuery.exec();
 
-	if(ret){
-		tags.clear();
+	tags.clear();
 
-		unsigned tagNo = selectQuery.colIndex("tag");
+	unsigned tagNo = selectQuery.colIndex("tag");
 
-		DBG("----- Ware tags query result:");
-		while (selectQuery.next()) {
-			DBG("Next row");
-			tags.add(new QString(selectQuery.value(tagNo).toString()));
-		}
-		DBG("-----");
+	DBG("----- Ware tags query result:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		tags.add(new QString(selectQuery.value(tagNo).toString()));
 	}
+	DBG("-----");
 
 	selectQuery.finish();
-
-	return ret;
 }
 
 }

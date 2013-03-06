@@ -23,100 +23,61 @@ ItemDb::~ItemDb()
 {
 }
 
-bool ItemDb::create()
+void ItemDb::check(QStringList &tables)
 {
-	bool ret;
-
-	ret = itemTable.create();
-	ret = ret && itemBoughtTable.create();
-
-	return ret;
+	itemTable.check(tables);
+	itemBoughtTable.check(tables);
 }
 
-bool ItemDb::check(QStringList &tables)
+void ItemDb::insert(const Item &i)
 {
-	bool ret;
-
-	ret = itemTable.check(tables);
-	ret = ret && itemBoughtTable.check(tables);
-
-	return ret;
-}
-
-bool ItemDb::update()
-{
-	return true;
-}
-
-bool ItemDb::insert(const Item &i)
-{
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && itemTable.insert(i);
+	sql.transaction();
+	itemTable.insert(i);
 	if(i.bought)
-		ret = ret && itemBoughtTable.insert(i);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+		itemBoughtTable.insert(i);
+	sql.commit();
 }
 
-bool ItemDb::update(const Item &orig, const Item &modified)
+void ItemDb::update(const Item &orig, const Item &modified)
 {
-	bool ret = true;
-
-	ret = sql.transaction();
-	ret = ret && itemTable.update(orig, modified);
+	sql.transaction();
+	itemTable.update(orig, modified);
 	if(!orig.bought && modified.bought){
-		ret = ret && itemBoughtTable.insert(modified);
+		itemBoughtTable.insert(modified);
 	} else if(orig.bought && !modified.bought){
-		ret = ret && itemBoughtTable.del(orig);
+		itemBoughtTable.del(orig);
 	} else if(orig.bought && modified.bought){
-		ret = ret && itemBoughtTable.update(orig, modified);
+		itemBoughtTable.update(orig, modified);
 	}
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.commit();
 }
 
-bool ItemDb::del(const Item &i)
+void ItemDb::del(const Item &i)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && itemTable.del(i);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	itemTable.del(i);
+	sql.commit();
 }
 
-bool ItemDb::query(const TagNameSet &tags, ItemSet &is)
+void ItemDb::query(const TagNameSet &tags, ItemSet &is)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && itemTable.query(tags, is);
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.transaction();
+	itemTable.query(tags, is);
+	sql.commit();
 }
 
-bool ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
+void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 {
-	bool ret;
-
-	ret = sql.transaction();
-	ret = ret && itemBoughtTable.query(q, stat, is);
+	sql.transaction();
+	itemBoughtTable.query(q, stat, is);
 
 	unsigned s = is.size();
-	for(unsigned i=0; i<s && ret; i++){
+	for(unsigned i=0; i<s; i++){
 		Item &item = is.queryAt(i);
-		ret = ret && itemTable.query(item);
+		itemTable.query(item);
 	}
 
-	ret = (ret && sql.commit()) || (sql.rollback() && false);
-
-	return ret;
+	sql.commit();
 }
 
 }
