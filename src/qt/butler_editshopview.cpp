@@ -9,8 +9,6 @@
 #include "butler_editshopview.h"
 #include "butler_shopsmodel.h"
 
-namespace Butler {
-
 	EditShopView::EditShopView(QWidget *parent, ShopsModel &m) :
 		QDialog(parent),
 		model(m)
@@ -177,7 +175,3 @@ namespace Butler {
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
 	}
-}
-
-
-

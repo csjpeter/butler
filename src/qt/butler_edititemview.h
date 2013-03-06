@@ -34,8 +34,6 @@ class QListView;
 class QStandardItemModel;
 class QComboBox;
 
-namespace Butler {
-
 class TagWidget;
 
 class EditItemView : public QDialog
@@ -93,8 +91,4 @@ private:
 	QPushButton *nextButton;
 };
 
-}
-
 #endif
-
-

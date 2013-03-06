@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_waretags.h"
 
-namespace Sqlite {
-
-WareTagsTable::WareTagsTable(Sql &_sql) :
+WareTagsTable::WareTagsTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	deleteQuery(sql),
@@ -128,6 +126,4 @@ void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 	DBG("-----");
 
 	selectQuery.finish();
-}
-
 }

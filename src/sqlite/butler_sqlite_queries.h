@@ -17,12 +17,10 @@
 #include "butler_sqlite_querywares.h"
 #include "butler_sqlite_queryshops.h"
 
-namespace Sqlite {
-
 class QueryTable
 {
 public:
-	QueryTable(Sql &sql);
+	QueryTable(SqlConnection &sql);
 	virtual ~QueryTable();
 private:
 	QueryTable();
@@ -38,14 +36,11 @@ public:
 	void query(QuerySet &queries);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery updateQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectAllQuery;
 };
 
-}
-
 #endif
-

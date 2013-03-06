@@ -57,4 +57,3 @@ bool operator<(const QString &a, const Shop &b);
 bool operator<(const Shop &a, const QString &b);
 
 #endif
-

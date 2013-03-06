@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_warecategories.h"
 
-namespace Sqlite {
-
-WareCategoriesTable::WareCategoriesTable(Sql &_sql) :
+WareCategoriesTable::WareCategoriesTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	deleteQuery(sql),
@@ -128,6 +126,4 @@ void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 	DBG("-----");
 
 	selectQuery.finish();
-}
-
 }

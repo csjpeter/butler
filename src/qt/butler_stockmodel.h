@@ -19,8 +19,6 @@
 
 class Item;
 
-namespace Butler {
-
 class StockModel : public ItemsModel
 {
 private:
@@ -42,7 +40,4 @@ public:
 	Query opts;
 };
 
-}
-
 #endif
-

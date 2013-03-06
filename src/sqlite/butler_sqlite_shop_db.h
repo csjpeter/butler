@@ -10,12 +10,10 @@
 
 #include "butler_sqlite_shop.h"
 
-namespace Sqlite {
-
 class ShopDb : public ::ShopDb
 {
 public:
-	ShopDb(Sql &sql);
+	ShopDb(SqlConnection &sql);
 	virtual ~ShopDb();
 private:
 	ShopDb();
@@ -29,11 +27,8 @@ public:
 	void query(ShopSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	ShopTable shopTable;
 };
 
-}
-
 #endif
-

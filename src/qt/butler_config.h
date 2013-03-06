@@ -9,8 +9,6 @@
 /* Forwards: */
 class QSessionManager;
 
-namespace Butler {
-
 class Config
 {
 public:
@@ -29,8 +27,4 @@ private:
 	QString _dateTimeFormat;
 };
 
-}
-
 #endif
-
-

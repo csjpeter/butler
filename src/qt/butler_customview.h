@@ -24,20 +24,18 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-namespace Butler {
-
 class AccountingView;
 class EditItemView;
 class QueryOptionsView;
 class EditWareView;
 
-class CustomView : public QWidget, LocalDb
+class CustomView : public QWidget
 {
 private:
 	Q_OBJECT
 
 public:
-	CustomView(QWidget *parent = 0);
+	CustomView(Sql & sql, QWidget *parent = 0);
 	~CustomView();
 
 private:
@@ -61,6 +59,7 @@ private slots:
 	void finishedEditWare(int);
 
 private:
+	Db db;
 	CustomModel model;
 
 	QTableView *queryView;
@@ -92,7 +91,4 @@ private:
 	EditWareView *editWareView;
 };
 
-}
-
 #endif
-

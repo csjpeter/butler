@@ -29,8 +29,6 @@ class QModelIndex;
 
 #include "butler_tagsmodel.h"
 
-namespace Butler {
-
 class TagWidget;
 
 class NewTagView : public QDialog
@@ -64,7 +62,4 @@ private:
 	QPushButton *doneButton;
 };
 
-}
-
 #endif
-

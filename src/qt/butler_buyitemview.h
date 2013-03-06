@@ -28,8 +28,6 @@ class QListView;
 class QComboBox;
 class QDoubleSpinBox;
 
-namespace Butler {
-
 class SwitchButton;
 class FlowLayout;
 class TagSet;
@@ -84,7 +82,4 @@ private:
 
 };
 
-}
-
 #endif
-

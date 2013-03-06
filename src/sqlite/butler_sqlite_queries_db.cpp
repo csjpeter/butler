@@ -6,9 +6,7 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_queries_db.h"
 
-namespace Sqlite {
-
-QueryDb::QueryDb(Sql &_sql, TagDb &tagDb) :
+QueryDb::QueryDb(SqlConnection &_sql, TagDb &tagDb) :
 	sql(_sql),
 	tagDb(tagDb),
 	queryTable(_sql),
@@ -73,6 +71,3 @@ void QueryDb::query(QuerySet &qs)
 	}
 	sql.commit();
 }
-
-}
-

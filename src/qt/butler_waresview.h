@@ -22,8 +22,6 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-namespace Butler {
-
 class NewWareView;
 class EditWareView;
 
@@ -71,8 +69,4 @@ private:
 	EditWareView *editWareView;
 };
 
-}
-
 #endif
-
-

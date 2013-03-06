@@ -14,12 +14,10 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_sqlquery.h"
 
-namespace Sqlite {
-
 class TagTable
 {
 public:
-	TagTable(Sql &sql);
+	TagTable(SqlConnection &sql);
 	virtual ~TagTable();
 private:
 	TagTable();
@@ -33,14 +31,11 @@ public:
 	void query(TagSet &tags);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery updateQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectQuery;
 };
 
-}
-
 #endif
-

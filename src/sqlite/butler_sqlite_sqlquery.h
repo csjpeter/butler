@@ -17,12 +17,10 @@
 
 #include "butler_sqlite_sql.h"
 
-namespace Sqlite {
-
 class SqlQuery : public SqlCloseListener, public SqlFinishListener
 {
 public:
-	SqlQuery(Sql &);
+	SqlQuery(SqlConnection &);
 	~SqlQuery();
 private:
 	SqlQuery();
@@ -46,12 +44,9 @@ private:
 	QString queryString();
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	QSqlQuery *qQuery;
 	bool prepared;
 };
 
-}
-
 #endif
-

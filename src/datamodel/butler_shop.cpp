@@ -106,4 +106,3 @@ bool operator<(const Shop &a, const QString &b)
 {
 	return a.isLess(b);
 }
-

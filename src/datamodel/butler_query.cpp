@@ -130,4 +130,3 @@ bool operator<(const Query &a, const QString &b)
 {
 	return a.isLess(b);
 }
-

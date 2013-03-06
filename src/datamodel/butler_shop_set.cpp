@@ -37,4 +37,3 @@ int ShopSet::compare(const Shop &a, const Shop &b) const
 
 	return ret ? -1 : 1;
 }
-

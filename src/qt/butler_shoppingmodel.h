@@ -18,8 +18,6 @@
 
 class Item;
 
-namespace Butler {
-
 class ShoppingModel : public ItemsModel
 {
 private:
@@ -40,7 +38,4 @@ public:
 	TagNameSet queryTagNames;
 };
 
-}
-
 #endif
-

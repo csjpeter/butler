@@ -20,8 +20,6 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-namespace Butler {
-
 class ShoppingView;
 class StockView;
 class CustomView;
@@ -88,8 +86,4 @@ private:
 	QueryOptionsView *queryOptionsView;
 };
 
-}
-
 #endif
-
-

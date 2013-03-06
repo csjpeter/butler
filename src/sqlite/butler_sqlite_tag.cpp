@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_tag.h"
 
-namespace Sqlite {
-
-TagTable::TagTable(Sql &sql) :
+TagTable::TagTable(SqlConnection &sql) :
 	sql(sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -102,6 +100,3 @@ void TagTable::query(TagSet &tags)
 
 	selectQuery.finish();
 }
-
-}
-

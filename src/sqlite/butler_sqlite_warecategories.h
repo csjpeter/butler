@@ -15,12 +15,10 @@
 
 #include "butler_sqlite_ware.h"
 
-namespace Sqlite {
-
 class WareCategoriesTable
 {
 public:
-	WareCategoriesTable(Sql &_sql);
+	WareCategoriesTable(SqlConnection &_sql);
 	virtual ~WareCategoriesTable();
 private:
 	WareCategoriesTable();
@@ -35,12 +33,10 @@ public:
 	void query(const Ware &, CategoryNameSet &categories);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectQuery;
 };
-
-}
 
 #endif

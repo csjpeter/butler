@@ -15,76 +15,71 @@
 #include "butler_config.h"
 #include "butler_localdb.h"
 
-namespace Butler {
-
 class ShopsModel :
 	public QAbstractTableModel,
 	public LocalDb
 {
-	private:
-		Q_OBJECT;
+private:
+	Q_OBJECT;
 
-	public:
-		static ShopsModel& instance()
+public:
+	static ShopsModel& instance()
+		__attribute__ ((no_instrument_function));
+	~ShopsModel();
+
+	virtual QModelIndex index(
+			int row,
+			int column,
+			const QModelIndex & parent = QModelIndex()) const
 			__attribute__ ((no_instrument_function));
-		~ShopsModel();
-
-		virtual QModelIndex index(
-				int row,
-				int column,
-				const QModelIndex & parent = QModelIndex()) const
-				__attribute__ ((no_instrument_function));
-		virtual Qt::ItemFlags flags(
-				const QModelIndex & index) const
-				__attribute__ ((no_instrument_function));
-		virtual QVariant data(
-				const QModelIndex & index,
-				int role = Qt::DisplayRole) const
-				__attribute__ ((no_instrument_function));
-		virtual QVariant headerData(
-				int section,
-				Qt::Orientation orientation,
-				int role = Qt::DisplayRole) const
-				__attribute__ ((no_instrument_function));
-		virtual bool setData(
-				const QModelIndex & index,
-				const QVariant & value,
-				int role = Qt::EditRole);
-		virtual bool setHeaderData(
-				int section,
-				Qt::Orientation orientation,
-				const QVariant & value,
-				int role = Qt::EditRole);
-		virtual int rowCount(
-				const QModelIndex & parent = QModelIndex()) const
-				__attribute__ ((no_instrument_function));
-		virtual int columnCount(
-				const QModelIndex & parent = QModelIndex()) const
-				__attribute__ ((no_instrument_function));
-		virtual bool removeRows(
-				int row, int count, const QModelIndex &parent=QModelIndex());
-		virtual bool insertRows(
-				int row, int count, const QModelIndex &parent=QModelIndex());
-
-	public:
-		int index(const QString &name) const
+	virtual Qt::ItemFlags flags(
+			const QModelIndex & index) const
 			__attribute__ ((no_instrument_function));
-		const Shop& shop(int row)
+	virtual QVariant data(
+			const QModelIndex & index,
+			int role = Qt::DisplayRole) const
 			__attribute__ ((no_instrument_function));
-		bool del(int row);
-		bool addNew(Shop &shop);
-		virtual bool update(int row, Shop &modified);
-		bool query();
-		void sort(int column, bool ascending);
+	virtual QVariant headerData(
+			int section,
+			Qt::Orientation orientation,
+			int role = Qt::DisplayRole) const
+			__attribute__ ((no_instrument_function));
+	virtual bool setData(
+			const QModelIndex & index,
+			const QVariant & value,
+			int role = Qt::EditRole);
+	virtual bool setHeaderData(
+			int section,
+			Qt::Orientation orientation,
+			const QVariant & value,
+			int role = Qt::EditRole);
+	virtual int rowCount(
+			const QModelIndex & parent = QModelIndex()) const
+			__attribute__ ((no_instrument_function));
+	virtual int columnCount(
+			const QModelIndex & parent = QModelIndex()) const
+			__attribute__ ((no_instrument_function));
+	virtual bool removeRows(
+			int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual bool insertRows(
+			int row, int count, const QModelIndex &parent=QModelIndex());
 
-	protected:
-		ShopsModel();
+public:
+	int index(const QString &name) const
+		__attribute__ ((no_instrument_function));
+	const Shop& shop(int row)
+		__attribute__ ((no_instrument_function));
+	bool del(int row);
+	bool addNew(Shop &shop);
+	virtual bool update(int row, Shop &modified);
+	bool query();
+	void sort(int column, bool ascending);
 
-	protected:
-		ShopSet shops;
+protected:
+	ShopsModel();
+
+protected:
+	ShopSet shops;
 };
 
-}
-
 #endif
-

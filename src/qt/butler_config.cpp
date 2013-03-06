@@ -9,8 +9,6 @@
 
 #include "butler_config.h"
 
-namespace Butler {
-
 Config& Config::instance()
 {
 	static Config _instance;
@@ -40,5 +38,3 @@ const QString &Config::dateTimeFormat()
 }
 
 }
-
-

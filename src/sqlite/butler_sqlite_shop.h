@@ -13,12 +13,10 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_sqlquery.h"
 
-namespace Sqlite {
-
 class ShopTable
 {
 public:
-	ShopTable(Sql &sql);
+	ShopTable(SqlConnection &sql);
 	virtual ~ShopTable();
 private:
 	ShopTable();
@@ -32,15 +30,11 @@ public:
 	void query(ShopSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery updateQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectQuery;
 };
 
-}
-
 #endif
-
-

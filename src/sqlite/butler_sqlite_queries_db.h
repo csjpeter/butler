@@ -11,12 +11,10 @@
 #include "butler_sqlite_queries.h"
 #include "butler_sqlite_tag_db.h"
 
-namespace Sqlite {
-
 class QueryDb : public ::QueryDb
 {
 public:
-	QueryDb(Sql &sql, TagDb &tagDb);
+	QueryDb(SqlConnection &sql, TagDb &tagDb);
 	virtual ~QueryDb();
 private:
 	QueryDb();
@@ -30,7 +28,7 @@ public:
 	void query(QuerySet &qs);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	TagDb &tagDb;
 	QueryTable queryTable;
 	QueryTagsTable queryTagsTable;
@@ -38,7 +36,4 @@ private:
 	QueryShopsTable queryShopsTable;
 };
 
-}
-
 #endif
-

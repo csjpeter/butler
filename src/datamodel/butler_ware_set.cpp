@@ -34,4 +34,3 @@ int WareSet::compare(const Ware &a, const Ware &b) const
 
 	return ret ? -1 : 1;
 }
-

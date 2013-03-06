@@ -10,12 +10,10 @@
 
 #include "butler_sqlite_tag.h"
 
-namespace Sqlite {
-
 class TagDb : public ::TagDb
 {
 public:
-	TagDb(Sql &sql);
+	TagDb(SqlConnection &sql);
 	virtual ~TagDb();
 private:
 	TagDb();
@@ -29,11 +27,8 @@ public:
 	void query(TagSet &ts);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	TagTable tagTable;
 };
 
-}
-
 #endif
-

@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_shop.h"
 
-namespace Sqlite {
-	
-ShopTable::ShopTable(Sql &_sql) :
+ShopTable::ShopTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -127,6 +125,4 @@ void ShopTable::query(ShopSet& ss)
 		ss.add(s);
 	}
 	DBG("-----");
-}
-
 }

@@ -22,8 +22,6 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-namespace Butler {
-
 class NewItemView;
 class EditItemView;
 class QueryOptionsView;
@@ -78,7 +76,4 @@ private:
 	TagFilterView *tagFilterView;
 };
 
-}
-
 #endif
-

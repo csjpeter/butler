@@ -65,4 +65,3 @@ int ItemSet::compare(const Item &a, const Item &b) const
 
 	return ret ? -1 : 1;
 }
-

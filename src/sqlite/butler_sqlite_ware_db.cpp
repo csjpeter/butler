@@ -6,9 +6,7 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_ware_db.h"
 
-namespace Sqlite {
-
-WareDb::WareDb(Sql &_sql, TagDb &tagDb) :
+WareDb::WareDb(SqlConnection &_sql, TagDb &tagDb) :
 	sql(_sql),
 	tagDb(tagDb),
 	wareTable(_sql),
@@ -65,6 +63,4 @@ void WareDb::query(WareSet &ws)
 		wareCategoriesTable.query(ware, ware.categories);
 	}
 	sql.commit();
-}
-
 }

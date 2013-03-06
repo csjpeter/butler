@@ -12,12 +12,10 @@
 #include "butler_sqlite_itembought.h"
 #include "butler_sqlite_tag_db.h"
 
-namespace Sqlite {
-
 class ItemDb : public ::ItemDb
 {
 public:
-	ItemDb(Sql &sql, TagDb &tagDb);
+	ItemDb(SqlConnection &sql, TagDb &tagDb);
 	virtual ~ItemDb();
 private:
 	ItemDb();
@@ -32,13 +30,10 @@ public:
 	void query(const Query &, QueryStat &, ItemSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	TagDb &tagDb;
 	ItemBoughtTable itemBoughtTable;
 	ItemTable itemTable;
 };
 
-}
-
 #endif
-

@@ -28,4 +28,3 @@ int TagSet::compare(const Tag &a, const Tag &b) const
 
 	return ret ? -1 : 1;
 }
-

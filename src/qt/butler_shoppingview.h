@@ -24,8 +24,6 @@ class QStandardItemModel;
 class QSqlTableModel;
 class QComboBox;
 
-namespace Butler {
-
 class NewItemView;
 class EditItemView;
 class QueryOptionsView;
@@ -87,8 +85,4 @@ private:
 	TagFilterView *tagFilterView;
 };
 
-}
-
 #endif
-
-

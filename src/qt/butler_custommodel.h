@@ -19,8 +19,6 @@
 
 class Item;
 
-namespace Butler {
-
 class CustomModel : public ItemsModel
 {
 private:
@@ -40,7 +38,4 @@ public:
 	QueryStat stat;
 };
 
-}
-
 #endif
-

@@ -15,8 +15,6 @@
 
 #define CONNECTION_NAME "butler_sqlite_connection"
 
-namespace Sqlite {
-
 #ifdef DEBUG
 void listAvailableFeatures(const QSqlDatabase &db);
 #endif
@@ -31,25 +29,9 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b)
 	return &a < &b;
 }
 
-Sql::Sql(const QString& _path) :
-	path(_path),
-	lastUserErrId(Db::UNSPECIFIED_USER_ERROR),
-	lastUserErr(""),
-	lastErr(""),
+SqlConnection::SqlConnection(const QString& path) :
+	path(path),
 	transactions(0)
-{
-}
-
-Sql::~Sql()
-{
-	if(db.isOpen()){
-		LOG("Closing db connection at destruction time. "
-				"This can easily cause a crash.");
-		close();
-	}
-}
-
-void Sql::connect()
 {
 	ENSURE(!db.isValid(), csjp::LogicError);
 
@@ -79,7 +61,16 @@ void Sql::connect()
 #endif
 }
 
-void Sql::open()
+SqlConnection::~SqlConnection()
+{
+	if(db.isOpen()){
+		LOG("Closing db connection at destruction time. "
+				"This can easily cause a crash.");
+		close();
+	}
+}
+
+void SqlConnection::open()
 {
 	if(db.isOpen()) return;
 
@@ -113,7 +104,7 @@ void Sql::open()
 	}
 }
 
-void Sql::close()
+void SqlConnection::close()
 {
 	if(!db.isOpen()) return;
 
@@ -134,31 +125,16 @@ void Sql::close()
 	QSqlDatabase::removeDatabase(CONNECTION_NAME);
 }
 
-enum Db::UserError Sql::lastUserErrorId()
-{
-	return lastUserErrId;
-}
-
-const QString& Sql::lastUserError()
-{
-	return lastUserErr;
-}
-		
-const QString& Sql::lastError()
-{
-	return lastErr;
-}
-
 /*
  *	Private members
  */
 
-/*Sql::Sql()
+/*SqlConnection::SqlConnection()
 {
 }
 */
 
-QSqlQuery* Sql::createQuery()
+QSqlQuery* SqlConnection::createQuery()
 {
 	QSqlQuery * q = new QSqlQuery(db);
 	if(!q)
@@ -166,34 +142,22 @@ QSqlQuery* Sql::createQuery()
 	return q;
 }
 
-bool Sql::exec(const QString &cmd)
-{
-	bool ret = true;
-
-	db.exec(cmd);
-	ret = reportSqlError();
-
-	DBG("SQL: %s", qPrintable(cmd));
-
-	return ret;
-}
-
-QSqlRecord Sql::record(const QString &tablename) const
+QSqlRecord SqlConnection::record(const QString &tablename) const
 {
 	return db.record(tablename);
 }
 
-QStringList Sql::tables() const
+QStringList SqlConnection::tables() const
 {
 	return db.tables();
 }
 
-bool Sql::isOpen()
+bool SqlConnection::isOpen()
 {
 	return db.isOpen();
 }
 
-void Sql::transaction()
+void SqlConnection::transaction()
 {
 	if(transactions == 0){
 		DBG("BEGIN TRANSACTION");
@@ -206,7 +170,7 @@ void Sql::transaction()
 	transactions++;
 }
 
-void Sql::commit()
+void SqlConnection::commit()
 {
 	if(transactions == 1){
 		DBG("COMMIT TRANSACTION");
@@ -219,7 +183,7 @@ void Sql::commit()
 	transactions--;
 }
 
-void Sql::rollback()
+void SqlConnection::rollback()
 {
 	if(transactions == 1){
 		DBG("ROLLBACK TRANSACTION");
@@ -239,36 +203,22 @@ void Sql::rollback()
 	transactions--;
 }
 
-/* returns false on error */
-bool Sql::reportSqlError()
-{
-	bool ret = true;
-	if(db.lastError().isValid()){
-		lastErr = db.lastError().text();
-		lastUserErr = "";
-		lastUserErrId = Db::UNSPECIFIED_USER_ERROR;
-		LOG("QSqlDatabase error: %s", qPrintable(lastErr));
-		ret = false;
-	}
-	return ret;
-}
-
-QString Sql::dbErrorString()
+QString SqlConnection::dbErrorString()
 {
 	return db.lastError().text();
 }
 
-void Sql::addSqlCloseListener(SqlCloseListener &l)
+void SqlConnection::addSqlCloseListener(SqlCloseListener &l)
 {
 	sqlCloseListeners.add(l);
 }
 
-void Sql::removeSqlCloseListener(SqlCloseListener &l)
+void SqlConnection::removeSqlCloseListener(SqlCloseListener &l)
 {
 	sqlCloseListeners.remove(l);
 }
 #if 0	
-void Sql::notifySqlFinishListeners()
+void SqlConnection::notifySqlFinishListeners()
 {
 	unsigned s,i;
 	s = sqlFinishListeners.size();
@@ -276,7 +226,7 @@ void Sql::notifySqlFinishListeners()
 		sqlFinishListeners.queryAt(i).sqlFinishNotification();
 }
 #endif			
-void Sql::notifySqlCloseListeners()
+void SqlConnection::notifySqlCloseListeners()
 {
 	unsigned s,i;
 	s = sqlCloseListeners.size();
@@ -337,5 +287,3 @@ void listAvailableFeatures(const QSqlDatabase &db)
 	featuresListed = true;
 }
 #endif
-
-}

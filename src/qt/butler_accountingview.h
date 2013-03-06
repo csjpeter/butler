@@ -34,8 +34,6 @@ class QListView;
 class QStandardItemModel;
 class QComboBox;
 
-namespace Butler {
-
 class TagWidget;
 
 class AccountingView : public QDialog
@@ -86,8 +84,4 @@ private:
 	QPushButton *saveButton;
 };
 
-}
-
 #endif
-
-

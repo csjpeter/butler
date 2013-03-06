@@ -134,4 +134,3 @@ bool operator<(const QDateTime &a, const Item &b)
 {
 	return b.isMore(a);
 }
-

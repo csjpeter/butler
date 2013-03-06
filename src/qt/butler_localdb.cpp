@@ -11,8 +11,6 @@
 
 #include "butler_localdb.h"
 
-namespace Butler {
-
 int LocalDb::refCount = 0;
 Db* LocalDb::_db = NULL;
 QString LocalDb::dbFileName = "";
@@ -86,8 +84,3 @@ QString LocalDb::error(QString err)
 
 	return msg;
 }
-
-}
-
-
-

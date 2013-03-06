@@ -14,9 +14,7 @@
 
 #include "butler_sqlite_queries.h"
 
-namespace Sqlite {
-
-QueryTable::QueryTable(Sql &sql) :
+QueryTable::QueryTable(SqlConnection &sql) :
 	sql(sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -143,6 +141,3 @@ void QueryTable::query(QuerySet &queries)
 
 	selectAllQuery.finish();
 }
-
-}
-

@@ -32,8 +32,6 @@ class QStandardShopModel;
 class QListView;
 class QStandardShopModel;
 
-namespace Butler {
-
 class TagWidget;
 
 class EditShopView : public QDialog
@@ -77,8 +75,4 @@ private:
 	QPushButton *nextButton;
 };
 
-}
-
 #endif
-
-

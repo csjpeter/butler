@@ -14,9 +14,7 @@
 
 #include "butler_sqlite_sqlquery.h"
 
-namespace Sqlite {
-
-SqlQuery::SqlQuery(Sql &_sql) :
+SqlQuery::SqlQuery(SqlConnection &_sql) :
 	sql(_sql),
 	qQuery(0),
 	prepared(false)
@@ -148,6 +146,3 @@ QString SqlQuery::queryString()
 
 	return str;
 }
-
-}
-

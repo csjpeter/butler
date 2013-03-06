@@ -32,8 +32,6 @@ class QComboBox;
 #include "butler_shoppingmodel.h"
 #include "butler_tagsmodel.h"
 
-namespace Butler {
-
 class TagWidget;
 
 class NewItemView : public QDialog
@@ -76,7 +74,4 @@ private:
 	QPushButton *doneButton;
 };
 
-}
-
 #endif
-

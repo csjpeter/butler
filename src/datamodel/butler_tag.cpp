@@ -83,4 +83,3 @@ bool operator<(const Tag &a, const QString &b)
 {
 	return a.isLess(b);
 }
-

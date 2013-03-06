@@ -11,8 +11,6 @@
 /* Forwards: */
 class QSessionManager;
 
-namespace Butler {
-
 class Application : public QApplication
 {
 public:
@@ -22,7 +20,4 @@ public:
 	virtual bool notify(QObject * receiver, QEvent * event);
 };
 
-}
-
 #endif
-

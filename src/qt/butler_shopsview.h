@@ -22,8 +22,6 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-namespace Butler {
-
 class NewShopView;
 class EditShopView;
 
@@ -71,8 +69,4 @@ private:
 	EditShopView *editShopView;
 };
 
-}
-
 #endif
-
-

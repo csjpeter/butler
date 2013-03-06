@@ -14,9 +14,7 @@
 
 #include "butler_sqlite_queryshops.h"
 
-namespace Sqlite {
-
-QueryShopsTable::QueryShopsTable(Sql &_sql) :
+QueryShopsTable::QueryShopsTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	deleteQuery(sql),
@@ -125,6 +123,3 @@ void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 	DBG("-----");
 	selectQuery.finish();
 }
-
-}
-

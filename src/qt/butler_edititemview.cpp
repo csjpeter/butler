@@ -14,389 +14,382 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-namespace Butler {
-
-	EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
-		QDialog(parent),
-		model(m)
-	{
-		setModal(true);
-//		setWindowModality(Qt::ApplicationModal);
-		setWindowTitle(tr("Edit item details"));
-		
-		QHBoxLayout *hbox;
-		QLabel *label;
-
-		QGridLayout *gridLayout = new QGridLayout();
-		gridLayout->setColumnStretch(1, 1);
-		setLayout(gridLayout);
-
-		label = new QLabel(tr("Common name :"), this);
-		gridLayout->addWidget(label, 0, 0, 1, 1);
-		nameEditor = new QLineEdit;
-		nameBox = new QComboBox;
-		nameBox->setEditable(true);
-		nameBox->setLineEdit(nameEditor);
-		nameBox->setModel(&WaresModel::instance());
-		nameBox->setModelColumn(WaresModel::Name);
-		nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
-		gridLayout->addWidget(nameBox, 0, 1, 1, 2);
-
-		label = new QLabel(tr("Category name :"), this);
-		gridLayout->addWidget(label, 1, 0, 1, 1);
-		categoryEditor = new QLineEdit;
-		categoryBox = new QComboBox;
-		categoryBox->setEditable(true);
-		categoryBox->setLineEdit(categoryEditor);
-		categoryBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
-		gridLayout->addWidget(categoryBox, 1, 1, 1, 2);
-
-		label = new QLabel(tr("Upload date :"), this);
-		gridLayout->addWidget(label, 2, 0, 1, 1);
-		uploadDateTime = new QDateTimeEdit;
-		uploadDateTime->setEnabled(false);
-		uploadDateTime->setCalendarPopup(true);
-		uploadDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
-		gridLayout->addWidget(uploadDateTime, 2, 1, 1, 2);
-
-		label = new QLabel(tr("Quantity :"), this);
-		gridLayout->addWidget(label, 3, 0, 1, 1);
-		quantityEditor = new QDoubleSpinBox;
-		quantityEditor->setRange(0, INT_MAX);
-		quantityEditor->setDecimals(3);
-		gridLayout->addWidget(quantityEditor, 3, 1, 1, 1);
-		unitLabel = new QLabel(tr(""), this);
-		gridLayout->addWidget(unitLabel, 3, 2, 1, 1);
-
-		label = new QLabel(tr("Bought :"), this);
-		gridLayout->addWidget(label, 4, 0, 1, 1);
-		boughtCheck = new QCheckBox;
-		gridLayout->addWidget(boughtCheck, 4, 1, 1, 2);
-
-		label = new QLabel(tr("Unit price :"), this);
-		gridLayout->addWidget(label, 5, 0, 1, 1);
-		unitPriceEditor = new QDoubleSpinBox;
-		unitPriceEditor->setRange(0, INT_MAX);
-		unitPriceEditor->setDecimals(2);
-		gridLayout->addWidget(unitPriceEditor, 5, 1, 1, 2);
-
-		label = new QLabel(tr("Gross price :"), this);
-		gridLayout->addWidget(label, 6, 0, 1, 1);
-		grossPriceEditor = new QDoubleSpinBox;
-		grossPriceEditor->setRange(0, INT_MAX);
-		grossPriceEditor->setDecimals(2);
-		gridLayout->addWidget(grossPriceEditor, 6, 1, 1, 2);
-
-		label = new QLabel(tr("Purchase date :"), this);
-		gridLayout->addWidget(label, 7, 0, 1, 1);
-		purchaseDateTime = new QDateTimeEdit;
-		purchaseDateTime->setCalendarPopup(true);
-		purchaseDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
-		gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 2);
-
-		label = new QLabel(tr("Shop (place of buy) :"), this);
-		gridLayout->addWidget(label, 8, 0, 1, 1);
-		shopBox = new QComboBox;
-		shopBox->setModel(&ShopsModel::instance());
-		shopBox->setModelColumn(Shop::Name);
-		gridLayout->addWidget(shopBox, 8, 1, 1, 2);
-
-		label = new QLabel(tr("On stock :"), this);
-		gridLayout->addWidget(label, 9, 0, 1, 1);
-		onStockCheck = new QCheckBox;
-		gridLayout->addWidget(onStockCheck, 9, 1, 1, 2);
-
-		/* buttons: prev, save, next */
-		hbox = new QHBoxLayout();
-		gridLayout->addLayout(hbox, 10, 0, 1, 3);
-
-		prevButton = new QPushButton;
-		prevButton->setText(tr("Prev"));
-		prevButton->setAutoDefault(false);
-		hbox->addWidget(prevButton);
-
-		saveButton = new QPushButton;
-		saveButton->setText(tr("Save"));
-		saveButton->setAutoDefault(false);
-		saveButton->setDefault(true);
-		hbox->addWidget(saveButton);
-
-		nextButton = new QPushButton;
-		nextButton->setText(tr("Next"));
-		nextButton->setAutoDefault(false);
-		hbox->addWidget(nextButton);
-
-		/* comment editor */
-		label = new QLabel(tr("Comments:"));
-		gridLayout->addWidget(label, 11, 0, 1, 3);
-
-		commentEditor = new QTextEdit;
-		gridLayout->addWidget(commentEditor, 12, 0, 1, 3);
-
-		connect(prevButton, SIGNAL(clicked()),
-				this, SLOT(prevClickedSlot()));
-		connect(nextButton, SIGNAL(clicked()),
-				this, SLOT(nextClickedSlot()));
-		connect(saveButton, SIGNAL(clicked()),
-				this, SLOT(saveSlot()));
-		
-		connect(nameEditor, SIGNAL(editingFinished()),
-				this, SLOT(nameEditFinishedSlot()));
-		connect(quantityEditor, SIGNAL(valueChanged(double)),
-				this, SLOT(quantityValueChangedSlot(double)));
-		connect(unitPriceEditor, SIGNAL(editingFinished()),
-				this, SLOT(unitPriceEditingFinishedSlot()));
-		connect(grossPriceEditor, SIGNAL(valueChanged(double)),
-				this, SLOT(grossPriceValueChangedSlot(double)));
-
-		/* restore last state */
-		loadState();
-	}
-
-	void EditItemView::showEvent(QShowEvent *event)
-	{
-		QDialog::showEvent(event);
-
-		mapToGui();
-	}
-
-	void EditItemView::closeEvent(QCloseEvent *event)
-	{
-		saveState();
-
-		QDialog::closeEvent(event);
-	}
-
-	void EditItemView::loadState()
-	{
-		QSettings settings(this);
-		QPoint pos = settings.value("edititemview/position", QPoint()).toPoint();
-		QSize size = settings.value("edititemview/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		move(pos);
-	}
-
-	void EditItemView::saveState()
-	{
-		QSettings settings(this);
-		settings.setValue("edititemview/position", pos());
-		settings.setValue("edititemview/size", size());
-	}
-
-	void EditItemView::mapToGui()
-	{
-		updatedItem = Item(model.item(cursor.row()));
-
-		uploadDateTime->setDateTime(updatedItem.uploaded);
-
-		nameEditor->setText(updatedItem.name);
-		nameEditFinishedSlot();
-		categoryEditor->setText(updatedItem.category);
-
-		quantityEditor->blockSignals(true);
-		quantityEditor->setValue(updatedItem.quantity);
-		quantityEditor->blockSignals(false);
-
-		commentEditor->setText(updatedItem.comment);
-
-		boughtCheck->setCheckState(updatedItem.bought ? Qt::Checked : Qt::Unchecked);
-
-		unitPriceEditor->blockSignals(true);
-		unitPriceEditor->setValue((DBL_EPSILON <= updatedItem.quantity) ?
-				updatedItem.price / updatedItem.quantity : 0);
-		unitPriceEditor->blockSignals(false);
-
-		grossPriceEditor->blockSignals(true);
-		grossPriceEditor->setValue(updatedItem.price);
-		grossPriceEditor->blockSignals(false);
-
-		purchaseDateTime->setDateTime(updatedItem.purchased);
-		shopBox->setCurrentIndex(ShopsModel::instance().index(updatedItem.shop));
-
-		onStockCheck->setCheckState(updatedItem.onStock ? Qt::Checked : Qt::Unchecked);
-	}
-
-	void EditItemView::mapFromGui()
-	{
-		updatedItem.uploaded = uploadDateTime->dateTime();
-
-		updatedItem.name = nameEditor->text();
-		updatedItem.category = categoryEditor->text();
-		updatedItem.quantity = quantityEditor->value();
-		updatedItem.comment = commentEditor->toPlainText();
-
-		updatedItem.bought = (boughtCheck->checkState() == Qt::Checked);
-		updatedItem.price = grossPriceEditor->value();
-		updatedItem.purchased = purchaseDateTime->dateTime();
-
-		int i = shopBox->currentIndex();
-		ShopsModel &sm = ShopsModel::instance();
-		if(0 <= i && i < sm.rowCount())
-			updatedItem.shop = sm.shop(i).name;
-
-		updatedItem.onStock = (onStockCheck->checkState() == Qt::Checked);
-	}
+EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
+	QDialog(parent),
+	model(m)
+{
+	setModal(true);
+//	setWindowModality(Qt::ApplicationModal);
+	setWindowTitle(tr("Edit item details"));
 	
-	void EditItemView::setCursor(const QModelIndex& index)
-	{
-		ENSURE(index.model() == &model, csjp::LogicError);
+	QHBoxLayout *hbox;
+	QLabel *label;
 
-		cursor = index;
-		mapToGui();
-		prevButton->setEnabled(cursor.row() > 0);
-		nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
-	}
+	QGridLayout *gridLayout = new QGridLayout();
+	gridLayout->setColumnStretch(1, 1);
+	setLayout(gridLayout);
 
-	void EditItemView::prevClickedSlot()
-	{
-		int col = cursor.column();
-		int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-		setCursor(model.index(row, col));
-	}
+	label = new QLabel(tr("Common name :"), this);
+	gridLayout->addWidget(label, 0, 0, 1, 1);
+	nameEditor = new QLineEdit;
+	nameBox = new QComboBox;
+	nameBox->setEditable(true);
+	nameBox->setLineEdit(nameEditor);
+	nameBox->setModel(&WaresModel::instance());
+	nameBox->setModelColumn(WaresModel::Name);
+	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
+	gridLayout->addWidget(nameBox, 0, 1, 1, 2);
 
-	void EditItemView::nextClickedSlot()
-	{
-		int col = cursor.column();
-		int row = (cursor.row() < model.rowCount() - 1) ?
-			(cursor.row() + 1) : (model.rowCount() - 1);
-		setCursor(model.index(row, col));
-	}
+	label = new QLabel(tr("Category name :"), this);
+	gridLayout->addWidget(label, 1, 0, 1, 1);
+	categoryEditor = new QLineEdit;
+	categoryBox = new QComboBox;
+	categoryBox->setEditable(true);
+	categoryBox->setLineEdit(categoryEditor);
+	categoryBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
+	gridLayout->addWidget(categoryBox, 1, 1, 1, 2);
 
-	void EditItemView::saveSlot()
-	{
-		mapFromGui();
-		
-		if(model.update(cursor.row(), updatedItem)){
-			/* We want to save any new ware and category before closing dialog. */
-			WaresModel &wm = WaresModel::instance();
-			int i = wm.index(nameEditor->text());
-			if(i == -1){
-				Ware ware;
-				ware.name = nameEditor->text();
-				if(categoryEditor->text().size())
-					ware.categories.add(new QString(categoryEditor->text()));
-				if(!wm.addNew(ware)){
-					QMessageBox(	QMessageBox::Warning,
-							tr("Item saved to db, "
-							  "but adding new ware failed."),
-							wm.error(),
-							QMessageBox::Ok,
-							0, Qt::Dialog).exec();
-				}
-			} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
-				Ware modified(wm.ware(i));
-				modified.categories.add(new QString(categoryEditor->text()));
-				if(!wm.update(i, modified)){
-					QMessageBox(	QMessageBox::Warning,
-							tr("Item saved to db, "
-							  "but adding new ware category failed."),
-							wm.error(),
-							QMessageBox::Ok,
-							0, Qt::Dialog).exec();
-				}
-			}
-			/* May be it is better to jump to next record than as to close the view. */
-			nextClickedSlot();
-//			accept();
-			return;
-		}
+	label = new QLabel(tr("Upload date :"), this);
+	gridLayout->addWidget(label, 2, 0, 1, 1);
+	uploadDateTime = new QDateTimeEdit;
+	uploadDateTime->setEnabled(false);
+	uploadDateTime->setCalendarPopup(true);
+	uploadDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	gridLayout->addWidget(uploadDateTime, 2, 1, 1, 2);
 
-		QMessageBox(	QMessageBox::Warning,
-				tr("Update item failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}
+	label = new QLabel(tr("Quantity :"), this);
+	gridLayout->addWidget(label, 3, 0, 1, 1);
+	quantityEditor = new QDoubleSpinBox;
+	quantityEditor->setRange(0, INT_MAX);
+	quantityEditor->setDecimals(3);
+	gridLayout->addWidget(quantityEditor, 3, 1, 1, 1);
+	unitLabel = new QLabel(tr(""), this);
+	gridLayout->addWidget(unitLabel, 3, 2, 1, 1);
+
+	label = new QLabel(tr("Bought :"), this);
+	gridLayout->addWidget(label, 4, 0, 1, 1);
+	boughtCheck = new QCheckBox;
+	gridLayout->addWidget(boughtCheck, 4, 1, 1, 2);
+
+	label = new QLabel(tr("Unit price :"), this);
+	gridLayout->addWidget(label, 5, 0, 1, 1);
+	unitPriceEditor = new QDoubleSpinBox;
+	unitPriceEditor->setRange(0, INT_MAX);
+	unitPriceEditor->setDecimals(2);
+	gridLayout->addWidget(unitPriceEditor, 5, 1, 1, 2);
+
+	label = new QLabel(tr("Gross price :"), this);
+	gridLayout->addWidget(label, 6, 0, 1, 1);
+	grossPriceEditor = new QDoubleSpinBox;
+	grossPriceEditor->setRange(0, INT_MAX);
+	grossPriceEditor->setDecimals(2);
+	gridLayout->addWidget(grossPriceEditor, 6, 1, 1, 2);
+
+	label = new QLabel(tr("Purchase date :"), this);
+	gridLayout->addWidget(label, 7, 0, 1, 1);
+	purchaseDateTime = new QDateTimeEdit;
+	purchaseDateTime->setCalendarPopup(true);
+	purchaseDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 2);
+
+	label = new QLabel(tr("Shop (place of buy) :"), this);
+	gridLayout->addWidget(label, 8, 0, 1, 1);
+	shopBox = new QComboBox;
+	shopBox->setModel(&ShopsModel::instance());
+	shopBox->setModelColumn(Shop::Name);
+	gridLayout->addWidget(shopBox, 8, 1, 1, 2);
+
+	label = new QLabel(tr("On stock :"), this);
+	gridLayout->addWidget(label, 9, 0, 1, 1);
+	onStockCheck = new QCheckBox;
+	gridLayout->addWidget(onStockCheck, 9, 1, 1, 2);
+
+	/* buttons: prev, save, next */
+	hbox = new QHBoxLayout();
+	gridLayout->addLayout(hbox, 10, 0, 1, 3);
+
+	prevButton = new QPushButton;
+	prevButton->setText(tr("Prev"));
+	prevButton->setAutoDefault(false);
+	hbox->addWidget(prevButton);
+
+	saveButton = new QPushButton;
+	saveButton->setText(tr("Save"));
+	saveButton->setAutoDefault(false);
+	saveButton->setDefault(true);
+	hbox->addWidget(saveButton);
+
+	nextButton = new QPushButton;
+	nextButton->setText(tr("Next"));
+	nextButton->setAutoDefault(false);
+	hbox->addWidget(nextButton);
+
+	/* comment editor */
+	label = new QLabel(tr("Comments:"));
+	gridLayout->addWidget(label, 11, 0, 1, 3);
+
+	commentEditor = new QTextEdit;
+	gridLayout->addWidget(commentEditor, 12, 0, 1, 3);
+
+	connect(prevButton, SIGNAL(clicked()),
+			this, SLOT(prevClickedSlot()));
+	connect(nextButton, SIGNAL(clicked()),
+			this, SLOT(nextClickedSlot()));
+	connect(saveButton, SIGNAL(clicked()),
+			this, SLOT(saveSlot()));
 	
-	void EditItemView::nameEditFinishedSlot()
-	{
-		categoryBox->clear();
+	connect(nameEditor, SIGNAL(editingFinished()),
+			this, SLOT(nameEditFinishedSlot()));
+	connect(quantityEditor, SIGNAL(valueChanged(double)),
+			this, SLOT(quantityValueChangedSlot(double)));
+	connect(unitPriceEditor, SIGNAL(editingFinished()),
+			this, SLOT(unitPriceEditingFinishedSlot()));
+	connect(grossPriceEditor, SIGNAL(valueChanged(double)),
+			this, SLOT(grossPriceValueChangedSlot(double)));
 
+	/* restore last state */
+	loadState();
+}
+
+void EditItemView::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
+
+	mapToGui();
+}
+
+void EditItemView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+
+	QDialog::closeEvent(event);
+}
+
+void EditItemView::loadState()
+{
+	QSettings settings(this);
+	QPoint pos = settings.value("edititemview/position", QPoint()).toPoint();
+	QSize size = settings.value("edititemview/size", QSize()).toSize();
+	if(size.isValid())
+		resize(size);
+	move(pos);
+}
+
+void EditItemView::saveState()
+{
+	QSettings settings(this);
+	settings.setValue("edititemview/position", pos());
+	settings.setValue("edititemview/size", size());
+}
+
+void EditItemView::mapToGui()
+{
+	updatedItem = Item(model.item(cursor.row()));
+
+	uploadDateTime->setDateTime(updatedItem.uploaded);
+
+	nameEditor->setText(updatedItem.name);
+	nameEditFinishedSlot();
+	categoryEditor->setText(updatedItem.category);
+
+	quantityEditor->blockSignals(true);
+	quantityEditor->setValue(updatedItem.quantity);
+	quantityEditor->blockSignals(false);
+
+	commentEditor->setText(updatedItem.comment);
+
+	boughtCheck->setCheckState(updatedItem.bought ? Qt::Checked : Qt::Unchecked);
+
+	unitPriceEditor->blockSignals(true);
+	unitPriceEditor->setValue((DBL_EPSILON <= updatedItem.quantity) ?
+			updatedItem.price / updatedItem.quantity : 0);
+	unitPriceEditor->blockSignals(false);
+
+	grossPriceEditor->blockSignals(true);
+	grossPriceEditor->setValue(updatedItem.price);
+	grossPriceEditor->blockSignals(false);
+
+	purchaseDateTime->setDateTime(updatedItem.purchased);
+	shopBox->setCurrentIndex(ShopsModel::instance().index(updatedItem.shop));
+
+	onStockCheck->setCheckState(updatedItem.onStock ? Qt::Checked : Qt::Unchecked);
+}
+
+void EditItemView::mapFromGui()
+{
+	updatedItem.uploaded = uploadDateTime->dateTime();
+
+	updatedItem.name = nameEditor->text();
+	updatedItem.category = categoryEditor->text();
+	updatedItem.quantity = quantityEditor->value();
+	updatedItem.comment = commentEditor->toPlainText();
+
+	updatedItem.bought = (boughtCheck->checkState() == Qt::Checked);
+	updatedItem.price = grossPriceEditor->value();
+	updatedItem.purchased = purchaseDateTime->dateTime();
+
+	int i = shopBox->currentIndex();
+	ShopsModel &sm = ShopsModel::instance();
+	if(0 <= i && i < sm.rowCount())
+		updatedItem.shop = sm.shop(i).name;
+
+	updatedItem.onStock = (onStockCheck->checkState() == Qt::Checked);
+}
+
+void EditItemView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	mapToGui();
+	prevButton->setEnabled(cursor.row() > 0);
+	nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
+}
+
+void EditItemView::prevClickedSlot()
+{
+	int col = cursor.column();
+	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditItemView::nextClickedSlot()
+{
+	int col = cursor.column();
+	int row = (cursor.row() < model.rowCount() - 1) ?
+		(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditItemView::saveSlot()
+{
+	mapFromGui();
+	
+	if(model.update(cursor.row(), updatedItem)){
+		/* We want to save any new ware and category before closing dialog. */
 		WaresModel &wm = WaresModel::instance();
 		int i = wm.index(nameEditor->text());
 		if(i == -1){
-			unitLabel->setText("");
-			return;
+			Ware ware;
+			ware.name = nameEditor->text();
+			if(categoryEditor->text().size())
+				ware.categories.add(new QString(categoryEditor->text()));
+			if(!wm.addNew(ware)){
+				QMessageBox(	QMessageBox::Warning,
+						tr("Item saved to db, "
+						  "but adding new ware failed."),
+						wm.error(),
+						QMessageBox::Ok,
+						0, Qt::Dialog).exec();
+			}
+		} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
+			Ware modified(wm.ware(i));
+			modified.categories.add(new QString(categoryEditor->text()));
+			if(!wm.update(i, modified)){
+				QMessageBox(	QMessageBox::Warning,
+						tr("Item saved to db, "
+						  "but adding new ware category failed."),
+						wm.error(),
+						QMessageBox::Ok,
+						0, Qt::Dialog).exec();
+			}
 		}
-
-		const Ware &w = wm.ware(i);
-
-		QString cats = WaresModel::categoriesToString(w.categories);
-		categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
-		
-		unitLabel->setText(w.unit);
+		/* May be it is better to jump to next record than as to close the view. */
+		nextClickedSlot();
+//		accept();
+		return;
 	}
+
+	QMessageBox(	QMessageBox::Warning,
+			tr("Update item failed"),
+			model.error(),
+			QMessageBox::Ok,
+			0, Qt::Dialog).exec();
+}
+
+void EditItemView::nameEditFinishedSlot()
+{
+	categoryBox->clear();
+
+	WaresModel &wm = WaresModel::instance();
+	int i = wm.index(nameEditor->text());
+	if(i == -1){
+		unitLabel->setText("");
+		return;
+	}
+
+	const Ware &w = wm.ware(i);
+
+	QString cats = WaresModel::categoriesToString(w.categories);
+	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
 	
-	void EditItemView::quantityValueChangedSlot(double q)
-	{
-		double u = unitPriceEditor->value();
-		double g = grossPriceEditor->value();
+	unitLabel->setText(w.unit);
+}
 
-		if(-DBL_EPSILON < g && g < DBL_EPSILON){
-			grossPriceEditor->blockSignals(true);
-			grossPriceEditor->setValue(u * q);
-			grossPriceEditor->blockSignals(false);
-			return;
-		}
+void EditItemView::quantityValueChangedSlot(double q)
+{
+	double u = unitPriceEditor->value();
+	double g = grossPriceEditor->value();
 
-		if(-DBL_EPSILON < q && q < DBL_EPSILON){
-			u = 0;
-		} else {
-			u = g / q;
-		}
-
-		unitPriceEditor->blockSignals(true);
-		unitPriceEditor->setValue(u);
-		unitPriceEditor->blockSignals(false);
+	if(-DBL_EPSILON < g && g < DBL_EPSILON){
+		grossPriceEditor->blockSignals(true);
+		grossPriceEditor->setValue(u * q);
+		grossPriceEditor->blockSignals(false);
+		return;
 	}
 
-	void EditItemView::unitPriceEditingFinishedSlot()
-	{
-		double u = unitPriceEditor->value();
-		double q = quantityEditor->value();
-		double g = grossPriceEditor->value();
+	if(-DBL_EPSILON < q && q < DBL_EPSILON){
+		u = 0;
+	} else {
+		u = g / q;
+	}
 
-		if(-DBL_EPSILON < g && g < DBL_EPSILON){
-			grossPriceEditor->blockSignals(true);
-			grossPriceEditor->setValue(u * q);
-			grossPriceEditor->blockSignals(false);
-			return;
-		}
+	unitPriceEditor->blockSignals(true);
+	unitPriceEditor->setValue(u);
+	unitPriceEditor->blockSignals(false);
+}
 
-		if(-DBL_EPSILON < u && u < DBL_EPSILON)
-			q = 0;
-		else
-			q = g / u;
+void EditItemView::unitPriceEditingFinishedSlot()
+{
+	double u = unitPriceEditor->value();
+	double q = quantityEditor->value();
+	double g = grossPriceEditor->value();
 
+	if(-DBL_EPSILON < g && g < DBL_EPSILON){
+		grossPriceEditor->blockSignals(true);
+		grossPriceEditor->setValue(u * q);
+		grossPriceEditor->blockSignals(false);
+		return;
+	}
+
+	if(-DBL_EPSILON < u && u < DBL_EPSILON)
+		q = 0;
+	else
+		q = g / u;
+
+	quantityEditor->blockSignals(true);
+	quantityEditor->setValue(q);
+	quantityEditor->blockSignals(false);
+}
+
+void EditItemView::grossPriceValueChangedSlot(double g)
+{
+	double u = 0;
+
+	if(-DBL_EPSILON < g && g < DBL_EPSILON){
 		quantityEditor->blockSignals(true);
-		quantityEditor->setValue(q);
+		quantityEditor->setValue(0);
 		quantityEditor->blockSignals(false);
 	}
 
-	void EditItemView::grossPriceValueChangedSlot(double g)
-	{
-		double u = 0;
-
-		if(-DBL_EPSILON < g && g < DBL_EPSILON){
-			quantityEditor->blockSignals(true);
-			quantityEditor->setValue(0);
-			quantityEditor->blockSignals(false);
-		}
-
-		double q = quantityEditor->value();
-		if(-DBL_EPSILON < q && q < DBL_EPSILON){
-			u = 0;
-		} else {
-			u = g / q;
-		}
-
-		unitPriceEditor->blockSignals(true);
-		unitPriceEditor->setValue(u);
-		unitPriceEditor->blockSignals(false);
+	double q = quantityEditor->value();
+	if(-DBL_EPSILON < q && q < DBL_EPSILON){
+		u = 0;
+	} else {
+		u = g / q;
 	}
-	
+
+	unitPriceEditor->blockSignals(true);
+	unitPriceEditor->setValue(u);
+	unitPriceEditor->blockSignals(false);
 }
-
-
-

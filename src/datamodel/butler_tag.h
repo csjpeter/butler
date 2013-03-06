@@ -48,4 +48,3 @@ bool operator<(const QString &a, const Tag &b);
 bool operator<(const Tag &a, const QString &b);
 
 #endif
-

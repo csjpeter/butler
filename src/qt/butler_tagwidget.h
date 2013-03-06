@@ -18,8 +18,6 @@
 
 class QGridLayout;
 
-namespace Butler {
-
 class TagWidget;
 
 class TagWidget : public QWidget
@@ -42,10 +40,6 @@ private:
 	QGridLayout *gridLayout;
 };
 
-}
-
 bool operator<(const QCheckBox &a, const QCheckBox &b);
 
 #endif
-
-

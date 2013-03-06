@@ -14,9 +14,7 @@
 
 #include "butler_sqlite_querytags.h"
 
-namespace Sqlite {
-
-QueryTagsTable::QueryTagsTable(Sql &_sql) :
+QueryTagsTable::QueryTagsTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	deleteQuery(sql),
@@ -124,6 +122,3 @@ void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 	DBG("-----");
 	selectQuery.finish();
 }
-
-}
-

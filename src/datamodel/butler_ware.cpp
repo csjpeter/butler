@@ -96,4 +96,3 @@ bool operator<(const Ware &a, const QString &b)
 {
 	return a.isLess(b);
 }
-

@@ -14,9 +14,7 @@
 
 #include "butler_sqlite_querywares.h"
 
-namespace Sqlite {
-
-QueryWaresTable::QueryWaresTable(Sql &_sql) :
+QueryWaresTable::QueryWaresTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	deleteQuery(sql),
@@ -125,6 +123,3 @@ void QueryWaresTable::query(const Query &q, WareNameSet &wares)
 
 	selectQuery.finish();
 }
-
-}
-

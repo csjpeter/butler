@@ -6,9 +6,7 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_shop_db.h"
 
-namespace Sqlite {
-
-ShopDb::ShopDb(Sql &_sql) :
+ShopDb::ShopDb(SqlConnection &_sql) :
 	sql(_sql),
 	shopTable(_sql)
 {
@@ -50,6 +48,3 @@ void ShopDb::query(ShopSet &ss)
 	shopTable.query(ss);
 	sql.commit();
 }
-
-}
-

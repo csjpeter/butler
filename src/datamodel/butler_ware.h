@@ -63,4 +63,3 @@ bool operator<(const Ware &a, const QString &b);
 bool operator<(const QString &a, const Ware &b);
 
 #endif
-

@@ -76,4 +76,3 @@ bool operator<(const Item &a, const QDateTime &b);
 bool operator<(const QDateTime &a, const Item &b);
 
 #endif
-

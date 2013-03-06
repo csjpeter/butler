@@ -13,12 +13,10 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_sqlquery.h"
 
-namespace Sqlite {
-
 class ItemTable
 {
 public:
-	ItemTable(Sql &sql);
+	ItemTable(SqlConnection &sql);
 	virtual ~ItemTable();
 private:
 	ItemTable();
@@ -34,7 +32,7 @@ public:
 	void query(const TagNameSet &, ItemSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery updateQuery;
 	SqlQuery deleteQuery;
@@ -42,7 +40,4 @@ private:
 	SqlQuery selectNamesQuery;
 };
 
-}
-
 #endif
-

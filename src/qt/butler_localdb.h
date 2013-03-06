@@ -14,8 +14,6 @@
 /* Forwards: */
 class QSessionManager;
 
-namespace Butler {
-
 class LocalDb
 {
 public:
@@ -34,9 +32,4 @@ private:
 	static Db* _db;
 };
 
-}
-
 #endif
-
-
-

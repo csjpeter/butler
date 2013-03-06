@@ -29,8 +29,6 @@ class QScrollArea;
 class QListView;
 class QStandardItemModel;
 
-namespace Butler {
-
 class TagWidget;
 
 class QueryOptionsView : public QDialog
@@ -88,7 +86,4 @@ private:
 	QPushButton *okButton;
 };
 
-}
-
 #endif
-

@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_item.h"
 
-namespace Sqlite {
-	
-ItemTable::ItemTable(Sql &_sql) :
+ItemTable::ItemTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -186,6 +184,3 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	}
 	DBG("-----");
 }
-
-}
-

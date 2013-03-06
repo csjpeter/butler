@@ -17,8 +17,6 @@
 #include <butler_item.h>
 #include <butler_item_set.h>
 
-namespace Sqlite {
-
 /* FIXME :
  * - check if object has changed in database before
  *   insert/update/delete operations
@@ -41,31 +39,25 @@ class SqlFinishListener
 
 bool operator<(const SqlFinishListener &a, const SqlFinishListener &b);
 
-class Sql
+class SqlConnection
 {
 public:
-	Sql(const QString& path);
-	~Sql();
+	SqlConnection(const QString& path);
+	~SqlConnection();
 private:
-	Sql();
+	SqlConnection();
 
 public:
-	void connect();
 	void open();
 	void close();
-	enum Db::UserError lastUserErrorId();
-	const QString& lastUserError();
-	const QString& lastError();
 
 	QSqlQuery *createQuery();
-	bool exec(const QString &query);
 	QSqlRecord record(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
 	void transaction();
 	void commit();
 	void rollback();
-	bool reportSqlError();
 	QString dbErrorString();
 
 	void addSqlCloseListener(SqlCloseListener &l);
@@ -76,10 +68,6 @@ public:
 #endif
 
 public:
-	QString path;
-	enum Db::UserError lastUserErrId;
-	QString lastUserErr;
-	QString lastErr;
 #if 0
 	Container<SqlFinishListener> sqlFinishListeners;
 #endif
@@ -89,7 +77,5 @@ private:
 	QSqlDatabase db;
 	unsigned transactions;
 };
-}
 
 #endif
-

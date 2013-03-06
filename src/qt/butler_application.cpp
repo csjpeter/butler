@@ -13,10 +13,6 @@
 
 #include "butler_application.h"
 
-/*using namespace std;*/
-
-namespace Butler {
-
 Application::Application(int &argc, char *argv[]) :
 	QApplication(argc, argv)
 {
@@ -47,6 +43,3 @@ bool Application::notify(QObject * receiver, QEvent * event)
 
 	return false; /* Was not handled. */
 }
-
-}
-

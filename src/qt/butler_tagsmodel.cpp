@@ -7,8 +7,6 @@
 
 #include "butler_tagsmodel.h"
 
-namespace Butler {
-
 TagsModel& TagsModel::instance()
 {
 	static TagsModel _instance;
@@ -245,6 +243,3 @@ void TagsModel::sort(int column, bool ascending)
 	tags.sort();
 	endResetModel();
 }
-
-}
-

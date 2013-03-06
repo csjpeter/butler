@@ -29,8 +29,6 @@ class QTableView;
 class QScrollArea;
 class QListView;
 
-namespace Butler {
-
 class TagWidget;
 
 class EditWareView : public QDialog
@@ -75,8 +73,4 @@ private:
 	QPushButton *closeButton;
 };
 
-}
-
 #endif
-
-

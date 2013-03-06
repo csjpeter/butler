@@ -13,12 +13,10 @@
 #include "butler_sqlite_warecategories.h"
 #include "butler_sqlite_tag_db.h"
 
-namespace Sqlite {
-
 class WareDb : public ::WareDb
 {
 public:
-	WareDb(Sql &sql, TagDb &tagDb);
+	WareDb(SqlConnection &sql, TagDb &tagDb);
 	virtual ~WareDb();
 private:
 	WareDb();
@@ -32,13 +30,11 @@ public:
 	void query(WareSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	TagDb &tagDb;
 	WareTable wareTable;
 	WareTagsTable wareTagsTable;
 	WareCategoriesTable wareCategoriesTable;
 };
-
-}
 
 #endif

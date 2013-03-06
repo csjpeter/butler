@@ -12,9 +12,7 @@
 
 #include "butler_sqlite_ware.h"
 
-namespace Sqlite {
-	
-WareTable::WareTable(Sql &_sql) :
+WareTable::WareTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -109,6 +107,4 @@ void WareTable::query(WareSet &wares)
 	DBG("-----");
 
 	selectAllQuery.finish();
-}
-
 }

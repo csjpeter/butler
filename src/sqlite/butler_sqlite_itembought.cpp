@@ -16,9 +16,7 @@
 
 #include "butler_sqlite_itembought.h"
 
-namespace Sqlite {
-	
-ItemBoughtTable::ItemBoughtTable(Sql &_sql) :
+ItemBoughtTable::ItemBoughtTable(SqlConnection &_sql) :
 	sql(_sql),
 	insertQuery(sql),
 	updateQuery(sql),
@@ -292,8 +290,6 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 
 	DBG("-----");
 //	stat.queryTime = stopper - csjp::Time::unixTime();
-}
-
 }
 
 /*

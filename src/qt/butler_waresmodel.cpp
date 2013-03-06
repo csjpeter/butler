@@ -7,8 +7,6 @@
 
 #include "butler_waresmodel.h"
 
-namespace Butler {
-
 WaresModel& WaresModel::instance()
 {
 	static WaresModel _instance;
@@ -315,6 +313,3 @@ void WaresModel::sort(int column, bool ascending)
 	wares.sort();
 	endResetModel();
 }
-
-}
-

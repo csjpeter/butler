@@ -15,12 +15,10 @@
 
 #include "butler_sqlite_waretags.h"
 
-namespace Sqlite {
-
 class WareTable
 {
 public:
-	WareTable(Sql &sql);
+	WareTable(SqlConnection &sql);
 	virtual ~WareTable();
 private:
 	WareTable();
@@ -34,14 +32,12 @@ public:
 	void query(WareSet &);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery updateQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectQuery;
 	SqlQuery selectAllQuery;
 };
-
-}
 
 #endif

@@ -15,12 +15,10 @@
 
 #include "butler_sqlite_tag.h"
 
-namespace Sqlite {
-
 class QueryTagsTable
 {
 public:
-	QueryTagsTable(Sql &_sql);
+	QueryTagsTable(SqlConnection &_sql);
 	virtual ~QueryTagsTable();
 private:
 	QueryTagsTable();
@@ -37,14 +35,10 @@ public:
 	void query(const Query &q, TagNameSet &tags);
 
 private:
-	Sql &sql;
+	SqlConnection &sql;
 	SqlQuery insertQuery;
 	SqlQuery deleteQuery;
 	SqlQuery selectQuery;
 };
 
-}
-
 #endif
-
-

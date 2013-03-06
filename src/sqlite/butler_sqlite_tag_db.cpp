@@ -6,9 +6,7 @@
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_tag_db.h"
 
-namespace Sqlite {
-
-TagDb::TagDb(Sql &_sql) :
+TagDb::TagDb(SqlConnection &_sql) :
 	sql(_sql),
 	tagTable(_sql)
 {
@@ -50,6 +48,3 @@ void TagDb::query(TagSet &ts)
 	tagTable.query(ts);
 	sql.commit();
 }
-
-}
-
