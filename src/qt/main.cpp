@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 
+#include <csjp_logger.h>
+
 #include <QtGui>
 
 #include "butler_application.h"
@@ -14,6 +16,9 @@
 int main(int argc, char *argv[])
 {
 /*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
+#ifdef DEBUG
+	csjp::setLogDir("./");
+#endif
 
 	Butler::Application app(argc, argv);
 

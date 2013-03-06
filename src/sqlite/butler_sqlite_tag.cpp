@@ -27,7 +27,7 @@ TagTable::~TagTable()
 {
 }
 
-bool TagTable::create()
+void TagTable::create()
 {
 	return sql.exec("CREATE TABLE Tags ("
 			"name VARCHAR(64) PRIMARY KEY, "
@@ -36,7 +36,7 @@ bool TagTable::create()
 			);
 }
 
-bool TagTable::check(QStringList &tables)
+void TagTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -55,12 +55,12 @@ bool TagTable::check(QStringList &tables)
 	return ret;
 }
 
-bool TagTable::alter()
+void TagTable::alter()
 {
 	return true;
 }
 
-bool TagTable::insert(const Tag &t)
+void TagTable::insert(const Tag &t)
 {
 	bool ret = true;
 
@@ -75,7 +75,7 @@ bool TagTable::insert(const Tag &t)
 	return ret;
 }
 
-bool TagTable::update(const Tag &orig, const Tag &modified)
+void TagTable::update(const Tag &orig, const Tag &modified)
 {
 	bool ret = true;
 
@@ -92,7 +92,7 @@ bool TagTable::update(const Tag &orig, const Tag &modified)
 	return ret;
 }
 
-bool TagTable::del(const Tag &t)
+void TagTable::del(const Tag &t)
 {
 	bool ret = true;
 
@@ -106,7 +106,7 @@ bool TagTable::del(const Tag &t)
 	return ret;
 }
 
-bool TagTable::query(TagSet &tags)
+void TagTable::query(TagSet &tags)
 {
 	bool ret = true;
 

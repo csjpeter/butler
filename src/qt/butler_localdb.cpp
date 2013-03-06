@@ -49,16 +49,28 @@ LocalDb::LocalDb()
 			QFile f(filepath);
 			if(!f.exists())
 				if(!_db->create())
-					throw DbError("Create database failed");
+					throw DbError("Create database failed. "
+							"ErrorId: %u, Error message: %s",
+							_db->lastErrorId(),
+							C_STR(_db->lastError()));
 			if(!_db->connect())
-				throw DbError("Connect to database engine failed");
+				throw DbError("Connect to database engine failed. "
+						"ErrorId: %u, Error message: %s",
+						_db->lastErrorId(),
+						C_STR(_db->lastError()));
 		}
 
 		if(!_db->open())
-			throw DbError("Open database failed");
+			throw DbError("Open database failed. "
+					"ErrorId: %u, Error message: %s",
+					_db->lastErrorId(),
+					C_STR(_db->lastError()));
 
 		if(!_db->check())
-			throw DbError("Database schema validity check failed");
+			throw DbError("Database schema validity check failed. "
+					"ErrorId: %u, Error message: %s",
+					_db->lastErrorId(),
+					C_STR(_db->lastError()));
 	}
 
 	refCount++;
@@ -89,8 +101,6 @@ QString LocalDb::error(QString err)
 	}
 
 	msg += QString("Reported error message: ");
-	msg += QString("\n");
-	msg += db().lastUserError();
 	msg += QString("\n");
 	msg += QString("Database error: ");
 	msg += QString("\n");

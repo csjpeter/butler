@@ -28,13 +28,13 @@ private:
 	SqlQuery();
 
 public:
-	bool exec(const QString &query);
+	void exec(const QString &query);
 
-	bool prepare(const QString &query);
-	bool isPrepared();
+	void prepare(const QString &query);
+	void isPrepared();
 	void bindValue(int pos, const QVariant &v);
-	bool exec();
-	bool next();
+	void exec();
+	void next();
 	unsigned colIndex(const QString &name);
 	QVariant value(int index);
 	void finish();

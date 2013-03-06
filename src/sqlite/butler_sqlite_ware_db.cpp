@@ -21,7 +21,7 @@ WareDb::~WareDb()
 {
 }
 
-bool WareDb::create()
+void WareDb::create()
 {
 	bool ret;
 
@@ -32,7 +32,7 @@ bool WareDb::create()
 	return ret;
 }
 
-bool WareDb::check(QStringList &tables)
+void WareDb::check(QStringList &tables)
 {
 	bool ret;
 
@@ -43,12 +43,12 @@ bool WareDb::check(QStringList &tables)
 	return ret;
 }
 
-bool WareDb::update()
+void WareDb::update()
 {
 	return true;
 }
 
-bool WareDb::insert(const Ware &ware)
+void WareDb::insert(const Ware &ware)
 {
 	bool ret;
 
@@ -61,7 +61,7 @@ bool WareDb::insert(const Ware &ware)
 	return ret;
 }
 
-bool WareDb::update(const Ware &orig, const Ware &modified)
+void WareDb::update(const Ware &orig, const Ware &modified)
 {
 	bool ret = true;
 
@@ -74,7 +74,7 @@ bool WareDb::update(const Ware &orig, const Ware &modified)
 	return ret;
 }
 
-bool WareDb::del(const Ware &w)
+void WareDb::del(const Ware &w)
 {
 	bool ret;
 
@@ -85,7 +85,7 @@ bool WareDb::del(const Ware &w)
 	return ret;
 }
 
-bool WareDb::query(WareSet &ws)
+void WareDb::query(WareSet &ws)
 {
 	bool ret;
 

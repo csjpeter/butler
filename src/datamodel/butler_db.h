@@ -14,56 +14,34 @@
 #include <butler_ware_db.h>
 #include <butler_shop_db.h>
 
+DECL_EXCEPTION(csjp::ResourceError, DbError);
+
 class Db
 {
 public:
-
-	enum UserError {
-		UNSPECIFIED_USER_ERROR = 0,
-		UPDATE_ERROR_OBJECT_NOT_EXISTS,
-		UPDATE_ERROR_OBJECT_CHANGED,
-		OPEN_ERROR_OLD_DATABASE_SCHEMA,
-		INCOMPATIBLE_DATABASE_SCHEMA,
-		INCOMPATIBLE_DATABASE_ENGINE
-	};
-
 	Db(){}
 	virtual ~Db(){}
 
 	/* Connection needs to be estabilished before doing
 	 * anything else. */
-	virtual bool connect() = 0;
+	virtual void connect() = 0;
 
 	/* Opening databse is required for all but database
 	 * creation. */
-	virtual bool open() = 0;
+	virtual void open() = 0;
 	/* Every opened database needs to be closed. */
-	virtual bool close() = 0;
+	virtual void close() = 0;
 
 	/* Create needs to be called on a not yet opened
 	 * database. Open not neccessarily working on a
 	 * not yet created databse anyway. */
-	virtual bool create() = 0;
+	virtual void create() = 0;
 
 	/* Verifies the database schema. */
-	virtual bool check() = 0;
+	virtual void check() = 0;
 
 	/* Upgrades the database and it's tables. */
-	virtual bool update() = 0;
-
-	/* Use this to identify what kind of error happened. */
-	virtual enum UserError lastUserErrorId() = 0;
-
-	/* If lastUserErrorId reports other than unspecified,
-	 * this will return the explanation of the error. */
-	virtual const QString& lastUserError() = 0;
-
-	/* In case lastUserErrorId reports unspecified, an
-	 * unexpected db error happened that might be because
-	 * of a database backend implementation error. The
-	 * original databaseengine/database server reported
-	 * error is given by this method. */
-	virtual const QString& lastError() = 0;
+	virtual void update() = 0;
 
 	virtual TagDb& tag() = 0;
 	virtual QueryDb& query() = 0;

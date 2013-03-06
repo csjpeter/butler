@@ -23,7 +23,7 @@ ItemDb::~ItemDb()
 {
 }
 
-bool ItemDb::create()
+void ItemDb::create()
 {
 	bool ret;
 
@@ -33,7 +33,7 @@ bool ItemDb::create()
 	return ret;
 }
 
-bool ItemDb::check(QStringList &tables)
+void ItemDb::check(QStringList &tables)
 {
 	bool ret;
 
@@ -43,12 +43,12 @@ bool ItemDb::check(QStringList &tables)
 	return ret;
 }
 
-bool ItemDb::update()
+void ItemDb::update()
 {
 	return true;
 }
 
-bool ItemDb::insert(const Item &i)
+void ItemDb::insert(const Item &i)
 {
 	bool ret;
 
@@ -61,7 +61,7 @@ bool ItemDb::insert(const Item &i)
 	return ret;
 }
 
-bool ItemDb::update(const Item &orig, const Item &modified)
+void ItemDb::update(const Item &orig, const Item &modified)
 {
 	bool ret = true;
 
@@ -79,7 +79,7 @@ bool ItemDb::update(const Item &orig, const Item &modified)
 	return ret;
 }
 
-bool ItemDb::del(const Item &i)
+void ItemDb::del(const Item &i)
 {
 	bool ret;
 
@@ -90,7 +90,7 @@ bool ItemDb::del(const Item &i)
 	return ret;
 }
 
-bool ItemDb::query(const TagNameSet &tags, ItemSet &is)
+void ItemDb::query(const TagNameSet &tags, ItemSet &is)
 {
 	bool ret;
 
@@ -101,7 +101,7 @@ bool ItemDb::query(const TagNameSet &tags, ItemSet &is)
 	return ret;
 }
 
-bool ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
+void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 {
 	bool ret;
 

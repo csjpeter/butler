@@ -51,43 +51,41 @@ SqliteDb::~SqliteDb()
 	delete priv;
 }
 
-bool SqliteDb::connect()
+void SqliteDb::connect()
 {
-	return priv->sql.connect();
+	priv->sql.connect();
 }
 
-bool SqliteDb::open()
+void SqliteDb::open()
 {
-	return priv->sql.open();
+	priv->sql.open();
 }
 
-bool SqliteDb::close()
+void SqliteDb::close()
 {
-	return priv->sql.close();
+	priv->sql.close();
 }
 
-bool SqliteDb::create()
+void SqliteDb::create()
 {
-	/* do not create anything on an already opened sql */
-	bool ret = priv->sql.isOpen() ? false : true;
+	if(priv->sql.isOpen())
+		throw DbError("Can not create database and or tables "
+				"in an already opened database.");
 
-	ret = ret && priv->sql.open();
-	if(ret){
-		ret = priv->sql.transaction();
-		ret = ret && priv->tagDb.create();
-		ret = ret && priv->queryDb.create();
-		ret = ret && priv->shopDb.create();
-		ret = ret && priv->wareDb.create();
-		ret = ret && priv->itemDb.create();
-		ret = (ret && priv->sql.commit()) || priv->sql.rollback();
+	priv->sql.open();
 
-		ret = priv->sql.close() && ret;
-	}
+	Sql::Transaction transaction;
+	ret = ret && priv->tagDb.create();
+	ret = ret && priv->queryDb.create();
+	ret = ret && priv->shopDb.create();
+	ret = ret && priv->wareDb.create();
+	ret = ret && priv->itemDb.create();
+	transaction.commit();
 
-	return ret;
+	ret = priv->sql.close() && ret;
 }
 
-bool SqliteDb::check()
+void SqliteDb::check()
 {
 	bool ret = priv->sql.isOpen();
 
@@ -102,7 +100,7 @@ bool SqliteDb::check()
 	return ret;
 }
 
-bool SqliteDb::update()
+void SqliteDb::update()
 {
 	bool ret = priv->sql.isOpen() ? false : true;
 
@@ -119,22 +117,6 @@ bool SqliteDb::update()
 	ret = priv->sql.close() && ret;
 
 	return ret;
-}
-
-enum Db::UserError SqliteDb::lastUserErrorId()
-{
-	enum Db::UserError ret = priv->sql.lastUserErrorId();
-	return ret;
-}
-
-const QString& SqliteDb::lastUserError()
-{
-	return priv->sql.lastUserError();
-}
-
-const QString& SqliteDb::lastError()
-{
-	return priv->sql.lastError();
 }
 
 TagDb& SqliteDb::tag()

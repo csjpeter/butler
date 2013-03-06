@@ -17,15 +17,12 @@ public:
 	virtual ~SqliteDb();
 
 public:
-	bool connect();
-	bool open();
-	bool close();
-	bool create();
-	bool check();
-	bool update();
-	enum Db::UserError lastUserErrorId();
-	const QString& lastUserError();
-	const QString& lastError();
+	void connect();
+	void open();
+	void close();
+	void create();
+	void check();
+	void update();
 
 	TagDb& tag();
 	QueryDb& query();

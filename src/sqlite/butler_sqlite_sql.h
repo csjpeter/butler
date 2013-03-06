@@ -50,22 +50,21 @@ private:
 	Sql();
 
 public:
-	bool connect();
-	bool open();
-	bool close();
-	enum Db::UserError lastUserErrorId();
-	const QString& lastUserError();
-	const QString& lastError();
+	void connect();
+	void open();
+	void close();
 
 	QSqlQuery *createQuery();
-	bool exec(const QString &query);
+	void exec(const QString &query);
 	QSqlRecord record(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
-	bool transaction();
-	bool commit();
-	bool rollback();
-	bool reportSqlError();
+#if 0
+	void transaction();
+	void commit();
+	void rollback();
+#endif
+	void reportSqlError();
 
 	void addSqlCloseListener(SqlCloseListener &l);
 	void removeSqlCloseListener(SqlCloseListener &l);
@@ -76,8 +75,7 @@ public:
 
 public:
 	QString path;
-	enum Db::UserError lastUserErrId;
-	QString lastUserErr;
+	enum Db::ErrorId lastErrId;
 	QString lastErr;
 #if 0
 	Container<SqlFinishListener> sqlFinishListeners;
@@ -86,7 +84,42 @@ public:
 
 private:
 	QSqlDatabase db;
-	int transactions;
+	unsigned transactions;
+public:
+	class Transaction
+	{
+	public:
+		Transaction() :
+			committed(false)
+		{
+			if(transactions == 0)
+				if(!db.transaction())
+					throw DbError("Failed to begin transaction: %s",
+							C_STR(db.lastError().text()));
+			transactions++;
+		}
+		void commit()
+		{
+			if(transactions == 1)
+				if(!db.commit())
+					throw DbError("Failed to commit transaction: %s",
+							C_STR(db.lastError().text()));
+			committed = true;
+		}
+		~Transaction()
+		{
+			if(transactions == 1 && !committed){
+//				notifySqlFinishListeners();
+//				FIXME notify upper layer to be able to message the user and quit.
+				if(!db.rollback())
+					LOG("Failed to rollback transaction: %s",
+							C_STR(db.lastError().text()));
+			}
+			transactions--;
+		}
+	public:
+		bool committed;
+	};
 };
 }
 

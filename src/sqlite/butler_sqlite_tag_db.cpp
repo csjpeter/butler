@@ -18,22 +18,22 @@ TagDb::~TagDb()
 {
 }
 
-bool TagDb::create()
+void TagDb::create()
 {
 	return tagTable.create();
 }
 
-bool TagDb::check(QStringList &tables)
+void TagDb::check(QStringList &tables)
 {
 	return tagTable.check(tables);
 }
 
-bool TagDb::update()
+void TagDb::update()
 {
 	return true;
 }
 
-bool TagDb::insert(const Tag &t)
+void TagDb::insert(const Tag &t)
 {
 	bool ret;
 
@@ -44,7 +44,7 @@ bool TagDb::insert(const Tag &t)
 	return ret;
 }
 
-bool TagDb::update(const Tag &orig, const Tag &modified)
+void TagDb::update(const Tag &orig, const Tag &modified)
 {
 	bool ret;
 
@@ -55,7 +55,7 @@ bool TagDb::update(const Tag &orig, const Tag &modified)
 	return ret;
 }
 
-bool TagDb::del(const Tag &t)
+void TagDb::del(const Tag &t)
 {
 	bool ret;
 
@@ -66,7 +66,7 @@ bool TagDb::del(const Tag &t)
 	return ret;
 }
 
-bool TagDb::query(TagSet &ts)
+void TagDb::query(TagSet &ts)
 {
 	bool ret;
 

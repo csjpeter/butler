@@ -26,14 +26,14 @@ private:
 	WareTagsTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool insert(const Ware &, const QString &tag);
-	bool del(const Ware &, const QString &tag);
-	bool insert(const Ware &);
-	bool update(const Ware &orig,
+	void create();
+	void check(QStringList &tables);
+	void insert(const Ware &, const QString &tag);
+	void del(const Ware &, const QString &tag);
+	void insert(const Ware &);
+	void update(const Ware &orig,
 			const Ware &modified);
-	bool query(const Ware &, csjp::OwnerContainer<QString> &tags);
+	void query(const Ware &, csjp::OwnerContainer<QString> &tags);
 
 private:
 	Sql &sql;

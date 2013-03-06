@@ -7,9 +7,9 @@
 #define BUTLER_SQLITE_TAG_H
 
 #include <QObject>
-#include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QStringList>
 
 #include "butler_sqlite_sql.h"
 #include "butler_sqlite_sqlquery.h"
@@ -25,14 +25,14 @@ private:
 	TagTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool alter();
+	void create();
+	void check(QStringList &tables);
+	void alter();
 
-	bool insert(const Tag &t);
-	bool update(const Tag &orig, const Tag &modified);
-	bool del(const Tag &t);
-	bool query(TagSet &tags);
+	void insert(const Tag &t);
+	void update(const Tag &orig, const Tag &modified);
+	void del(const Tag &t);
+	void query(TagSet &tags);
 
 private:
 	Sql &sql;

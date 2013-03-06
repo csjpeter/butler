@@ -28,15 +28,15 @@ private:
 	QueryTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
+	void create();
+	void check(QStringList &tables);
 
-	bool insert(const Query &qo);
-	bool update(const Query &orig,
+	void insert(const Query &qo);
+	void update(const Query &orig,
 			const Query &modified);
-	bool del(const Query &qo);
-	bool query(const QString &name, Query &query);
-	bool query(QuerySet &queries);
+	void del(const Query &qo);
+	void query(const QString &name, Query &query);
+	void query(QuerySet &queries);
 
 private:
 	Sql &sql;

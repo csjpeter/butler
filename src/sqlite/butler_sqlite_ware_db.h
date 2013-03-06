@@ -24,14 +24,14 @@ private:
 	WareDb();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool update();
+	void create();
+	void check(QStringList &tables);
+	void update();
 
-	bool insert(const Ware &);
-	bool update(const Ware &orig, const Ware &modified);
-	bool del(const Ware &);
-	bool query(WareSet &);
+	void insert(const Ware &);
+	void update(const Ware &orig, const Ware &modified);
+	void del(const Ware &);
+	void query(WareSet &);
 
 private:
 	Sql &sql;

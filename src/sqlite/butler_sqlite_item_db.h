@@ -23,15 +23,15 @@ private:
 	ItemDb();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool update();
+	void create();
+	void check(QStringList &tables);
+	void update();
 
-	bool insert(const Item &);
-	bool update(const Item &orig, const Item &modified);
-	bool del(const Item &);
-	bool query(const TagNameSet &, ItemSet &);
-	bool query(const Query &, QueryStat &, ItemSet &);
+	void insert(const Item &);
+	void update(const Item &orig, const Item &modified);
+	void del(const Item &);
+	void query(const TagNameSet &, ItemSet &);
+	void query(const Query &, QueryStat &, ItemSet &);
 
 private:
 	Sql &sql;

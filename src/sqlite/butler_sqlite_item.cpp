@@ -28,7 +28,7 @@ ItemTable::~ItemTable()
 {
 }
 
-bool ItemTable::create()
+void ItemTable::create()
 {
 	return sql.exec("CREATE TABLE Items ("
 			"uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
@@ -40,7 +40,7 @@ bool ItemTable::create()
 			);
 }
 
-bool ItemTable::check(QStringList &tables)
+void ItemTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -62,7 +62,7 @@ bool ItemTable::check(QStringList &tables)
 	return ret;
 }
 
-bool ItemTable::insert(const Item &i)
+void ItemTable::insert(const Item &i)
 {
 	bool ret = true;
 
@@ -83,7 +83,7 @@ bool ItemTable::insert(const Item &i)
 	return ret;
 }
 
-bool ItemTable::update(const Item &orig, const Item &modified)
+void ItemTable::update(const Item &orig, const Item &modified)
 {
 	bool ret = true;
 
@@ -111,7 +111,7 @@ bool ItemTable::update(const Item &orig, const Item &modified)
 	return ret;
 }
 
-bool ItemTable::del(const Item &i)
+void ItemTable::del(const Item &i)
 {
 	bool ret = true;
 	
@@ -127,7 +127,7 @@ bool ItemTable::del(const Item &i)
 	return ret;
 }
 
-bool ItemTable::query(Item& item)
+void ItemTable::query(Item& item)
 {
 	bool ret = true;
 
@@ -158,7 +158,7 @@ bool ItemTable::query(Item& item)
 	return ret;
 }
 
-bool ItemTable::query(const TagNameSet &tags, ItemSet &items)
+void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 {
 	bool ret = true;
 	SqlQuery sqlQuery(sql);

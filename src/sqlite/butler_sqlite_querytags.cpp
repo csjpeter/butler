@@ -28,7 +28,7 @@ QueryTagsTable::~QueryTagsTable()
 {
 }
 
-bool QueryTagsTable::create()
+void QueryTagsTable::create()
 {
 	bool ret = true;
 
@@ -48,7 +48,7 @@ bool QueryTagsTable::create()
 	return ret;
 }
 
-bool QueryTagsTable::check(QStringList &tables)
+void QueryTagsTable::check(QStringList &tables)
 {
 	bool ret;
 
@@ -67,7 +67,7 @@ bool QueryTagsTable::check(QStringList &tables)
 	return ret;
 }
 
-bool QueryTagsTable::insert(const Query &q, const QString &tagName)
+void QueryTagsTable::insert(const Query &q, const QString &tagName)
 {
 	bool ret = true;
 
@@ -84,7 +84,7 @@ bool QueryTagsTable::insert(const Query &q, const QString &tagName)
 	return ret;
 }
 
-bool QueryTagsTable::del(const Query &q, const QString &tagName)
+void QueryTagsTable::del(const Query &q, const QString &tagName)
 {
 	bool ret = true;
 
@@ -101,7 +101,7 @@ bool QueryTagsTable::del(const Query &q, const QString &tagName)
 	return ret;
 }
 
-bool QueryTagsTable::insert(const Query &q)
+void QueryTagsTable::insert(const Query &q)
 {
 	bool ret = true;
 
@@ -116,7 +116,7 @@ bool QueryTagsTable::insert(const Query &q)
 	return ret;
 }
 
-bool QueryTagsTable::update(const Query &orig, const Query &modified)
+void QueryTagsTable::update(const Query &orig, const Query &modified)
 {
 	bool ret = true;
 
@@ -145,7 +145,7 @@ bool QueryTagsTable::update(const Query &orig, const Query &modified)
 	return ret;
 }
 
-bool QueryTagsTable::query(const Query &q, TagNameSet &withTags)
+void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 {
 	bool ret = true;
 

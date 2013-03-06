@@ -26,14 +26,14 @@ private:
 	WareCategoriesTable();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool insert(const Ware &, const QString &category);
-	bool del(const Ware &, const QString &category);
-	bool insert(const Ware &);
-	bool update(const Ware &orig,
+	void create();
+	void check(QStringList &tables);
+	void insert(const Ware &, const QString &category);
+	void del(const Ware &, const QString &category);
+	void insert(const Ware &);
+	void update(const Ware &orig,
 			const Ware &modified);
-	bool query(const Ware &, CategoryNameSet &categories);
+	void query(const Ware &, CategoryNameSet &categories);
 
 private:
 	Sql &sql;

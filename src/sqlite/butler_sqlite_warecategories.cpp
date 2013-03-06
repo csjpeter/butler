@@ -26,7 +26,7 @@ WareCategoriesTable::~WareCategoriesTable()
 {
 }
 
-bool WareCategoriesTable::create()
+void WareCategoriesTable::create()
 {
 	bool ret = true;
 
@@ -45,7 +45,7 @@ bool WareCategoriesTable::create()
 	return ret;
 }
 
-bool WareCategoriesTable::check(QStringList &tables)
+void WareCategoriesTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -64,7 +64,7 @@ bool WareCategoriesTable::check(QStringList &tables)
 	return ret;
 }
 
-bool WareCategoriesTable::insert(const Ware &ware, const QString &category)
+void WareCategoriesTable::insert(const Ware &ware, const QString &category)
 {
 	bool ret = true;
 
@@ -81,7 +81,7 @@ bool WareCategoriesTable::insert(const Ware &ware, const QString &category)
 	return ret;
 }
 
-bool WareCategoriesTable::del(const Ware &ware, const QString &category)
+void WareCategoriesTable::del(const Ware &ware, const QString &category)
 {
 	bool ret = true;
 
@@ -99,7 +99,7 @@ bool WareCategoriesTable::del(const Ware &ware, const QString &category)
 	return ret;
 }
 
-bool WareCategoriesTable::insert(const Ware &ware)
+void WareCategoriesTable::insert(const Ware &ware)
 {
 	bool ret = true;
 
@@ -112,7 +112,7 @@ bool WareCategoriesTable::insert(const Ware &ware)
 	return ret;
 }
 
-bool WareCategoriesTable::update(const Ware &orig, const Ware &modified)
+void WareCategoriesTable::update(const Ware &orig, const Ware &modified)
 {
 	bool ret = true;
 
@@ -138,7 +138,7 @@ bool WareCategoriesTable::update(const Ware &orig, const Ware &modified)
 	return ret;
 }
 
-bool WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
+void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 {
 	bool ret = true;
 

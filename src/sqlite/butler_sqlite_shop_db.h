@@ -21,14 +21,14 @@ private:
 	ShopDb();
 
 public:
-	bool create();
-	bool check(QStringList &tables);
-	bool update();
+	void create();
+	void check(QStringList &tables);
+	void update();
 
-	bool insert(const Shop &);
-	bool update(const Shop &orig, const Shop &modified);
-	bool del(const Shop &);
-	bool query(ShopSet &);
+	void insert(const Shop &);
+	void update(const Shop &orig, const Shop &modified);
+	void del(const Shop &);
+	void query(ShopSet &);
 
 private:
 	Sql &sql;

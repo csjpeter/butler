@@ -27,7 +27,7 @@ ShopTable::~ShopTable()
 {
 }
 
-bool ShopTable::create()
+void ShopTable::create()
 {
 	return sql.exec("CREATE TABLE Shops ("
 			"name VARCHAR(64) NOT NULL PRIMARY KEY, "
@@ -39,7 +39,7 @@ bool ShopTable::create()
 			);
 }
 
-bool ShopTable::check(QStringList &tables)
+void ShopTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -61,7 +61,7 @@ bool ShopTable::check(QStringList &tables)
 	return ret;
 }
 
-bool ShopTable::insert(const Shop &s)
+void ShopTable::insert(const Shop &s)
 {
 	bool ret = true;
 
@@ -82,7 +82,7 @@ bool ShopTable::insert(const Shop &s)
 	return ret;
 }
 
-bool ShopTable::update(const Shop &orig, const Shop &modified)
+void ShopTable::update(const Shop &orig, const Shop &modified)
 {
 	bool ret = true;
 
@@ -107,7 +107,7 @@ bool ShopTable::update(const Shop &orig, const Shop &modified)
 	return ret;
 }
 
-bool ShopTable::del(const Shop &s)
+void ShopTable::del(const Shop &s)
 {
 	bool ret = true;
 	
@@ -123,7 +123,7 @@ bool ShopTable::del(const Shop &s)
 	return ret;
 }
 
-bool ShopTable::query(ShopSet& ss)
+void ShopTable::query(ShopSet& ss)
 {
 	bool ret = true;
 

@@ -33,8 +33,7 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b)
 
 Sql::Sql(const QString& _path) :
 	path(_path),
-	lastUserErrId(Db::UNSPECIFIED_USER_ERROR),
-	lastUserErr(""),
+	lastErrId(Db::NoError),
 	lastErr(""),
 	transactions(0)
 {
@@ -49,7 +48,7 @@ Sql::~Sql()
 	}
 }
 
-bool Sql::connect()
+void Sql::connect()
 {
 	ENSURE(!db.isValid(), csjp::LogicError);
 	bool ret;
@@ -77,43 +76,35 @@ bool Sql::connect()
 	return ret;
 }
 
-bool Sql::open()
+void Sql::open()
 {
 	ENSURE(db.isValid(), csjp::LogicError);
-	bool ret;
 
 	db.open();
-	ret = reportSqlError();
+	reportSqlError();
 	ENSURE(ret == db.isOpen(), csjp::LogicError);
 
-	if(ret)
-	{ /* Lets check if the sqlite on system is compatible with us. */
+	/* Lets check if the sqlite on system is compatible with us. */
 
-		/* Lets turn on reference constraits */
-		QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
-		q = db.exec("PRAGMA foreign_keys");
-		ENSURE(q.isActive(), csjp::LogicError);
-		ENSURE(q.isSelect(), csjp::LogicError);
+	/* Lets turn on reference constraits */
+	QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
+	q = db.exec("PRAGMA foreign_keys");
+	ENSURE(q.isActive(), csjp::LogicError);
+	ENSURE(q.isSelect(), csjp::LogicError);
 
-		q.next();
+	q.next();
 
-		DBG("Reference constraint support: %s",
-				(q.value(0).toInt()) ? "yes" : "no");
+	DBG("Reference constraint support: %s",
+			(q.value(0).toInt()) ? "yes" : "no");
 
-		if(q.value(0).toInt() != 1){
-			lastUserErr = "Reference constraits could not turned "
-				"on or not supported at all.";
-			lastUserErrId = Db::INCOMPATIBLE_DATABASE_ENGINE;
-			LOG("%s", qPrintable(lastUserErr));
-			ret = false;
-			db.close();
-		}
+	if(q.value(0).toInt() != 1){
+		db.close();
+		throw DbError("Reference constraits could not turned "
+			"on or not supported at all.");
 	}
-
-	return ret;
 }
 
-bool Sql::close()
+void Sql::close()
 {
 	if(!db.isOpen()) /* I dont understand why this can happen, but lets count with it. */
 		return true;
@@ -134,21 +125,6 @@ bool Sql::close()
 	return ret;
 }
 
-enum Db::UserError Sql::lastUserErrorId()
-{
-	return lastUserErrId;
-}
-
-const QString& Sql::lastUserError()
-{
-	return lastUserErr;
-}
-		
-const QString& Sql::lastError()
-{
-	return lastErr;
-}
-
 /*
  *	Private members
  */
@@ -163,7 +139,7 @@ QSqlQuery* Sql::createQuery()
 	return new QSqlQuery(db);
 }
 
-bool Sql::exec(const QString &cmd)
+void Sql::exec(const QString &cmd)
 {
 	bool ret = true;
 
@@ -189,8 +165,8 @@ bool Sql::isOpen()
 {
 	return db.isOpen();
 }
-
-bool Sql::transaction()
+#if 0
+void Sql::transaction()
 {
 	ENSURE(0 <= transactions, csjp::LogicError);
 
@@ -208,7 +184,7 @@ bool Sql::transaction()
 	return ret;
 }
 
-bool Sql::commit()
+void Sql::commit()
 {
 	ENSURE(0 < transactions, csjp::LogicError);
 
@@ -226,7 +202,7 @@ bool Sql::commit()
 	return ret;
 }
 
-bool Sql::rollback()
+void Sql::rollback()
 {
 	ENSURE(0 < transactions, csjp::LogicError);
 
@@ -247,19 +223,12 @@ bool Sql::rollback()
 
 	return ret;
 }
-
+#endif
 /* returns false on error */
-bool Sql::reportSqlError()
+void Sql::reportSqlError()
 {
-	bool ret = true;
-	if(db.lastError().isValid()){
-		lastErr = db.lastError().text();
-		lastUserErr = "";
-		lastUserErrId = Db::UNSPECIFIED_USER_ERROR;
-		LOG("%s", qPrintable(lastErr));
-		ret = false;
-	}
-	return ret;
+	if(db.lastError().isValid())
+		throw DbError(db.lastError().text());
 }
 
 void Sql::addSqlCloseListener(SqlCloseListener &l)

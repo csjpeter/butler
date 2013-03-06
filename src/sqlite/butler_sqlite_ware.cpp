@@ -28,7 +28,7 @@ WareTable::~WareTable()
 {
 }
 
-bool WareTable::create()
+void WareTable::create()
 {
 	return sql.exec("CREATE TABLE Wares ("
 			"name VARCHAR(64) NOT NULL PRIMARY KEY, "
@@ -37,7 +37,7 @@ bool WareTable::create()
 			);
 }
 
-bool WareTable::check(QStringList &tables)
+void WareTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -56,7 +56,7 @@ bool WareTable::check(QStringList &tables)
 	return ret;
 }
 
-bool WareTable::insert(const Ware &w)
+void WareTable::insert(const Ware &w)
 {
 	bool ret = true;
 
@@ -73,7 +73,7 @@ bool WareTable::insert(const Ware &w)
 	return ret;
 }
 
-bool WareTable::update(const Ware &orig, const Ware &modified)
+void WareTable::update(const Ware &orig, const Ware &modified)
 {
 	bool ret = true;
 
@@ -92,7 +92,7 @@ bool WareTable::update(const Ware &orig, const Ware &modified)
 	return ret;
 }
 
-bool WareTable::del(const Ware &ware)
+void WareTable::del(const Ware &ware)
 {
 	bool ret = true;
 	
@@ -108,7 +108,7 @@ bool WareTable::del(const Ware &ware)
 	return ret;
 }
 
-bool WareTable::query(WareSet &wares)
+void WareTable::query(WareSet &wares)
 {
 	bool ret = true;
 

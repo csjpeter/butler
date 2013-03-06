@@ -239,23 +239,6 @@ public:
 		return true;
 	}
 
-	enum Db::UserError lastUserErrorId()
-	{
-		return Db::UNSPECIFIED_USER_ERROR;
-	}
-
-	const QString& lastUserError()
-	{
-		static QString err("no-error");
-		return err;
-	}
-
-	const QString& lastError()
-	{
-		static QString err("no-error");
-		return err;
-	}
-
 	TagDb &tag()
 	{
 		static TagDbImp tag;
@@ -318,9 +301,6 @@ void TestDb::db()
 	db.create();
 	db.check();
 	db.update();
-	db.lastUserErrorId();
-	db.lastUserError();
-	db.lastError();
 }
 
 void TestDb::tags()

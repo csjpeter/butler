@@ -16,23 +16,23 @@ class ItemDb
 public:
 	/* The update field must have valid value and can not be
 	 * changed in future. */
-	virtual bool insert(const Item &) = 0;
+	virtual void insert(const Item &) = 0;
 
 	/* */
-	virtual bool update(
+	virtual void update(
 			const Item &orig,
 			const Item &modified) = 0;
 
 	/* */
-	virtual bool del(const Item &) = 0;
+	virtual void del(const Item &) = 0;
 
 	/* items on shopping list having tags marked in tagset */
-	virtual bool query(const TagNameSet &, ItemSet &) = 0;
+	virtual void query(const TagNameSet &, ItemSet &) = 0;
 
 	/* bought items filtered with query options */
-	virtual bool query(const Query &, QueryStat &stat, ItemSet &) = 0;
+	virtual void query(const Query &, QueryStat &stat, ItemSet &) = 0;
 
-//	virtual bool query(WareSet &s) = 0;
+//	virtual void query(WareSet &s) = 0;
 };
 
 #endif

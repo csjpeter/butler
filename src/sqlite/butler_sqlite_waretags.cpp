@@ -26,7 +26,7 @@ WareTagsTable::~WareTagsTable()
 {
 }
 
-bool WareTagsTable::create()
+void WareTagsTable::create()
 {
 	bool ret = true;
 
@@ -46,7 +46,7 @@ bool WareTagsTable::create()
 	return ret;
 }
 
-bool WareTagsTable::check(QStringList &tables)
+void WareTagsTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -65,7 +65,7 @@ bool WareTagsTable::check(QStringList &tables)
 	return ret;
 }
 
-bool WareTagsTable::insert(const Ware &ware, const QString &tag)
+void WareTagsTable::insert(const Ware &ware, const QString &tag)
 {
 	bool ret = true;
 
@@ -82,7 +82,7 @@ bool WareTagsTable::insert(const Ware &ware, const QString &tag)
 	return ret;
 }
 
-bool WareTagsTable::del(const Ware &ware, const QString &tag)
+void WareTagsTable::del(const Ware &ware, const QString &tag)
 {
 	bool ret = true;
 
@@ -100,7 +100,7 @@ bool WareTagsTable::del(const Ware &ware, const QString &tag)
 	return ret;
 }
 
-bool WareTagsTable::insert(const Ware &ware)
+void WareTagsTable::insert(const Ware &ware)
 {
 	bool ret = true;
 
@@ -115,7 +115,7 @@ bool WareTagsTable::insert(const Ware &ware)
 	return ret;
 }
 
-bool WareTagsTable::update(const Ware &orig, const Ware &modified)
+void WareTagsTable::update(const Ware &orig, const Ware &modified)
 {
 	bool ret = true;
 
@@ -141,7 +141,7 @@ bool WareTagsTable::update(const Ware &orig, const Ware &modified)
 	return ret;
 }
 
-bool WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
+void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 {
 	bool ret = true;
 

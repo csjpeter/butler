@@ -31,7 +31,7 @@ SqlQuery::~SqlQuery()
 		delete qQuery;
 }
 
-bool SqlQuery::exec(const QString &query)
+void SqlQuery::exec(const QString &query)
 {
 	bool ret;
 
@@ -50,12 +50,12 @@ bool SqlQuery::exec(const QString &query)
 	return ret;
 }
 
-bool SqlQuery::isPrepared()
+void SqlQuery::isPrepared()
 {
 	return prepared;
 }
 
-bool SqlQuery::prepare(const QString &query)
+void SqlQuery::prepare(const QString &query)
 {
 	bool ret;
 
@@ -79,7 +79,7 @@ void SqlQuery::bindValue(int pos, const QVariant &v)
 	qQuery->bindValue(pos, v);
 }
 
-bool SqlQuery::exec()
+void SqlQuery::exec()
 {
 	ENSURE(qQuery, csjp::LogicError);
 
@@ -101,7 +101,7 @@ bool SqlQuery::exec()
 	return ret;
 }
 
-bool SqlQuery::next()
+void SqlQuery::next()
 {
 	ENSURE(qQuery, csjp::LogicError);
 

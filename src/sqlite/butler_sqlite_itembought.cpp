@@ -32,7 +32,7 @@ ItemBoughtTable::~ItemBoughtTable()
 {
 }
 
-bool ItemBoughtTable::create()
+void ItemBoughtTable::create()
 {
 	return sql.exec("CREATE TABLE ItemsBought ("
 			"uploaded DATE NOT NULL REFERENCES Items(uploaded) "
@@ -46,7 +46,7 @@ bool ItemBoughtTable::create()
 			);
 }
 
-bool ItemBoughtTable::check(QStringList &tables)
+void ItemBoughtTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -68,7 +68,7 @@ bool ItemBoughtTable::check(QStringList &tables)
 	return ret;
 }
 
-bool ItemBoughtTable::insert(const Item &i)
+void ItemBoughtTable::insert(const Item &i)
 {
 	bool ret = true;
 
@@ -89,7 +89,7 @@ bool ItemBoughtTable::insert(const Item &i)
 	return ret;
 }
 
-bool ItemBoughtTable::update(const Item &orig, const Item &modified)
+void ItemBoughtTable::update(const Item &orig, const Item &modified)
 {
 	bool ret = true;
 
@@ -117,7 +117,7 @@ bool ItemBoughtTable::update(const Item &orig, const Item &modified)
 	return ret;
 }
 
-bool ItemBoughtTable::del(const Item &i)
+void ItemBoughtTable::del(const Item &i)
 {
 	bool ret = true;
 	
@@ -133,7 +133,7 @@ bool ItemBoughtTable::del(const Item &i)
 	return ret;
 }
 
-bool ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
+void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 {
 //	csjp::Time stopper = csjp::Time::unixTime();
 	bool ret = true;

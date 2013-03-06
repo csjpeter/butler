@@ -22,7 +22,7 @@ QueryDb::~QueryDb()
 {
 }
 
-bool QueryDb::create()
+void QueryDb::create()
 {
 	bool ret;
 
@@ -34,7 +34,7 @@ bool QueryDb::create()
 	return ret;
 }
 
-bool QueryDb::check(QStringList &tables)
+void QueryDb::check(QStringList &tables)
 {
 	bool ret;
 
@@ -46,12 +46,12 @@ bool QueryDb::check(QStringList &tables)
 	return ret;
 }
 
-bool QueryDb::update()
+void QueryDb::update()
 {
 	return true;
 }
 
-bool QueryDb::insert(const Query &q)
+void QueryDb::insert(const Query &q)
 {
 	bool ret;
 
@@ -65,7 +65,7 @@ bool QueryDb::insert(const Query &q)
 	return ret;
 }
 
-bool QueryDb::update(const Query &orig, const Query &modified)
+void QueryDb::update(const Query &orig, const Query &modified)
 {
 	bool ret;
 
@@ -79,7 +79,7 @@ bool QueryDb::update(const Query &orig, const Query &modified)
 	return ret;
 }
 
-bool QueryDb::del(const Query &q)
+void QueryDb::del(const Query &q)
 {
 	bool ret;
 
@@ -90,7 +90,7 @@ bool QueryDb::del(const Query &q)
 	return ret;
 }
 
-bool QueryDb::query(QuerySet &qs)
+void QueryDb::query(QuerySet &qs)
 {
 	bool ret;
 

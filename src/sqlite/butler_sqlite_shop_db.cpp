@@ -18,7 +18,7 @@ ShopDb::~ShopDb()
 {
 }
 
-bool ShopDb::create()
+void ShopDb::create()
 {
 	bool ret;
 
@@ -27,7 +27,7 @@ bool ShopDb::create()
 	return ret;
 }
 
-bool ShopDb::check(QStringList &tables)
+void ShopDb::check(QStringList &tables)
 {
 	bool ret;
 
@@ -36,12 +36,12 @@ bool ShopDb::check(QStringList &tables)
 	return ret;
 }
 
-bool ShopDb::update()
+void ShopDb::update()
 {
 	return true;
 }
 
-bool ShopDb::insert(const Shop &s)
+void ShopDb::insert(const Shop &s)
 {
 	bool ret;
 
@@ -52,7 +52,7 @@ bool ShopDb::insert(const Shop &s)
 	return ret;
 }
 
-bool ShopDb::update(const Shop &orig, const Shop &modified)
+void ShopDb::update(const Shop &orig, const Shop &modified)
 {
 	bool ret = true;
 
@@ -63,7 +63,7 @@ bool ShopDb::update(const Shop &orig, const Shop &modified)
 	return ret;
 }
 
-bool ShopDb::del(const Shop &s)
+void ShopDb::del(const Shop &s)
 {
 	bool ret;
 
@@ -74,7 +74,7 @@ bool ShopDb::del(const Shop &s)
 	return ret;
 }
 
-bool ShopDb::query(ShopSet &ss)
+void ShopDb::query(ShopSet &ss)
 {
 	bool ret;
 

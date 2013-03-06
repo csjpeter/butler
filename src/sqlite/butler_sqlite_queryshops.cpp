@@ -28,7 +28,7 @@ QueryShopsTable::~QueryShopsTable()
 {
 }
 
-bool QueryShopsTable::create()
+void QueryShopsTable::create()
 {
 	bool ret = true;
 
@@ -48,7 +48,7 @@ bool QueryShopsTable::create()
 	return ret;
 }
 
-bool QueryShopsTable::check(QStringList &tables)
+void QueryShopsTable::check(QStringList &tables)
 {
 	bool ret;
 
@@ -67,7 +67,7 @@ bool QueryShopsTable::check(QStringList &tables)
 	return ret;
 }
 
-bool QueryShopsTable::insert(const Query &q, const QString &shopName)
+void QueryShopsTable::insert(const Query &q, const QString &shopName)
 {
 	bool ret = true;
 
@@ -84,7 +84,7 @@ bool QueryShopsTable::insert(const Query &q, const QString &shopName)
 	return ret;
 }
 
-bool QueryShopsTable::del(const Query &q, const QString &shopName)
+void QueryShopsTable::del(const Query &q, const QString &shopName)
 {
 	bool ret = true;
 
@@ -101,7 +101,7 @@ bool QueryShopsTable::del(const Query &q, const QString &shopName)
 	return ret;
 }
 
-bool QueryShopsTable::insert(const Query &q)
+void QueryShopsTable::insert(const Query &q)
 {
 	bool ret = true;
 
@@ -116,7 +116,7 @@ bool QueryShopsTable::insert(const Query &q)
 	return ret;
 }
 
-bool QueryShopsTable::update(const Query &orig, const Query &modified)
+void QueryShopsTable::update(const Query &orig, const Query &modified)
 {
 	bool ret = true;
 
@@ -145,7 +145,7 @@ bool QueryShopsTable::update(const Query &orig, const Query &modified)
 	return ret;
 }
 
-bool QueryShopsTable::query(const Query &q, ShopNameSet &shops)
+void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 {
 	bool ret = true;
 

@@ -29,7 +29,7 @@ QueryTable::~QueryTable()
 {
 }
 
-bool QueryTable::create()
+void QueryTable::create()
 {
 	return sql.exec("CREATE TABLE Queries ("
 			"query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
@@ -41,7 +41,7 @@ bool QueryTable::create()
 			);
 }
 
-bool QueryTable::check(QStringList &tables)
+void QueryTable::check(QStringList &tables)
 {
 	bool ret = true;
 
@@ -63,7 +63,7 @@ bool QueryTable::check(QStringList &tables)
 	return ret;
 }
 
-bool QueryTable::insert(const Query &q)
+void QueryTable::insert(const Query &q)
 {
 	bool ret = true;
 
@@ -83,7 +83,7 @@ bool QueryTable::insert(const Query &q)
 	return ret;
 }
 
-bool QueryTable::update(const Query &orig, const Query &modified)
+void QueryTable::update(const Query &orig, const Query &modified)
 {
 	bool ret = true;
 
@@ -108,7 +108,7 @@ bool QueryTable::update(const Query &orig, const Query &modified)
 	return ret;
 }
 
-bool QueryTable::del(const Query &q)
+void QueryTable::del(const Query &q)
 {
 	bool ret = true;
 
@@ -124,7 +124,7 @@ bool QueryTable::del(const Query &q)
 	return ret;
 }
 
-bool QueryTable::query(QuerySet &queries)
+void QueryTable::query(QuerySet &queries)
 {
 	bool ret = true;
 
