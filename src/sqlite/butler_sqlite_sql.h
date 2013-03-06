@@ -87,7 +87,7 @@ public:
 
 private:
 	QSqlDatabase db;
-	int transactions;
+	unsigned transactions;
 };
 }
 

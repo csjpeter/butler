@@ -193,62 +193,50 @@ bool Sql::isOpen()
 	return db.isOpen();
 }
 
-bool Sql::transaction()
+void Sql::transaction()
 {
-	ENSURE(0 <= transactions, csjp::LogicError);
-
-	bool ret = true;
-
 	if(transactions == 0){
 		DBG("BEGIN TRANSACTION");
-		ret = db.transaction();
-		ret = reportSqlError() && ret;
+		db.transaction();
+		if(db.lastError().isValid())
+			throw DbError("Failed begin transcation.\nError: %s",
+					C_STR(dbErrorString()));
 	}
 
-	if(ret)
-		transactions++;
-
-	return ret;
+	transactions++;
 }
 
-bool Sql::commit()
+void Sql::commit()
 {
-	ENSURE(0 < transactions, csjp::LogicError);
-
-	bool ret = true;
-
 	if(transactions == 1){
 		DBG("COMMIT TRANSACTION");
-		ret = db.commit();
-		ret = reportSqlError() && ret;
+		db.commit();
+		if(db.lastError().isValid())
+			throw DbError("Failed to commit transcation.\nError: %s",
+					C_STR(dbErrorString()));
 	}
 
-	if(ret)
-		transactions--;
-
-	return ret;
+	transactions--;
 }
 
-bool Sql::rollback()
+void Sql::rollback()
 {
-	ENSURE(0 < transactions, csjp::LogicError);
-
-	bool ret = true;
-
 	if(transactions == 1){
 		DBG("ROLLBACK TRANSACTION");
 #if 0
 		notifySqlFinishListeners();
 #endif
-		ret = db.rollback();
-		if(!ret)
-			LOG("Serious error happened: Rolling back database changes failed. ");
+		db.rollback();
+		if(db.lastError().isValid())
+			LOG("Failed to rollback transcation.\nError: %s",
+					C_STR(dbErrorString()));
+			/* FIXME test this */
+/*			throw DbError("Failed to rollback transcation.\nError: %s",
+					C_STR(dbErrorString()));
+*/
 	}
 
-	if(ret)
-		transactions--;
-
-	return ret;
+	transactions--;
 }
 
 /* returns false on error */

@@ -45,16 +45,8 @@ public:
 	/* Every opened database needs to be closed. */
 	virtual void close() = 0;
 
-	/* Create needs to be called on a not yet opened
-	 * database. Open not neccessarily working on a
-	 * not yet created databse anyway. */
-	virtual void create() = 0;
-
 	/* Verifies the database schema. */
 	virtual void check() = 0;
-
-	/* Upgrades the database and it's tables. */
-	virtual void update() = 0;
 
 	/* Use this to identify what kind of error happened. */
 	virtual enum UserError lastUserErrorId() = 0;

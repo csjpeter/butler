@@ -18,12 +18,16 @@ namespace Butler {
 	{
 	}
 
-	bool CustomModel::query()
+	void CustomModel::query()
 	{
-		beginResetModel();
-		bool ret = db().item().query(opts, stat, items);
-		endResetModel();
-		return ret;
+		try{
+			beginResetModel();
+			db().item().query(opts, stat, items);
+			endResetModel();
+		} catch(...) {
+			endResetModel();
+			throw;
+		}
 	}
 
 	bool CustomModel::update(int row, Item &modified)

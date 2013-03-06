@@ -30,7 +30,7 @@ public:
 	CustomModel();
 	~CustomModel();
 
-	bool query();
+	void query();
 	virtual bool update(int row, Item &modified);
 	virtual bool queryFilter(const Item &modified);
 
