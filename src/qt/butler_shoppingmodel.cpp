@@ -28,7 +28,7 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 bool ShoppingModel::query()
 {
 	beginResetModel();
-	bool ret = db().item().query(queryTagNames, items);
+	bool ret = db.item.query(queryTagNames, items);
 	endResetModel();
 	return ret;
 }
@@ -38,7 +38,7 @@ bool ShoppingModel::buy(unsigned itemRow, Item &modified)
 	Item &orig = items.queryAt(itemRow);
 	modified.bought = true;
 	modified.onStock = true;
-	if(db().item().update(orig, modified)){
+	if(db.item.update(orig, modified)){
 		beginRemoveRows(QModelIndex(), itemRow, itemRow);
 		items.removeAt(itemRow);
 		endRemoveRows();

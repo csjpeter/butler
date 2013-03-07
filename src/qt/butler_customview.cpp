@@ -163,7 +163,7 @@ void CustomView::showEvent(QShowEvent *event)
 	QWidget::showEvent(event);
 
 	QuerySet qs;
-	db().query().query(qs);
+	db.query().query(qs);
 	if(qs.size())
 		model.opts = qs.queryAt(0);
 	model.opts.name = "default";
@@ -322,7 +322,7 @@ void CustomView::filterItems()
 		connect(queryOptsView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));
 		QuerySet qs;
-		db().query().query(qs);
+		db.query().query(qs);
 		if(qs.size())
 			model.opts = qs.queryAt(0);
 		model.opts.name = "default";
@@ -333,13 +333,13 @@ void CustomView::filterItems()
 void CustomView::filterAcceptedSlot()
 {
 	QuerySet qs;
-	db().query().query(qs);
+	db.query().query(qs);
 	if(qs.size()){
 		model.opts.name = "default";
-		db().query().update(qs.queryAt(0), model.opts);
+		db.query().update(qs.queryAt(0), model.opts);
 	} else {
 		model.opts.name = "default";
-		db().query().insert(model.opts);
+		db.query().insert(model.opts);
 	}
 
 	if(!model.query()){

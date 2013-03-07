@@ -209,7 +209,7 @@ bool ShopsModel::del(int row)
 {
 	Shop &shop = shops.queryAt(row);
 	bool ret = false;
-	if(db().shop().del(shop)){
+	if(db.shop.del(shop)){
 		beginRemoveRows(QModelIndex(), row, row);
 		shops.removeAt(row);
 		endRemoveRows();
@@ -221,7 +221,7 @@ bool ShopsModel::del(int row)
 bool ShopsModel::addNew(Shop &shop)
 {
 	bool ret = false;
-	if(db().shop().insert(shop)){
+	if(db.shop.insert(shop)){
 		beginInsertRows(QModelIndex(), shops.size(), shops.size());
 		shops.add(new Shop(shop));
 		endInsertRows();
@@ -234,7 +234,7 @@ bool ShopsModel::update(int row, Shop &modified)
 {
 	Shop &orig = shops.queryAt(row);
 
-	if(db().shop().update(orig, modified)){
+	if(db.shop.update(orig, modified)){
 		orig = modified;
 		dataChanged(index(row, 0), index(row, Shop::NumOfFields-1));
 		return true;
@@ -245,7 +245,7 @@ bool ShopsModel::update(int row, Shop &modified)
 bool ShopsModel::query()
 {
 	beginResetModel();
-	bool ret = db().shop().query(shops);
+	bool ret = db.shop.query(shops);
 	endResetModel();
 	return ret;
 }

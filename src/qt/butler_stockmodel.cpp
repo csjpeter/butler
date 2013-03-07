@@ -32,7 +32,7 @@ bool StockModel::query()
 {
 	QueryStat stat;
 	beginResetModel();
-	bool ret = db().item().query(opts, stat, items);
+	bool ret = db.item.query(opts, stat, items);
 	endResetModel();
 	return ret;
 }
@@ -44,7 +44,7 @@ bool StockModel::addShoppingItem(int row)
 	shopItem.uploaded = QDateTime::currentDateTime();
 	shopItem.name = i.name;
 	shopItem.category = i.category;
-	bool ret = db().item().insert(shopItem);
+	bool ret = db.item.insert(shopItem);
 	if(ret)
 		itemChange(shopItem);
 	return ret;
@@ -55,7 +55,7 @@ bool StockModel::drop(int row)
 	Item &orig = items.queryAt(row);
 	Item modified(orig);
 	modified.onStock = false;
-	if(db().item().update(orig, modified)){
+	if(db.item.update(orig, modified)){
 		beginRemoveRows(QModelIndex(), row, row);
 		items.removeAt(row);
 		endRemoveRows();

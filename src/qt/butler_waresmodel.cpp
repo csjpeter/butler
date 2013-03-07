@@ -203,7 +203,7 @@ bool WaresModel::del(int row)
 {
 	Ware &ware = wares.queryAt(row);
 	bool ret = false;
-	if(db().ware().del(ware)){
+	if(db.ware.del(ware)){
 		beginRemoveRows(QModelIndex(), row, row);
 		wares.removeAt(row);
 		endRemoveRows();
@@ -215,7 +215,7 @@ bool WaresModel::del(int row)
 bool WaresModel::addNew(Ware &ware)
 {
 	bool ret = false;
-	if(db().ware().insert(ware)){
+	if(db.ware.insert(ware)){
 		beginInsertRows(QModelIndex(), wares.size(), wares.size());
 		wares.add(new Ware(ware));
 		endInsertRows();
@@ -228,7 +228,7 @@ bool WaresModel::update(int row, Ware &modified)
 {
 	Ware &orig = wares.queryAt(row);
 
-	if(db().ware().update(orig, modified)){
+	if(db.ware.update(orig, modified)){
 		orig = modified;
 		dataChanged(index(row, 0), index(row, WaresModel::NumOfColumns-1));
 		return true;
@@ -239,7 +239,7 @@ bool WaresModel::update(int row, Ware &modified)
 bool WaresModel::query()
 {
 	beginResetModel();
-	bool ret = db().ware().query(wares);
+	bool ret = db.ware.query(wares);
 	endResetModel();
 	return ret;
 }

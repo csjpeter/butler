@@ -21,18 +21,18 @@ class Db
 public:
 	Db(const QString& path) :
 		sql(path),
-		tagDb(sql),
-		queryDb(sql, tagDb),
-		wareDb(sql, tagDb),
-		shopDb(sql),
-		itemDb(sql, tagDb)
+		tag(sql),
+		query(sql, tag),
+		ware(sql, tag),
+		shop(sql),
+		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
-		priv->tagDb.check(tables);
-		priv->queryDb.check(tables);
-		priv->shopDb.check(tables);
-		priv->wareDb.check(tables);
-		priv->itemDb.check(tables);
+		priv->tag.check(tables);
+		priv->query.check(tables);
+		priv->shop.check(tables);
+		priv->ware.check(tables);
+		priv->item.check(tables);
 	}
 	~Db() { }
 
@@ -45,11 +45,11 @@ public:
 private:
 	SqlConnection sql;
 public:
-	TagDb tagDb;
-	QueryDb queryDb;
-	WareDb wareDb;
-	ShopDb shopDb;
-	ItemDb itemDb;
+	TagDb tag;
+	QueryDb query;
+	WareDb ware;
+	ShopDb shop;
+	ItemDb item;
 };
 
 #endif

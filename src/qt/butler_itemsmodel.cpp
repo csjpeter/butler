@@ -282,7 +282,7 @@ bool ItemsModel::del(int row)
 {
 	Item &item = items.queryAt(row);
 	bool ret = false;
-	if(db().item().del(item)){
+	if(db.item.del(item)){
 		itemRemoved(item);
 		beginRemoveRows(QModelIndex(), row, row);
 		items.removeAt(row);
@@ -316,7 +316,7 @@ void ItemsModel::itemRemovedListener(const Item &removed)
 bool ItemsModel::addNew(Item &item)
 {
 	bool ret = false;
-	if(db().item().insert(item)){
+	if(db.item.insert(item)){
 		beginInsertRows(QModelIndex(), items.size(), items.size());
 		items.add(new Item(item));
 		endInsertRows();
@@ -330,7 +330,7 @@ bool ItemsModel::update(int row, Item &modified)
 {
 	Item &orig = items.queryAt(row);
 
-	if(db().item().update(orig, modified)){
+	if(db.item.update(orig, modified)){
 		orig = modified;
 		dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
 		itemChange(modified);

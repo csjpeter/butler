@@ -23,27 +23,47 @@ void ShopDb::check(QStringList &tables)
 void ShopDb::insert(const Shop &s)
 {
 	sql.transaction();
-	shopTable.insert(s);
-	sql.commit();
+	try {
+		shopTable.insert(s);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void ShopDb::update(const Shop &orig, const Shop &modified)
 {
 	sql.transaction();
-	shopTable.update(orig, modified);
-	sql.commit();
+	try {
+		shopTable.update(orig, modified);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void ShopDb::del(const Shop &s)
 {
 	sql.transaction();
-	shopTable.del(s);
-	sql.commit();
+	try {
+		shopTable.del(s);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void ShopDb::query(ShopSet &ss)
 {
 	sql.transaction();
-	shopTable.query(ss);
-	sql.commit();
+	try {
+		shopTable.query(ss);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }

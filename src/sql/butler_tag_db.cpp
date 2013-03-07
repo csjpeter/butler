@@ -23,27 +23,47 @@ void TagDb::check(QStringList &tables)
 void TagDb::insert(const Tag &t)
 {
 	sql.transaction();
-	tagTable.insert(t);
-	sql.commit();
+	try {
+		tagTable.insert(t);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void TagDb::update(const Tag &orig, const Tag &modified)
 {
 	sql.transaction();
-	tagTable.update(orig, modified);
-	sql.commit();
+	try {
+		tagTable.update(orig, modified);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void TagDb::del(const Tag &t)
 {
 	sql.transaction();
-	tagTable.del(t);
-	sql.commit();
+	try {
+		tagTable.del(t);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void TagDb::query(TagSet &ts)
 {
 	sql.transaction();
-	tagTable.query(ts);
-	sql.commit();
+	try {
+		tagTable.query(ts);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }

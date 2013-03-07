@@ -191,7 +191,7 @@ bool TagsModel::del(int row)
 {
 	Tag &tag = tags.queryAt(row);
 	bool ret = false;
-	if(db().tag().del(tag)){
+	if(db.tag.del(tag)){
 		beginRemoveRows(QModelIndex(), row, row);
 		tags.removeAt(row);
 		endRemoveRows();
@@ -203,7 +203,7 @@ bool TagsModel::del(int row)
 bool TagsModel::addNew(Tag &tag)
 {
 	bool ret = false;
-	if(db().tag().insert(tag)){
+	if(db.tag.insert(tag)){
 		beginInsertRows(QModelIndex(), tags.size(), tags.size());
 		tags.add(new Tag(tag));
 		endInsertRows();
@@ -216,7 +216,7 @@ bool TagsModel::update(int row, Tag &modified)
 {
 	Tag &orig = tags.queryAt(row);
 
-	if(db().tag().update(orig, modified)){
+	if(db.tag.update(orig, modified)){
 		orig = modified;
 		dataChanged(index(row, 0), index(row, TagsModel::NumOfColumns-1));
 		return true;
@@ -227,7 +227,7 @@ bool TagsModel::update(int row, Tag &modified)
 bool TagsModel::query()
 {
 	beginResetModel();
-	bool ret = db().tag().query(tags);
+	bool ret = db.tag.query(tags);
 	endResetModel();
 	return ret;
 }

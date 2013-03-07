@@ -28,38 +28,58 @@ void WareDb::check(QStringList &tables)
 void WareDb::insert(const Ware &ware)
 {
 	sql.transaction();
-	wareTable.insert(ware);
-	wareTagsTable.insert(ware);
-	wareCategoriesTable.insert(ware);
-	sql.commit();
+	try {
+		wareTable.insert(ware);
+		wareTagsTable.insert(ware);
+		wareCategoriesTable.insert(ware);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void WareDb::update(const Ware &orig, const Ware &modified)
 {
 	sql.transaction();
-	wareTable.update(orig, modified);
-	wareTagsTable.update(orig, modified);
-	wareCategoriesTable.update(orig, modified);
-	sql.commit();
+	try {
+		wareTable.update(orig, modified);
+		wareTagsTable.update(orig, modified);
+		wareCategoriesTable.update(orig, modified);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void WareDb::del(const Ware &w)
 {
 	sql.transaction();
-	wareTable.del(w);
-	sql.commit();
+	try {
+		wareTable.del(w);
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
+	}
 }
 
 void WareDb::query(WareSet &ws)
 {
 	sql.transaction();
-	wareTable.query(ws);
+	try {
+		wareTable.query(ws);
 
-	unsigned i, s = ws.size();
-	for(i=0; i<s; i++){
-		Ware &ware = ws.queryAt(i);
-		wareTagsTable.query(ware, ware.tags);
-		wareCategoriesTable.query(ware, ware.categories);
+		unsigned i, s = ws.size();
+		for(i=0; i<s; i++){
+			Ware &ware = ws.queryAt(i);
+			wareTagsTable.query(ware, ware.tags);
+			wareCategoriesTable.query(ware, ware.categories);
+		}
+		sql.commit();
+	} catch (...) {
+		sql.rollback();
+		throw;
 	}
-	sql.commit();
 }

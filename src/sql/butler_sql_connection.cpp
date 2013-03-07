@@ -189,8 +189,7 @@ void SqlConnection::rollback()
 #endif
 		db.rollback();
 		if(db.lastError().isValid())
-			LOG("Failed to rollback transcation.\nError: %s",
-					C_STR(dbErrorString()));
+			LOG("Failed to rollback transcation.\nError: %s", C_STR(dbErrorString()));
 			/* FIXME test this */
 /*			throw DbError("Failed to rollback transcation.\nError: %s",
 					C_STR(dbErrorString()));

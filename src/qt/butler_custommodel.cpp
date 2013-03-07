@@ -20,7 +20,7 @@ void CustomModel::query()
 {
 	try{
 		beginResetModel();
-		db().item().query(opts, stat, items);
+		db.item.query(opts, stat, items);
 		endResetModel();
 	} catch(...) {
 		endResetModel();
