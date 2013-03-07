@@ -12,10 +12,10 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-#include "butler_sqlite_sqlquery.h"
+#include "butler_sqlquery.h"
 
-SqlQuery::SqlQuery(SqlConnection &_sql) :
-	sql(_sql),
+SqlQuery::SqlQuery(SqlConnection & sql) :
+	sql(sql),
 	qQuery(0),
 	prepared(false)
 {

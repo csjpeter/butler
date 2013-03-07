@@ -12,7 +12,7 @@
 
 #include "butler_custommodel.h"
 
-#include "butler_localdb.h"
+#include <butler_db.h>
 
 /*forwards*/
 class QAction;
@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	CustomView(Sql & sql, QWidget *parent = 0);
+	CustomView(Db & db, QWidget *parent = 0);
 	~CustomView();
 
 private:
@@ -59,7 +59,7 @@ private slots:
 	void finishedEditWare(int);
 
 private:
-	Db db;
+	Db & db;
 	CustomModel model;
 
 	QTableView *queryView;

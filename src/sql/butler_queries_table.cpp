@@ -12,7 +12,7 @@
 
 #include <butler_query.h>
 
-#include "butler_sqlite_queries.h"
+#include "butler_queries_table.h"
 
 QueryTable::QueryTable(SqlConnection &sql) :
 	sql(sql),

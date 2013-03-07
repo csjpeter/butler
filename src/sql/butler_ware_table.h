@@ -3,17 +3,15 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_WARE_H
-#define BUTLER_SQLITE_WARE_H
+#ifndef BUTLER_WARE_H
+#define BUTLER_WARE_H
 
 #include <QObject>
 #include <QStringList>
 #include <QSqlDatabase>
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_sqlquery.h"
-
-#include "butler_sqlite_waretags.h"
+#include <butler_sql_connection.h>
+#include <butler_sqlquery.h>
 
 class WareTable
 {

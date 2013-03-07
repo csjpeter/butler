@@ -219,7 +219,7 @@ void MainView::saveState()
 	settings.setValue("mainview/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
 
-	settings.setValue("mainview/dbfile", Butler::LocalDb::dbFileName);
+	settings.setValue("mainview/dbfile", databases.query("local").databaseName);
 }
 
 void MainView::openShoppingView()

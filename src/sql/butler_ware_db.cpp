@@ -3,8 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_ware_db.h"
+#include "butler_ware_db.h"
 
 WareDb::WareDb(SqlConnection &_sql, TagDb &tagDb) :
 	sql(_sql),

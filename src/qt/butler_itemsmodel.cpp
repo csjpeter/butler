@@ -12,7 +12,8 @@
 
 csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
-ItemsModel::ItemsModel()
+ItemsModel::ItemsModel(Db & db) :
+	db(db)
 {
 	itemOperationListeners.add(*this);
 }

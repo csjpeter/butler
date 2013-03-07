@@ -8,7 +8,7 @@
 #include <QtGui>
 
 #include "butler_application.h"
-#include "butler_localdb.h"
+#include "butler_databases.h"
 #include "butler_mainview.h"
 
 int main(int argc, char *argv[])
@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
 /*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
 
 	csjp::setLogDir("./");
+
+	QString dbFileName;
 
 	Butler::Application app(argc, argv);
 
@@ -28,8 +30,34 @@ int main(int argc, char *argv[])
 				exit(EXIT_FAILURE);
 			}
 			printf("Using %s as database file.\n", argv[2]);
-			Butler::LocalDb::dbFileName = QString(argv[2]);
+			dbFileName = QString(argv[2]);
 		}
+	}
+
+	{
+		if(dbFileName == ""){
+			QSettings settings;
+			dbFileName = settings.value("mainview/dbfile", QString()).toString();
+		}
+		
+		if(dbFileName == ""){
+			QDir dir(QDir::homePath());
+
+			/* TODO check if .butler is directory and not file */
+			if(!dir.exists(".butler"))
+				dir.mkdir(".butler");
+			dbFileName = QDir::toNativeSeparators(
+				QDir::homePath() + QString("/.butler/db.sqlite")
+				);
+		}
+		
+		Object<DatabaseDescription> sqlitedb(new DatabaseDescription);
+		sqlitedb->name = "local";
+		sqlite.driver = "QSQLITE";
+		sqlitedb.databaseName = QDir::toNativeSeparators(dbFileName);
+		DBG("Db file path: %s", C_STR(sqlitedb.databaseName));
+
+		databases.add(sqlitedb);
 	}
 
 #ifdef MAEMO

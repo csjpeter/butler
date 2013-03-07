@@ -3,12 +3,12 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_SHOP_DB_H
-#define BUTLER_SQLITE_SHOP_DB_H
+#ifndef BUTLER_SHOP_DB_H
+#define BUTLER_SHOP_DB_H
 
 #include <butler_db.h>
 
-#include "butler_sqlite_shop.h"
+#include <butler_shop_table.h>
 
 class ShopDb : public ::ShopDb
 {

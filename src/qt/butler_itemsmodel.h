@@ -15,20 +15,20 @@
 #include <butler_item.h>
 #include <butler_item_set.h>
 
+#include <butler_db.h>
+
 #include "butler_config.h"
-#include "butler_localdb.h"
 
 class Item;
 
 class ItemsModel :
-	public QAbstractTableModel,
-	public LocalDb
+	public QAbstractTableModel
 {
 private:
 	Q_OBJECT;
 
 public:
-	ItemsModel();
+	ItemsModel(Db & db);
 	virtual ~ItemsModel();
 
 	virtual QModelIndex index(
@@ -86,6 +86,7 @@ protected:
 	void itemRemovedListener(const Item &removed);
 
 protected:
+	Db & db;
 	ItemSet items;
 
 private:

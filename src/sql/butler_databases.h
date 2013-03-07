@@ -9,7 +9,6 @@
 #include <csjp_exception.h>
 
 #include <butler_db.h>
-#include <butler_item_set.h>
 
 extern csjp::OwnerContainer<DatabaseDescription> databases;
 
@@ -29,6 +28,8 @@ public:
 	bool isLess(const QString &s) const;
 	bool isMore(const QString &s) const;
 
+	Db & db();
+
 public:
 	QString name; // will be the connection name
 	QString databaseName; // file name in case of sqlite
@@ -37,7 +38,9 @@ public:
 	QString password;
 	QString host; // domain name or ip
 	unsigned port;
-	SqlConnection * sqlConnection;
+
+private:
+	Db * database;
 
 private:
 	void equal(const DatabaseDescription &tag);

@@ -14,7 +14,7 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite_itembought.h"
+#include "butler_itembought_table.h"
 
 ItemBoughtTable::ItemBoughtTable(SqlConnection &_sql) :
 	sql(_sql),

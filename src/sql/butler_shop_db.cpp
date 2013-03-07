@@ -3,8 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_shop_db.h"
+#include "butler_shop_db.h"
 
 ShopDb::ShopDb(SqlConnection &_sql) :
 	sql(_sql),

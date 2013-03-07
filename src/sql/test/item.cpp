@@ -9,8 +9,6 @@
 
 #include <butler_db.h>
 
-#include <butler_sqlitedb.h>
-
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
@@ -32,8 +30,8 @@ void TestItem::initTestCase()
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.create());
@@ -43,8 +41,8 @@ void TestItem::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 	QueryStat stat;
 
 	VERIFY(db.connect());
@@ -134,8 +132,8 @@ void TestItem::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 	QueryStat stat;
 
 	VERIFY(db.connect());
@@ -195,8 +193,8 @@ void TestItem::tagqueries()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 	QueryStat stat;
 
 	VERIFY(db.connect());
@@ -276,8 +274,8 @@ void TestItem::itemNames()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.open());

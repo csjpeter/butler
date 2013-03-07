@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_SQL_H
-#define BUTLER_SQLITE_SQL_H
+#ifndef BUTLER_SQL_CONNECTION_H
+#define BUTLER_SQL_CONNECTION_H
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -16,6 +16,8 @@
 #include <butler_query_set.h>
 #include <butler_item.h>
 #include <butler_item_set.h>
+
+#include <butler_database_description.h>
 
 /* FIXME :
  * - check if object has changed in database before
@@ -42,7 +44,7 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b);
 class SqlConnection
 {
 public:
-	SqlConnection(const QString& path);
+	SqlConnection(const DatabaseDescription & dbDesc);
 	~SqlConnection();
 private:
 	SqlConnection();
@@ -74,6 +76,7 @@ public:
 	csjp::ReferenceContainer<SqlCloseListener> sqlCloseListeners;
 
 private:
+	const DatabaseDescription & dbDesc;
 	QSqlDatabase db;
 	unsigned transactions;
 };

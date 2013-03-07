@@ -3,14 +3,14 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_ITEM_DB_H
-#define BUTLER_SQLITE_ITEM_DB_H
+#ifndef BUTLER_ITEM_DB_H
+#define BUTLER_ITEM_DB_H
 
 #include <butler_db.h>
 
-#include "butler_sqlite_item.h"
-#include "butler_sqlite_itembought.h"
-#include "butler_sqlite_tag_db.h"
+#include <butler_item_table.h>
+#include <butler_itembought_table.h>
+#include <butler_tag_db.h>
 
 class ItemDb : public ::ItemDb
 {

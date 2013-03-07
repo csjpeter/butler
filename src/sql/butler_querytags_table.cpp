@@ -12,7 +12,7 @@
 
 #include <butler_query.h>
 
-#include "butler_sqlite_querytags.h"
+#include "butler_querytags_table.h"
 
 QueryTagsTable::QueryTagsTable(SqlConnection &_sql) :
 	sql(_sql),

@@ -9,7 +9,7 @@
 
 #include <config.h>
 
-#include <butler_sqlitedb.h>
+#include <butler_db.h>
 
 #include "butler_application.h"
 

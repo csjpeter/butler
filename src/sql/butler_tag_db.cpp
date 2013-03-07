@@ -3,8 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_tag_db.h"
+#include "butler_tag_db.h"
 
 TagDb::TagDb(SqlConnection &_sql) :
 	sql(_sql),

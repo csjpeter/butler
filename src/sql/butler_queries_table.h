@@ -3,19 +3,15 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_QUERIES_H
-#define BUTLER_SQLITE_QUERIES_H
+#ifndef BUTLER_QUERIES_H
+#define BUTLER_QUERIES_H
 
 #include <QObject>
 #include <QStringList>
 #include <QSqlDatabase>
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_sqlquery.h"
-
-#include "butler_sqlite_querytags.h"
-#include "butler_sqlite_querywares.h"
-#include "butler_sqlite_queryshops.h"
+#include <butler_sql_connection.h>
+#include <butler_sqlquery.h>
 
 class QueryTable
 {

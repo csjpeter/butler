@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-/*#include <iostream>*/
-
-#include <QtGui>
-
-#include <butler_sqlitedb.h>
+#include <butler_db.h>
 
 #include "butler_database_description.h"
 
@@ -21,7 +17,7 @@ DatabaseDescription::DatabaseDescription() :
 	password(""),
 	host(""),
 	port(0),
-	sql(0)
+	database(0)
 {
 }
 
@@ -59,6 +55,18 @@ bool DatabaseDescription::isLess(const QString &s) const
 bool DatabaseDescription::isMore(const QString &s) const
 {
 	return 0 < QString::localeAwareCompare(name, s);
+}
+
+Db & DatabaseDescription::db()
+{
+	if(database)
+		return *database;
+
+	if(driver == "QSQLITE") {
+		database = new Db(*this);
+//		if(!QFile::exists(filepath))
+	} else
+		throw DbError("Driver '%s' is not yet supported.", C_STR(driver));
 }
 		
 void DatabaseDescription::equal(const DatabaseDescription &dd)

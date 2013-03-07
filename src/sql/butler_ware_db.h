@@ -3,15 +3,15 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_WARE_DB_H
-#define BUTLER_SQLITE_WARE_DB_H
+#ifndef BUTLER_WARE_DB_H
+#define BUTLER_WARE_DB_H
 
 #include <butler_db.h>
 
-#include "butler_sqlite_ware.h"
-#include "butler_sqlite_waretags.h"
-#include "butler_sqlite_warecategories.h"
-#include "butler_sqlite_tag_db.h"
+#include <butler_ware_table.h>
+#include <butler_waretags_table.h>
+#include <butler_warecategories_table.h>
+#include <butler_tag_db.h>
 
 class WareDb : public ::WareDb
 {

@@ -3,12 +3,12 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_TAG_DB_H
-#define BUTLER_SQLITE_TAG_DB_H
+#ifndef BUTLER_TAG_DB_H
+#define BUTLER_TAG_DB_H
 
 #include <butler_db.h>
 
-#include "butler_sqlite_tag.h"
+#include <butler_tag_table.h>
 
 class TagDb : public ::TagDb
 {

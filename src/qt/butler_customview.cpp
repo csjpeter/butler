@@ -18,8 +18,8 @@
 
 #include "butler_db.h"
 
-CustomView::CustomView(SqlConnection & sql, QWidget *parent) :
-	db(sql),
+CustomView::CustomView(Db & db, QWidget *parent) :
+	db(db),
 	QWidget(parent),
 	accountingView(NULL),
 	editItemView(NULL),

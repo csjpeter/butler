@@ -3,38 +3,29 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITEDB_H
-#define BUTLER_SQLITEDB_H
+#ifndef BUTLER_DB_H
+#define BUTLER_DB_H
 
-#include <butler_sqlite_sql.h>
-#include <butler_sqlite_tag_db.h>
-#include <butler_sqlite_queries_db.h>
-#include <butler_sqlite_item_db.h>
-#include <butler_sqlite_ware_db.h>
-#include <butler_sqlite_shop_db.h>
-#include <butler_sqlitedb.h>
+#include <butler_sql_connection.h>
+#include <butler_tag_db.h>
+#include <butler_queries_db.h>
+#include <butler_item_db.h>
+#include <butler_ware_db.h>
+#include <butler_shop_db.h>
+#include <butler_db.h>
 
 class Private;
 
 class Db
 {
 public:
-	Db::Db(SqlConnection & sql) :
-		sql(sql),
+	Db(const QString& path) :
+		sql(path),
 		tagDb(sql),
 		queryDb(sql, tagDb),
 		wareDb(sql, tagDb),
 		shopDb(sql),
 		itemDb(sql, tagDb)
-	{ }
-	~Db() { }
-
-public:
-#if 0
-	void open() { sql.open(); }
-	void close() { sql.close(); }
-#endif
-	void check()
 	{
 		QStringList tables = sql.tables();
 		priv->tagDb.check(tables);
@@ -43,6 +34,13 @@ public:
 		priv->wareDb.check(tables);
 		priv->itemDb.check(tables);
 	}
+	~Db() { }
+
+public:
+#if 0
+	void open() { sql.open(); }
+	void close() { sql.close(); }
+#endif
 
 private:
 	SqlConnection sql;

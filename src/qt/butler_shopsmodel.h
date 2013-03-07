@@ -13,11 +13,10 @@
 #include <butler_shop_set.h>
 
 #include "butler_config.h"
-#include "butler_localdb.h"
+#include <butler_db.h>
 
 class ShopsModel :
-	public QAbstractTableModel,
-	public LocalDb
+	public QAbstractTableModel
 {
 private:
 	Q_OBJECT;
@@ -76,9 +75,10 @@ public:
 	void sort(int column, bool ascending);
 
 protected:
-	ShopsModel();
+	ShopsModel(Db & db);
 
 protected:
+	Db & db;
 	ShopSet shops;
 };
 

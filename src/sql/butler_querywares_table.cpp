@@ -12,7 +12,7 @@
 
 #include <butler_query.h>
 
-#include "butler_sqlite_querywares.h"
+#include "butler_querywares_table.h"
 
 QueryWaresTable::QueryWaresTable(SqlConnection &_sql) :
 	sql(_sql),

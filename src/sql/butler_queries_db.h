@@ -3,13 +3,13 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_QUERY_DB_H
-#define BUTLER_SQLITE_QUERY_DB_H
+#ifndef BUTLER_QUERY_DB_H
+#define BUTLER_QUERY_DB_H
 
 #include <butler_db.h>
 
-#include "butler_sqlite_queries.h"
-#include "butler_sqlite_tag_db.h"
+#include <butler_queries_table.h>
+#include <butler_tag_db.h>
 
 class QueryDb : public ::QueryDb
 {

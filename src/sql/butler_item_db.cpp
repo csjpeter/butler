@@ -3,8 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_item_db.h"
+#include "butler_item_db.h"
 
 ItemDb::ItemDb(SqlConnection &_sql, TagDb &tagDb) :
 	sql(_sql),

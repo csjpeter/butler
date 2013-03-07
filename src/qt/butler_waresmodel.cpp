@@ -9,12 +9,12 @@
 
 WaresModel& WaresModel::instance()
 {
-	static WaresModel _instance;
+	static WaresModel _instance(db);
 	return _instance;
 }
 
 WaresModel::WaresModel() :
-	LocalDb()
+	db(db)
 {
 	query();
 }

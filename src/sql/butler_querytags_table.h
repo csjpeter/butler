@@ -3,17 +3,15 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_QUERYTAGS_H
-#define BUTLER_SQLITE_QUERYTAGS_H
+#ifndef BUTLER_QUERYTAGS_H
+#define BUTLER_QUERYTAGS_H
 
 #include <QObject>
 #include <QStringList>
 #include <QSqlDatabase>
 
-#include "butler_sqlite_sql.h"
-#include "butler_sqlite_sqlquery.h"
-
-#include "butler_sqlite_tag.h"
+#include <butler_sql_connection.h>
+#include <butler_sqlquery.h>
 
 class QueryTagsTable
 {

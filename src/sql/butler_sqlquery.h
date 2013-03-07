@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SQLITE_SQLQUERY_H
-#define BUTLER_SQLITE_SQLQUERY_H
+#ifndef BUTLER_SQLQUERY_H
+#define BUTLER_SQLQUERY_H
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -15,7 +15,7 @@
 #include <butler_item.h>
 #include <butler_item_set.h>
 
-#include "butler_sqlite_sql.h"
+#include <butler_sql_connection.h>
 
 class SqlQuery : public SqlCloseListener, public SqlFinishListener
 {

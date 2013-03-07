@@ -16,15 +16,14 @@
 #include <butler_tag.h>
 #include <butler_tag_set.h>
 
-#include "butler_localdb.h"
+#include <butler_db.h>
 
 class QueryOptions;
 class Tag;
 class Item;
 
 class TagsModel :
-	public QAbstractTableModel,
-	public LocalDb
+	public QAbstractTableModel
 {
 private:
 	Q_OBJECT;
@@ -92,9 +91,10 @@ public:
 	void sort(int column, bool ascending);
 
 protected:
-	TagsModel();
+	TagsModel(Db & db);
 
 private:
+	Db & db;
 	TagSet tags;
 };
 

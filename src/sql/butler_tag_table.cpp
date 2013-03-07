@@ -10,7 +10,7 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite_tag.h"
+#include "butler_tag_table.h"
 
 TagTable::TagTable(SqlConnection &sql) :
 	sql(sql),

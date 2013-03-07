@@ -11,9 +11,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-#include "butler_sqlite_sql.h"
-
-#define CONNECTION_NAME "butler_sqlite_connection"
+#include "butler_sql_connection.h"
 
 #ifdef DEBUG
 void listAvailableFeatures(const QSqlDatabase &db);
@@ -29,31 +27,29 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b)
 	return &a < &b;
 }
 
-SqlConnection::SqlConnection(const QString& path) :
-	path(path),
+SqlConnection::SqlConnection(const DatabaseDescription & dbDesc) :
+	dbDesc(dbDesc),
 	transactions(0)
 {
 	ENSURE(!db.isValid(), csjp::LogicError);
 
-	if(!QSqlDatabase::contains(CONNECTION_NAME)){
-		db = QSqlDatabase::addDatabase(
-				"QSQLITE", CONNECTION_NAME);
+	if(!QSqlDatabase::contains(dbDesc.name)){
+		db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
 		if(db.lastError().isValid())
 			throw DbError("Failed to add SQLITE database driver: %s",
 					C_STR(dbErrorString()));
 	} else {
-		db = QSqlDatabase::database(CONNECTION_NAME, false);
+		db = QSqlDatabase::database(dbDesc.name, false);
 		if(db.lastError().isValid())
 			throw DbError("Failed to get database connection named '%s'.\nError: %s",
-					CONNECTION_NAME,
-					C_STR(dbErrorString()));
+					dbDesc.name, C_STR(dbErrorString()));
 	}
 	ENSURE(db.isValid(), csjp::LogicError);
 	
-	db.setDatabaseName(path);
+	db.setDatabaseName(dbDesc.databaseName);
 	if(db.lastError().isValid())
 		throw DbError("Failed to set database name to %s.\nError: %s",
-				C_STR(path),
+				C_STR(dbDesc.databaseName),
 				C_STR(dbErrorString()));
 
 #ifdef DEBUG
@@ -84,18 +80,19 @@ void SqlConnection::open()
 
 	ENSURE(db.isOpen(), csjp::LogicError);
 
-	/* Lets check if the sqlite on system is compatible with us. */
+	if(dbDesc.driver == "QSQLITE"){
+		/* Lets check if the sqlite on system is compatible with us. */
+		/* Lets turn on reference constraits */
+		QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
+		q = db.exec("PRAGMA foreign_keys");
+		ENSURE(q.isActive(), csjp::LogicError);
+		ENSURE(q.isSelect(), csjp::LogicError);
 
-	/* Lets turn on reference constraits */
-	QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
-	q = db.exec("PRAGMA foreign_keys");
-	ENSURE(q.isActive(), csjp::LogicError);
-	ENSURE(q.isSelect(), csjp::LogicError);
+		q.next();
 
-	q.next();
-
-	DBG("Reference constraint support: %s",
-			(q.value(0).toInt()) ? "yes" : "no");
+		DBG("Reference constraint support: %s",
+				(q.value(0).toInt()) ? "yes" : "no");
+	}
 
 	if(q.value(0).toInt() != 1){
 		db.close();
@@ -122,7 +119,7 @@ void SqlConnection::close()
 	ENSURE(!db.isOpen(), csjp::LogicError);
 	
 	db = QSqlDatabase();
-	QSqlDatabase::removeDatabase(CONNECTION_NAME);
+	QSqlDatabase::removeDatabase(dbDesc.name);
 }
 
 /*

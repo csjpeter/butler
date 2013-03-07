@@ -9,12 +9,12 @@
 
 ShopsModel& ShopsModel::instance()
 {
-	static ShopsModel _instance;
+	static ShopsModel _instance(db);
 	return _instance;
 }
 
-ShopsModel::ShopsModel() :
-	LocalDb()
+ShopsModel::ShopsModel(Db & db) :
+	db(db)
 {
 	query();
 }

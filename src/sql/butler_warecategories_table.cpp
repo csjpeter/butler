@@ -10,7 +10,7 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite_warecategories.h"
+#include "butler_warecategories_table.h"
 
 WareCategoriesTable::WareCategoriesTable(SqlConnection &_sql) :
 	sql(_sql),

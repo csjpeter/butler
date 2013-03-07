@@ -13,11 +13,10 @@
 #include <butler_ware_set.h>
 
 #include "butler_config.h"
-#include "butler_localdb.h"
+#include <butler_db.h>
 
 class WaresModel :
-	public QAbstractTableModel,
-	public LocalDb
+	public QAbstractTableModel
 {
 private:
 	Q_OBJECT;
@@ -95,6 +94,7 @@ protected:
 	WaresModel();
 
 protected:
+	Db & db;
 	WareSet wares;
 };
 

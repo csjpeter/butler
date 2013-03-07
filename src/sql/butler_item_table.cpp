@@ -10,7 +10,7 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-#include "butler_sqlite_item.h"
+#include "butler_item_table.h"
 
 ItemTable::ItemTable(SqlConnection &_sql) :
 	sql(_sql),

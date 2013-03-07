@@ -9,8 +9,6 @@
 
 #include <butler_db.h>
 
-#include <butler_sqlitedb.h>
-
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
 class TestTag : public QObject
@@ -32,8 +30,8 @@ void TestTag::initTestCase()
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.create());
@@ -43,8 +41,8 @@ void TestTag::database()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.open());
@@ -59,8 +57,8 @@ void TestTag::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.open());
@@ -88,8 +86,8 @@ void TestTag::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqliteDb sqliteDb(DB_FILE);
-	Db& db = sqliteDb;
+	SqlConnection conn(DB_FILE);
+	Db db(conn);
 
 	VERIFY(db.connect());
 	VERIFY(db.open());
