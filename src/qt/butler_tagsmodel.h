@@ -83,10 +83,10 @@ public:
 	const TagSet& tagSet();
 	const Tag& tag(int row)
 		__attribute__ ((no_instrument_function));
-	bool del(int row);
-	bool addNew(Tag &tag);
-	bool update(int row, Tag &modified);
-	bool query();
+	void del(int row);
+	void addNew(Tag &tag);
+	void update(int row, Tag &modified);
+	void query();
 	void sort(int column, bool ascending);
 
 private:

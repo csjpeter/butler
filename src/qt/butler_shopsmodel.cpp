@@ -173,16 +173,26 @@ int ShopsModel::columnCount(const QModelIndex & parent) const
 bool ShopsModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginRemoveRows(parent, row, row + count - 1);
-	endRemoveRows();
+	try {
+		beginRemoveRows(parent, row, row + count - 1);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
+	}
 	return true;
 }
 
 bool ShopsModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginInsertRows(parent, row, row + count - 1);
-	endInsertRows();
+	try {
+		beginInsertRows(parent, row, row + count - 1);
+		endInsertRows();
+	} catch (...) {
+		endInsertRows();
+		throw;
+	}
 	return true;
 }
 
@@ -199,49 +209,51 @@ const Shop& ShopsModel::shop(int row)
 	return shops.queryAt(row);
 }
 
-bool ShopsModel::del(int row)
+void ShopsModel::del(int row)
 {
 	Shop &shop = shops.queryAt(row);
-	bool ret = false;
-	if(db.shop.del(shop)){
+	db.shop.del(shop);
+	try {
 		beginRemoveRows(QModelIndex(), row, row);
 		shops.removeAt(row);
 		endRemoveRows();
-		ret = true;
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
-	return ret;
 }
 
-bool ShopsModel::addNew(Shop &shop)
+void ShopsModel::addNew(Shop &shop)
 {
-	bool ret = false;
-	if(db.shop.insert(shop)){
+	db.shop.insert(shop);
+	try {
 		beginInsertRows(QModelIndex(), shops.size(), shops.size());
 		shops.add(new Shop(shop));
 		endInsertRows();
-		ret = true;
+	} catch (...) {
+		endInsertRows();
+		throw;
 	}
-	return ret;
 }
 
-bool ShopsModel::update(int row, Shop &modified)
+void ShopsModel::update(int row, Shop &modified)
 {
 	Shop &orig = shops.queryAt(row);
-
-	if(db.shop.update(orig, modified)){
-		orig = modified;
-		dataChanged(index(row, 0), index(row, Shop::NumOfFields-1));
-		return true;
-	}
-	return false;
+	db.shop.update(orig, modified);
+	orig = modified;
+	dataChanged(index(row, 0), index(row, Shop::NumOfFields-1));
 }
 
-bool ShopsModel::query()
+void ShopsModel::query()
 {
-	beginResetModel();
-	bool ret = db.shop.query(shops);
-	endResetModel();
-	return ret;
+	try {
+		beginResetModel();
+		db.shop.query(shops);
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }
 
 void ShopsModel::sort(int column, bool ascending)
@@ -249,9 +261,14 @@ void ShopsModel::sort(int column, bool ascending)
 	if(shops.ascending == ascending && shops.ordering == column)
 		return;
 
-	beginResetModel();
-	shops.ascending = ascending;
-	shops.ordering = static_cast<Shop::Fields>(column);
-	shops.sort();
-	endResetModel();
+	try {
+		beginResetModel();
+		shops.ascending = ascending;
+		shops.ordering = static_cast<Shop::Fields>(column);
+		shops.sort();
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }

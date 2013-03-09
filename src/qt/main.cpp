@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 
+#include <csjp_object.h>
+
 #include <QtGui>
 
 #include "butler_application.h"
@@ -18,8 +20,9 @@ int main(int argc, char *argv[])
 	csjp::setLogDir("./");
 
 	QString dbFileName;
+	QString defaultDbName("localdb");
 
-	Butler::Application app(argc, argv);
+	Application app(argc, argv);
 
 	if(1 < argc){
 		if(QString(argv[1]) == "--help"){
@@ -51,8 +54,8 @@ int main(int argc, char *argv[])
 				);
 		}
 		
-		Object<DatabaseDescription> sqlitedb(new Database);
-		sqlitedb->desc.name = "localdb";
+		csjp::Object<Database> sqlitedb(new Database);
+		sqlitedb->desc.name = defaultDbName;
 		sqlitedb->desc.driver = "QSQLITE";
 		sqlitedb->desc.databaseName = QDir::toNativeSeparators(dbFileName);
 		DBG("Db file path: %s", C_STR(sqlitedb->desc.databaseName));
@@ -79,7 +82,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	MainView view("localdb");
+	MainView view(defaultDbName);
 //	view.setFixedSize(800, 480);
 	view.show();
 

@@ -67,10 +67,10 @@ public:
 		__attribute__ ((no_instrument_function));
 	const Shop& shop(int row)
 		__attribute__ ((no_instrument_function));
-	bool del(int row);
-	bool addNew(Shop &shop);
-	virtual bool update(int row, Shop &modified);
-	bool query();
+	void del(int row);
+	void addNew(Shop &shop);
+	virtual void update(int row, Shop &modified);
+	void query();
 	void sort(int column, bool ascending);
 
 protected:

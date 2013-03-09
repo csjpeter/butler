@@ -9,6 +9,7 @@
 #include <QWidget>
 
 #include <butler_query.h>
+#include <butler_databases.h>
 
 /*forwards*/
 class QAction;
@@ -33,8 +34,8 @@ class MainView : public QWidget
 private:
 	Q_OBJECT
 
-protected:
-	MainView(QString & databaseName, QWidget *parent = 0);
+public:
+	MainView(const QString & databaseName, QWidget *parent = 0);
 	~MainView();
 
 private:

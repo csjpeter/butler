@@ -64,7 +64,7 @@ BuyItemView::BuyItemView(QWidget *parent, ShoppingModel &m) :
 	label = new QLabel(tr("Shop (place of buy):"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&ShopsModel::instance());
+	shopBox->setModel(&databases.query(db.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
 

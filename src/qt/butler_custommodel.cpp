@@ -28,7 +28,7 @@ void CustomModel::query()
 	}
 }
 
-bool CustomModel::update(int row, Item &modified)
+void CustomModel::update(int row, Item &modified)
 {
 	if(ItemsModel::update(row, modified)){
 		if(!queryFilter(modified)){
@@ -36,10 +36,7 @@ bool CustomModel::update(int row, Item &modified)
 			items.removeAt(row);
 			endRemoveRows();
 		}
-		return true;
 	}
-
-	return false;
 }
 
 bool CustomModel::queryFilter(const Item &modified)

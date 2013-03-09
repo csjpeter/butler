@@ -76,13 +76,13 @@ public:
 #endif
 
 public:
+	const DatabaseDescriptor & dbDesc;
 #if 0
 	Container<SqlFinishListener> sqlFinishListeners;
 #endif
 	csjp::ReferenceContainer<SqlCloseListener> sqlCloseListeners;
 
 private:
-	const DatabaseDescriptor & dbDesc;
 	QSqlDatabase db;
 	unsigned transactions;
 };

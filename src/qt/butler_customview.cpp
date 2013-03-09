@@ -294,7 +294,7 @@ void CustomView::editWare()
 		return;
 	}
 
-	WaresModel & waresModel = WaresModel::instance();
+	WaresModel & waresModel = databases.query(db.name).wares()
 	if(!editWareView)
 		editWareView = new EditWareView(this, waresModel);
 

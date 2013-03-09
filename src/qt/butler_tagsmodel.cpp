@@ -142,16 +142,26 @@ int TagsModel::columnCount(const QModelIndex & parent) const
 bool TagsModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginRemoveRows(parent, row, row + count - 1);
-	endRemoveRows();
+	try {
+		beginRemoveRows(parent, row, row + count - 1);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
+	}
 	return true;
 }
 
 bool TagsModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginInsertRows(parent, row, row + count - 1);
-	endInsertRows();
+	try {
+		beginInsertRows(parent, row, row + count - 1);
+		endInsertRows();
+	} catch (...) {
+		endInsertRows();
+		throw;
+	}
 	return true;
 }
 
@@ -167,9 +177,14 @@ int TagsModel::index(const QString &name) const
  * have changes automatically adapted by other models and view. */
 void TagsModel::setTagSet(const TagSet &ts)
 {
-	beginResetModel();
-	tags.copy(ts);
-	endResetModel();
+	try {
+		beginResetModel();
+		tags.copy(ts);
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }
 
 const TagSet& TagsModel::tagSet()
@@ -182,49 +197,51 @@ const Tag& TagsModel::tag(int row)
 	return tags.queryAt(row);
 }
 
-bool TagsModel::del(int row)
+void TagsModel::del(int row)
 {
 	Tag &tag = tags.queryAt(row);
-	bool ret = false;
-	if(db.tag.del(tag)){
+	db.tag.del(tag);
+	try {
 		beginRemoveRows(QModelIndex(), row, row);
 		tags.removeAt(row);
 		endRemoveRows();
-		ret = true;
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
-	return ret;
 }
 
-bool TagsModel::addNew(Tag &tag)
+void TagsModel::addNew(Tag &tag)
 {
-	bool ret = false;
-	if(db.tag.insert(tag)){
+	db.tag.insert(tag);
+	try {
 		beginInsertRows(QModelIndex(), tags.size(), tags.size());
 		tags.add(new Tag(tag));
 		endInsertRows();
-		ret = true;
+	} catch (...) {
+		endInsertRows();
+		throw;
 	}
-	return ret;
 }
 
-bool TagsModel::update(int row, Tag &modified)
+void TagsModel::update(int row, Tag &modified)
 {
 	Tag &orig = tags.queryAt(row);
-
-	if(db.tag.update(orig, modified)){
-		orig = modified;
-		dataChanged(index(row, 0), index(row, TagsModel::NumOfColumns-1));
-		return true;
-	}
-	return false;
+	db.tag.update(orig, modified);
+	orig = modified;
+	dataChanged(index(row, 0), index(row, TagsModel::NumOfColumns-1));
 }
 
-bool TagsModel::query()
+void TagsModel::query()
 {
-	beginResetModel();
-	bool ret = db.tag.query(tags);
-	endResetModel();
-	return ret;
+	try {
+		beginResetModel();
+		db.tag.query(tags);
+		endResetModel();
+	} catch(...) {
+		endResetModel();
+		throw;
+	}
 }
 
 void TagsModel::sort(int column, bool ascending)
@@ -232,9 +249,14 @@ void TagsModel::sort(int column, bool ascending)
 	if(tags.ascending == ascending && tags.ordering == column)
 		return;
 
-	beginResetModel();
-	tags.ascending = ascending;
-	tags.ordering = static_cast<Tag::Fields>(column);
-	tags.sort();
-	endResetModel();
+	try {
+		beginResetModel();
+		tags.ascending = ascending;
+		tags.ordering = static_cast<Tag::Fields>(column);
+		tags.sort();
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }

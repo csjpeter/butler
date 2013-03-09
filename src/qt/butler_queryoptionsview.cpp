@@ -45,7 +45,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 	wareFilter->setTristate(false);
 	gridLayout->addWidget(wareFilter, 3, 1, 1, 1);
 	wareBox = new QComboBox;
-	wareBox->setModel(&WaresModel::instance());
+	wareBox->setModel(&databases.query(db.name).wares());
 	wareBox->setModelColumn(WaresModel::Name);
 	gridLayout->addWidget(wareBox, 3, 2, 1, 2);
 
@@ -55,7 +55,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 	shopFilter->setTristate(false);
 	gridLayout->addWidget(shopFilter, 4, 1, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&ShopsModel::instance());
+	shopBox->setModel(&databases.query(db.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 4, 2, 1, 2);
 
@@ -200,7 +200,7 @@ void QueryOptionsView::mapFromGui()
 	query.shops.clear();
 	if(shopFilter->isChecked()){
 		int i = shopBox->currentIndex();
-		ShopsModel &sm = ShopsModel::instance();
+		ShopsModel &sm = databases.query(db.name).shops();
 		if(0 <= i && i < sm.rowCount())
 			query.shops.add(new QString(sm.shop(i).name.trimmed()));
 	}

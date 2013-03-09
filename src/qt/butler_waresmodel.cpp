@@ -7,7 +7,7 @@
 
 #include "butler_waresmodel.h"
 
-WaresModel::WaresModel() :
+WaresModel::WaresModel(Db & db) :
 	db(db)
 {
 	query();
@@ -167,16 +167,26 @@ int WaresModel::columnCount(const QModelIndex & parent) const
 bool WaresModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginRemoveRows(parent, row, row + count - 1);
-	endRemoveRows();
+	try {
+		beginRemoveRows(parent, row, row + count - 1);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
+	}
 	return true;
 }
 
 bool WaresModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginInsertRows(parent, row, row + count - 1);
-	endInsertRows();
+	try {
+		beginInsertRows(parent, row, row + count - 1);
+		endInsertRows();
+	} catch (...) {
+		endInsertRows();
+		throw;
+	}
 	return true;
 }
 
@@ -193,49 +203,51 @@ const Ware& WaresModel::ware(int row)
 	return wares.queryAt(row);
 }
 
-bool WaresModel::del(int row)
+void WaresModel::del(int row)
 {
 	Ware &ware = wares.queryAt(row);
-	bool ret = false;
-	if(db.ware.del(ware)){
+	db.ware.del(ware);
+	try {
 		beginRemoveRows(QModelIndex(), row, row);
 		wares.removeAt(row);
 		endRemoveRows();
-		ret = true;
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
-	return ret;
 }
 
-bool WaresModel::addNew(Ware &ware)
+void WaresModel::addNew(Ware &ware)
 {
-	bool ret = false;
-	if(db.ware.insert(ware)){
+	db.ware.insert(ware);
+	try {
 		beginInsertRows(QModelIndex(), wares.size(), wares.size());
 		wares.add(new Ware(ware));
 		endInsertRows();
-		ret = true;
+	} catch (...) {
+		endInsertRows();
+		throw;
 	}
-	return ret;
 }
 
-bool WaresModel::update(int row, Ware &modified)
+void WaresModel::update(int row, Ware &modified)
 {
 	Ware &orig = wares.queryAt(row);
-
-	if(db.ware.update(orig, modified)){
-		orig = modified;
-		dataChanged(index(row, 0), index(row, WaresModel::NumOfColumns-1));
-		return true;
-	}
-	return false;
+	db.ware.update(orig, modified);
+	orig = modified;
+	dataChanged(index(row, 0), index(row, WaresModel::NumOfColumns-1));
 }
 
-bool WaresModel::query()
+void WaresModel::query()
 {
-	beginResetModel();
-	bool ret = db.ware.query(wares);
-	endResetModel();
-	return ret;
+	try {
+		beginResetModel();
+		db.ware.query(wares);
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }
 
 QString WaresModel::categoriesToString(const CategoryNameSet &cat)
@@ -301,9 +313,14 @@ void WaresModel::sort(int column, bool ascending)
 	if(wares.ascending == ascending && wares.ordering == column)
 		return;
 
+	try {
 	beginResetModel();
-	wares.ascending = ascending;
-	wares.ordering = static_cast<Ware::Fields>(column);
-	wares.sort();
-	endResetModel();
+		wares.ascending = ascending;
+		wares.ordering = static_cast<Ware::Fields>(column);
+		wares.sort();
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }

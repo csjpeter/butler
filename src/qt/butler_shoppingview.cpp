@@ -84,7 +84,7 @@ ShoppingView::ShoppingView(QWidget *parent) :
 	shopLayout->addWidget(label, 0, 0);
 
 	shopBox = new QComboBox;
-	shopBox->setModel(&ShopsModel::instance());
+	shopBox->setModel(&databases.query(db.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	shopLayout->addWidget(shopBox, 0, 1);
 

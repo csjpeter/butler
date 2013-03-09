@@ -35,7 +35,7 @@ EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&WaresModel::instance());
+	nameBox->setModel(&databases.query(db.name).wares());
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 2);
@@ -95,7 +95,7 @@ EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
 	label = new QLabel(tr("Shop (place of buy) :"), this);
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&ShopsModel::instance());
+	shopBox->setModel(&databases.query(db.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 2);
 
@@ -210,7 +210,7 @@ void EditItemView::mapToGui()
 	grossPriceEditor->blockSignals(false);
 
 	purchaseDateTime->setDateTime(updatedItem.purchased);
-	shopBox->setCurrentIndex(ShopsModel::instance().index(updatedItem.shop));
+	shopBox->setCurrentIndex(databases.query(db.name).shops().index(updatedItem.shop));
 
 	onStockCheck->setCheckState(updatedItem.onStock ? Qt::Checked : Qt::Unchecked);
 }
@@ -229,7 +229,7 @@ void EditItemView::mapFromGui()
 	updatedItem.purchased = purchaseDateTime->dateTime();
 
 	int i = shopBox->currentIndex();
-	ShopsModel &sm = ShopsModel::instance();
+	ShopsModel &sm = databases.query(db.name).shops();
 	if(0 <= i && i < sm.rowCount())
 		updatedItem.shop = sm.shop(i).name;
 

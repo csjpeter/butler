@@ -8,6 +8,8 @@
 
 #include <csjp_exception.h>
 
+#include <butler_database_descriptor.h>
+
 #include <butler_db.h>
 #include <butler_tagsmodel.h>
 #include <butler_shopsmodel.h>
@@ -51,6 +53,8 @@ public:
 			//if(!QFile::exists(filepath))
 		} else
 			throw DbError("Driver '%s' is not yet supported.", C_STR(desc.driver));
+
+		return *database;
 	}
 
 	TagsModel & tags()

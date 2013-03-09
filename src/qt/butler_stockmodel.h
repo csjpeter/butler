@@ -30,10 +30,10 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const
 		__attribute__ ((no_instrument_function));
 
-	bool query();
-	bool addShoppingItem(int row);
-	bool drop(int row);
-	virtual bool update(int row, Item &modified);
+	void query();
+	void addShoppingItem(int row);
+	void drop(int row);
+	virtual void update(int row, Item &modified);
 	virtual bool queryFilter(const Item &modified);
 
 public:

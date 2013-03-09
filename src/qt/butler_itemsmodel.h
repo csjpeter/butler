@@ -15,7 +15,7 @@
 #include <butler_item.h>
 #include <butler_item_set.h>
 
-#include <butler_db.h>
+#include <butler_databases.h>
 
 #include "butler_config.h"
 
@@ -72,9 +72,9 @@ public:
 		__attribute__ ((no_instrument_function));
 	const Item & item(int row) const
 		__attribute__ ((no_instrument_function));
-	bool del(int row);
-	bool addNew(Item &item);
-	virtual bool update(int row, Item &modified);
+	void del(int row);
+	void addNew(Item &item);
+	virtual void update(int row, Item &modified);
 	void sort(int logicalIndex, bool ascending);
 
 protected:

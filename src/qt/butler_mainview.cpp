@@ -23,9 +23,9 @@
 
 #include "butler_mainview.h"
 
-MainView::MainView(QString & databaseName, QWidget *parent) :
-	databaseName(databaseName),
+MainView::MainView(const QString & databaseName, QWidget *parent) :
 	QWidget(parent),
+	databaseName(databaseName),
 	shoppingView(NULL),
 	stockView(NULL),
 	customView(NULL),
@@ -253,7 +253,7 @@ void MainView::openShopsView()
 void MainView::openCustomView()
 {
 	if(!customView){
-		customView = new CustomView();
+		customView = new CustomView(databases.query(databaseName).db());
 		customView->setWindowTitle(tr("User query result"));
 	}
 	customView->show();

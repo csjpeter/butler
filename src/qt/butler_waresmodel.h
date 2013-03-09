@@ -31,7 +31,7 @@ public:
 	};
 
 public:
-	WaresModel();
+	WaresModel(Db & db);
 	~WaresModel();
 
 	virtual QModelIndex index(
@@ -76,10 +76,10 @@ public:
 		__attribute__ ((no_instrument_function));
 	const Ware& ware(int row)
 		__attribute__ ((no_instrument_function));
-	bool del(int row);
-	bool addNew(Ware &ware);
-	virtual bool update(int row, Ware &modified);
-	bool query();
+	void del(int row);
+	void addNew(Ware &ware);
+	virtual void update(int row, Ware &modified);
+	void query();
 
 	static QString categoriesToString(const CategoryNameSet &cat)
 		__attribute__ ((no_instrument_function));

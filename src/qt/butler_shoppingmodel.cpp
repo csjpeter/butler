@@ -25,15 +25,14 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 		return Qt::NoItemFlags;
 }
 
-bool ShoppingModel::query()
+void ShoppingModel::query()
 {
 	beginResetModel();
-	bool ret = db.item.query(queryTagNames, items);
+	db.item.query(queryTagNames, items);
 	endResetModel();
-	return ret;
 }
 
-bool ShoppingModel::buy(unsigned itemRow, Item &modified)
+void ShoppingModel::buy(unsigned itemRow, Item &modified)
 {
 	Item &orig = items.queryAt(itemRow);
 	modified.bought = true;
@@ -43,12 +42,10 @@ bool ShoppingModel::buy(unsigned itemRow, Item &modified)
 		items.removeAt(itemRow);
 		endRemoveRows();
 		itemChange(modified);
-		return true;
 	}
-	return false;
 }
 
-bool ShoppingModel::update(int row, Item &modified)
+void ShoppingModel::update(int row, Item &modified)
 {
 	if(ItemsModel::update(row, modified)){
 		if(!queryFilter(modified)){
@@ -56,10 +53,7 @@ bool ShoppingModel::update(int row, Item &modified)
 			items.removeAt(row);
 			endRemoveRows();
 		}
-		return true;
 	}
-
-	return false;
 }
 
 bool ShoppingModel::queryFilter(const Item &modified)

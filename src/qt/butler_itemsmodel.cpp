@@ -81,7 +81,7 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		case Item::Quantity :
 			{
 				Item &item = items.queryAt(index.row());
-				WaresModel &wm = WaresModel::instance();
+				WaresModel &wm = databases.query(db.desc.name).wares();
 				int i = wm.index(item.name);
 				QString val;
 				val.setNum(item.quantity, 'g', 3);
@@ -278,7 +278,7 @@ const Item& ItemsModel::item(int row) const
 	return items.queryAt(row);
 }
 
-bool ItemsModel::del(int row)
+void ItemsModel::del(int row)
 {
 	Item &item = items.queryAt(row);
 	bool ret = false;
@@ -313,20 +313,17 @@ void ItemsModel::itemRemovedListener(const Item &removed)
 	}
 }
 
-bool ItemsModel::addNew(Item &item)
+void ItemsModel::addNew(Item &item)
 {
-	bool ret = false;
 	if(db.item.insert(item)){
 		beginInsertRows(QModelIndex(), items.size(), items.size());
 		items.add(new Item(item));
 		endInsertRows();
 		itemChange(item);
-		ret = true;
 	}
-	return ret;
 }
 
-bool ItemsModel::update(int row, Item &modified)
+void ItemsModel::update(int row, Item &modified)
 {
 	Item &orig = items.queryAt(row);
 
@@ -334,9 +331,7 @@ bool ItemsModel::update(int row, Item &modified)
 		orig = modified;
 		dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
 		itemChange(modified);
-		return true;
 	}
-	return false;
 }
 
 void ItemsModel::itemChange(const Item &modified)

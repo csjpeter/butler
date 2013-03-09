@@ -36,5 +36,3 @@ const QString &Config::dateTimeFormat()
 {
 	return _dateTimeFormat;
 }
-
-}

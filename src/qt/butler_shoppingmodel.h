@@ -29,9 +29,9 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const
 		__attribute__ ((no_instrument_function));
 
-	bool query();
-	bool buy(unsigned itemRow, Item &modified);
-	virtual bool update(int row, Item &modified);
+	void query();
+	void buy(unsigned itemRow, Item &modified);
+	virtual void update(int row, Item &modified);
 	virtual bool queryFilter(const Item &modified);
 
 public:

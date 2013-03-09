@@ -21,6 +21,7 @@ class Db
 public:
 	Db(const DatabaseDescriptor & dbDesc) :
 		sql(dbDesc),
+		desc(dbDesc),
 		tag(sql),
 		query(sql, tag),
 		ware(sql, tag),
@@ -45,6 +46,7 @@ public:
 private:
 	SqlConnection sql;
 public:
+	const DatabaseDescriptor & desc;
 	TagDb tag;
 	QueryDb query;
 	WareDb ware;

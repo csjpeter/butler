@@ -31,7 +31,7 @@ NewItemView::NewItemView(QWidget *parent, ShoppingModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&WaresModel::instance());
+	nameBox->setModel(&databases.query(db.name).wares());
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 3);
@@ -130,7 +130,7 @@ void NewItemView::doneClickedSlot(bool toggled)
 	mapFromGui();
 	if(model.addNew(item)){
 		/* We want to save any new ware and category before closing dialog. */
-		WaresModel &wm = WaresModel::instance();
+		WaresModel & wm = databases.query(db.name).wares()
 		int i = wm.index(nameEditor->text());
 		if(i == -1){
 			Ware ware;
@@ -173,7 +173,7 @@ void NewItemView::nameEditFinishedSlot()
 {
 	categoryBox->clear();
 
-	WaresModel &wm = WaresModel::instance();
+	WaresModel & wm = databases.query(db.name).wares()
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		unitLabel->setText("");
