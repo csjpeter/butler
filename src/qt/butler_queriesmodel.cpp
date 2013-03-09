@@ -5,33 +5,33 @@
 
 #include <QtGui>
 
-#include "butler_waresmodel.h"
+#include "butler_queriesmodel.h"
 
-WaresModel::WaresModel(Db & db) :
+QueriesModel::QueriesModel(Db & db) :
 	dbname(db.desc.name),
 	db(db)
 {
 	query();
 }
 
-WaresModel::~WaresModel()
+QueriesModel::~QueriesModel()
 {
 }
 
-QModelIndex WaresModel::index(int row, int column, const QModelIndex & parent) const
+QModelIndex QueriesModel::index(int row, int column, const QModelIndex & parent) const
 {
 	return QAbstractTableModel::index(row, column, parent);
 }
 
-Qt::ItemFlags WaresModel::flags(const QModelIndex & index) const
+Qt::ItemFlags QueriesModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)wares.size() && index.column() < NumOfColumns){
+	if(index.row() < (int)queries.size() && index.column() < NumOfColumns){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
 }
 
-QVariant WaresModel::data(const QModelIndex & index, int role) const 
+QVariant QueriesModel::data(const QModelIndex & index, int role) const 
 {
 	if(!index.isValid())
 		return QVariant();
@@ -42,23 +42,20 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
 		return QVariant();
 
-	if((int)wares.size() <= index.row())
+	if((int)queries.size() <= index.row())
 		return QVariant();
 	
 	QString result;
 
 	switch(index.column()){
-		case WaresModel::Name :
-			return QVariant(wares.queryAt(index.row()).name);
+		case QueriesModel::Name :
+			return QVariant(queries.queryAt(index.row()).name);
 			break;
-		case WaresModel::Unit :
-			return QVariant(wares.queryAt(index.row()).unit);
+		case QueriesModel::StartDate :
+			return QVariant(queries.queryAt(index.row()).startDate);
 			break;
-		case WaresModel::Categories :
-			return QVariant(categoriesToString(wares.queryAt(index.row()).categories));
-			break;
-		case WaresModel::Tags :
-			return QVariant(tagsToString(wares.queryAt(index.row()).tags));
+		case QueriesModel::EndDate :
+			return QVariant(queries.queryAt(index.row()).endDate);
 			break;
 		default :
 			return QVariant();
@@ -67,7 +64,7 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
-QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QueriesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
 	if(role != Qt::DisplayRole)
@@ -77,17 +74,14 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant("---");
 
 	switch(section){
-		case WaresModel::Name :
+		case QueriesModel::Name :
 			return QVariant("Name");
 			break;
-		case WaresModel::Unit :
-			return QVariant("Unit");
+		case QueriesModel::StartDate :
+			return QVariant("Start date");
 			break;
-		case WaresModel::Categories :
-			return QVariant("Categories");
-			break;
-		case WaresModel::Tags :
-			return QVariant("Tags");
+		case QueriesModel::EndDate :
+			return QVariant("End date");
 			break;
 		default :
 			return QVariant();
@@ -96,7 +90,7 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 	return QVariant();
 }
 
-bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool QueriesModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if(!index.isValid())
 		return false;
@@ -107,29 +101,25 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 	if(role != Qt::EditRole)
 		return false;
 
-	if((int)wares.size() <= index.row())
+	if((int)queries.size() <= index.row())
 		return false;
 
 	int row = index.row();
-	Ware modified(wares.queryAt(row));
+	Query modified(queries.queryAt(row));
 
 	QString str;
 
 	switch(index.column()){
-		case WaresModel::Name :
+		case QueriesModel::Name :
 			modified.name = value.toString();
 			update(row, modified);
 			break;
-		case WaresModel::Unit :
-			modified.unit = value.toString();
+		case QueriesModel::StartDate :
+			modified.startDate = value.toDateTime();
 			update(row, modified);
 			break;
-		case WaresModel::Categories :
-			stringToCategories(value.toString(), modified.categories);
-			update(row, modified);
-			break;
-		case WaresModel::Tags :
-			stringToTags(value.toString(), modified.tags);
+		case QueriesModel::EndDate :
+			modified.endDate = value.toDateTime();
 			update(row, modified);
 			break;
 		default :
@@ -140,7 +130,7 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 	return true;
 }
 
-bool WaresModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
+bool QueriesModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
 {
 	(void)section;
 	(void)orientation;
@@ -151,21 +141,21 @@ bool WaresModel::setHeaderData(int section, Qt::Orientation orientation, const Q
 	return false;
 }
 
-int WaresModel::rowCount(const QModelIndex & parent) const
+int QueriesModel::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return wares.size();
+	return queries.size();
 }
 
-int WaresModel::columnCount(const QModelIndex & parent) const
+int QueriesModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
 	return NumOfColumns;
 }
 
-bool WaresModel::removeRows(
+bool QueriesModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
 	try {
@@ -178,7 +168,7 @@ bool WaresModel::removeRows(
 	return true;
 }
 
-bool WaresModel::insertRows(
+bool QueriesModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
 	try {
@@ -191,26 +181,26 @@ bool WaresModel::insertRows(
 	return true;
 }
 
-int WaresModel::index(const QString &name) const
+int QueriesModel::index(const QString &name) const
 {
-	if(wares.has(name))
-		return wares.index(name);
+	if(queries.has(name))
+		return queries.index(name);
 	else
 		return -1;
 }
 
-const Ware& WaresModel::ware(int row)
+const Query& QueriesModel::query(int row)
 {
-	return wares.queryAt(row);
+	return queries.queryAt(row);
 }
 
-void WaresModel::del(int row)
+void QueriesModel::del(int row)
 {
-	Ware &ware = wares.queryAt(row);
-	db.ware.del(ware);
+	Query &query = queries.queryAt(row);
+	db.query.del(query);
 	try {
 		beginRemoveRows(QModelIndex(), row, row);
-		wares.removeAt(row);
+		queries.removeAt(row);
 		endRemoveRows();
 	} catch (...) {
 		endRemoveRows();
@@ -218,12 +208,12 @@ void WaresModel::del(int row)
 	}
 }
 
-void WaresModel::addNew(Ware &ware)
+void QueriesModel::addNew(Query &query)
 {
-	db.ware.insert(ware);
+	db.query.insert(query);
 	try {
-		beginInsertRows(QModelIndex(), wares.size(), wares.size());
-		wares.add(new Ware(ware));
+		beginInsertRows(QModelIndex(), queries.size(), queries.size());
+		queries.add(new Query(query));
 		endInsertRows();
 	} catch (...) {
 		endInsertRows();
@@ -231,19 +221,19 @@ void WaresModel::addNew(Ware &ware)
 	}
 }
 
-void WaresModel::update(int row, Ware &modified)
+void QueriesModel::update(int row, Query &modified)
 {
-	Ware &orig = wares.queryAt(row);
-	db.ware.update(orig, modified);
+	Query &orig = queries.queryAt(row);
+	db.query.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, WaresModel::NumOfColumns-1));
+	dataChanged(index(row, 0), index(row, QueriesModel::NumOfColumns-1));
 }
 
-void WaresModel::query()
+void QueriesModel::query()
 {
 	try {
 		beginResetModel();
-		db.ware.query(wares);
+		db.query.query(queries);
 		endResetModel();
 	} catch (...) {
 		endResetModel();
@@ -251,7 +241,7 @@ void WaresModel::query()
 	}
 }
 
-QString WaresModel::categoriesToString(const CategoryNameSet &cat)
+QString QueriesModel::categoriesToString(const CategoryNameSet &cat)
 {
 	QString result("");
 
@@ -269,7 +259,7 @@ QString WaresModel::categoriesToString(const CategoryNameSet &cat)
 	return result;
 }
 
-QString WaresModel::tagsToString(const TagNameSet &tags)
+QString QueriesModel::tagsToString(const TagNameSet &tags)
 {
 	QString result("");
 
@@ -287,7 +277,7 @@ QString WaresModel::tagsToString(const TagNameSet &tags)
 	return result;
 }
 
-void WaresModel::stringToCategories(const QString &value, CategoryNameSet &cat)
+void QueriesModel::stringToCategories(const QString &value, CategoryNameSet &cat)
 {
 	cat.clear();
 	QStringList sl;
@@ -298,7 +288,7 @@ void WaresModel::stringToCategories(const QString &value, CategoryNameSet &cat)
 		cat.add(new QString(sl.at(i).trimmed()));
 }
 
-void WaresModel::stringToTags(const QString &value, TagNameSet &tags)
+void QueriesModel::stringToTags(const QString &value, TagNameSet &tags)
 {
 	tags.clear();
 	QStringList sl;
@@ -309,16 +299,16 @@ void WaresModel::stringToTags(const QString &value, TagNameSet &tags)
 		tags.add(new QString(sl.at(i).trimmed()));
 }
 
-void WaresModel::sort(int column, bool ascending)
+void QueriesModel::sort(int column, bool ascending)
 {
-	if(wares.ascending == ascending && wares.ordering == column)
+	if(queries.ascending == ascending && queries.ordering == column)
 		return;
 
 	try {
 		beginResetModel();
-		wares.ascending = ascending;
-		wares.ordering = static_cast<Ware::Fields>(column);
-		wares.sort();
+		queries.ascending = ascending;
+		queries.ordering = static_cast<Query::Fields>(column);
+		queries.sort();
 		endResetModel();
 	} catch (...) {
 		endResetModel();

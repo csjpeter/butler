@@ -26,6 +26,9 @@ public:
 
 	unsigned index(const QString &name) const {
 		return csjp::SorterOwnerContainer<Query>::index<QString>(name);}
+
+	Query::Fields ordering;
+	bool ascending;
 };
 
 #endif

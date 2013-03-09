@@ -106,6 +106,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
 	$(DIST_DIR)/src/qt/butler_waresmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_waresview.cpp \
+	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_accountingview.h \
 	$(DIST_DIR)/src/qt/butler_application.h \
 	$(DIST_DIR)/src/qt/butler_buyitemview.h \
@@ -136,6 +137,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_tagwidget.h \
 	$(DIST_DIR)/src/qt/butler_waresmodel.h \
 	$(DIST_DIR)/src/qt/butler_waresview.h \
+	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
 	$(DIST_DIR)/src/qt/main.cpp \
 	$(DIST_DIR)/share/icons/copyright \
 	$(DIST_DIR)/share/icons/accounting.png \

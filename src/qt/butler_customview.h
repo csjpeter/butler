@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	CustomView(Db & db, QWidget *parent = 0);
+	CustomView(const QString & dbname, QWidget *parent = 0);
 	~CustomView();
 
 private:
@@ -59,8 +59,8 @@ private slots:
 	void finishedEditWare(int);
 
 private:
-	Db & db;
-	CustomModel model;
+	const QString & dbname;
+	CustomModel & model;
 
 	QTableView *queryView;
 

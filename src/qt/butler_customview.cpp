@@ -18,10 +18,10 @@
 
 #include "butler_db.h"
 
-CustomView::CustomView(Db & db, QWidget *parent) :
+CustomView::CustomView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
-	db(db),
-	model(db),
+	dbname(dbname),
+	model(customModel(dbname)),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -163,6 +163,7 @@ void CustomView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
 
+	QueryModel qm = queryModel(dbname);
 	QuerySet qs;
 	db.query.query(qs);
 	if(qs.size())
@@ -296,14 +297,14 @@ void CustomView::editWare()
 		return;
 	}
 
-	WaresModel & waresModel = databases.query(db.desc.name).wares();
+	WaresModel & wm = waresModel(dbname);
 	if(!editWareView)
-		editWareView = new EditWareView(this, waresModel);
+		editWareView = new EditWareView(this, wm);
 
 	const Item &item = model.item(queryView->currentIndex().row());
 
 	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
-	editWareView->setCursor(waresModel.index(waresModel.index(item.name), 0));
+	editWareView->setCursor(wm.index(wm.index(item.name), 0));
 	editWareView->show();
 }
 

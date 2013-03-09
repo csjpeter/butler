@@ -11,9 +11,14 @@
 #include <butler_database_descriptor.h>
 
 #include <butler_db.h>
+#include <butler_itemsmodel.h>
+#include <butler_custommodel.h>
+#include <butler_shoppingmodel.h>
+#include <butler_stockmodel.h>
 #include <butler_tagsmodel.h>
 #include <butler_shopsmodel.h>
 #include <butler_waresmodel.h>
+#include <butler_queriesmodel.h>
 
 class Database
 {
@@ -43,6 +48,7 @@ public:
 	bool isLess(const QString &s) const { return desc < s; }
 	bool isMore(const QString &s) const { return desc.isMore(s); }
 
+private:
 	Db & db()
 	{
 		if(database)
@@ -55,6 +61,31 @@ public:
 			throw DbError("Driver '%s' is not yet supported.", C_STR(desc.driver));
 
 		return *database;
+	}
+
+public:
+	CustomModel & customItems()
+	{
+		if(!customModel){
+			customModel = new CustomModel(db());
+		}
+		return *customModel;
+	}
+
+	ShoppingModel & shoppingItems()
+	{
+		if(!shoppingModel){
+			shoppingModel = new ShoppingModel(db());
+		}
+		return *shoppingModel;
+	}
+
+	StockModel & stockItems()
+	{
+		if(!stockModel){
+			stockModel = new StockModel(db());
+		}
+		return *stockModel;
 	}
 
 	TagsModel & tags()
@@ -81,14 +112,26 @@ public:
 		return *waresModel;
 	}
 
+	QueriesModel & queries()
+	{
+		if(!queriesModel){
+			queriesModel = new QueriesModel(db());
+		}
+		return *queriesModel;
+	}
+
 public:
 	DatabaseDescriptor desc;
 
 private:
 	Db * database;
+	CustomModel * customModel;
+	ShoppingModel * shoppingModel;
+	StockModel * stockModel;
 	TagsModel * tagsModel;
 	ShopsModel * shopsModel;
 	WaresModel * waresModel;
+	QueriesModel * queriesModel;
 
 private:
 	void equal(const Database &tag);
@@ -120,6 +163,21 @@ inline bool operator<(const Database &a, const QString &b)
 }
 
 extern csjp::OwnerContainer<Database> databases;
+
+inline CustomModel & customModel(const QString dbname)
+{
+	return databases.query(dbname).customItems();
+}
+
+inline ShoppingModel & shoppingModel(const QString dbname)
+{
+	return databases.query(dbname).shoppingItems();
+}
+
+inline StockModel & stockModel(const QString dbname)
+{
+	return databases.query(dbname).stockItems();
+}
 
 inline TagsModel & tagsModel(const QString dbname)
 {

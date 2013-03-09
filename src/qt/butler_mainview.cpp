@@ -253,7 +253,7 @@ void MainView::openShopsView()
 void MainView::openCustomView()
 {
 	if(!customView){
-		customView = new CustomView(databases.query(databaseName).db());
+		customView = new CustomView(databaseName);
 		customView->setWindowTitle(tr("User query result"));
 	}
 	customView->show();
