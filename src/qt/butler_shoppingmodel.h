@@ -23,7 +23,7 @@ class ShoppingModel : public ItemsModel
 private:
 	Q_OBJECT;
 public:
-	ShoppingModel();
+	ShoppingModel(Db & db);
 	~ShoppingModel();
 
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const

@@ -13,7 +13,6 @@
 #include <butler_tag.h>
 
 #include "butler_tagsmodel.h"
-#include "butler_tagsmodel.h"
 
 /*forwards*/
 class QAction;

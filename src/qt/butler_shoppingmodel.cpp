@@ -8,8 +8,8 @@
 #include "butler_shoppingmodel.h"
 #include "butler_shopsmodel.h"
 
-ShoppingModel::ShoppingModel() :
-	ItemsModel()
+ShoppingModel::ShoppingModel(Db & db) :
+	ItemsModel(db)
 {
 }
 
@@ -27,9 +27,14 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 
 void ShoppingModel::query()
 {
-	beginResetModel();
-	db.item.query(queryTagNames, items);
-	endResetModel();
+	try {
+		beginResetModel();
+		db.item.query(queryTagNames, items);
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }
 
 void ShoppingModel::buy(unsigned itemRow, Item &modified)
@@ -37,22 +42,31 @@ void ShoppingModel::buy(unsigned itemRow, Item &modified)
 	Item &orig = items.queryAt(itemRow);
 	modified.bought = true;
 	modified.onStock = true;
-	if(db.item.update(orig, modified)){
+	db.item.update(orig, modified);
+	try {
 		beginRemoveRows(QModelIndex(), itemRow, itemRow);
 		items.removeAt(itemRow);
 		endRemoveRows();
-		itemChange(modified);
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
+	itemChange(modified);
 }
 
 void ShoppingModel::update(int row, Item &modified)
 {
-	if(ItemsModel::update(row, modified)){
-		if(!queryFilter(modified)){
-			beginRemoveRows(QModelIndex(), row, row);
-			items.removeAt(row);
-			endRemoveRows();
-		}
+	ItemsModel::update(row, modified);
+	if(queryFilter(modified))
+		return;
+
+	try {
+		beginRemoveRows(QModelIndex(), row, row);
+		items.removeAt(row);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
 }
 

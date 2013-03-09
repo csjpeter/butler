@@ -26,6 +26,8 @@ class QModelIndex;
 
 #include <butler_ware.h>
 
+#include <butler_databases.h>
+
 #include "butler_waresmodel.h"
 
 class TagWidget;

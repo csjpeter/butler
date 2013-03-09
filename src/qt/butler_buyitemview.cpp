@@ -14,7 +14,7 @@
 
 BuyItemView::BuyItemView(QWidget *parent, ShoppingModel &m) :
 	QDialog(parent),
-	shoppingModel(m)
+	model(m)
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);
@@ -64,7 +64,7 @@ BuyItemView::BuyItemView(QWidget *parent, ShoppingModel &m) :
 	label = new QLabel(tr("Shop (place of buy):"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(db.name).shops());
+	shopBox->setModel(&databases.query(model.db.desc.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
 
@@ -120,7 +120,7 @@ void BuyItemView::saveState()
 
 void BuyItemView::setItem(unsigned itemRow, unsigned shopRow)
 {
-	item = Item(shoppingModel.item(itemRow));
+	item = Item(model.item(itemRow));
 	itemCursor = itemRow;
 	shopCursor = shopRow;
 }
@@ -145,7 +145,7 @@ void BuyItemView::mapToGui()
 	shopBox->setCurrentIndex(shopCursor);
 	purchaseDateTime->setDateTime(QDateTime::currentDateTime());
 	
-	WaresModel &wm = WaresModel::instance();
+	WaresModel &wm = databases.query(model.db.desc.name).wares();
 	int i = wm.index(item.name);
 	if(i == -1) {
 		unitLabel->setText("");
@@ -157,25 +157,26 @@ void BuyItemView::mapToGui()
 
 void BuyItemView::mapFromGui()
 {
+	ShopsModel &sm = databases.query(model.db.desc.name).shops();
 	item.purchased = purchaseDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();
-	item.shop = ShopsModel::instance().shop(shopBox->currentIndex()).name;
+	item.shop = sm.shop(shopBox->currentIndex()).name;
 }
 
 void BuyItemView::buy()
 {
 	mapFromGui();
 
-	if(shoppingModel.buy(itemCursor, item)){
-		return accept();
-	}
-
+	model.buy(itemCursor, item);
+	accept();
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Could not set item to bought."),
-			shoppingModel.error(),
+			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
 }
 
 void BuyItemView::quantityValueChangedSlot(double q)

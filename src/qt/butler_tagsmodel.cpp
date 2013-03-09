@@ -8,6 +8,7 @@
 #include "butler_tagsmodel.h"
 
 TagsModel::TagsModel(Db & db) :
+	dbname(db.desc.name),
 	db(db)
 {
 	query();

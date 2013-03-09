@@ -35,7 +35,7 @@ EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&databases.query(db.name).wares());
+	nameBox->setModel(&databases.query(model.db.desc.name).wares());
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 2);
@@ -95,7 +95,7 @@ EditItemView::EditItemView(QWidget *parent, ItemsModel &m) :
 	label = new QLabel(tr("Shop (place of buy) :"), this);
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(db.name).shops());
+	shopBox->setModel(&databases.query(model.db.desc.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 2);
 
@@ -210,7 +210,7 @@ void EditItemView::mapToGui()
 	grossPriceEditor->blockSignals(false);
 
 	purchaseDateTime->setDateTime(updatedItem.purchased);
-	shopBox->setCurrentIndex(databases.query(db.name).shops().index(updatedItem.shop));
+	shopBox->setCurrentIndex(databases.query(model.db.desc.name).shops().index(updatedItem.shop));
 
 	onStockCheck->setCheckState(updatedItem.onStock ? Qt::Checked : Qt::Unchecked);
 }
@@ -229,7 +229,7 @@ void EditItemView::mapFromGui()
 	updatedItem.purchased = purchaseDateTime->dateTime();
 
 	int i = shopBox->currentIndex();
-	ShopsModel &sm = databases.query(db.name).shops();
+	ShopsModel &sm = databases.query(model.db.desc.name).shops();
 	if(0 <= i && i < sm.rowCount())
 		updatedItem.shop = sm.shop(i).name;
 
@@ -265,53 +265,51 @@ void EditItemView::saveSlot()
 {
 	mapFromGui();
 	
-	if(model.update(cursor.row(), updatedItem)){
-		/* We want to save any new ware and category before closing dialog. */
-		WaresModel &wm = WaresModel::instance();
-		int i = wm.index(nameEditor->text());
-		if(i == -1){
-			Ware ware;
-			ware.name = nameEditor->text();
-			if(categoryEditor->text().size())
-				ware.categories.add(new QString(categoryEditor->text()));
-			if(!wm.addNew(ware)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Item saved to db, "
-						  "but adding new ware failed."),
-						wm.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
-			Ware modified(wm.ware(i));
-			modified.categories.add(new QString(categoryEditor->text()));
-			if(!wm.update(i, modified)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Item saved to db, "
-						  "but adding new ware category failed."),
-						wm.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		}
-		/* May be it is better to jump to next record than as to close the view. */
-		nextClickedSlot();
-//		accept();
-		return;
-	}
-
-	QMessageBox(	QMessageBox::Warning,
+	model.update(cursor.row(), updatedItem);
+/*	QMessageBox(	QMessageBox::Warning,
 			tr("Update item failed"),
 			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
+	/* We want to save any new ware and category before closing dialog. */
+	WaresModel &wm = databases.query(model.db.desc.name).wares();
+	int i = wm.index(nameEditor->text());
+	if(i == -1){
+		Ware ware;
+		ware.name = nameEditor->text();
+		if(categoryEditor->text().size())
+			ware.categories.add(new QString(categoryEditor->text()));
+		wm.addNew(ware);
+/*			QMessageBox(	QMessageBox::Warning,
+					tr("Item saved to db, "
+					  "but adding new ware failed."),
+					wm.error(),
+					QMessageBox::Ok,
+					0, Qt::Dialog).exec();
+		}*/
+	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
+		Ware modified(wm.ware(i));
+		modified.categories.add(new QString(categoryEditor->text()));
+		wm.update(i, modified);
+/*			QMessageBox(	QMessageBox::Warning,
+					tr("Item saved to db, "
+					  "but adding new ware category failed."),
+					wm.error(),
+					QMessageBox::Ok,
+					0, Qt::Dialog).exec();
+		}*/
+	}
+	/* May be it is better to jump to next record than as to close the view. */
+	nextClickedSlot();
+	accept();
 }
 
 void EditItemView::nameEditFinishedSlot()
 {
 	categoryBox->clear();
 
-	WaresModel &wm = WaresModel::instance();
+	WaresModel &wm = databases.query(model.db.desc.name).wares();
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		unitLabel->setText("");

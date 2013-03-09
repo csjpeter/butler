@@ -94,8 +94,6 @@ private:
 	void equal(const Database &tag);
 };
 
-extern csjp::OwnerContainer<Database> databases;
-
 inline bool operator==(const Database &a, const Database &b)
 {
 	return a.isEqual(b);
@@ -119,6 +117,23 @@ inline bool operator<(const QString &a, const Database &b)
 inline bool operator<(const Database &a, const QString &b)
 {
 	return a.isLess(b);
+}
+
+extern csjp::OwnerContainer<Database> databases;
+
+inline TagsModel & tagsModel(const QString dbname)
+{
+	return databases.query(dbname).tags();
+}
+
+inline ShopsModel & shopsModel(const QString dbname)
+{
+	return databases.query(dbname).shops();
+}
+
+inline WaresModel & waresModel(const QString dbname)
+{
+	return databases.query(dbname).wares();
 }
 
 #endif

@@ -63,7 +63,7 @@ private slots:
 	void grossPriceValueChangedSlot(double g);
 
 private:
-	ShoppingModel &shoppingModel;
+	ShoppingModel &model;
 	unsigned itemCursor;
 	unsigned shopCursor;
 	Item item;

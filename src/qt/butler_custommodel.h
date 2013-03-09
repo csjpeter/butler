@@ -25,7 +25,7 @@ private:
 	Q_OBJECT;
 
 public:
-	CustomModel();
+	CustomModel(Db & db);
 	~CustomModel();
 
 	void query();

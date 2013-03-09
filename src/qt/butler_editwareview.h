@@ -12,6 +12,9 @@
 
 #include <butler_ware.h>
 
+#include <butler_databases.h>
+
+#include "butler_tagsmodel.h"
 #include "butler_waresmodel.h"
 
 /*forwards*/

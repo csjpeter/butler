@@ -85,6 +85,8 @@ protected:
 	void itemRemoved(const Item &removed);
 	void itemRemovedListener(const Item &removed);
 
+public:
+	const QString & dbname;
 protected:
 	Db & db;
 	ItemSet items;

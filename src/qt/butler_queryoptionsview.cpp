@@ -11,8 +11,9 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
+QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget *parent) :
 	QDialog(parent),
+	dbname(dbname),
 	query(query)
 {
 	QGridLayout *gridLayout = new QGridLayout();
@@ -45,7 +46,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 	wareFilter->setTristate(false);
 	gridLayout->addWidget(wareFilter, 3, 1, 1, 1);
 	wareBox = new QComboBox;
-	wareBox->setModel(&databases.query(db.name).wares());
+	wareBox->setModel(&waresModel(dbname));
 	wareBox->setModelColumn(WaresModel::Name);
 	gridLayout->addWidget(wareBox, 3, 2, 1, 2);
 
@@ -55,7 +56,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 	shopFilter->setTristate(false);
 	gridLayout->addWidget(shopFilter, 4, 1, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(db.name).shops());
+	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 4, 2, 1, 2);
 
@@ -70,7 +71,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 	tagOptAnyMatch->setText(tr("any selected tag enough to match"));
 	tagOptions->addButton(tagOptAnyMatch);
 	gridLayout->addWidget(tagOptAnyMatch, 7, 1, 1, 2);
-	tagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
+	tagsSelector = new TagWidget(this, tagsModel(dbname).tagSet());
 	gridLayout->addWidget(tagsSelector, 8, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
@@ -89,7 +90,7 @@ QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
 
 	label = new QLabel(tr("Without these tags :"));
 	gridLayout->addWidget(label, 10, 0, 1, 4);
-	withoutTagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
+	withoutTagsSelector = new TagWidget(this, tagsModel(dbname).tagSet());
 	gridLayout->addWidget(withoutTagsSelector, 11, 0, 1, 4);
 
 	label = new QLabel(tr("Stock option :"));
@@ -125,7 +126,7 @@ QueryOptionsView::~QueryOptionsView()
 
 void QueryOptionsView::showEvent(QShowEvent *event)
 {
-	TagsModel::instance().query();
+	tagsModel(dbname).query();
 	
 	mapToGui();
 
@@ -192,7 +193,7 @@ void QueryOptionsView::mapFromGui()
 	query.wares.clear();
 	if(wareFilter->isChecked()){
 		int i = wareBox->currentIndex();
-		WaresModel &wm = WaresModel::instance();
+		WaresModel &wm = waresModel(dbname);
 		if(0 <= i && i < wm.rowCount())
 			query.wares.add(new QString(wm.ware(i).name.trimmed()));
 	}
@@ -200,7 +201,7 @@ void QueryOptionsView::mapFromGui()
 	query.shops.clear();
 	if(shopFilter->isChecked()){
 		int i = shopBox->currentIndex();
-		ShopsModel &sm = databases.query(db.name).shops();
+		ShopsModel &sm = shopsModel(dbname);
 		if(0 <= i && i < sm.rowCount())
 			query.shops.add(new QString(sm.shop(i).name.trimmed()));
 	}

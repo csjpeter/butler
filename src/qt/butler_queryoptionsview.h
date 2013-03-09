@@ -10,6 +10,8 @@
 
 #include "butler_tagsmodel.h"
 
+#include <butler_databases.h>
+
 /*forwards*/
 class QAction;
 class QToolButton;
@@ -37,7 +39,7 @@ private:
 	Q_OBJECT
 
 public:
-	QueryOptionsView(Query &query, QWidget *parent = 0);
+	QueryOptionsView(const QString & dbname, Query &query, QWidget *parent = 0);
 	virtual ~QueryOptionsView();
 
 protected:
@@ -60,6 +62,8 @@ private slots:
 	void selectNoneClickedSlot(bool);
 
 private:
+	const QString & dbname;
+
 	Query &query;
 
 	QLineEdit *nameEditor;

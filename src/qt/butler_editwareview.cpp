@@ -50,7 +50,7 @@ EditWareView::EditWareView(QWidget *parent, WaresModel &m) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
+	tagsSelector = new TagWidget(this, tagModel(model.dbname).tagSet());
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 
 	/* buttons: prev, save, next, close */
@@ -94,7 +94,7 @@ EditWareView::EditWareView(QWidget *parent, WaresModel &m) :
 
 void EditWareView::showEvent(QShowEvent *event)
 {
-	TagsModel::instance().query();
+	tagModel(model.dbname).query();
 	
 	mapToGui();
 	
@@ -171,15 +171,14 @@ void EditWareView::nextClickedSlot()
 void EditWareView::saveSlot()
 {
 	mapFromGui();
-	if(model.update(cursor.row(), ware)){
-		return;
-	}
-
+	model.update(cursor.row(), ware);
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Update ware failed"),
 			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
 }
 
 void EditWareView::closeSlot()

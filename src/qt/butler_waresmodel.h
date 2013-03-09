@@ -89,6 +89,8 @@ public:
 	static void stringToTags(const QString &value, TagNameSet &modified);
 	void sort(int column, bool ascending);
 
+public:
+	const QString & dbname;
 protected:
 	Db & db;
 	WareSet wares;

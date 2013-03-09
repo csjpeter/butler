@@ -44,7 +44,7 @@ NewWareView::NewWareView(QWidget *parent, WaresModel &m) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
+	tagsSelector = new TagWidget(this, tagsModel(model.dbname).tagSet());
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 	
 	/* buttons: done */
@@ -59,7 +59,7 @@ NewWareView::NewWareView(QWidget *parent, WaresModel &m) :
 
 void NewWareView::showEvent(QShowEvent *event)
 {
-	TagsModel::instance().query();
+	tagsModel(model.dbname).query();
 	
 	QDialog::showEvent(event);
 
@@ -111,15 +111,14 @@ void NewWareView::doneClickedSlot(bool toggled)
 	Q_UNUSED(toggled);
 
 	mapFromGui();
-	if(model.addNew(ware)){
-		ware = Ware();
-		mapToGui();
-		return accept();
-	}
-
+	model.addNew(ware);
+	ware = Ware();
+	mapToGui();
+	accept();
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Add new ware failed"),
 			model.error(),
 			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
+			0, Qt::Dialog).exec();*/
 }

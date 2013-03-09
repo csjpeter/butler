@@ -116,15 +116,15 @@ void NewShopView::doneClickedSlot(bool toggled)
 	Q_UNUSED(toggled);
 
 	mapFromGui();
-	if(model.addNew(shop)){
-		shop = Shop();
-		mapToGui();
-		return accept();
-	}
-
+	model.addNew(shop);
+	shop = Shop();
+	mapToGui();
+	accept();
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Add new shop failed"),
 			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
 }

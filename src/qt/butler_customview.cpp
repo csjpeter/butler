@@ -19,8 +19,9 @@
 #include "butler_db.h"
 
 CustomView::CustomView(Db & db, QWidget *parent) :
-	db(db),
 	QWidget(parent),
+	db(db),
+	model(db),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -163,18 +164,20 @@ void CustomView::showEvent(QShowEvent *event)
 	QWidget::showEvent(event);
 
 	QuerySet qs;
-	db.query().query(qs);
+	db.query.query(qs);
 	if(qs.size())
 		model.opts = qs.queryAt(0);
 	model.opts.name = "default";
 
-	if(!model.query()){
+	model.query();
+/*	{
 		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
 	}
+*/
 	updateStatistics();
 	
 	QSettings settings(this);
@@ -256,23 +259,22 @@ void CustomView::delItem()
 
 	int row = queryView->currentIndex().row();
 	const Item &item = model.item(row);
-	QMessageBox *msg = new QMessageBox(
+	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we delete?"),
 			item.name + ", " + item.category,
 			QMessageBox::Yes | QMessageBox::No,
-			0, Qt::Dialog);
+			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		if(!model.del(row)){
+		model.del(row);
+/*		{
 			QMessageBox(	QMessageBox::Warning,
 					tr("Delete item failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
+		}*/
 	}
-
-	delete msg;
 }
 
 void CustomView::openAccountingView()
@@ -294,7 +296,7 @@ void CustomView::editWare()
 		return;
 	}
 
-	WaresModel & waresModel = databases.query(db.name).wares()
+	WaresModel & waresModel = databases.query(db.desc.name).wares();
 	if(!editWareView)
 		editWareView = new EditWareView(this, waresModel);
 
@@ -322,7 +324,7 @@ void CustomView::filterItems()
 		connect(queryOptsView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));
 		QuerySet qs;
-		db.query().query(qs);
+		db.query.query(qs);
 		if(qs.size())
 			model.opts = qs.queryAt(0);
 		model.opts.name = "default";
@@ -333,22 +335,22 @@ void CustomView::filterItems()
 void CustomView::filterAcceptedSlot()
 {
 	QuerySet qs;
-	db.query().query(qs);
+	db.query.query(qs);
 	if(qs.size()){
 		model.opts.name = "default";
-		db.query().update(qs.queryAt(0), model.opts);
+		db.query.update(qs.queryAt(0), model.opts);
 	} else {
 		model.opts.name = "default";
-		db.query().insert(model.opts);
+		db.query.insert(model.opts);
 	}
 
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 	updateStatistics();
 }
 

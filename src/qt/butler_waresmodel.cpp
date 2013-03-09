@@ -8,6 +8,7 @@
 #include "butler_waresmodel.h"
 
 WaresModel::WaresModel(Db & db) :
+	dbname(db.desc.name),
 	db(db)
 {
 	query();

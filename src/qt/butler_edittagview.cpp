@@ -142,13 +142,13 @@ void EditTagView::nextClickedSlot()
 void EditTagView::saveSlot()
 {
 	mapFromGui();
-	if(model.update(cursor.row(), tag)){
-		return accept();
-	}
-
+	model.update(cursor.row(), tag);
+	accept();
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Update tag failed"),
 			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
 }

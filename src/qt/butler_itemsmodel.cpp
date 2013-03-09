@@ -13,6 +13,7 @@
 csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
 ItemsModel::ItemsModel(Db & db) :
+	dbname(db.desc.name),
 	db(db)
 {
 	itemOperationListeners.add(*this);
@@ -252,16 +253,26 @@ int ItemsModel::columnCount(const QModelIndex & parent) const
 bool ItemsModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginRemoveRows(parent, row, row + count - 1);
-	endRemoveRows();
+	try {
+		beginRemoveRows(parent, row, row + count - 1);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
+	}
 	return true;
 }
 
 bool ItemsModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	beginInsertRows(parent, row, row + count - 1);
-	endInsertRows();
+	try {
+		beginInsertRows(parent, row, row + count - 1);
+		endInsertRows();
+	} catch (...) {
+		endInsertRows();
+		throw;
+	}
 	return true;
 }
 
@@ -281,15 +292,16 @@ const Item& ItemsModel::item(int row) const
 void ItemsModel::del(int row)
 {
 	Item &item = items.queryAt(row);
-	bool ret = false;
-	if(db.item.del(item)){
-		itemRemoved(item);
+	db.item.del(item);
+	itemRemoved(item);
+	try {
 		beginRemoveRows(QModelIndex(), row, row);
 		items.removeAt(row);
 		endRemoveRows();
-		ret = true;
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
-	return ret;
 }
 
 void ItemsModel::itemRemoved(const Item &removed)
@@ -305,33 +317,42 @@ void ItemsModel::itemRemoved(const Item &removed)
 
 void ItemsModel::itemRemovedListener(const Item &removed)
 {
-	if(items.has(removed.uploaded)){
-		int row = items.index(removed.uploaded);
+	if(!items.has(removed.uploaded))
+		return;
+
+	int row = items.index(removed.uploaded);
+	try {
 		beginRemoveRows(QModelIndex(), row, row);
 		items.removeAt(row);
 		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
 }
 
 void ItemsModel::addNew(Item &item)
 {
-	if(db.item.insert(item)){
+	db.item.insert(item);
+	try {
 		beginInsertRows(QModelIndex(), items.size(), items.size());
 		items.add(new Item(item));
 		endInsertRows();
-		itemChange(item);
+	} catch (...) {
+		endInsertRows();
+		throw;
 	}
+	itemChange(item);
 }
 
 void ItemsModel::update(int row, Item &modified)
 {
 	Item &orig = items.queryAt(row);
 
-	if(db.item.update(orig, modified)){
-		orig = modified;
-		dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
-		itemChange(modified);
-	}
+	db.item.update(orig, modified);
+	orig = modified;
+	dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
+	itemChange(modified);
 }
 
 void ItemsModel::itemChange(const Item &modified)
@@ -354,15 +375,25 @@ void ItemsModel::itemChangeListener(const Item &modified)
 			items.queryAt(row) = modified;
 			dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
 		} else {
-			beginRemoveRows(QModelIndex(), row, row);
-			items.removeAt(row);
-			endRemoveRows();
+			try {
+				beginRemoveRows(QModelIndex(), row, row);
+				items.removeAt(row);
+				endRemoveRows();
+			} catch (...) {
+				endRemoveRows();
+				throw;
+			}
 		}
 	} else {
 		if(want){
-			beginInsertRows(QModelIndex(), items.size(), items.size());
-			items.add(new Item(modified));
-			endInsertRows();
+			try {
+				beginInsertRows(QModelIndex(), items.size(), items.size());
+				items.add(new Item(modified));
+				endInsertRows();
+			} catch (...) {
+				endInsertRows();
+				throw;
+			}
 		}
 	}
 }
@@ -372,11 +403,16 @@ void ItemsModel::sort(int column, bool ascending)
 	if(items.ascending == ascending && items.ordering == column)
 		return;
 
-	beginResetModel();
-	items.ascending = ascending;
-	items.ordering = static_cast<Item::Fields>(column);
-	items.sort();
-	endResetModel();
+	try {
+		beginResetModel();
+		items.ascending = ascending;
+		items.ordering = static_cast<Item::Fields>(column);
+		items.sort();
+		endResetModel();
+	} catch (...) {
+		endResetModel();
+		throw;
+	}
 }
 
 bool operator<(const ItemsModel &a, const ItemsModel &b)

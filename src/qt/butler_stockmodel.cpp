@@ -7,8 +7,8 @@
 
 #include "butler_stockmodel.h"
 
-StockModel::StockModel() :
-	ItemsModel()
+StockModel::StockModel(Db & db) :
+	ItemsModel(db)
 {
 	opts.stockOption = Query::ITEMS_ON_STOCK;
 }
@@ -72,15 +72,16 @@ void StockModel::drop(int row)
 void StockModel::update(int row, Item &modified)
 {
 	ItemsModel::update(row, modified);
-	if(!queryFilter(modified)){
-		try {
-			beginRemoveRows(QModelIndex(), row, row);
-			items.removeAt(row);
-			endRemoveRows();
-		} catch (...) {
-			endRemoveRows();
-			throw;
-		}
+	if(queryFilter(modified))
+		return;
+
+	try {
+		beginRemoveRows(QModelIndex(), row, row);
+		items.removeAt(row);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
 }
 

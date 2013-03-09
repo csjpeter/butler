@@ -24,7 +24,7 @@ class StockModel : public ItemsModel
 private:
 	Q_OBJECT;
 public:
-	StockModel();
+	StockModel(Db & db);
 	~StockModel();
 
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const

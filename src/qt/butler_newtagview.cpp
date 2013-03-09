@@ -92,15 +92,16 @@ void NewTagView::doneClickedSlot(bool toggled)
 	Q_UNUSED(toggled);
 
 	mapFromGui();
-	if(model.addNew(tag)){
-		tag = Tag();
-		mapToGui();
-		return accept();
-	}
+	model.addNew(tag);
+	tag = Tag();
+	mapToGui();
+	accept();
 
+/*
 	QMessageBox(	QMessageBox::Warning,
 			tr("Add new tag failed"),
 			model.error(),
 			QMessageBox::Ok,
 			0, Qt::Dialog).exec();
+*/
 }

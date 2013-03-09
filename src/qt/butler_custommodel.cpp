@@ -7,8 +7,8 @@
 
 #include "butler_custommodel.h"
 
-CustomModel::CustomModel() :
-	ItemsModel()
+CustomModel::CustomModel(Db & db) :
+	ItemsModel(db)
 {
 }
 
@@ -30,12 +30,16 @@ void CustomModel::query()
 
 void CustomModel::update(int row, Item &modified)
 {
-	if(ItemsModel::update(row, modified)){
-		if(!queryFilter(modified)){
-			beginRemoveRows(QModelIndex(), row, row);
-			items.removeAt(row);
-			endRemoveRows();
-		}
+	ItemsModel::update(row, modified);
+	if(queryFilter(modified))
+		return;
+	try {
+		beginRemoveRows(QModelIndex(), row, row);
+		items.removeAt(row);
+		endRemoveRows();
+	} catch (...) {
+		endRemoveRows();
+		throw;
 	}
 }
 

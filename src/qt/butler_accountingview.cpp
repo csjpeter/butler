@@ -31,7 +31,7 @@ AccountingView::AccountingView(QWidget *parent, ItemsModel &m) :
 	label = new QLabel(tr("Shop (place of buy) :"), this);
 	gridLayout->addWidget(label, 0, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(db.name).shops());
+	shopBox->setModel(&databases.query(model.db.desc.name).shops());
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 0, 1, 1, 2);
 
@@ -51,7 +51,7 @@ AccountingView::AccountingView(QWidget *parent, ItemsModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&databases.query(db.name).wares());
+	nameBox->setModel(&databases.query(model.db.desc.name).wares());
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 3, 1, 1, 2);
@@ -212,7 +212,7 @@ void AccountingView::mapFromGui()
 	item.purchased = purchaseDateTime->dateTime();
 
 	int i = shopBox->currentIndex();
-	ShopsModel &sm = databases.query(db.name).shops();
+	ShopsModel &sm = databases.query(model.db.desc.name).shops();
 	if(0 <= i && i < sm.rowCount())
 		item.shop = sm.shop(i).name;
 
@@ -223,54 +223,55 @@ void AccountingView::saveSlot()
 {
 	mapFromGui();
 
-	if(model.addNew(item)){
-		/* We want to save any new ware and category before closing dialog. */
-		WaresModel &wm = WaresModel::instance();
-		int i = wm.index(nameEditor->text());
-		if(i == -1){
-			Ware ware;
-			ware.name = nameEditor->text();
-			if(categoryEditor->text().size())
-				ware.categories.add(new QString(categoryEditor->text()));
-			if(!wm.addNew(ware)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Item added to db, "
-						  "but adding new ware failed."),
-						wm.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
-			Ware modified(wm.ware(i));
-			modified.categories.add(new QString(categoryEditor->text()));
-			if(!wm.update(i, modified)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Item added to db, "
-						  "but adding new ware category failed."),
-						wm.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		}
-		item = Item();
-		item.uploaded = QDateTime::currentDateTime();
-		mapToGui();
-		nameEditor->setFocus(Qt::OtherFocusReason);
-		return;
-	} else {
-		QMessageBox(	QMessageBox::Warning,
+	model.addNew(item);
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Could not add item to database."),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
+		return;
+	}*/
+
+	/* We want to save any new ware and category before closing dialog. */
+	WaresModel &wm = databases.query(model.db.desc.name).wares();
+	int i = wm.index(nameEditor->text());
+	if(i == -1){
+		Ware ware;
+		ware.name = nameEditor->text();
+		if(categoryEditor->text().size())
+			ware.categories.add(new QString(categoryEditor->text()));
+		wm.addNew(ware);
+/*			QMessageBox(	QMessageBox::Warning,
+					tr("Item added to db, "
+					  "but adding new ware failed."),
+					wm.error(),
+					QMessageBox::Ok,
+					0, Qt::Dialog).exec();
+		}*/
+	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
+		Ware modified(wm.ware(i));
+		modified.categories.add(new QString(categoryEditor->text()));
+		wm.update(i, modified);
+/*			QMessageBox(	QMessageBox::Warning,
+					tr("Item added to db, "
+					  "but adding new ware category failed."),
+					wm.error(),
+					QMessageBox::Ok,
+					0, Qt::Dialog).exec();
+		}*/
 	}
+
+	item = Item();
+	item.uploaded = QDateTime::currentDateTime();
+	mapToGui();
+	nameEditor->setFocus(Qt::OtherFocusReason);
 }
 
 void AccountingView::nameEditFinishedSlot()
 {
 	categoryBox->clear();
 
-	WaresModel &wm = WaresModel::instance();
+	WaresModel &wm = databases.query(model.db.desc.name).wares();
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		unitLabel->setText("");
