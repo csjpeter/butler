@@ -6,11 +6,9 @@
 #ifndef BUTLER_SHOP_DB_H
 #define BUTLER_SHOP_DB_H
 
-#include <butler_db.h>
-
 #include <butler_shop_table.h>
 
-class ShopDb : public ::ShopDb
+class ShopDb
 {
 public:
 	ShopDb(SqlConnection &sql);

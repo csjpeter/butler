@@ -22,8 +22,7 @@ private:
 	Q_OBJECT;
 
 public:
-	static ShopsModel& instance()
-		__attribute__ ((no_instrument_function));
+	ShopsModel(Db & db);
 	~ShopsModel();
 
 	virtual QModelIndex index(
@@ -73,9 +72,6 @@ public:
 	virtual bool update(int row, Shop &modified);
 	bool query();
 	void sort(int column, bool ascending);
-
-protected:
-	ShopsModel(Db & db);
 
 protected:
 	Db & db;

@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_TAG_H
-#define BUTLER_TAG_H
+#ifndef BUTLER_TAG_TABLE_H
+#define BUTLER_TAG_TABLE_H
 
 #include <QObject>
 #include <QStringList>

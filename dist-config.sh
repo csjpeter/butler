@@ -103,7 +103,7 @@ generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 generate config.h.in ${DIST_DIR}/config.h.in || exit $?
 
-make -f source.mk DIST_DIR=${DIST_DIR} source -s
+make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 
 #
 # debian packaging directory

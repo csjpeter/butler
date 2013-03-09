@@ -6,13 +6,11 @@
 #ifndef BUTLER_ITEM_DB_H
 #define BUTLER_ITEM_DB_H
 
-#include <butler_db.h>
-
 #include <butler_item_table.h>
 #include <butler_itembought_table.h>
 #include <butler_tag_db.h>
 
-class ItemDb : public ::ItemDb
+class ItemDb
 {
 public:
 	ItemDb(SqlConnection &sql, TagDb &tagDb);

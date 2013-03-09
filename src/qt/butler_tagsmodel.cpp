@@ -7,15 +7,10 @@
 
 #include "butler_tagsmodel.h"
 
-TagsModel& TagsModel::instance()
-{
-	static TagsModel _instance(db);
-	return _instance;
-}
-
 TagsModel::TagsModel(Db & db) :
 	db(db)
 {
+	query();
 }
 
 TagsModel::~TagsModel()

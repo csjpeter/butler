@@ -51,11 +51,11 @@ int main(int argc, char *argv[])
 				);
 		}
 		
-		Object<DatabaseDescription> sqlitedb(new DatabaseDescription);
-		sqlitedb->name = "local";
-		sqlite.driver = "QSQLITE";
-		sqlitedb.databaseName = QDir::toNativeSeparators(dbFileName);
-		DBG("Db file path: %s", C_STR(sqlitedb.databaseName));
+		Object<DatabaseDescription> sqlitedb(new Database);
+		sqlitedb->desc.name = "localdb";
+		sqlitedb->desc.driver = "QSQLITE";
+		sqlitedb->desc.databaseName = QDir::toNativeSeparators(dbFileName);
+		DBG("Db file path: %s", C_STR(sqlitedb->desc.databaseName));
 
 		databases.add(sqlitedb);
 	}
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	Butler::MainView &view = Butler::MainView::instance();
+	MainView view("localdb");
 //	view.setFixedSize(800, 480);
 	view.show();
 

@@ -9,7 +9,6 @@
 #include <QObject>
 #include <QSqlDatabase>
 
-#include <butler_db.h>
 #include <butler_query.h>
 #include <butler_query_set.h>
 #include <butler_item.h>
@@ -26,8 +25,8 @@ private:
 	SqlQuery();
 
 public:
-	void exec(const QString &query);
 
+	void exec(const QString &query);
 	void prepare(const QString &query);
 	bool isPrepared();
 	void bindValue(int pos, const QVariant &v);

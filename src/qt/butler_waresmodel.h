@@ -31,8 +31,7 @@ public:
 	};
 
 public:
-	static WaresModel& instance()
-		__attribute__ ((no_instrument_function));
+	WaresModel();
 	~WaresModel();
 
 	virtual QModelIndex index(
@@ -89,9 +88,6 @@ public:
 	static void stringToCategories(const QString &value, CategoryNameSet &modified);
 	static void stringToTags(const QString &value, TagNameSet &modified);
 	void sort(int column, bool ascending);
-
-protected:
-	WaresModel();
 
 protected:
 	Db & db;

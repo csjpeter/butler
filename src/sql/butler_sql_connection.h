@@ -11,13 +11,18 @@
 
 #include <csjp_reference_container.h>
 
-#include <butler_db.h>
+#include <csjp_object.h>
+
 #include <butler_query.h>
 #include <butler_query_set.h>
 #include <butler_item.h>
 #include <butler_item_set.h>
 
-#include <butler_database_description.h>
+#include <butler_database_descriptor.h>
+
+DECL_EXCEPTION(csjp::Exception, DbError);
+DECL_EXCEPTION(DbError, DbIncompatibleTableError);
+DECL_EXCEPTION(DbError, DbLogicError);
 
 /* FIXME :
  * - check if object has changed in database before
@@ -44,7 +49,7 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b);
 class SqlConnection
 {
 public:
-	SqlConnection(const DatabaseDescription & dbDesc);
+	SqlConnection(const DatabaseDescriptor & dbDesc);
 	~SqlConnection();
 private:
 	SqlConnection();
@@ -54,6 +59,7 @@ public:
 	void close();
 
 	QSqlQuery *createQuery();
+	void exec(const QString &query);
 	QSqlRecord record(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
@@ -76,7 +82,7 @@ public:
 	csjp::ReferenceContainer<SqlCloseListener> sqlCloseListeners;
 
 private:
-	const DatabaseDescription & dbDesc;
+	const DatabaseDescriptor & dbDesc;
 	QSqlDatabase db;
 	unsigned transactions;
 };

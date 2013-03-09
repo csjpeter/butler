@@ -36,8 +36,7 @@ public:
 	};
 
 public:
-	static TagsModel& instance()
-		__attribute__ ((no_instrument_function));
+	TagsModel(Db & db);
 	~TagsModel();
 
 	virtual QModelIndex index(
@@ -89,9 +88,6 @@ public:
 	bool update(int row, Tag &modified);
 	bool query();
 	void sort(int column, bool ascending);
-
-protected:
-	TagsModel(Db & db);
 
 private:
 	Db & db;

@@ -20,14 +20,7 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_tag_set.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
-	$(DIST_DIR)/src/datamodel/butler_db.h \
-	$(DIST_DIR)/src/datamodel/butler_item_db.h \
-	$(DIST_DIR)/src/datamodel/butler_query_db.h \
-	$(DIST_DIR)/src/datamodel/butler_shop_db.h \
-	$(DIST_DIR)/src/datamodel/butler_ware_db.h \
-	$(DIST_DIR)/src/datamodel/butler_tag_db.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
-	$(DIST_DIR)/src/datamodel/test/dbifc.cpp \
 	$(DIST_DIR)/src/datamodel/test/item.cpp \
 	$(DIST_DIR)/src/datamodel/test/item_set.cpp \
 	$(DIST_DIR)/src/datamodel/test/query.cpp \
@@ -38,49 +31,51 @@ source: \
 	$(DIST_DIR)/src/datamodel/test/tag_set.cpp \
 	$(DIST_DIR)/src/datamodel/test/ware.cpp \
 	$(DIST_DIR)/src/datamodel/test/ware_set.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlitedb.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_itembought.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_item.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_item_db.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queries.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queries_db.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queryshops.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_querytags.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_querywares.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_shop.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_shop_db.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_sql.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_sqlquery.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_tag.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_tag_db.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_warecategories.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_ware.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_ware_db.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_waretags.cpp \
-	$(DIST_DIR)/src/sqlite/butler_sqlitedb.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_itembought.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_item.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_item_db.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queries.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queries_db.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_queryshops.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_querytags.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_querywares.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_shop.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_shop_db.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_sql.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_sqlquery.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_tag.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_tag_db.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_warecategories.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_ware.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_ware_db.h \
-	$(DIST_DIR)/src/sqlite/butler_sqlite_waretags.h \
-	$(DIST_DIR)/src/sqlite/test/item.cpp \
-	$(DIST_DIR)/src/sqlite/test/query.cpp \
-	$(DIST_DIR)/src/sqlite/test/shop.cpp \
-	$(DIST_DIR)/src/sqlite/test/tag.cpp \
-	$(DIST_DIR)/src/sqlite/test/ware.cpp \
+	$(DIST_DIR)/src/sql/butler_database_descriptor.cpp \
+	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
+	$(DIST_DIR)/src/sql/butler_sqlquery.cpp \
+	$(DIST_DIR)/src/sql/butler_db.cpp \
+	$(DIST_DIR)/src/sql/butler_itembought_table.cpp \
+	$(DIST_DIR)/src/sql/butler_item_table.cpp \
+	$(DIST_DIR)/src/sql/butler_item_db.cpp \
+	$(DIST_DIR)/src/sql/butler_queries_table.cpp \
+	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
+	$(DIST_DIR)/src/sql/butler_queryshops_table.cpp \
+	$(DIST_DIR)/src/sql/butler_querytags_table.cpp \
+	$(DIST_DIR)/src/sql/butler_querywares_table.cpp \
+	$(DIST_DIR)/src/sql/butler_shop_table.cpp \
+	$(DIST_DIR)/src/sql/butler_shop_db.cpp \
+	$(DIST_DIR)/src/sql/butler_tag_table.cpp \
+	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
+	$(DIST_DIR)/src/sql/butler_warecategories_table.cpp \
+	$(DIST_DIR)/src/sql/butler_ware_table.cpp \
+	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
+	$(DIST_DIR)/src/sql/butler_waretags_table.cpp \
+	$(DIST_DIR)/src/sql/butler_database_descriptor.h \
+	$(DIST_DIR)/src/sql/butler_db.h \
+	$(DIST_DIR)/src/sql/butler_sql_connection.h \
+	$(DIST_DIR)/src/sql/butler_sqlquery.h \
+	$(DIST_DIR)/src/sql/butler_itembought_table.h \
+	$(DIST_DIR)/src/sql/butler_item_table.h \
+	$(DIST_DIR)/src/sql/butler_item_db.h \
+	$(DIST_DIR)/src/sql/butler_queries_table.h \
+	$(DIST_DIR)/src/sql/butler_queries_db.h \
+	$(DIST_DIR)/src/sql/butler_queryshops_table.h \
+	$(DIST_DIR)/src/sql/butler_querytags_table.h \
+	$(DIST_DIR)/src/sql/butler_querywares_table.h \
+	$(DIST_DIR)/src/sql/butler_shop_table.h \
+	$(DIST_DIR)/src/sql/butler_shop_db.h \
+	$(DIST_DIR)/src/sql/butler_tag_table.h \
+	$(DIST_DIR)/src/sql/butler_tag_db.h \
+	$(DIST_DIR)/src/sql/butler_warecategories_table.h \
+	$(DIST_DIR)/src/sql/butler_ware_table.h \
+	$(DIST_DIR)/src/sql/butler_ware_db.h \
+	$(DIST_DIR)/src/sql/butler_waretags_table.h \
+	$(DIST_DIR)/src/sql/test/item.cpp \
+	$(DIST_DIR)/src/sql/test/query.cpp \
+	$(DIST_DIR)/src/sql/test/shop.cpp \
+	$(DIST_DIR)/src/sql/test/tag.cpp \
+	$(DIST_DIR)/src/sql/test/ware.cpp \
 	$(DIST_DIR)/src/qt/butler_accountingview.cpp \
 	$(DIST_DIR)/src/qt/butler_application.cpp \
 	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
@@ -92,7 +87,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
 	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_localdb.cpp \
+	$(DIST_DIR)/src/qt/butler_databases.cpp \
 	$(DIST_DIR)/src/qt/butler_mainview.cpp \
 	$(DIST_DIR)/src/qt/butler_newitemview.cpp \
 	$(DIST_DIR)/src/qt/butler_newshopview.cpp \
@@ -122,7 +117,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_editwareview.h \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.h \
-	$(DIST_DIR)/src/qt/butler_localdb.h \
+	$(DIST_DIR)/src/qt/butler_databases.h \
 	$(DIST_DIR)/src/qt/butler_mainview.h \
 	$(DIST_DIR)/src/qt/butler_newitemview.h \
 	$(DIST_DIR)/src/qt/butler_newshopview.h \

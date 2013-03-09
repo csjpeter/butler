@@ -14,7 +14,7 @@
 #include "butler_sql_connection.h"
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db);
+void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc);
 #endif
 
 bool operator<(const SqlCloseListener &a, const SqlCloseListener &b)
@@ -27,7 +27,7 @@ bool operator<(const SqlFinishListener &a, const SqlFinishListener &b)
 	return &a < &b;
 }
 
-SqlConnection::SqlConnection(const DatabaseDescription & dbDesc) :
+SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 	dbDesc(dbDesc),
 	transactions(0)
 {
@@ -42,7 +42,7 @@ SqlConnection::SqlConnection(const DatabaseDescription & dbDesc) :
 		db = QSqlDatabase::database(dbDesc.name, false);
 		if(db.lastError().isValid())
 			throw DbError("Failed to get database connection named '%s'.\nError: %s",
-					dbDesc.name, C_STR(dbErrorString()));
+					C_STR(dbDesc.name), C_STR(dbErrorString()));
 	}
 	ENSURE(db.isValid(), csjp::LogicError);
 	
@@ -53,7 +53,7 @@ SqlConnection::SqlConnection(const DatabaseDescription & dbDesc) :
 				C_STR(dbErrorString()));
 
 #ifdef DEBUG
-	listAvailableFeatures(db);
+	listAvailableFeatures(db, dbDesc);
 #endif
 }
 
@@ -92,12 +92,12 @@ void SqlConnection::open()
 
 		DBG("Reference constraint support: %s",
 				(q.value(0).toInt()) ? "yes" : "no");
-	}
 
-	if(q.value(0).toInt() != 1){
-		db.close();
-		throw DbError("Reference constraits could not turned "
-			"on or not supported at all.");
+		if(q.value(0).toInt() != 1){
+			db.close();
+			throw DbError("Reference constraits could not turned "
+					"on or not supported at all.");
+		}
 	}
 }
 
@@ -126,17 +126,23 @@ void SqlConnection::close()
  *	Private members
  */
 
-/*SqlConnection::SqlConnection()
-{
-}
-*/
-
 QSqlQuery* SqlConnection::createQuery()
 {
 	QSqlQuery * q = new QSqlQuery(db);
 	if(!q)
 		throw DbError("Failed to create QSqlQuery object");
 	return q;
+}
+
+void SqlConnection::exec(const QString &query)
+{
+	csjp::Object<QSqlQuery> qQuery(new QSqlQuery(db));
+	qQuery->setForwardOnly(true);
+
+	if(!qQuery->exec(query))
+		throw DbError("The below sql query failed:\n%swith error: %s",
+				C_STR(qQuery->executedQuery()),
+				C_STR(dbErrorString()));
 }
 
 QSqlRecord SqlConnection::record(const QString &tablename) const
@@ -231,7 +237,7 @@ void SqlConnection::notifySqlCloseListeners()
 }
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db)
+void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc)
 {
 	static bool featuresListed = false;
 
@@ -249,7 +255,7 @@ void listAvailableFeatures(const QSqlDatabase &db)
 		format += "\n\t%-25s%3d";
 
 	DBG(qPrintable(format),
-			CONNECTION_NAME,
+			C_STR(dbDesc.name),
 			"Transactions",
 			drv->hasFeature(QSqlDriver::Transactions),
 			"QuerySize",

@@ -19,8 +19,8 @@ class Private;
 class Db
 {
 public:
-	Db(const QString& path) :
-		sql(path),
+	Db(const DatabaseDescriptor & dbDesc) :
+		sql(dbDesc),
 		tag(sql),
 		query(sql, tag),
 		ware(sql, tag),
@@ -28,11 +28,11 @@ public:
 		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
-		priv->tag.check(tables);
-		priv->query.check(tables);
-		priv->shop.check(tables);
-		priv->ware.check(tables);
-		priv->item.check(tables);
+		tag.check(tables);
+		query.check(tables);
+		shop.check(tables);
+		ware.check(tables);
+		item.check(tables);
 	}
 	~Db() { }
 

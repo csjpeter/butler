@@ -33,11 +33,8 @@ class MainView : public QWidget
 private:
 	Q_OBJECT
 
-public:
-	static MainView& instance();
-
 protected:
-	MainView(QWidget *parent = 0);
+	MainView(QString & databaseName, QWidget *parent = 0);
 	~MainView();
 
 private:
@@ -59,6 +56,8 @@ private slots:
 	void about();
 
 private:
+	QString databaseName;
+
 	QToolBar *actionTB;
 
 	QToolButton *shoppingTBtn;

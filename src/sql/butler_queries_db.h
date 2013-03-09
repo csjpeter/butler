@@ -6,12 +6,13 @@
 #ifndef BUTLER_QUERY_DB_H
 #define BUTLER_QUERY_DB_H
 
-#include <butler_db.h>
-
+#include <butler_querytags_table.h>
+#include <butler_querywares_table.h>
+#include <butler_queryshops_table.h>
 #include <butler_queries_table.h>
 #include <butler_tag_db.h>
 
-class QueryDb : public ::QueryDb
+class QueryDb
 {
 public:
 	QueryDb(SqlConnection &sql, TagDb &tagDb);

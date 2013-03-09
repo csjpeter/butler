@@ -6,11 +6,9 @@
 #ifndef BUTLER_TAG_DB_H
 #define BUTLER_TAG_DB_H
 
-#include <butler_db.h>
-
 #include <butler_tag_table.h>
 
-class TagDb : public ::TagDb
+class TagDb
 {
 public:
 	TagDb(SqlConnection &sql);

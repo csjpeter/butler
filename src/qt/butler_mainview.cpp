@@ -7,7 +7,9 @@
 
 #include <config.h>
 
-#include "butler_db.h"
+#include <butler_db.h>
+
+#include "butler_databases.h"
 
 #include "butler_shoppingview.h"
 #include "butler_shopsview.h"
@@ -21,15 +23,8 @@
 
 #include "butler_mainview.h"
 
-MainView& MainView::instance()
-{
-	static MainView* instance = 0;
-	if(instance == 0)
-		instance = new MainView;
-	return *instance;
-}
-
-MainView::MainView(QWidget *parent) :
+MainView::MainView(QString & databaseName, QWidget *parent) :
+	databaseName(databaseName),
 	QWidget(parent),
 	shoppingView(NULL),
 	stockView(NULL),
@@ -219,7 +214,7 @@ void MainView::saveState()
 	settings.setValue("mainview/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
 
-	settings.setValue("mainview/dbfile", databases.query("local").databaseName);
+	settings.setValue("mainview/dbfile", databases.query(databaseName).desc.databaseName);
 }
 
 void MainView::openShoppingView()

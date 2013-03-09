@@ -6,14 +6,12 @@
 #ifndef BUTLER_WARE_DB_H
 #define BUTLER_WARE_DB_H
 
-#include <butler_db.h>
-
 #include <butler_ware_table.h>
 #include <butler_waretags_table.h>
 #include <butler_warecategories_table.h>
 #include <butler_tag_db.h>
 
-class WareDb : public ::WareDb
+class WareDb
 {
 public:
 	WareDb(SqlConnection &sql, TagDb &tagDb);

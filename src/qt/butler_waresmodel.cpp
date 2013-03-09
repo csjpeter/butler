@@ -7,12 +7,6 @@
 
 #include "butler_waresmodel.h"
 
-WaresModel& WaresModel::instance()
-{
-	static WaresModel _instance(db);
-	return _instance;
-}
-
 WaresModel::WaresModel() :
 	db(db)
 {

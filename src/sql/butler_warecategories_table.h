@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_WARECATEGORIES_H
-#define BUTLER_WARECATEGORIES_H
+#ifndef BUTLER_WARECATEGORIES_TABLE_H
+#define BUTLER_WARECATEGORIES_TABLE_H
 
 #include <QObject>
 #include <QStringList>

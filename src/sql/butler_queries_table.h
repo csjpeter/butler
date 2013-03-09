@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_QUERIES_H
-#define BUTLER_QUERIES_H
+#ifndef BUTLER_QUERIES_TABLE_H
+#define BUTLER_QUERIES_TABLE_H
 
 #include <QObject>
 #include <QStringList>

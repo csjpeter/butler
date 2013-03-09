@@ -7,12 +7,6 @@
 
 #include "butler_shopsmodel.h"
 
-ShopsModel& ShopsModel::instance()
-{
-	static ShopsModel _instance(db);
-	return _instance;
-}
-
 ShopsModel::ShopsModel(Db & db) :
 	db(db)
 {
