@@ -58,6 +58,11 @@ private:
 	}
 
 public:
+	const DatabaseDescriptor & databaseDescriptor()
+	{
+		return *desc;
+	}
+
 	csjp::Object<CustomModel> customItems()
 	{
 		/* Each custom view shall have its own special custom model. */
@@ -153,7 +158,7 @@ static csjp::OwnerContainer<Database> databases;
 
 
 
-void registerDataBase(csjp::Object<DatabaseDescriptor> & desc)
+void registerDatabase(csjp::Object<DatabaseDescriptor> & desc)
 {
 	csjp::Object<Database> db(new Database(desc));
 	databases.add(db);
@@ -162,6 +167,11 @@ void registerDataBase(csjp::Object<DatabaseDescriptor> & desc)
 csjp::Object<CustomModel> customModel(const QString & dbname)
 {
 	return databases.query(dbname).customItems();
+}
+
+const DatabaseDescriptor & databaseDescriptor(const QString & dbname)
+{
+	return databases.query(dbname).databaseDescriptor();
 }
 
 ShoppingModel & shoppingModel(const QString & dbname)

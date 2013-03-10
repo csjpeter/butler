@@ -60,8 +60,6 @@ NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
 
 void NewWareView::showEvent(QShowEvent *event)
 {
-	tagsModel(dbname).query();
-	
 	QDialog::showEvent(event);
 
 	mapToGui();

@@ -15,10 +15,7 @@
 #include "butler_querytags_table.h"
 
 QueryTagsTable::QueryTagsTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -51,6 +48,7 @@ void QueryTagsTable::check(QStringList &tables)
 
 void QueryTagsTable::insert(const Query &q, const QString &tagName)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO QueryTags "
 				"(query_name, tag) "
@@ -59,11 +57,11 @@ void QueryTagsTable::insert(const Query &q, const QString &tagName)
 	insertQuery.bindValue(0, q.name);
 	insertQuery.bindValue(1, tagName);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void QueryTagsTable::del(const Query &q, const QString &tagName)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM QueryTags WHERE "
@@ -72,7 +70,6 @@ void QueryTagsTable::del(const Query &q, const QString &tagName)
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.bindValue(1, tagName);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void QueryTagsTable::insert(const Query &q)
@@ -103,6 +100,7 @@ void QueryTagsTable::update(const Query &orig, const Query &modified)
 
 void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT query_name, tag FROM QueryTags "
 				"WHERE query_name = ?");
@@ -120,5 +118,4 @@ void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 		withTags.add(new QString(selectQuery.value(tagNo).toString()));
 	}
 	DBG("-----");
-	selectQuery.finish();
 }

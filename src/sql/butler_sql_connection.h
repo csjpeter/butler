@@ -30,22 +30,6 @@ DECL_EXCEPTION(DbError, DbLogicError);
  * - escaping required while assempling item queries
  */
 
-class SqlCloseListener
-{
-	public:
-		virtual void sqlCloseNotification() = 0;
-};
-
-bool operator<(const SqlCloseListener &a, const SqlCloseListener &b);
-
-class SqlFinishListener
-{
-	public:
-		virtual void sqlFinishNotification() = 0;
-};
-
-bool operator<(const SqlFinishListener &a, const SqlFinishListener &b);
-
 class SqlConnection
 {
 public:
@@ -68,19 +52,8 @@ public:
 	void rollback();
 	QString dbErrorString();
 
-	void addSqlCloseListener(SqlCloseListener &l);
-	void removeSqlCloseListener(SqlCloseListener &l);
-	void notifySqlCloseListeners();
-#if 0
-	void notifySqlFinishListeners();
-#endif
-
 public:
 	const DatabaseDescriptor & dbDesc;
-#if 0
-	Container<SqlFinishListener> sqlFinishListeners;
-#endif
-	csjp::ReferenceContainer<SqlCloseListener> sqlCloseListeners;
 
 private:
 	QSqlDatabase db;

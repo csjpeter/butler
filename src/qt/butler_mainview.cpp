@@ -214,13 +214,13 @@ void MainView::saveState()
 	settings.setValue("mainview/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
 
-	settings.setValue("mainview/dbfile", dbname);
+	settings.setValue("mainview/dbfile", databaseDescriptor(dbname).databaseName);
 }
 
 void MainView::openShoppingView()
 {
 	if(!shoppingView){
-		shoppingView = new ShoppingView(dbname, this);
+		shoppingView = new ShoppingView(dbname);
 		shoppingView->setWindowTitle(tr("Shopping list"));
 	}
 	shoppingView->show();
@@ -231,7 +231,7 @@ void MainView::openShoppingView()
 void MainView::openStockView()
 {
 	if(!stockView){
-		stockView = new StockView(dbname, this);
+		stockView = new StockView(dbname);
 		stockView->setWindowTitle(tr("Stock list"));
 	}
 	stockView->show();
@@ -242,7 +242,7 @@ void MainView::openStockView()
 void MainView::openShopsView()
 {
 	if(!shopsView){
-		shopsView = new ShopsView(dbname, this);
+		shopsView = new ShopsView(dbname);
 		shopsView->setWindowTitle(tr("Shop list"));
 	}
 	shopsView->show();
@@ -253,7 +253,7 @@ void MainView::openShopsView()
 void MainView::openCustomView()
 {
 	if(!customView){
-		customView = new CustomView(dbname, this);
+		customView = new CustomView(dbname);
 		customView->setWindowTitle(tr("User query result"));
 	}
 	customView->show();
@@ -264,7 +264,7 @@ void MainView::openCustomView()
 void MainView::openTagsView()
 {
 	if(!tagsView){
-		tagsView = new TagsView(dbname, this);
+		tagsView = new TagsView(dbname);
 		tagsView->setWindowTitle(tr("Tag editor"));
 	}
 	tagsView->show();
@@ -275,7 +275,7 @@ void MainView::openTagsView()
 void MainView::openWaresView()
 {
 	if(!waresView){
-		waresView = new WaresView(dbname, this);
+		waresView = new WaresView(dbname);
 		waresView->setWindowTitle(tr("Ware editor"));
 	}
 	waresView->show();

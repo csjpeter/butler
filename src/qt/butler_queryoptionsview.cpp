@@ -126,8 +126,6 @@ QueryOptionsView::~QueryOptionsView()
 
 void QueryOptionsView::showEvent(QShowEvent *event)
 {
-	tagsModel(dbname).query();
-	
 	mapToGui();
 
 	QWidget::showEvent(event);

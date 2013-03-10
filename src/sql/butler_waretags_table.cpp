@@ -13,10 +13,7 @@
 #include "butler_waretags_table.h"
 
 WareTagsTable::WareTagsTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -49,6 +46,7 @@ void WareTagsTable::check(QStringList &tables)
 
 void WareTagsTable::insert(const Ware &ware, const QString &tag)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO WareTags "
 				"(name, tag) "
@@ -57,11 +55,11 @@ void WareTagsTable::insert(const Ware &ware, const QString &tag)
 	insertQuery.bindValue(0, ware.name);
 	insertQuery.bindValue(1, tag);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void WareTagsTable::del(const Ware &ware, const QString &tag)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM WareTags WHERE "
@@ -71,7 +69,6 @@ void WareTagsTable::del(const Ware &ware, const QString &tag)
 	deleteQuery.bindValue(0, ware.name);
 	deleteQuery.bindValue(1, tag);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void WareTagsTable::insert(const Ware &ware)
@@ -107,6 +104,7 @@ void WareTagsTable::update(const Ware &orig, const Ware &modified)
 
 void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT tag FROM WareTags "
 				"WHERE name = ?");
@@ -124,6 +122,4 @@ void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 		tags.add(new QString(selectQuery.value(tagNo).toString()));
 	}
 	DBG("-----");
-
-	selectQuery.finish();
 }

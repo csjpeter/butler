@@ -17,12 +17,7 @@
 #include "butler_itembought_table.h"
 
 ItemBoughtTable::ItemBoughtTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql),
-	selectAllQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -57,6 +52,7 @@ void ItemBoughtTable::check(QStringList &tables)
 
 void ItemBoughtTable::insert(const Item &i)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO ItemsBought "
 				"(uploaded, purchased, "
@@ -69,11 +65,11 @@ void ItemBoughtTable::insert(const Item &i)
 	insertQuery.bindValue(3, i.shop);
 	insertQuery.bindValue(4, i.onStock ? 1 : 0);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void ItemBoughtTable::update(const Item &orig, const Item &modified)
 {
+	SqlQuery updateQuery(sql);
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
 	if(orig.uploaded.toString() != modified.uploaded.toString())
@@ -93,17 +89,16 @@ void ItemBoughtTable::update(const Item &orig, const Item &modified)
 	updateQuery.bindValue(3, modified.onStock ? 1 : 0);
 	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void ItemBoughtTable::del(const Item &i)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare("DELETE FROM ItemsBought WHERE uploaded = ?");
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)

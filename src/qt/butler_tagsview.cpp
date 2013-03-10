@@ -98,7 +98,6 @@ TagsView::~TagsView()
 void TagsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	model.query();
 /*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of tags failed"),
 				model.error(),

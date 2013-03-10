@@ -13,11 +13,7 @@
 #include "butler_tag_table.h"
 
 TagTable::TagTable(SqlConnection &sql) :
-	sql(sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(sql)
 {
 }
 
@@ -44,17 +40,18 @@ void TagTable::check(QStringList &tables)
 
 void TagTable::insert(const Tag &t)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Tags (name, desc) VALUES (?, ?)");
 
 	insertQuery.bindValue(0, t.name);
 	insertQuery.bindValue(1, t.description);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void TagTable::update(const Tag &orig, const Tag &modified)
 {
+	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
 		updateQuery.prepare("UPDATE Tags SET name = ?, desc = ?"
 				" WHERE name = ?");
@@ -63,21 +60,21 @@ void TagTable::update(const Tag &orig, const Tag &modified)
 	updateQuery.bindValue(1, modified.description);
 	updateQuery.bindValue(2, orig.name);
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void TagTable::del(const Tag &t)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare("DELETE FROM Tags WHERE name = ?");
 
 	deleteQuery.bindValue(0, t.name);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void TagTable::query(TagSet &tags)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT name, desc FROM Tags");
 
@@ -97,6 +94,4 @@ void TagTable::query(TagSet &tags)
 //		tags.treeValidity();
 	}
 	DBG("-----");
-
-	selectQuery.finish();
 }

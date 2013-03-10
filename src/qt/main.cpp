@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 		sqlitedb->driver = "QSQLITE";
 		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
 		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
-		registerDataBase(sqlitedb);
+		registerDatabase(sqlitedb);
 	}
 
 #ifdef MAEMO

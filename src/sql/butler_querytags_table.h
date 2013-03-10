@@ -34,9 +34,6 @@ public:
 
 private:
 	SqlConnection &sql;
-	SqlQuery insertQuery;
-	SqlQuery deleteQuery;
-	SqlQuery selectQuery;
 };
 
 #endif

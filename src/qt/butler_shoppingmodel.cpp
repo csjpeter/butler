@@ -11,6 +11,7 @@
 ShoppingModel::ShoppingModel(Db & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
 {
+	query();
 }
 
 ShoppingModel::~ShoppingModel()

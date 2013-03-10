@@ -95,8 +95,6 @@ EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
 
 void EditWareView::showEvent(QShowEvent *event)
 {
-	tagsModel(dbname).query();
-	
 	mapToGui();
 	
 	QDialog::showEvent(event);

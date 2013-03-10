@@ -100,7 +100,6 @@ ShopsView::~ShopsView()
 void ShopsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	model.query();
 /*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of shops failed"),
 				model.error(),

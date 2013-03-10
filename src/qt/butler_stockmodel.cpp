@@ -11,6 +11,7 @@ StockModel::StockModel(Db & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
 {
 	opts.stockOption = Query::ITEMS_ON_STOCK;
+	query();
 }
 
 StockModel::~StockModel()

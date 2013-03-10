@@ -10,6 +10,7 @@
 CustomModel::CustomModel(Db & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
 {
+	query();
 }
 
 CustomModel::~CustomModel()

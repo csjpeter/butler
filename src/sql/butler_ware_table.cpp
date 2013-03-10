@@ -13,12 +13,7 @@
 #include "butler_ware_table.h"
 
 WareTable::WareTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql),
-	selectAllQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -46,6 +41,7 @@ void WareTable::check(QStringList &tables)
 
 void WareTable::insert(const Ware &w)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Wares "
 				"(name, unit) "
@@ -54,11 +50,11 @@ void WareTable::insert(const Ware &w)
 	insertQuery.bindValue(0, w.name);
 	insertQuery.bindValue(1, w.unit);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void WareTable::update(const Ware &orig, const Ware &modified)
 {
+	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
 		updateQuery.prepare("UPDATE Wares SET "
 				"name = ?, "
@@ -69,11 +65,11 @@ void WareTable::update(const Ware &orig, const Ware &modified)
 	updateQuery.bindValue(1, modified.unit);
 	updateQuery.bindValue(2, orig.name);
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void WareTable::del(const Ware &ware)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM Wares WHERE "
@@ -81,11 +77,11 @@ void WareTable::del(const Ware &ware)
 
 	deleteQuery.bindValue(0, ware.name);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void WareTable::query(WareSet &wares)
 {
+	SqlQuery selectAllQuery(sql);
 	if(!selectAllQuery.isPrepared())
 		selectAllQuery.prepare("SELECT name, unit FROM Wares");
 
@@ -105,6 +101,4 @@ void WareTable::query(WareSet &wares)
 		wares.add(ware);
 	}
 	DBG("-----");
-
-	selectAllQuery.finish();
 }

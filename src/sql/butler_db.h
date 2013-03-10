@@ -28,13 +28,13 @@ public:
 		shop(sql),
 		item(sql, tag)
 	{
-		QStringList tables = sql.tables();
+/*		QStringList tables = sql.tables();
 		tag.check(tables);
-		query.check(tables);
 		shop.check(tables);
 		ware.check(tables);
 		item.check(tables);
-	}
+		query.check(tables);
+*/	}
 	~Db() { }
 
 public:

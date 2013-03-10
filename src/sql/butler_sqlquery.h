@@ -16,7 +16,7 @@
 
 #include <butler_sql_connection.h>
 
-class SqlQuery : public SqlCloseListener, public SqlFinishListener
+class SqlQuery
 {
 public:
 	SqlQuery(SqlConnection &);
@@ -36,15 +36,12 @@ public:
 	QVariant value(int index);
 	void finish();
 
-	void sqlFinishNotification();
-	void sqlCloseNotification();
-
 private:
 	QString queryString();
 
 private:
-	SqlConnection &sql;
-	QSqlQuery *qQuery;
+	SqlConnection & sql;
+	QSqlQuery * qQuery;
 	bool prepared;
 };
 

@@ -15,10 +15,7 @@
 #include "butler_querywares_table.h"
 
 QueryWaresTable::QueryWaresTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -28,7 +25,7 @@ QueryWaresTable::~QueryWaresTable()
 
 void QueryWaresTable::check(QStringList &tables)
 {
-	if(tables.contains("QueryWares")){
+	if(!tables.contains("QueryWares")){
 		sql.exec("CREATE TABLE QueryWares ("
 				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
@@ -51,6 +48,7 @@ void QueryWaresTable::check(QStringList &tables)
 
 void QueryWaresTable::insert(const Query &q, const QString &wareName)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO QueryWares "
 				"(query_name, ware) "
@@ -59,11 +57,11 @@ void QueryWaresTable::insert(const Query &q, const QString &wareName)
 	insertQuery.bindValue(0, q.name);
 	insertQuery.bindValue(1, wareName);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void QueryWaresTable::del(const Query &q, const QString &wareName)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM QueryWares WHERE "
@@ -72,7 +70,6 @@ void QueryWaresTable::del(const Query &q, const QString &wareName)
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.bindValue(1, wareName);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void QueryWaresTable::insert(const Query &q)
@@ -103,6 +100,7 @@ void QueryWaresTable::update(const Query &orig, const Query &modified)
 
 void QueryWaresTable::query(const Query &q, WareNameSet &wares)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT query_name, ware FROM QueryWares "
 				"WHERE query_name = ?");
@@ -120,6 +118,4 @@ void QueryWaresTable::query(const Query &q, WareNameSet &wares)
 		wares.add(new QString(selectQuery.value(wareNo).toString()));
 	}
 	DBG("-----");
-
-	selectQuery.finish();
 }

@@ -17,16 +17,6 @@
 void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc);
 #endif
 
-bool operator<(const SqlCloseListener &a, const SqlCloseListener &b)
-{
-	return &a < &b;
-}
-
-bool operator<(const SqlFinishListener &a, const SqlFinishListener &b)
-{
-	return &a < &b;
-}
-
 SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 	dbDesc(dbDesc),
 	transactions(0)
@@ -55,19 +45,24 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 #ifdef DEBUG
 	listAvailableFeatures(db, dbDesc);
 #endif
+	open();
 }
 
 SqlConnection::~SqlConnection()
 {
-	if(db.isOpen()){
-		LOG("Closing db connection at destruction time. "
-				"This can easily cause a crash.");
+	try {
 		close();
+//		QSqlDatabase::removeDatabase(dbDesc.name);//db should be destroyed before this call
+	} catch (csjp::Exception & e) {
+		LOG("%s", e.what());
+	} catch (std::exception & e) {
+		LOG("%s", e.what());
 	}
 }
 
 void SqlConnection::open()
 {
+	DBG("...");
 	if(db.isOpen()) return;
 
 //	ENSURE(db.isValid(), csjp::LogicError);
@@ -107,9 +102,6 @@ void SqlConnection::close()
 
 	ENSURE(db.isOpen(), csjp::LogicError);
 
-	/* Lets notify all listener queries that db is about to be closed. */
-	notifySqlCloseListeners();
-
 	db.close();
 	if(db.lastError().isValid())
 		throw DbError("Failed to close database '%s'.\nError: %s",
@@ -117,9 +109,6 @@ void SqlConnection::close()
 				C_STR(dbErrorString()));
 
 	ENSURE(!db.isOpen(), csjp::LogicError);
-	
-	db = QSqlDatabase();
-	QSqlDatabase::removeDatabase(dbDesc.name);
 }
 
 /*
@@ -128,6 +117,8 @@ void SqlConnection::close()
 
 QSqlQuery* SqlConnection::createQuery()
 {
+	open();
+
 	QSqlQuery * q = new QSqlQuery(db);
 	if(!q)
 		throw DbError("Failed to create QSqlQuery object");
@@ -136,12 +127,16 @@ QSqlQuery* SqlConnection::createQuery()
 
 void SqlConnection::exec(const QString &query)
 {
+	open();
+
 	csjp::Object<QSqlQuery> qQuery(new QSqlQuery(db));
 	qQuery->setForwardOnly(true);
 
+	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%swith error: %s",
+		throw DbError("The below sql query failed:\n%s\n%swith error: %s",
 				C_STR(qQuery->executedQuery()),
+				C_STR(qQuery->lastQuery()),
 				C_STR(dbErrorString()));
 }
 
@@ -162,6 +157,8 @@ bool SqlConnection::isOpen()
 
 void SqlConnection::transaction()
 {
+	open();
+
 	if(transactions == 0){
 		DBG("BEGIN TRANSACTION");
 		db.transaction();
@@ -190,9 +187,6 @@ void SqlConnection::rollback()
 {
 	if(transactions == 1){
 		DBG("ROLLBACK TRANSACTION");
-#if 0
-		notifySqlFinishListeners();
-#endif
 		db.rollback();
 		if(db.lastError().isValid())
 			LOG("Failed to rollback transcation.\nError: %s", C_STR(dbErrorString()));
@@ -208,32 +202,6 @@ void SqlConnection::rollback()
 QString SqlConnection::dbErrorString()
 {
 	return db.lastError().text();
-}
-
-void SqlConnection::addSqlCloseListener(SqlCloseListener &l)
-{
-	sqlCloseListeners.add(l);
-}
-
-void SqlConnection::removeSqlCloseListener(SqlCloseListener &l)
-{
-	sqlCloseListeners.remove(l);
-}
-#if 0	
-void SqlConnection::notifySqlFinishListeners()
-{
-	unsigned s,i;
-	s = sqlFinishListeners.size();
-	for(i=0; i<s; i++)
-		sqlFinishListeners.queryAt(i).sqlFinishNotification();
-}
-#endif			
-void SqlConnection::notifySqlCloseListeners()
-{
-	unsigned s,i;
-	s = sqlCloseListeners.size();
-	for(i=0; i<s; i++)
-		sqlCloseListeners.queryAt(i).sqlCloseNotification();
 }
 
 #ifdef DEBUG

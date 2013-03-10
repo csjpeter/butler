@@ -21,7 +21,9 @@
 #include <butler_waresmodel.h>
 #include <butler_queriesmodel.h>
 
-void registerDataBase(csjp::Object<DatabaseDescriptor> &);
+void registerDatabase(csjp::Object<DatabaseDescriptor> &);
+
+const DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 
 csjp::Object<CustomModel> customModel(const QString & dbname);
 ShoppingModel & shoppingModel(const QString & dbname);

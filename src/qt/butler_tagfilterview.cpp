@@ -51,8 +51,6 @@ TagFilterView::~TagFilterView()
 
 void TagFilterView::showEvent(QShowEvent *event)
 {
-	tagsModel(dbname).query();
-	
 	mapToGui();
 
 	QWidget::showEvent(event);

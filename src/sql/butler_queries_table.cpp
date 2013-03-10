@@ -15,11 +15,7 @@
 #include "butler_queries_table.h"
 
 QueryTable::QueryTable(SqlConnection &sql) :
-	sql(sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectAllQuery(sql)
+	sql(sql)
 {
 }
 
@@ -52,6 +48,7 @@ void QueryTable::check(QStringList &tables)
 
 void QueryTable::insert(const Query &q)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Queries "
 			"(query_name, stock_option, tag_option, start_date, end_date) "
@@ -63,11 +60,11 @@ void QueryTable::insert(const Query &q)
 	insertQuery.bindValue(3, q.startDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(4, q.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void QueryTable::update(const Query &orig, const Query &modified)
 {
+	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
 		updateQuery.prepare("UPDATE Queries SET "
 				"query_name = ?, "
@@ -84,11 +81,11 @@ void QueryTable::update(const Query &orig, const Query &modified)
 	updateQuery.bindValue(4, modified.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(5, orig.name);
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void QueryTable::del(const Query &q)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM Queries WHERE "
@@ -96,11 +93,11 @@ void QueryTable::del(const Query &q)
 
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void QueryTable::query(QuerySet &queries)
 {
+	SqlQuery selectAllQuery(sql);
 	if(!selectAllQuery.isPrepared())
 		selectAllQuery.prepare("SELECT "
 			"query_name, stock_option, tag_option, start_date, end_date "
@@ -138,6 +135,4 @@ void QueryTable::query(QuerySet &queries)
 		queries.add(query);
 	}
 	DBG("-----");
-
-	selectAllQuery.finish();
 }

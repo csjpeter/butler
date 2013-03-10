@@ -15,10 +15,7 @@
 #include "butler_queryshops_table.h"
 
 QueryShopsTable::QueryShopsTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -52,6 +49,7 @@ void QueryShopsTable::check(QStringList &tables)
 
 void QueryShopsTable::insert(const Query &q, const QString &shopName)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO QueryShops "
 				"(query_name, shop) "
@@ -60,11 +58,11 @@ void QueryShopsTable::insert(const Query &q, const QString &shopName)
 	insertQuery.bindValue(0, q.name);
 	insertQuery.bindValue(1, shopName);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void QueryShopsTable::del(const Query &q, const QString &shopName)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM QueryShops WHERE "
@@ -73,7 +71,6 @@ void QueryShopsTable::del(const Query &q, const QString &shopName)
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.bindValue(1, shopName);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void QueryShopsTable::insert(const Query &q)
@@ -104,6 +101,7 @@ void QueryShopsTable::update(const Query &orig, const Query &modified)
 
 void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT query_name, shop FROM QueryShops "
 				"WHERE query_name = ?");
@@ -121,5 +119,4 @@ void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 		shops.add(new QString(selectQuery.value(shopNo).toString()));
 	}
 	DBG("-----");
-	selectQuery.finish();
 }

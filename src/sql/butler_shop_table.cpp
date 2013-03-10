@@ -13,11 +13,7 @@
 #include "butler_shop_table.h"
 
 ShopTable::ShopTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -50,6 +46,7 @@ void ShopTable::check(QStringList &tables)
 
 void ShopTable::insert(const Shop &s)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Shops "
 				"(name, store_name, city, "
@@ -62,11 +59,11 @@ void ShopTable::insert(const Shop &s)
 	insertQuery.bindValue(3, s.address);
 	insertQuery.bindValue(4, s.company);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void ShopTable::update(const Shop &orig, const Shop &modified)
 {
+	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
 		updateQuery.prepare("UPDATE Shops SET "
 				"name = ?, "
@@ -83,11 +80,11 @@ void ShopTable::update(const Shop &orig, const Shop &modified)
 	updateQuery.bindValue(4, modified.company);
 	updateQuery.bindValue(5, orig.name);
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void ShopTable::del(const Shop &s)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM Shops WHERE "
@@ -95,11 +92,11 @@ void ShopTable::del(const Shop &s)
 
 	deleteQuery.bindValue(0, s.name);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void ShopTable::query(ShopSet& ss)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT * FROM Shops");
 

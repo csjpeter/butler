@@ -13,10 +13,7 @@
 #include "butler_warecategories_table.h"
 
 WareCategoriesTable::WareCategoriesTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -51,6 +48,7 @@ void WareCategoriesTable::check(QStringList &tables)
 
 void WareCategoriesTable::insert(const Ware &ware, const QString &category)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO WareCategories "
 				"(name, category) "
@@ -59,11 +57,11 @@ void WareCategoriesTable::insert(const Ware &ware, const QString &category)
 	insertQuery.bindValue(0, ware.name);
 	insertQuery.bindValue(1, category);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void WareCategoriesTable::del(const Ware &ware, const QString &category)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM WareCategories WHERE "
@@ -73,7 +71,6 @@ void WareCategoriesTable::del(const Ware &ware, const QString &category)
 	deleteQuery.bindValue(0, ware.name);
 	deleteQuery.bindValue(1, category);
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void WareCategoriesTable::insert(const Ware &ware)
@@ -109,6 +106,7 @@ void WareCategoriesTable::update(const Ware &orig, const Ware &modified)
 
 void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT category FROM WareCategories "
 				"WHERE name = ?");
@@ -124,6 +122,4 @@ void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 		categories.add(new QString(selectQuery.value(categoryNo).toString()));
 	}
 	DBG("-----");
-
-	selectQuery.finish();
 }

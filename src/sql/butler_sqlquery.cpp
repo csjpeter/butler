@@ -19,14 +19,11 @@ SqlQuery::SqlQuery(SqlConnection & sql) :
 	qQuery(0),
 	prepared(false)
 {
-	sql.addSqlCloseListener(*this);
 }
 
 SqlQuery::~SqlQuery()
 {
-	sql.removeSqlCloseListener(*this);
-	if(qQuery)
-		delete qQuery;
+	delete qQuery;
 }
 
 void SqlQuery::exec(const QString &query)
@@ -37,6 +34,8 @@ void SqlQuery::exec(const QString &query)
 	}
 
 	prepared = false;
+
+	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
 		throw DbError("The below sql query failed:\n%swith error: %s",
 				C_STR(qQuery->executedQuery()),
@@ -72,6 +71,7 @@ void SqlQuery::exec()
 {
 	ENSURE(qQuery, csjp::LogicError);
 
+	DBG("%s", C_STR(qQuery->lastQuery()));
 	if(!qQuery->exec())
 		throw DbError("The below sql query failed:\n%swith error: %s",
 			C_STR(queryString()), C_STR(sql.dbErrorString()));
@@ -111,21 +111,11 @@ QVariant SqlQuery::value(int index)
 
 void SqlQuery::finish()
 {
-	ENSURE(qQuery, csjp::LogicError);
+	if(!qQuery)
+		return;
 
 	qQuery->finish();
-}
-
-void SqlQuery::sqlFinishNotification()
-{
-	if(qQuery)
-		qQuery->finish();
-}
-
-void SqlQuery::sqlCloseNotification()
-{
-	if(qQuery)
-		qQuery->clear();
+	qQuery->clear();
 }
 
 QString SqlQuery::queryString()
@@ -133,7 +123,8 @@ QString SqlQuery::queryString()
 	ENSURE(qQuery, csjp::LogicError);
 
 	QString str;
-//	str += qQuery->executedQuery();
+	str += qQuery->executedQuery();
+	str += "\n";
 	str += qQuery->lastQuery();
 	str += "\n";
 	QList<QVariant> list = qQuery->boundValues().values();

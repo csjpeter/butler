@@ -143,7 +143,6 @@ ShoppingView::~ShoppingView()
 void ShoppingView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	model.query();
 /*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),

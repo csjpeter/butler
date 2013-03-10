@@ -13,12 +13,7 @@
 #include "butler_item_table.h"
 
 ItemTable::ItemTable(SqlConnection &_sql) :
-	sql(_sql),
-	insertQuery(sql),
-	updateQuery(sql),
-	deleteQuery(sql),
-	selectQuery(sql),
-	selectNamesQuery(sql)
+	sql(_sql)
 {
 }
 
@@ -51,6 +46,7 @@ void ItemTable::check(QStringList &tables)
 
 void ItemTable::insert(const Item &i)
 {
+	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Items "
 				"(name, category, uploaded, "
@@ -63,11 +59,11 @@ void ItemTable::insert(const Item &i)
 	insertQuery.bindValue(3, i.quantity);
 	insertQuery.bindValue(4, i.comment);
 	insertQuery.exec();
-	insertQuery.finish();
 }
 
 void ItemTable::update(const Item &orig, const Item &modified)
 {
+	SqlQuery updateQuery(sql);
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
 	if(orig.uploaded.toString() != modified.uploaded.toString())
@@ -87,11 +83,11 @@ void ItemTable::update(const Item &orig, const Item &modified)
 	updateQuery.bindValue(3, modified.comment);
 	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.exec();
-	updateQuery.finish();
 }
 
 void ItemTable::del(const Item &i)
 {
+	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
 				"DELETE FROM Items WHERE "
@@ -99,11 +95,11 @@ void ItemTable::del(const Item &i)
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	deleteQuery.exec();
-	deleteQuery.finish();
 }
 
 void ItemTable::query(Item& item)
 {
+	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT * FROM Items "
 				"WHERE uploaded = ?");
@@ -124,8 +120,6 @@ void ItemTable::query(Item& item)
 		item.comment = selectQuery.value(commentNo).toString();
 	}
 	DBG("-----");
-
-	selectQuery.finish();
 }
 
 void ItemTable::query(const TagNameSet &tags, ItemSet &items)
