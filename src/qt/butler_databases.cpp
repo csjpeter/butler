@@ -61,20 +61,20 @@ public:
 	csjp::Object<CustomModel> customItems()
 	{
 		/* Each custom view shall have its own special custom model. */
-		return csjp::Object<CustomModel>(new CustomModel(db()));
+		return csjp::Object<CustomModel>(new CustomModel(db(), wares()));
 	}
 
 	ShoppingModel & shoppingItems()
 	{
 		if(!shoppingModel)
-			shoppingModel = new ShoppingModel(db());
+			shoppingModel = new ShoppingModel(db(), wares());
 		return *shoppingModel;
 	}
 
 	StockModel & stockItems()
 	{
 		if(!stockModel)
-			stockModel = new StockModel(db());
+			stockModel = new StockModel(db(), wares());
 		return *stockModel;
 	}
 
