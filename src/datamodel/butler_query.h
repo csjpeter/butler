@@ -51,6 +51,13 @@ public:
 	TagNameSet withoutTags;
 	WareNameSet wares;
 	ShopNameSet shops;
+	
+	enum Fields {
+		Name = 0,
+		StartDate,
+		EndDate,
+		NumOfFields
+	};
 
 private:
 	void equal(const Query &qo);

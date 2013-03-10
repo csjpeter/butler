@@ -54,13 +54,12 @@ int main(int argc, char *argv[])
 				);
 		}
 		
-		csjp::Object<Database> sqlitedb(new Database);
-		sqlitedb->desc.name = defaultDbName;
-		sqlitedb->desc.driver = "QSQLITE";
-		sqlitedb->desc.databaseName = QDir::toNativeSeparators(dbFileName);
-		DBG("Db file path: %s", C_STR(sqlitedb->desc.databaseName));
-
-		databases.add(sqlitedb);
+		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
+		sqlitedb->name = defaultDbName;
+		sqlitedb->driver = "QSQLITE";
+		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
+		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
+		registerDataBase(sqlitedb);
 	}
 
 #ifdef MAEMO

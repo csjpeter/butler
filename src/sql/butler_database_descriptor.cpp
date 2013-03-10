@@ -19,7 +19,18 @@ DatabaseDescriptor::DatabaseDescriptor() :
 DatabaseDescriptor::~DatabaseDescriptor()
 {
 }
-
+/*
+void DatabaseDescriptor::copy(const DatabaseDescriptor & orig)
+{
+	name = orig.name;
+	databaseName = orig.databaseName;
+	driver = orig.driver;
+	username = orig.username;
+	password = orig.password;
+	host = orig.host;
+	port = orig.port;
+}
+*/
 bool DatabaseDescriptor::isEqual(const DatabaseDescriptor &dd) const
 {
 	return (name == dd.name) &&

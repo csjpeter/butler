@@ -30,7 +30,7 @@ int ShopSet::compare(const Shop &a, const Shop &b) const
 			break;
 	}
 	
-//	MSG("Compare: %s < %s = %d\n", C_STR(a.name), C_STR(b.name), ret);
+	DBG("Compare: %s < %s = %d\n", C_STR(a.name), C_STR(b.name), ret);
 
 	if(!ascending)
 		ret = !ret;

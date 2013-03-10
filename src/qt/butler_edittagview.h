@@ -12,7 +12,7 @@
 
 #include <butler_tag.h>
 
-#include "butler_tagsmodel.h"
+#include "butler_databases.h"
 
 /*forwards*/
 class QAction;
@@ -38,7 +38,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditTagView(QWidget *parent, TagsModel &);
+	EditTagView(const QString & dbname, QWidget *parent);
 
 	void setCursor(const QModelIndex& index);
 
@@ -59,7 +59,8 @@ private slots:
 
 private:
 	Tag tag;
-	TagsModel &model;
+	const QString & dbname;
+	TagsModel & model;
 	QModelIndex cursor;
 
 	QLineEdit *nameEditor;

@@ -15,9 +15,10 @@
 
 #include "butler_db.h"
 
-TagsView::TagsView(QWidget *parent) :
+TagsView::TagsView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
-	model(TagsModel::instance()),
+	dbname(dbname),
+	model(tagsModel(dbname)),
 	newTagView(NULL),
 	editTagView(NULL)
 {
@@ -97,13 +98,13 @@ TagsView::~TagsView()
 void TagsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of tags failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 
 	QSettings settings(this);
 
@@ -154,7 +155,7 @@ void TagsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void TagsView::newTag()
 {
 	if(!newTagView)
-		newTagView = new NewTagView(this, model);
+		newTagView = new NewTagView(dbname, this);
 
 	connect(newTagView, SIGNAL(finished(int)), this, SLOT(finishedNewTag(int)));
 	newTagView->show();
@@ -176,7 +177,7 @@ void TagsView::editTag()
 	}
 
 	if(!editTagView)
-		editTagView = new EditTagView(this, model);
+		editTagView = new EditTagView(dbname, this);
 
 	connect(editTagView, SIGNAL(finished(int)), this, SLOT(finishedEditTag(int)));
 	editTagView->setCursor(queryView->currentIndex());
@@ -200,21 +201,18 @@ void TagsView::delTag()
 
 	int row = queryView->currentIndex().row();
 	const Tag &tag = model.tag(row);
-	QMessageBox *msg = new QMessageBox(
+	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we delete?"),
 			tag.name,
 			QMessageBox::Yes | QMessageBox::No,
-			0, Qt::Dialog);
-	if(msg->exec() == QMessageBox::Yes){
-		if(!model.del(row)){
-			QMessageBox(	QMessageBox::Warning,
+			0, Qt::Dialog));
+	if(msg->exec() == QMessageBox::Yes)
+		model.del(row);
+/*			QMessageBox(	QMessageBox::Warning,
 					tr("Delete tag failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
-	}
-
-	delete msg;
+		}*/
 }

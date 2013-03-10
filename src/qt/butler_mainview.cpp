@@ -23,9 +23,9 @@
 
 #include "butler_mainview.h"
 
-MainView::MainView(const QString & databaseName, QWidget *parent) :
+MainView::MainView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
-	databaseName(databaseName),
+	dbname(dbname),
 	shoppingView(NULL),
 	stockView(NULL),
 	customView(NULL),
@@ -214,13 +214,13 @@ void MainView::saveState()
 	settings.setValue("mainview/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
 
-	settings.setValue("mainview/dbfile", databases.query(databaseName).desc.databaseName);
+	settings.setValue("mainview/dbfile", dbname);
 }
 
 void MainView::openShoppingView()
 {
 	if(!shoppingView){
-		shoppingView = new ShoppingView();
+		shoppingView = new ShoppingView(dbname, this);
 		shoppingView->setWindowTitle(tr("Shopping list"));
 	}
 	shoppingView->show();
@@ -231,7 +231,7 @@ void MainView::openShoppingView()
 void MainView::openStockView()
 {
 	if(!stockView){
-		stockView = new StockView();
+		stockView = new StockView(dbname, this);
 		stockView->setWindowTitle(tr("Stock list"));
 	}
 	stockView->show();
@@ -242,7 +242,7 @@ void MainView::openStockView()
 void MainView::openShopsView()
 {
 	if(!shopsView){
-		shopsView = new ShopsView();
+		shopsView = new ShopsView(dbname, this);
 		shopsView->setWindowTitle(tr("Shop list"));
 	}
 	shopsView->show();
@@ -253,7 +253,7 @@ void MainView::openShopsView()
 void MainView::openCustomView()
 {
 	if(!customView){
-		customView = new CustomView(databaseName);
+		customView = new CustomView(dbname, this);
 		customView->setWindowTitle(tr("User query result"));
 	}
 	customView->show();
@@ -264,7 +264,7 @@ void MainView::openCustomView()
 void MainView::openTagsView()
 {
 	if(!tagsView){
-		tagsView = new TagsView();
+		tagsView = new TagsView(dbname, this);
 		tagsView->setWindowTitle(tr("Tag editor"));
 	}
 	tagsView->show();
@@ -275,7 +275,7 @@ void MainView::openTagsView()
 void MainView::openWaresView()
 {
 	if(!waresView){
-		waresView = new WaresView();
+		waresView = new WaresView(dbname, this);
 		waresView->setWindowTitle(tr("Ware editor"));
 	}
 	waresView->show();

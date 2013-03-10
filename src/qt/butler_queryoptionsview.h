@@ -8,9 +8,7 @@
 
 #include <QDialog>
 
-#include "butler_tagsmodel.h"
-
-#include <butler_databases.h>
+#include "butler_databases.h"
 
 /*forwards*/
 class QAction;

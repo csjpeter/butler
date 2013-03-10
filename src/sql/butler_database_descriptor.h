@@ -19,6 +19,8 @@ public:
 
 	DatabaseDescriptor& operator=(const DatabaseDescriptor &) = delete;
 
+//	void copy(const DatabaseDescriptor & orig);
+
 	bool isEqual(const DatabaseDescriptor &t) const;
 
 	bool isLess(const DatabaseDescriptor &t) const;

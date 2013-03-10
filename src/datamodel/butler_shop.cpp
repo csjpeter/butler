@@ -40,21 +40,12 @@ Shop& Shop::operator=(const Shop &s)
 
 bool Shop::isEqual(const Shop &s) const
 {
-//	MSG("[%s] == [%s]", qPrintable(name), qPrintable(s.name));
-	if(name != s.name) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(storeName), qPrintable(s.storeName));
-	if(storeName != s.storeName) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(city), qPrintable(s.city));
-	if(city != s.city) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(address), qPrintable(s.address));
-	if(address != s.address) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(company), qPrintable(s.company));
-	if(company != s.company) return false;
-
+	if(		name != s.name ||
+			storeName != s.storeName ||
+			city != s.city ||
+			address != s.address ||
+			company != s.company)
+		return false;
 	return true;
 }
 

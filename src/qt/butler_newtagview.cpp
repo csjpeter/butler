@@ -10,9 +10,10 @@
 #include "butler_tagsmodel.h"
 
 
-NewTagView::NewTagView(QWidget *parent, TagsModel &m) :
+NewTagView::NewTagView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(tagsModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::WindowModal);

@@ -10,7 +10,7 @@
 
 #include <butler_query.h>
 
-#include "butler_stockmodel.h"
+#include "butler_databases.h"
 
 /*forwards*/
 class QAction;
@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	StockView(QWidget *parent = 0);
+	StockView(const QString & dbname, QWidget *parent = 0);
 	~StockView();
 
 private:
@@ -55,7 +55,8 @@ private slots:
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 
 private:
-	StockModel model;
+	const QString & dbname;
+	StockModel & model;
 
 	QTableView *queryView;
 

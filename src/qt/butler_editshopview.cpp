@@ -9,9 +9,10 @@
 #include "butler_editshopview.h"
 #include "butler_shopsmodel.h"
 
-EditShopView::EditShopView(QWidget *parent, ShopsModel &m) :
+EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(shopsModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);

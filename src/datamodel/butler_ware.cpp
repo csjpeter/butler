@@ -34,18 +34,11 @@ Ware& Ware::operator=(const Ware &i)
 
 bool Ware::isEqual(const Ware &i) const
 {
-//	MSG("[%s] == [%s]", qPrintable(name), qPrintable(i.name));
-	if(name != i.name) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(unit), qPrintable(i.unit));
-	if(unit != i.unit) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(categories), qPrintable(i.categories));
-	if(categories != i.categories) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(tags), qPrintable(i.tags));
-	if(tags != i.tags) return false;
-
+	if(		name != i.name ||
+			unit != i.unit ||
+			categories != i.categories ||
+			tags != i.tags)
+		return false;
 	return true;
 }
 

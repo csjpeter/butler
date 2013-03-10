@@ -14,9 +14,10 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-AccountingView::AccountingView(QWidget *parent, ItemsModel &m) :
+AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(model)
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);
@@ -31,7 +32,7 @@ AccountingView::AccountingView(QWidget *parent, ItemsModel &m) :
 	label = new QLabel(tr("Shop (place of buy) :"), this);
 	gridLayout->addWidget(label, 0, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(model.db.desc.name).shops());
+	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 0, 1, 1, 2);
 
@@ -51,7 +52,7 @@ AccountingView::AccountingView(QWidget *parent, ItemsModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&databases.query(model.db.desc.name).wares());
+	nameBox->setModel(&waresModel(dbname));
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 3, 1, 1, 2);
@@ -212,7 +213,7 @@ void AccountingView::mapFromGui()
 	item.purchased = purchaseDateTime->dateTime();
 
 	int i = shopBox->currentIndex();
-	ShopsModel &sm = databases.query(model.db.desc.name).shops();
+	ShopsModel &sm = shopsModel(dbname);
 	if(0 <= i && i < sm.rowCount())
 		item.shop = sm.shop(i).name;
 
@@ -233,7 +234,7 @@ void AccountingView::saveSlot()
 	}*/
 
 	/* We want to save any new ware and category before closing dialog. */
-	WaresModel &wm = databases.query(model.db.desc.name).wares();
+	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		Ware ware;
@@ -271,7 +272,7 @@ void AccountingView::nameEditFinishedSlot()
 {
 	categoryBox->clear();
 
-	WaresModel &wm = databases.query(model.db.desc.name).wares();
+	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		unitLabel->setText("");

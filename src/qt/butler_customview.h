@@ -11,8 +11,7 @@
 #include <butler_query.h>
 
 #include "butler_custommodel.h"
-
-#include <butler_db.h>
+#include "butler_queriesmodel.h"
 
 /*forwards*/
 class QAction;
@@ -60,7 +59,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	CustomModel & model;
+	csjp::Object<CustomModel> model;
 
 	QTableView *queryView;
 

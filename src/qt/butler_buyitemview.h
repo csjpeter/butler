@@ -10,7 +10,7 @@
 #include <QDataWidgetMapper>
 #include <QModelIndex>
 
-#include "butler_shoppingmodel.h"
+#include "butler_databases.h"
 
 class QAction;
 class QToolButton;
@@ -41,7 +41,7 @@ private:
 	Q_OBJECT
 
 public:
-	BuyItemView(QWidget *parent, ShoppingModel &);
+	BuyItemView(const QString & dbname, QWidget *parent);
 	virtual ~BuyItemView();
 
 	void setItem(unsigned itemRow, unsigned shopRow);
@@ -63,7 +63,8 @@ private slots:
 	void grossPriceValueChangedSlot(double g);
 
 private:
-	ShoppingModel &model;
+	const QString & dbname;
+	ShoppingModel & model;
 	unsigned itemCursor;
 	unsigned shopCursor;
 	Item item;

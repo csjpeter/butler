@@ -34,48 +34,17 @@ Query& Query::operator=(const Query& qo)
 
 bool Query::isEqual(const Query &qo) const
 {
-	bool ret = true;
-	if(name != qo.name){
-//		MSG("[%s] == [%s]", qPrintable(name), qPrintable(qo.name));
-		ret = false;
-	}
-	if(startDate != qo.startDate){
-//		MSG("[%s] == [%s]",
-//				qPrintable(startDate.toString()),
-//				qPrintable(qo.startDate.toString()));
-		ret = false;
-	}
-	if(endDate != qo.endDate){
-//		MSG("[%s] == [%s]",
-//				qPrintable(endDate.toString()),
-//				qPrintable(qo.endDate.toString()));
-		ret = false;
-	}
-	if(stockOption != qo.stockOption){
-//		MSG("[%d] == [%d]", stockOption, qo.stockOption);
-		ret = false;
-	}
-	if(tagOption != qo.tagOption){
-//		MSG("[%s] == [%s]", tagOtpion, qo.tagOption);
-		ret = false;
-	}
-	if(withTags != qo.withTags){
-//		MSG("[%d] == [%d]", withTags.size(), qo.withTags.size());
-		ret = false;
-	}
-	if(withoutTags != qo.withoutTags){
-//		MSG("[%d] == [%d]", withoutTags.size(), qo.withoutTags.size());
-		ret = false;
-	}
-	if(wares != qo.wares){
-//		MSG("[%d] == [%d]", wares.size(), qo.wares.size());
-		ret = false;
-	}
-	if(shops != qo.shops){
-//		MSG("[%d] == [%d]", shops.size(), qo.shops.size());
-		ret = false;
-	}
-	return ret;
+	if(		name != qo.name ||
+			startDate != qo.startDate ||
+			endDate != qo.endDate ||
+			stockOption != qo.stockOption ||
+			tagOption != qo.tagOption ||
+			withTags != qo.withTags ||
+			withoutTags != qo.withoutTags ||
+			wares != qo.wares ||
+			shops != qo.shops)
+		return false;
+	return true;
 }
 		
 bool Query::isLess(const Query &qo) const

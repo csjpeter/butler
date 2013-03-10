@@ -18,8 +18,10 @@
 
 #include "butler_db.h"
 
-StockView::StockView(QWidget *parent) :
+StockView::StockView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
+	dbname(dbname),
+	model(stockModel(dbname)),
 	editItemView(NULL),
 	accountingView(NULL),
 	tagFilterView(NULL)
@@ -121,13 +123,13 @@ StockView::~StockView()
 void StockView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 
 	QSettings settings(this);
 
@@ -181,7 +183,7 @@ void StockView::editItem()
 	}
 
 	if(!editItemView){
-		editItemView = new EditItemView(this, model);
+		editItemView = new EditItemView(dbname, model, this);
 		editItemView->setModal(true);
 /*		editItemView->setWindowModality(Qt::ApplicationModal);*/
 		editItemView->setWindowTitle(tr("Edit item details"));
@@ -208,39 +210,35 @@ void StockView::dropItem()
 
 	int row = queryView->currentIndex().row();
 	const Item &item = model.item(row);
-	QMessageBox *msg = new QMessageBox(
+	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we add a corresponding one to shopping list?"),
 			item.name + ", " + item.category,
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-			0, Qt::Dialog);
+			0, Qt::Dialog));
 	int res = msg->exec();
-	if(res == QMessageBox::Yes){
-		if(!model.addShoppingItem(row)){
-			QMessageBox(	QMessageBox::Warning,
-					tr("Adding new item to shoppin glist failed"),
+	if(res == QMessageBox::Yes)
+		model.addShoppingItem(row);
+/*			QMessageBox(	QMessageBox::Warning,
+					tr("Adding new item to shopping list failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
-	}
-	if(res == QMessageBox::Yes || res == QMessageBox::No){
-		if(!model.drop(row)){
-			QMessageBox(	QMessageBox::Warning,
+		}*/
+	if(res == QMessageBox::Yes || res == QMessageBox::No)
+		model.drop(row);
+/*			QMessageBox(	QMessageBox::Warning,
 					tr("Drop item from stock failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
-	}
-
-	delete msg;
+		}*/
 }
 
 void StockView::openAccountingView()
 {
 	if(!accountingView){
-		accountingView = new AccountingView(this, model);
+		accountingView = new AccountingView(dbname, model, this);
 		accountingView->setModal(true);
 /*		accountingView->setWindowModality(Qt::ApplicationModal);*/
 		accountingView->setWindowTitle(tr("Accounting view"));
@@ -251,7 +249,7 @@ void StockView::openAccountingView()
 void StockView::filterItems()
 {
 	if(!tagFilterView){
-		tagFilterView = new TagFilterView(model.opts.withTags);
+		tagFilterView = new TagFilterView(dbname, model.opts.withTags);
 		tagFilterView->setModal(true);
 /*		tagFilterView->setWindowModality(Qt::ApplicationModal);*/
 		tagFilterView->setWindowTitle(tr("Tag filter view"));
@@ -263,13 +261,13 @@ void StockView::filterItems()
 
 void StockView::filterAcceptedSlot()
 {
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 }
 
 void StockView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)

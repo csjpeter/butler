@@ -7,8 +7,8 @@
 
 #include "butler_custommodel.h"
 
-CustomModel::CustomModel(Db & db) :
-	ItemsModel(db)
+CustomModel::CustomModel(Db & db, const WaresModel & wmodel) :
+	ItemsModel(db, wmodel)
 {
 }
 

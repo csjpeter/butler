@@ -26,9 +26,7 @@ class QModelIndex;
 
 #include <butler_ware.h>
 
-#include <butler_databases.h>
-
-#include "butler_waresmodel.h"
+#include "butler_databases.h"
 
 class TagWidget;
 
@@ -38,7 +36,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewWareView(QWidget *parent, WaresModel &);
+	NewWareView(const QString & dbname, QWidget *parent);
 
 private:
 	void showEvent(QShowEvent *event);
@@ -55,7 +53,8 @@ private slots:
 
 private:
 	Ware ware;
-	WaresModel &model;
+	const QString & dbname;
+	WaresModel & model;
 
 	QLineEdit *nameEditor;
 	QLineEdit *unitEditor;

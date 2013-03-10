@@ -15,9 +15,10 @@
 
 #include "butler_db.h"
 
-ShopsView::ShopsView(QWidget *parent) :
+ShopsView::ShopsView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
-	model(ShopsModel::instance()),
+	dbname(dbname),
+	model(shopsModel(dbname)),
 	newShopView(NULL),
 	editShopView(NULL)
 {
@@ -99,13 +100,13 @@ ShopsView::~ShopsView()
 void ShopsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of shops failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 
 	QSettings settings(this);
 
@@ -156,7 +157,7 @@ void ShopsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void ShopsView::newShop()
 {
 	if(!newShopView)
-		newShopView = new NewShopView(this, model);
+		newShopView = new NewShopView(dbname, this);
 
 	connect(newShopView, SIGNAL(finished(int)), this, SLOT(finishedNewShop(int)));
 	newShopView->show();
@@ -178,7 +179,7 @@ void ShopsView::editShop()
 	}
 
 	if(!editShopView)
-		editShopView = new EditShopView(this, model);
+		editShopView = new EditShopView(dbname, this);
 
 	connect(editShopView, SIGNAL(finished(int)), this, SLOT(finishedEditShop(int)));
 	editShopView->setCursor(queryView->currentIndex());
@@ -202,21 +203,18 @@ void ShopsView::delShop()
 
 	int row = queryView->currentIndex().row();
 	const Shop &shop = model.shop(row);
-	QMessageBox *msg = new QMessageBox(
+	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we delete?"),
 			shop.name,
 			QMessageBox::Yes | QMessageBox::No,
-			0, Qt::Dialog);
-	if(msg->exec() == QMessageBox::Yes){
-		if(!model.del(row)){
-			QMessageBox(	QMessageBox::Warning,
+			0, Qt::Dialog));
+	if(msg->exec() == QMessageBox::Yes)
+		model.del(row);
+/*			QMessageBox(	QMessageBox::Warning,
 					tr("Delete shop failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
-	}
-
-	delete msg;
+		}*/
 }

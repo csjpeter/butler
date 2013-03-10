@@ -7,16 +7,13 @@
 
 #include <QtGui>
 
-#include "butler_waresmodel.h"
 #include "butler_itemsmodel.h"
-
-#include <butler_databases.h> // FIXME cyclic dependency
 
 csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
-ItemsModel::ItemsModel(Db & db) :
-	dbname(db.desc.name),
-	db(db)
+ItemsModel::ItemsModel(Db & db, const WaresModel & wmodel) :
+	db(db),
+	wmodel(wmodel)
 {
 	itemOperationListeners.add(*this);
 }
@@ -83,13 +80,13 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			break;
 		case Item::Quantity :
 			{
+				/* FIXME move this to views */
 				Item &item = items.queryAt(index.row());
-				WaresModel &wm = waresModel(dbname);
-				int i = wm.index(item.name);
+				int i = wmodel.index(item.name);
 				QString val;
 				val.setNum(item.quantity, 'g', 3);
 				if(i != -1) {
-					const Ware &w = wm.ware(i);
+					const Ware &w = wmodel.ware(i);
 					val += " ";
 					val += w.unit;
 				}

@@ -8,8 +8,8 @@
 #include "butler_shoppingmodel.h"
 #include "butler_shopsmodel.h"
 
-ShoppingModel::ShoppingModel(Db & db) :
-	ItemsModel(db)
+ShoppingModel::ShoppingModel(Db & db, const WaresModel & wmodel) :
+	ItemsModel(db, wmodel)
 {
 }
 

@@ -50,33 +50,16 @@ Item& Item::operator=(const Item &i)
 
 bool Item::isEqual(const Item &i) const
 {
-//	MSG("[%s] == [%s]", qPrintable(name), qPrintable(i.name));
-	if(name != i.name) return false;
-
-//	MSG("[%s] == [%s]", qPrintable(category), qPrintable(i.category));
-	if(category != i.category) return false;
-
-//	MSG("[%s] == [%s]",
-//			qPrintable(uploaded.toString()),
-//			qPrintable(i.uploaded.toString()));
-
-	if(uploaded.toString() != i.uploaded.toString()) return false;
-//	MSG("[%s] == [%s]",
-//			qPrintable(purchased.toString()),
-//			qPrintable(i.purchased.toString()));
-
-	if(purchased.toString() != i.purchased.toString()) return false;
-//	MSG("[%d] == [%d]", shop, i.shop);
-	if(shop != i.shop) return false;
-//	MSG("[%d] == [%d]", price, i.price);
-	if(price != i.price) return false;
-//	MSG("[%d] == [%d]", quantity, i.quantity);
-	if(quantity != i.quantity) return false;
-//	MSG("[%d] == [%d]", onStock, i.onStock);
-	if(onStock != i.onStock) return false;
-//	MSG("[%s] == [%s]", qPrintable(comment), qPrintable(comment));
-	if(comment != i.comment) return false;
-
+	if(		name != i.name ||
+			category != i.category ||
+			uploaded.toString() != i.uploaded.toString() ||
+			purchased.toString() != i.purchased.toString() ||
+			shop != i.shop ||
+			price != i.price ||
+			quantity != i.quantity ||
+			onStock != i.onStock ||
+			comment != i.comment)
+		return false;
 	return true;
 }
 

@@ -9,9 +9,10 @@
 #include "butler_waresmodel.h"
 #include "butler_tagwidget.h"
 
-NewWareView::NewWareView(QWidget *parent, WaresModel &m) :
+NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(waresModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::WindowModal);
@@ -44,7 +45,7 @@ NewWareView::NewWareView(QWidget *parent, WaresModel &m) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(this, tagsModel(model.dbname).tagSet());
+	tagsSelector = new TagWidget(dbname, this);
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 	
 	/* buttons: done */
@@ -59,7 +60,7 @@ NewWareView::NewWareView(QWidget *parent, WaresModel &m) :
 
 void NewWareView::showEvent(QShowEvent *event)
 {
-	tagsModel(model.dbname).query();
+	tagsModel(dbname).query();
 	
 	QDialog::showEvent(event);
 

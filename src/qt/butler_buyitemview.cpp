@@ -12,9 +12,10 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-BuyItemView::BuyItemView(QWidget *parent, ShoppingModel &m) :
+BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(shoppingModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);
@@ -64,7 +65,7 @@ BuyItemView::BuyItemView(QWidget *parent, ShoppingModel &m) :
 	label = new QLabel(tr("Shop (place of buy):"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(model.db.desc.name).shops());
+	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
 
@@ -145,7 +146,7 @@ void BuyItemView::mapToGui()
 	shopBox->setCurrentIndex(shopCursor);
 	purchaseDateTime->setDateTime(QDateTime::currentDateTime());
 	
-	WaresModel &wm = databases.query(model.db.desc.name).wares();
+	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(item.name);
 	if(i == -1) {
 		unitLabel->setText("");
@@ -157,7 +158,7 @@ void BuyItemView::mapToGui()
 
 void BuyItemView::mapFromGui()
 {
-	ShopsModel &sm = databases.query(model.db.desc.name).shops();
+	ShopsModel &sm = shopsModel(dbname);
 	item.purchased = purchaseDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();

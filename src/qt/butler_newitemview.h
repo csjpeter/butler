@@ -29,8 +29,7 @@ class QComboBox;
 
 #include <butler_item.h>
 
-#include "butler_shoppingmodel.h"
-#include "butler_tagsmodel.h"
+#include "butler_databases.h"
 
 class TagWidget;
 
@@ -40,7 +39,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewItemView(QWidget *parent, ShoppingModel &);
+	NewItemView(const QString & dbname, QWidget *parent);
 
 private:
 	void showEvent(QShowEvent *event);
@@ -59,7 +58,8 @@ private slots:
 
 private:
 	Item item;
-	ShoppingModel &model;
+	const QString & dbname;
+	ShoppingModel & model;
 
 	TagWidget *tagwidget;
 

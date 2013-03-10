@@ -13,6 +13,7 @@
 #include <butler_ware_set.h>
 
 #include "butler_config.h"
+
 #include <butler_db.h>
 
 class WaresModel :
@@ -74,7 +75,7 @@ public:
 public:
 	int index(const QString &name) const
 		__attribute__ ((no_instrument_function));
-	const Ware& ware(int row)
+	const Ware& ware(int row) const
 		__attribute__ ((no_instrument_function));
 	void del(int row);
 	void addNew(Ware &ware);
@@ -89,8 +90,6 @@ public:
 	static void stringToTags(const QString &value, TagNameSet &modified);
 	void sort(int column, bool ascending);
 
-public:
-	const QString & dbname;
 protected:
 	Db & db;
 	WareSet wares;

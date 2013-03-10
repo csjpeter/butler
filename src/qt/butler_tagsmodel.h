@@ -89,8 +89,6 @@ public:
 	void query();
 	void sort(int column, bool ascending);
 
-public:
-	const QString & dbname;
 private:
 	Db & db;
 	TagSet tags;

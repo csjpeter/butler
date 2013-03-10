@@ -8,7 +8,6 @@
 #include "butler_shopsmodel.h"
 
 ShopsModel::ShopsModel(Db & db) :
-	dbname(db.desc.name),
 	db(db)
 {
 	query();

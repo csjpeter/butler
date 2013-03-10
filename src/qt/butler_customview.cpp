@@ -163,18 +163,16 @@ void CustomView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
 
-	QueryModel qm = queryModel(dbname);
-	QuerySet qs;
-	db.query.query(qs);
-	if(qs.size())
-		model.opts = qs.queryAt(0);
-	model.opts.name = "default";
+	QueriesModel & qm = queriesModel(dbname);
+	if(qm.rowCount())
+		model->opts = qm.query(0);
+	model->opts.name = "default";
 
-	model.query();
+	model->query();
 /*	{
 		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
-				model.error(),
+				model->error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
 	}
@@ -184,7 +182,7 @@ void CustomView::showEvent(QShowEvent *event)
 	QSettings settings(this);
 
 	QDateTime uploaded = settings.value("customview/currentitem", "").toDateTime();
-	queryView->selectRow(model.index(uploaded));
+	queryView->selectRow(model->index(uploaded));
 
 	if(settings.value("customview/edititemview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
@@ -215,7 +213,7 @@ void CustomView::saveState()
 
 	QString uploaded;
 	if(queryView->currentIndex().isValid()){
-		const Item &item = model.item(queryView->currentIndex().row());
+		const Item &item = model->item(queryView->currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue("customview/currentitem", uploaded);
@@ -233,7 +231,7 @@ void CustomView::editItem()
 	}
 
 	if(!editItemView){
-		editItemView = new EditItemView(this, model);
+		editItemView = new EditItemView(dbname, *model, this);
 		editItemView->setModal(true);
 /*		editItemView->setWindowModality(Qt::ApplicationModal);*/
 		editItemView->setWindowTitle(tr("Edit item details"));
@@ -259,7 +257,7 @@ void CustomView::delItem()
 	}
 
 	int row = queryView->currentIndex().row();
-	const Item &item = model.item(row);
+	const Item &item = model->item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we delete?"),
@@ -267,11 +265,11 @@ void CustomView::delItem()
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		model.del(row);
+		model->del(row);
 /*		{
 			QMessageBox(	QMessageBox::Warning,
 					tr("Delete item failed"),
-					model.error(),
+					model->error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
 		}*/
@@ -281,7 +279,7 @@ void CustomView::delItem()
 void CustomView::openAccountingView()
 {
 	if(!accountingView){
-		accountingView = new AccountingView(this, model);
+		accountingView = new AccountingView(dbname, *model, this);
 		accountingView->setModal(true);
 /*		accountingView->setWindowModality(Qt::ApplicationModal);*/
 		accountingView->setWindowTitle(tr("Accounting view"));
@@ -299,9 +297,9 @@ void CustomView::editWare()
 
 	WaresModel & wm = waresModel(dbname);
 	if(!editWareView)
-		editWareView = new EditWareView(this, wm);
+		editWareView = new EditWareView(dbname, this);
 
-	const Item &item = model.item(queryView->currentIndex().row());
+	const Item &item = model->item(queryView->currentIndex().row());
 
 	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
@@ -318,37 +316,35 @@ void CustomView::finishedEditWare(int res)
 void CustomView::filterItems()
 {
 	if(!queryOptsView){
-		queryOptsView = new QueryOptionsView(model.opts);
+		queryOptsView = new QueryOptionsView(dbname, model->opts);
 		queryOptsView->setModal(true);
 /*		queryOptsView->setWindowModality(Qt::ApplicationModal);*/
 		queryOptsView->setWindowTitle(tr("Query options view"));
 		connect(queryOptsView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));
-		QuerySet qs;
-		db.query.query(qs);
-		if(qs.size())
-			model.opts = qs.queryAt(0);
-		model.opts.name = "default";
+		QueriesModel & qm = queriesModel(dbname);
+		if(qm.rowCount())
+			model->opts = qm.query(0);
+		model->opts.name = "default";
 	}
 	queryOptsView->show();
 }
 
 void CustomView::filterAcceptedSlot()
 {
-	QuerySet qs;
-	db.query.query(qs);
-	if(qs.size()){
-		model.opts.name = "default";
-		db.query.update(qs.queryAt(0), model.opts);
+	QueriesModel & qm = queriesModel(dbname);
+	if(qm.rowCount()) {
+		model->opts.name = "default";
+		qm.update(0, model->opts);
 	} else {
-		model.opts.name = "default";
-		db.query.insert(model.opts);
+		model->opts.name = "default";
+		qm.addNew(model->opts);
 	}
 
-	model.query();
+	model->query();
 /*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
-				model.error(),
+				model->error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
 	}*/
@@ -357,15 +353,15 @@ void CustomView::filterAcceptedSlot()
 
 void CustomView::updateStatistics()
 {
-	itemCountLabel->setNum((int)model.stat.itemCount);
-	itemSumQuantityLabel->setNum(model.stat.sumQuantity);
-	itemSumPriceLabel->setNum((int)model.stat.sumPrice);
-	avgUnitPriceLabel->setNum(model.stat.avgPrice);
-	minUnitPriceLabel->setNum(model.stat.cheapestUnitPrice);
-	maxUnitPriceLabel->setNum(model.stat.mostExpUnitPrice);
+	itemCountLabel->setNum((int)model->stat.itemCount);
+	itemSumQuantityLabel->setNum(model->stat.sumQuantity);
+	itemSumPriceLabel->setNum((int)model->stat.sumPrice);
+	avgUnitPriceLabel->setNum(model->stat.avgPrice);
+	minUnitPriceLabel->setNum(model->stat.cheapestUnitPrice);
+	maxUnitPriceLabel->setNum(model->stat.mostExpUnitPrice);
 }
 
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model->sort(logicalIndex, order == Qt::AscendingOrder);
 }

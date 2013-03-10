@@ -13,8 +13,7 @@
 
 #include <csjp_reference_container.h>
 
-#include "butler_waresmodel.h"
-#include "butler_tagsmodel.h"
+#include "butler_databases.h"
 
 class QGridLayout;
 
@@ -26,7 +25,7 @@ private:
 	Q_OBJECT
 
 public:
-	TagWidget(QWidget *parent, const TagSet &tagSet);
+	TagWidget(const QString & dbname, QWidget *parent);
 
 	void prepareContent();
 	void setTags(const TagNameSet &tags);
@@ -35,7 +34,8 @@ public:
 	void deselectAll();
 
 private:
-	const TagSet &tagSet;
+	const QString & dbname;
+	const TagSet & tagSet;
 	csjp::ReferenceContainer<QCheckBox> btnContainer;
 	QGridLayout *gridLayout;
 };

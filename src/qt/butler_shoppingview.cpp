@@ -19,8 +19,10 @@
 
 #include "butler_db.h"
 
-ShoppingView::ShoppingView(QWidget *parent) :
+ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
+	dbname(dbname),
+	model(shoppingModel(dbname)),
 	newItemView(NULL),
 	editItemView(NULL),
 	buyItemView(NULL),
@@ -84,7 +86,7 @@ ShoppingView::ShoppingView(QWidget *parent) :
 	shopLayout->addWidget(label, 0, 0);
 
 	shopBox = new QComboBox;
-	shopBox->setModel(&databases.query(db.name).shops());
+	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	shopLayout->addWidget(shopBox, 0, 1);
 
@@ -141,14 +143,14 @@ ShoppingView::~ShoppingView()
 void ShoppingView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
 	}
-
+*/
 	QSettings settings(this);
 
 	QDateTime uploaded = settings.value("shoppingview/currentitem", "").toDateTime();
@@ -200,7 +202,7 @@ void ShoppingView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder orde
 void ShoppingView::newItem()
 {
 	if(!newItemView)
-		newItemView = new NewItemView(this, model);
+		newItemView = new NewItemView(dbname, this);
 
 	connect(newItemView, SIGNAL(finished(int)), this, SLOT(finishedNewItem(int)));
 	newItemView->show();
@@ -222,7 +224,7 @@ void ShoppingView::editItem()
 	}
 
 	if(!editItemView)
-		editItemView = new EditItemView(this, model);
+		editItemView = new EditItemView(dbname, model, this);
 
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(queryView->currentIndex());
@@ -246,23 +248,21 @@ void ShoppingView::delItem()
 
 	int row = queryView->currentIndex().row();
 	const Item &item = model.item(row);
-	QMessageBox *msg = new QMessageBox(
+	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Shall we delete?"),
 			item.name + ", " + item.category,
 			QMessageBox::Yes | QMessageBox::No,
-			0, Qt::Dialog);
+			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		if(!model.del(row)){
-			QMessageBox(	QMessageBox::Warning,
+		model.del(row);
+/*			QMessageBox(	QMessageBox::Warning,
 					tr("Delete item failed"),
 					model.error(),
 					QMessageBox::Ok,
 					0, Qt::Dialog).exec();
-		}
+		}*/
 	}
-
-	delete msg;
 }
 
 void ShoppingView::buyItem()
@@ -280,7 +280,7 @@ void ShoppingView::buyItem()
 	}
 
 	if(!buyItemView){
-		buyItemView = new BuyItemView(this, model);
+		buyItemView = new BuyItemView(dbname, this);
 		buyItemView->setWindowTitle(tr("Mark item as bought"));
 		buyItemView->setModal(true);
 		connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
@@ -299,7 +299,7 @@ void ShoppingView::finishedBuyItem(int price)
 void ShoppingView::filterItems()
 {
 	if(!tagFilterView){
-		tagFilterView = new TagFilterView(model.queryTagNames);
+		tagFilterView = new TagFilterView(dbname, model.queryTagNames);
 		tagFilterView->setModal(true);
 /*		tagFilterView->setWindowModality(Qt::ApplicationModal);*/
 		tagFilterView->setWindowTitle(tr("Tag filter view"));
@@ -311,11 +311,11 @@ void ShoppingView::filterItems()
 
 void ShoppingView::filterAcceptedSlot()
 {
-	if(!model.query()){
-		QMessageBox(	QMessageBox::Warning,
+	model.query();
+/*		QMessageBox(	QMessageBox::Warning,
 				tr("Querying the list of items failed"),
 				model.error(),
 				QMessageBox::Ok,
 				0, Qt::Dialog).exec();
-	}
+	}*/
 }

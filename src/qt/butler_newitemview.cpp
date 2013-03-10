@@ -11,9 +11,10 @@
 #include "butler_waresmodel.h"
 
 
-NewItemView::NewItemView(QWidget *parent, ShoppingModel &m) :
+NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(shoppingModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);
@@ -31,7 +32,7 @@ NewItemView::NewItemView(QWidget *parent, ShoppingModel &m) :
 	nameBox = new QComboBox;
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
-	nameBox->setModel(&waresModel(model.dbname));
+	nameBox->setModel(&waresModel(dbname));
 	nameBox->setModelColumn(WaresModel::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 3);
@@ -136,7 +137,7 @@ void NewItemView::doneClickedSlot(bool toggled)
 			0, Qt::Dialog).exec();
 */
 	/* We want to save any new ware and category before closing dialog. */
-	WaresModel & wm = waresModel(model.dbname);
+	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		Ware ware;
@@ -172,7 +173,7 @@ void NewItemView::nameEditFinishedSlot()
 {
 	categoryBox->clear();
 
-	WaresModel & wm = waresModel(model.dbname);
+	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		unitLabel->setText("");

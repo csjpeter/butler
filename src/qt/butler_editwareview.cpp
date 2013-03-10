@@ -11,9 +11,10 @@
 #include "butler_tagsmodel.h"
 #include "butler_tagwidget.h"
 
-EditWareView::EditWareView(QWidget *parent, WaresModel &m) :
+EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
 	QDialog(parent),
-	model(m)
+	dbname(dbname),
+	model(waresModel(dbname))
 {
 	setModal(true);
 //	setWindowModality(Qt::ApplicationModal);
@@ -50,7 +51,7 @@ EditWareView::EditWareView(QWidget *parent, WaresModel &m) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(this, tagModel(model.dbname).tagSet());
+	tagsSelector = new TagWidget(dbname, this);
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 
 	/* buttons: prev, save, next, close */
@@ -94,7 +95,7 @@ EditWareView::EditWareView(QWidget *parent, WaresModel &m) :
 
 void EditWareView::showEvent(QShowEvent *event)
 {
-	tagModel(model.dbname).query();
+	tagsModel(dbname).query();
 	
 	mapToGui();
 	

@@ -73,8 +73,6 @@ public:
 	void query();
 	void sort(int column, bool ascending);
 
-public:
-	const QString & dbname;
 protected:
 	Db & db;
 	ShopSet shops;

@@ -8,7 +8,6 @@
 #include "butler_queriesmodel.h"
 
 QueriesModel::QueriesModel(Db & db) :
-	dbname(db.desc.name),
 	db(db)
 {
 	query();

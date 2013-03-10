@@ -71,7 +71,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	tagOptAnyMatch->setText(tr("any selected tag enough to match"));
 	tagOptions->addButton(tagOptAnyMatch);
 	gridLayout->addWidget(tagOptAnyMatch, 7, 1, 1, 2);
-	tagsSelector = new TagWidget(this, tagsModel(dbname).tagSet());
+	tagsSelector = new TagWidget(dbname, this);
 	gridLayout->addWidget(tagsSelector, 8, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
@@ -90,7 +90,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 
 	label = new QLabel(tr("Without these tags :"));
 	gridLayout->addWidget(label, 10, 0, 1, 4);
-	withoutTagsSelector = new TagWidget(this, tagsModel(dbname).tagSet());
+	withoutTagsSelector = new TagWidget(dbname, this);
 	gridLayout->addWidget(withoutTagsSelector, 11, 0, 1, 4);
 
 	label = new QLabel(tr("Stock option :"));

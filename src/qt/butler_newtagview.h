@@ -27,7 +27,7 @@ class QModelIndex;
 
 #include <butler_tag.h>
 
-#include "butler_tagsmodel.h"
+#include "butler_databases.h"
 
 class TagWidget;
 
@@ -37,7 +37,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewTagView(QWidget *parent, TagsModel &);
+	NewTagView(const QString & dbname, QWidget *parent);
 
 private:
 	void showEvent(QShowEvent *event);
@@ -54,7 +54,8 @@ private slots:
 
 private:
 	Tag tag;
-	TagsModel &model;
+	const QString & dbname;
+	TagsModel & model;
 
 	QLineEdit *nameEditor;
 	QLineEdit *descEditor;

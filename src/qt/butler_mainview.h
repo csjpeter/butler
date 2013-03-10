@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	MainView(const QString & databaseName, QWidget *parent = 0);
+	MainView(const QString & dbname, QWidget *parent = 0);
 	~MainView();
 
 private:
@@ -57,7 +57,7 @@ private slots:
 	void about();
 
 private:
-	QString databaseName;
+	QString dbname;
 
 	QToolBar *actionTB;
 

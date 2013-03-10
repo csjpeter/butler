@@ -18,6 +18,7 @@
 #include <butler_db.h>
 
 #include "butler_config.h"
+#include "butler_waresmodel.h"
 
 class Item;
 
@@ -28,7 +29,7 @@ private:
 	Q_OBJECT;
 
 public:
-	ItemsModel(Db & db);
+	ItemsModel(Db & db, const WaresModel & wmodel);
 	virtual ~ItemsModel();
 
 	virtual QModelIndex index(
@@ -85,10 +86,9 @@ protected:
 	void itemRemoved(const Item &removed);
 	void itemRemovedListener(const Item &removed);
 
-public:
-	const QString & dbname;
 protected:
 	Db & db;
+	const WaresModel & wmodel;
 	ItemSet items;
 
 private:

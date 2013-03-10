@@ -8,7 +8,6 @@
 #include "butler_waresmodel.h"
 
 WaresModel::WaresModel(Db & db) :
-	dbname(db.desc.name),
 	db(db)
 {
 	query();
@@ -199,7 +198,7 @@ int WaresModel::index(const QString &name) const
 		return -1;
 }
 
-const Ware& WaresModel::ware(int row)
+const Ware& WaresModel::ware(int row) const
 {
 	return wares.queryAt(row);
 }

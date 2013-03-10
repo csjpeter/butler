@@ -9,9 +9,10 @@
 #include "butler_tagwidget.h"
 #include "butler_waresmodel.h"
 
-TagWidget::TagWidget(QWidget *parent, const TagSet &tagSet) :
+TagWidget::TagWidget(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
-	tagSet(tagSet)
+	dbname(dbname),
+	tagSet(tagsModel(dbname).tagSet())
 {
 	prepareContent();
 }

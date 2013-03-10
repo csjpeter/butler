@@ -12,10 +12,7 @@
 
 #include <butler_ware.h>
 
-#include <butler_databases.h>
-
-#include "butler_tagsmodel.h"
-#include "butler_waresmodel.h"
+#include "butler_databases.h"
 
 /*forwards*/
 class QAction;
@@ -40,7 +37,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditWareView(QWidget *parent, WaresModel &);
+	EditWareView(const QString & dbname, QWidget *parent);
 
 	void setCursor(const QModelIndex& index);
 
@@ -62,7 +59,8 @@ private slots:
 
 private:
 	Ware ware;
-	WaresModel &model;
+	const QString & dbname;
+	WaresModel & model;
 	QModelIndex cursor;
 
 	QLineEdit *nameEditor;

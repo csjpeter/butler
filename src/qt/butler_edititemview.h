@@ -12,8 +12,7 @@
 
 #include <butler_item.h>
 
-#include "butler_itemsmodel.h"
-#include "butler_tagsmodel.h"
+#include "butler_databases.h"
 
 /*forwards*/
 class QAction;
@@ -42,7 +41,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditItemView(QWidget *parent, ItemsModel &);
+	EditItemView(const QString & dbname, ItemsModel & model, QWidget *parent);
 
 	void setCursor(const QModelIndex& index);
 
@@ -66,7 +65,8 @@ private slots:
 	void grossPriceValueChangedSlot(double g);
 
 private:
-	ItemsModel &model;
+	const QString & dbname;
+	ItemsModel & model;
 	QModelIndex cursor;
 	Item updatedItem;
 
