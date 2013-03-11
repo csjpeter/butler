@@ -11,7 +11,7 @@ VERSION=${VERSION_API}.${VERSION_PATCH}
 PKGNAME_BASE=${PRJNAME}${VERSION_API}
 
 PRJDESC="Butler - shopping list and home accounting."
-PRJDESCRIPTION=" Butler is a shopping list like basic home\n\
+PRJDESCRIPTION=" Butler is a shopping list like basic home\
  accounting tool."
 
 DEVELOPMENT_START_YEAR=2009

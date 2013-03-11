@@ -55,6 +55,7 @@ private slots:
 	void openQueryOptionsView();
 
 	void about();
+	void quit();
 
 private:
 	QString dbname;

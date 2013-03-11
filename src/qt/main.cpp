@@ -13,29 +13,53 @@
 #include "butler_databases.h"
 #include "butler_mainview.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char *args[])
 {
 /*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
-#ifdef DEBUG
-	csjp::setLogDir("./");
-#endif
 	QString dbFileName;
 	QString defaultDbName("localdb");
 
-	Application app(argc, argv);
+	csjp::setBinaryName(args[0]);
+	Application app(argc, args);
 
-	if(1 < argc){
-		if(QString(argv[1]) == "--help"){
-			printf("Usage: %s [--dbfile file]\n\n", argv[0]);
-		} else if(QString(argv[1]) == "--dbfile"){
-			if(argc < 2){
-				printf("There should be a filename as second parameter.\n");
-				exit(EXIT_FAILURE);
-			}
-			printf("Using %s as database file.\n", argv[2]);
-			dbFileName = QString(argv[2]);
-		}
+	int argi = 1;
+
+	if(1 <= argc - argi && (
+			  !strcmp(args[argi], "--help") ||
+			  !strcmp(args[argi], "-h"))){
+		printf(	"Usage: %s [--dbfile|-d file] [--logdir|-l dir] [--verbose|-v]\n"
+			"       %s [--help|-h]\n"
+			"\n", args[0], args[0]);
+		return 0;
 	}
+
+	while(argi < argc){
+		if(2 <= argc - argi && (
+				  !strcmp(args[argi], "--dbfile") ||
+				  !strcmp(args[argi], "-d"))){
+			dbFileName = QString(args[argi+1]);
+			printf("Using %s as database file.\n", args[argi+1]);
+			argi += 2;
+			continue;
+		}
+		if(2 <= argc - argi && (
+				  !strcmp(args[argi], "--logdir") ||
+				  !strcmp(args[argi], "-l"))){
+			csjp::setLogDir(args[argi+1]);
+			argi += 2;
+			continue;
+		}
+		if(1 <= argc - argi && (
+				  !strcmp(args[argi], "--verbose") ||
+				  !strcmp(args[argi], "-v"))){
+			csjp::verboseMode = true;
+			argi++;
+			continue;
+		}
+		fprintf(stderr, "Bad arguments given.\n");
+		return 1;
+	}
+
 
 	{
 		if(dbFileName == ""){

@@ -184,6 +184,8 @@ void MainView::closeEvent(QCloseEvent *event)
 		queryOptionsView->close();
 	}
 
+	QTimer::singleShot(0, this, SLOT(quit()));
+
 	QWidget::closeEvent(event);
 }
 
@@ -310,4 +312,9 @@ void MainView::about()
 {
 	QMessageBox::about(this, tr("Butler"),
 			tr("Butler is a helper for home keeping via maintaining shoping lists."));
+}
+
+void MainView::quit()
+{
+	QCoreApplication::quit();
 }

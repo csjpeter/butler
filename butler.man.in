@@ -7,51 +7,30 @@
 @PKGNAME@ \- @PRJDESC@
 
 .SH SYNOPSIS
-.B bin/test-@PKGNAME@-string_chunk
-.br
-.B bin/test-@PKGNAME@-string
-.br
-.B bin/test-@PKGNAME@-time
-.br
-.B bin/test-@PKGNAME@-file
-.br
-.B bin/test-@PKGNAME@-mutex
-.br
-.B bin/test-@PKGNAME@-thread
-.br
-.B bin/test-@PKGNAME@-btree
-.br
-.B bin/test-@PKGNAME@-container
-.br
-.B bin/test-@PKGNAME@-sorter_container
-.br
-.B bin/test-@PKGNAME@-owner_list
-.br
-.B bin/test-@PKGNAME@-map
-.br
-.B bin/test-@PKGNAME@-object_tree
-.br
-.B bin/test-@PKGNAME@-ini
-.br
-.B bin/test-@PKGNAME@-json
-.br
+.B @PKGNAME@
 .RS
-.B [--logDir|-l
+.B [--dbfile|-d
+.I sqlite-database-file
+.B ] [--logDir|-l
 .I log-directory
 .B ] [--verbose|-v]
+.br
+.B [--help|-h]
 
 .SH DESCRIPTION
-Test binaries for library @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION@.
-These test binaries should also work with @TCROOT@@DYNAMIC_LIBCSJP@.@VERSION_API@.
+@PRJDESCRIPTION@
 
 .SH OPTIONS
+.IP "--dbfile|-l sqlite-database-file"
+Use the given file as database.
 .IP "--logDir|-l log-directory"
 Use the given directory for logging. With no
-.I log-directory specified
-, there will be no logging.
+.I log-directory
+specified, there will be no logging.
 .IP "--verbose|-v"
-Do write log messages as well to stdout.
+Write log messages to stderr as well, not only into log file.
+.IP "--help|-h"
+Short reminder of available options.
 
 .SH AUTHOR
 @AUTHOR@ <@EMAIL@>
-
