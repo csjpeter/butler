@@ -18,10 +18,11 @@
 
 #include "butler_db.h"
 
-CustomView::CustomView(const QString & dbname, QWidget *parent) :
+CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *parent) :
 	QWidget(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
+	selfDestruct(selfDestruct),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -190,7 +191,10 @@ void CustomView::showEvent(QShowEvent *event)
 
 void CustomView::closeEvent(QCloseEvent *event)
 {
-	saveState();
+	if(!selfDestruct)
+		saveState();
+	else
+		deleteLater();
 
 	QWidget::closeEvent(event);
 }

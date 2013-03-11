@@ -34,7 +34,7 @@ private:
 	Q_OBJECT
 
 public:
-	CustomView(const QString & dbname, QWidget *parent = 0);
+	CustomView(const QString & dbname, bool selfDestruct = false, QWidget *parent = 0);
 	~CustomView();
 
 private:
@@ -60,6 +60,7 @@ private slots:
 private:
 	const QString & dbname;
 	csjp::Object<CustomModel> model;
+	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
 	QTableView *queryView;
 

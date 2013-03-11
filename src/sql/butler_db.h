@@ -33,8 +33,9 @@ public:
 		shop.check(tables);
 		ware.check(tables);
 		item.check(tables);
-		query.check(tables);
-*/	}
+		query.check(tables);*/
+		DBG("sql: %p", &sql);
+	}
 	~Db() { }
 
 public:

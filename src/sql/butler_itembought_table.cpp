@@ -19,6 +19,7 @@
 ItemBoughtTable::ItemBoughtTable(SqlConnection &_sql) :
 	sql(_sql)
 {
+	DBG("sql: %p", &sql);
 }
 
 ItemBoughtTable::~ItemBoughtTable()

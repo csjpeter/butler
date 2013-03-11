@@ -11,6 +11,7 @@ ItemDb::ItemDb(SqlConnection &_sql, TagDb &tagDb) :
 	itemBoughtTable(_sql),
 	itemTable(_sql)
 {
+	DBG("sql: %p", &sql);
 }
 
 ItemDb::~ItemDb()
@@ -82,7 +83,7 @@ void ItemDb::query(const TagNameSet &tags, ItemSet &is)
 
 void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 {
-	sql.transaction();
+//	sql.transaction();
 	try {
 		itemBoughtTable.query(q, stat, is);
 		unsigned s = is.size();
@@ -90,9 +91,9 @@ void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 			Item &item = is.queryAt(i);
 			itemTable.query(item);
 		}
-		sql.commit();
+//		sql.commit();
 	} catch (...) {
-		sql.rollback();
+//		sql.rollback();
 		throw;
 	}
 }

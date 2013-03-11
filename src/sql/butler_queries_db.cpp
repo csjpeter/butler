@@ -13,6 +13,7 @@ QueryDb::QueryDb(SqlConnection &_sql, TagDb &tagDb) :
 	queryWaresTable(_sql),
 	queryShopsTable(_sql)
 {
+	DBG("sql: %p", &sql);
 }
 
 QueryDb::~QueryDb()

@@ -117,6 +117,7 @@ void SqlConnection::close()
 
 QSqlQuery* SqlConnection::createQuery()
 {
+	DBG("sql: %p", this);
 	open();
 
 	QSqlQuery * q = new QSqlQuery(db);

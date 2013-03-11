@@ -12,6 +12,7 @@ WareDb::WareDb(SqlConnection &_sql, TagDb &tagDb) :
 	wareTagsTable(_sql),
 	wareCategoriesTable(_sql)
 {
+	DBG("sql: %p", &sql);
 }
 
 WareDb::~WareDb()

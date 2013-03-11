@@ -19,6 +19,7 @@ SqlQuery::SqlQuery(SqlConnection & sql) :
 	qQuery(0),
 	prepared(false)
 {
+	DBG("sql: %p", &sql);
 }
 
 SqlQuery::~SqlQuery()
@@ -28,6 +29,7 @@ SqlQuery::~SqlQuery()
 
 void SqlQuery::exec(const QString &query)
 {
+	DBG("sql: %p", &sql);
 	if(!qQuery){
 		qQuery = sql.createQuery();
 		qQuery->setForwardOnly(true);

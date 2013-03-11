@@ -255,10 +255,17 @@ void MainView::openCustomView()
 	if(!customView){
 		customView = new CustomView(dbname);
 		customView->setWindowTitle(tr("User query result"));
+		customView->show();
+		customView->raise();
+		customView->activateWindow();
+	} else {
+		CustomView *anotherCustomView;
+		anotherCustomView = new CustomView(dbname, true); /* Deletes itself on close. */
+		anotherCustomView->setWindowTitle(tr("User query result"));
+		anotherCustomView->show();
+		anotherCustomView->raise();
+		anotherCustomView->activateWindow();
 	}
-	customView->show();
-	customView->raise();
-	customView->activateWindow();
 }
 
 void MainView::openTagsView()
