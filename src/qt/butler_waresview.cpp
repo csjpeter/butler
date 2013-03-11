@@ -100,12 +100,6 @@ WaresView::~WaresView()
 void WaresView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of wares failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 
 	QSettings settings(this);
 
@@ -130,6 +124,8 @@ void WaresView::loadState()
 	QSize size = settings.value("waresview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -204,16 +200,10 @@ void WaresView::delWare()
 	const Ware &ware = model.ware(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Shall we delete?"),
-			ware.name,
+			tr("Deleting a ware"),
+			tr("Shall we delete this ware: ") + ware.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Delete ware failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 }

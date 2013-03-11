@@ -91,7 +91,6 @@ void TagTable::query(TagSet &tags)
 		Tag *tag = new Tag(selectQuery.value(nameNo).toString());
 		tag->description = selectQuery.value(descNo).toString();
 		tags.add(tag);
-//		tags.treeValidity();
 	}
 	DBG("-----");
 }

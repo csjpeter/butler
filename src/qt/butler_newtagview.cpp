@@ -66,6 +66,8 @@ void NewTagView::loadState()
 	QSize size = settings.value("newtagview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -97,12 +99,4 @@ void NewTagView::doneClickedSlot(bool toggled)
 	tag = Tag();
 	mapToGui();
 	accept();
-
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Add new tag failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }

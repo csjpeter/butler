@@ -173,6 +173,8 @@ void EditItemView::loadState()
 	QSize size = settings.value("edititemview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -267,12 +269,6 @@ void EditItemView::saveSlot()
 	mapFromGui();
 	
 	model.update(cursor.row(), updatedItem);
-/*	QMessageBox(	QMessageBox::Warning,
-			tr("Update item failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 	/* We want to save any new ware and category before closing dialog. */
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
@@ -282,24 +278,10 @@ void EditItemView::saveSlot()
 		if(categoryEditor->text().size())
 			ware.categories.add(new QString(categoryEditor->text()));
 		wm.addNew(ware);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Item saved to db, "
-					  "but adding new ware failed."),
-					wm.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
 		Ware modified(wm.ware(i));
 		modified.categories.add(new QString(categoryEditor->text()));
 		wm.update(i, modified);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Item saved to db, "
-					  "but adding new ware category failed."),
-					wm.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 	}
 	/* May be it is better to jump to next record than as to close the view. */
 	nextClickedSlot();

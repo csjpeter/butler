@@ -28,21 +28,14 @@ public:
 		shop(sql),
 		item(sql, tag)
 	{
-/*		QStringList tables = sql.tables();
+		QStringList tables = sql.tables();
 		tag.check(tables);
 		shop.check(tables);
 		ware.check(tables);
 		item.check(tables);
-		query.check(tables);*/
-		DBG("sql: %p", &sql);
+		query.check(tables);
 	}
 	~Db() { }
-
-public:
-#if 0
-	void open() { sql.open(); }
-	void close() { sql.close(); }
-#endif
 
 private:
 	SqlConnection sql;

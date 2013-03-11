@@ -25,7 +25,6 @@ public:
 	explicit Database(const Database &) = delete;
 	~Database()
 	{
-		DBG("destructing");
 		delete queriesModel;
 		delete shoppingModel;
 		delete stockModel;
@@ -76,7 +75,6 @@ public:
 	{
 		if(!shoppingModel)
 			shoppingModel = new ShoppingModel(db(), wares());
-		DBG("shoppingModel: %p", shoppingModel);
 		return *shoppingModel;
 	}
 
@@ -84,7 +82,6 @@ public:
 	{
 		if(!stockModel)
 			stockModel = new StockModel(db(), wares());
-		DBG("stockModel: %p", stockModel);
 		return *stockModel;
 	}
 
@@ -92,7 +89,6 @@ public:
 	{
 		if(!tagsModel)
 			tagsModel = new TagsModel(db());
-		DBG("tagsModel: %p", tagsModel);
 		return *tagsModel;
 	}
 
@@ -100,7 +96,6 @@ public:
 	{
 		if(!shopsModel)
 			shopsModel = new ShopsModel(db());
-		DBG("shopsModel: %p", shopsModel);
 		return *shopsModel;
 	}
 
@@ -108,7 +103,6 @@ public:
 	{
 		if(!waresModel)
 			waresModel = new WaresModel(db());
-		DBG("waresModel: %p", waresModel);
 		return *waresModel;
 	}
 
@@ -116,7 +110,6 @@ public:
 	{
 		if(!queriesModel)
 			queriesModel = new QueriesModel(db());
-		DBG("queriesModel: %p", queriesModel);
 		return *queriesModel;
 	}
 

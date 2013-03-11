@@ -114,6 +114,8 @@ void EditWareView::loadState()
 	QSize size = settings.value("editwareview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -171,13 +173,6 @@ void EditWareView::saveSlot()
 {
 	mapFromGui();
 	model.update(cursor.row(), ware);
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Update ware failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }
 
 void EditWareView::closeSlot()

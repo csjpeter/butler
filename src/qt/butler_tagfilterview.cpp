@@ -70,6 +70,8 @@ void TagFilterView::loadState()
 	QSize size = settings.value("tagsfilterview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 

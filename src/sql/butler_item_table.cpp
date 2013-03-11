@@ -15,7 +15,6 @@
 ItemTable::ItemTable(SqlConnection &_sql) :
 	sql(_sql)
 {
-	DBG("sql: %p", &sql);
 }
 
 ItemTable::~ItemTable()

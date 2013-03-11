@@ -16,9 +16,9 @@
 int main(int argc, char *argv[])
 {
 /*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
-
+#ifdef DEBUG
 	csjp::setLogDir("./");
-
+#endif
 	QString dbFileName;
 	QString defaultDbName("localdb");
 

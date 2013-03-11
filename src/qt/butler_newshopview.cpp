@@ -84,6 +84,8 @@ void NewShopView::loadState()
 	QSize size = settings.value("newshopview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -121,11 +123,4 @@ void NewShopView::doneClickedSlot(bool toggled)
 	shop = Shop();
 	mapToGui();
 	accept();
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Add new shop failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }

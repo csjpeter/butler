@@ -96,6 +96,8 @@ void NewItemView::loadState()
 	QSize size = settings.value("newitemview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -130,12 +132,6 @@ void NewItemView::doneClickedSlot(bool toggled)
 
 	mapFromGui();
 	model.addNew(item);
-/*	QMessageBox(	QMessageBox::Warning,
-			tr("Add new item failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 	/* We want to save any new ware and category before closing dialog. */
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
@@ -145,24 +141,10 @@ void NewItemView::doneClickedSlot(bool toggled)
 		if(categoryEditor->text().size())
 			ware.categories.add(new QString(categoryEditor->text()));
 		wm.addNew(ware);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Item saved to db, "
-					  "but adding new ware failed."),
-					wm.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
 		Ware modified(wm.ware(i));
 		modified.categories.add(new QString(categoryEditor->text()));
 		wm.update(i, modified);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Item saved to db, "
-					  "but adding new ware category failed."),
-					wm.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 	}
 	item = Item();
 	mapToGui();

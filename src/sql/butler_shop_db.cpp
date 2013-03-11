@@ -9,7 +9,6 @@ ShopDb::ShopDb(SqlConnection &_sql) :
 	sql(_sql),
 	shopTable(_sql)
 {
-	DBG("sql: %p", &sql);
 }
 
 ShopDb::~ShopDb()

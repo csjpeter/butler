@@ -145,6 +145,8 @@ void QueryOptionsView::loadState()
 	QSize size = settings.value("queryoptionsview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 

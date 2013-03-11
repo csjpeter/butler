@@ -143,13 +143,6 @@ ShoppingView::~ShoppingView()
 void ShoppingView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of items failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}
-*/
 	QSettings settings(this);
 
 	QDateTime uploaded = settings.value("shoppingview/currentitem", "").toDateTime();
@@ -173,6 +166,8 @@ void ShoppingView::loadState()
 	QSize size = settings.value("shoppingview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -249,19 +244,13 @@ void ShoppingView::delItem()
 	const Item &item = model.item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Shall we delete?"),
-			item.name + ", " + item.category,
+			tr("Deleting item"),
+			tr("Shall we delete this item: ") + item.name +
+			(item.category.size() ? (" (" + item.category + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
-	if(msg->exec() == QMessageBox::Yes){
+	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Delete item failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
-	}
 }
 
 void ShoppingView::buyItem()
@@ -311,10 +300,4 @@ void ShoppingView::filterItems()
 void ShoppingView::filterAcceptedSlot()
 {
 	model.query();
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of items failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 }

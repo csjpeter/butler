@@ -19,7 +19,6 @@ SqlQuery::SqlQuery(SqlConnection & sql) :
 	qQuery(0),
 	prepared(false)
 {
-	DBG("sql: %p", &sql);
 }
 
 SqlQuery::~SqlQuery()
@@ -29,7 +28,6 @@ SqlQuery::~SqlQuery()
 
 void SqlQuery::exec(const QString &query)
 {
-	DBG("sql: %p", &sql);
 	if(!qQuery){
 		qQuery = sql.createQuery();
 		qQuery->setForwardOnly(true);
@@ -37,10 +35,9 @@ void SqlQuery::exec(const QString &query)
 
 	prepared = false;
 
-	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%swith error: %s",
-				C_STR(qQuery->executedQuery()),
+		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
+				C_STR(query),
 				C_STR(sql.dbErrorString()));
 }
 
@@ -75,7 +72,7 @@ void SqlQuery::exec()
 
 	DBG("%s", C_STR(qQuery->lastQuery()));
 	if(!qQuery->exec())
-		throw DbError("The below sql query failed:\n%swith error: %s",
+		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
 			C_STR(queryString()), C_STR(sql.dbErrorString()));
 }
 

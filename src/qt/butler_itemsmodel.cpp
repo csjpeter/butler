@@ -20,7 +20,11 @@ ItemsModel::ItemsModel(Db & db, const WaresModel & wmodel) :
 
 ItemsModel::~ItemsModel()
 {
-	itemOperationListeners.remove(*this);
+	/* Since ItemsModel instances are held in a static storage class container somewhere,
+	 * it might happen on destruction time, that itemOperationListener (which is also a
+	 * static storage class object) got destroyed before some Itemsmodel instances. */
+	if(itemOperationListeners.has(*this))
+		itemOperationListeners.remove(*this);
 }
 
 QModelIndex ItemsModel::index(	int row,

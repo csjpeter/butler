@@ -79,6 +79,8 @@ void NewWareView::loadState()
 	QSize size = settings.value("newwareview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -114,10 +116,4 @@ void NewWareView::doneClickedSlot(bool toggled)
 	ware = Ware();
 	mapToGui();
 	accept();
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Add new ware failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();*/
 }

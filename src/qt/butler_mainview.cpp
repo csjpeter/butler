@@ -34,6 +34,9 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	waresView(NULL),
 	queryOptionsView(NULL)
 {
+	/* Quit when main window (this) is closed. */
+	setAttribute(Qt::WA_QuitOnClose, true);
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -255,6 +258,8 @@ void MainView::openCustomView()
 	if(!customView){
 		customView = new CustomView(dbname);
 		customView->setWindowTitle(tr("User query result"));
+	}
+	if(!customView->isVisible()){
 		customView->show();
 		customView->raise();
 		customView->activateWindow();

@@ -41,5 +41,5 @@ bool Application::notify(QObject * receiver, QEvent * event)
 	QMessageBox(	QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();
 
-	return false; /* Was not handled. */
+	return false; /* event was not handled */
 }

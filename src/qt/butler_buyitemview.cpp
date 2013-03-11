@@ -109,6 +109,8 @@ void BuyItemView::loadState()
 	QSize size = settings.value("buyitemview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -128,7 +130,7 @@ void BuyItemView::setItem(unsigned itemRow, unsigned shopRow)
 
 void BuyItemView::mapToGui()
 {
-	nameLabel->setText(item.name + " (" + item.category + ")");
+	nameLabel->setText(item.name + (item.category.size() ? (" (" + item.category) + ")" : ""));
 
 	quantityEditor->blockSignals(true);
 	quantityEditor->setValue(item.quantity);
@@ -171,13 +173,6 @@ void BuyItemView::buy()
 
 	model.buy(itemCursor, item);
 	accept();
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Could not set item to bought."),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }
 
 void BuyItemView::quantityValueChangedSlot(double q)

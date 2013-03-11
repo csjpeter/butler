@@ -98,12 +98,6 @@ TagsView::~TagsView()
 void TagsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of tags failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 
 	QSettings settings(this);
 
@@ -128,6 +122,8 @@ void TagsView::loadState()
 	QSize size = settings.value("tagsview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -202,16 +198,10 @@ void TagsView::delTag()
 	const Tag &tag = model.tag(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Shall we delete?"),
-			tag.name,
+			tr("Deleting a tag"),
+			tr("Shall we delete this tag: ") + tag.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Delete tag failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 }

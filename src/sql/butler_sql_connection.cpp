@@ -52,7 +52,8 @@ SqlConnection::~SqlConnection()
 {
 	try {
 		close();
-//		QSqlDatabase::removeDatabase(dbDesc.name);//db should be destroyed before this call
+		/* FIXME db should be destroyed before this call
+		   QSqlDatabase::removeDatabase(dbDesc.name); */
 	} catch (csjp::Exception & e) {
 		LOG("%s", e.what());
 	} catch (std::exception & e) {
@@ -62,10 +63,9 @@ SqlConnection::~SqlConnection()
 
 void SqlConnection::open()
 {
-	DBG("...");
 	if(db.isOpen()) return;
 
-//	ENSURE(db.isValid(), csjp::LogicError);
+	ENSURE(db.isValid(), csjp::LogicError);
 
 	db.open();
 	if(db.lastError().isValid())
@@ -117,7 +117,6 @@ void SqlConnection::close()
 
 QSqlQuery* SqlConnection::createQuery()
 {
-	DBG("sql: %p", this);
 	open();
 
 	QSqlQuery * q = new QSqlQuery(db);
@@ -133,11 +132,9 @@ void SqlConnection::exec(const QString &query)
 	csjp::Object<QSqlQuery> qQuery(new QSqlQuery(db));
 	qQuery->setForwardOnly(true);
 
-	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%s\n%swith error: %s",
-				C_STR(qQuery->executedQuery()),
-				C_STR(qQuery->lastQuery()),
+		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
+				C_STR(query),
 				C_STR(dbErrorString()));
 }
 

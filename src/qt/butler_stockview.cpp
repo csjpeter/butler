@@ -123,12 +123,6 @@ StockView::~StockView()
 void StockView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of items failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 
 	QSettings settings(this);
 
@@ -153,6 +147,8 @@ void StockView::loadState()
 	QSize size = settings.value("stockview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -211,27 +207,16 @@ void StockView::dropItem()
 	const Item &item = model.item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Shall we add a corresponding one to shopping list?"),
-			item.name + ", " + item.category,
+			tr("Deleting an item from stock"),
+			QString("Shall we add a corresponding item to the shopping list:\n") +
+			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
 			0, Qt::Dialog));
 	int res = msg->exec();
 	if(res == QMessageBox::Yes)
 		model.addShoppingItem(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Adding new item to shopping list failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 	if(res == QMessageBox::Yes || res == QMessageBox::No)
 		model.drop(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Drop item from stock failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 }
 
 void StockView::openAccountingView()
@@ -261,12 +246,6 @@ void StockView::filterItems()
 void StockView::filterAcceptedSlot()
 {
 	model.query();
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of items failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 }
 
 void StockView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)

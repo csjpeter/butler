@@ -108,6 +108,8 @@ void EditShopView::loadState()
 	QSize size = settings.value("editshopview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -168,12 +170,4 @@ void EditShopView::saveSlot()
 	mapFromGui();
 	model.update(cursor.row(), shop);
 	accept();
-
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Update shop failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }

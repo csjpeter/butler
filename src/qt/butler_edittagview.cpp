@@ -91,6 +91,8 @@ void EditTagView::loadState()
 	QSize size = settings.value("edittagview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -145,11 +147,4 @@ void EditTagView::saveSlot()
 	mapFromGui();
 	model.update(cursor.row(), tag);
 	accept();
-/*
-	QMessageBox(	QMessageBox::Warning,
-			tr("Update tag failed"),
-			model.error(),
-			QMessageBox::Ok,
-			0, Qt::Dialog).exec();
-*/
 }

@@ -9,7 +9,6 @@ TagDb::TagDb(SqlConnection &_sql) :
 	sql(_sql),
 	tagTable(_sql)
 {
-	DBG("sql: %p", &sql);
 }
 
 TagDb::~TagDb()

@@ -13,7 +13,6 @@ QueryDb::QueryDb(SqlConnection &_sql, TagDb &tagDb) :
 	queryWaresTable(_sql),
 	queryShopsTable(_sql)
 {
-	DBG("sql: %p", &sql);
 }
 
 QueryDb::~QueryDb()
@@ -80,7 +79,7 @@ void QueryDb::query(QuerySet &qs)
 		for(unsigned i=0; i<s; i++){
 			Query &q = qs.queryAt(i);
 			/* FIXME : We need to upgrade the schema for this. */
-			/*		queryTagsTable.query(q, q.withoutTags);*/
+			/* queryTagsTable.query(q, q.withoutTags); */
 			queryTagsTable.query(q, q.withTags);
 			queryWaresTable.query(q, q.wares);
 			queryShopsTable.query(q, q.shops);

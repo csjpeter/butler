@@ -100,12 +100,6 @@ ShopsView::~ShopsView()
 void ShopsView::showEvent(QShowEvent *event)
 {
 	QWidget::showEvent(event);
-/*		QMessageBox(	QMessageBox::Warning,
-				tr("Querying the list of shops failed"),
-				model.error(),
-				QMessageBox::Ok,
-				0, Qt::Dialog).exec();
-	}*/
 
 	QSettings settings(this);
 
@@ -130,6 +124,8 @@ void ShopsView::loadState()
 	QSize size = settings.value("shopsview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -204,16 +200,10 @@ void ShopsView::delShop()
 	const Shop &shop = model.shop(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Shall we delete?"),
-			shop.name,
+			tr("Deleting a shop"),
+			tr("Shall we delete this shop: ") + shop.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
-/*			QMessageBox(	QMessageBox::Warning,
-					tr("Delete shop failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}*/
 }
