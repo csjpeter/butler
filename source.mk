@@ -153,6 +153,7 @@ source: \
 	$(DIST_DIR)/share/icons/tag.png \
 	$(DIST_DIR)/share/icons/trash.png \
 	$(DIST_DIR)/share/icons/ware.png \
+	$(DIST_DIR)/share/icons/info.png \
 	$(DIST_DIR)/share/icons/butler.png
 
 $(DIST_DIR)/%: %

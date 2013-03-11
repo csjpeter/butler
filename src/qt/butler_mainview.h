@@ -68,6 +68,7 @@ private:
 	QToolButton *shopsTBtn;
 	QToolButton *tagsTBtn;
 	QToolButton *waresTBtn;
+	QToolButton *infoTBtn;
 //	QToolButton *queryOptionsTBtn;
 
 	QAction *shoppingAct;
@@ -76,6 +77,7 @@ private:
 	QAction *shopsAct;
 	QAction *tagsAct;
 	QAction *waresAct;
+	QAction *infoAct;
 //	QAction *queryOptionsAct;
 
 	ShoppingView *shoppingView;
@@ -85,6 +87,7 @@ private:
 	TagsView *tagsView;
 	WaresView *waresView;
 	QueryOptionsView *queryOptionsView;
+//	WaresView *infoView;
 };
 
 #endif

@@ -95,7 +95,7 @@ cp -p config ${DIST_DIR}/config || exit $?
 generate configure.in ${DIST_DIR}/configure || exit $?
 chmod u+x ${DIST_DIR}/configure || exit $?
 generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
-generate license.in ${DIST_DIR}/license || exit $?
+generate srclicense.in ${DIST_DIR}/license || exit $?
 #generate binlicense.in ${DIST_DIR}/license.binary || exit $?
 #generate srclicense.in ${DIST_DIR}/license.source || exit $?
 generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
@@ -110,7 +110,7 @@ make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 #
 test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
 
-generate license.in ${DIST_DIR}/debian/copyright || exit $?
+generate binlicense.in ${DIST_DIR}/debian/copyright || exit $?
 generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
 generate debian/control.in ${DIST_DIR}/debian/control || exit $?
 test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {

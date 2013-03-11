@@ -34,9 +34,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	waresView(NULL),
 	queryOptionsView(NULL)
 {
-	/* Quit when main window (this) is closed. */
-	setAttribute(Qt::WA_QuitOnClose, true);
-
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -47,7 +44,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(shoppingAct, SIGNAL(triggered()), this, SLOT(openShoppingView()));
 	shoppingTBtn = new QToolButton(actionTB);
 	shoppingTBtn->setDefaultAction(shoppingAct);
-	shoppingTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	shoppingTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	actionTB->addWidget(shoppingTBtn);
 
 	stockAct = new QAction(QIcon(ICONS_PATH "stock.png"), tr("&Maintain stock"), this);
@@ -55,7 +52,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	stockAct->setToolTip(tr("Maintain stock list"));
 	connect(stockAct, SIGNAL(triggered()), this, SLOT(openStockView()));
 	stockTBtn = new QToolButton(actionTB);
-	stockTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	stockTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	stockTBtn->setDefaultAction(stockAct);
 	actionTB->addWidget(stockTBtn);
 
@@ -64,7 +61,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	customAct->setToolTip(tr("Lists by custom queries"));
 	connect(customAct, SIGNAL(triggered()), this, SLOT(openCustomView()));
 	customTBtn = new QToolButton(actionTB);
-	customTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	customTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	customTBtn->setDefaultAction(customAct);
 	actionTB->addWidget(customTBtn);
 
@@ -73,7 +70,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	shopsAct->setToolTip(tr("List of shops"));
 	connect(shopsAct, SIGNAL(triggered()), this, SLOT(openShopsView()));
 	shopsTBtn = new QToolButton(actionTB);
-	shopsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	shopsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	shopsTBtn->setDefaultAction(shopsAct);
 	actionTB->addWidget(shopsTBtn);
 
@@ -82,7 +79,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	tagsAct->setToolTip(tr("Tag editor"));
 	connect(tagsAct, SIGNAL(triggered()), this, SLOT(openTagsView()));
 	tagsTBtn = new QToolButton(actionTB);
-	tagsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	tagsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	tagsTBtn->setDefaultAction(tagsAct);
 	actionTB->addWidget(tagsTBtn);
 
@@ -91,34 +88,53 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	waresAct->setToolTip(tr("Ware editor"));
 	connect(waresAct, SIGNAL(triggered()), this, SLOT(openWaresView()));
 	waresTBtn = new QToolButton(actionTB);
-	waresTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	waresTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	waresTBtn->setDefaultAction(waresAct);
 	actionTB->addWidget(waresTBtn);
+
+	infoAct = new QAction(QIcon(ICONS_PATH "info.png"), tr("&Info"), this);
+	infoAct->setShortcut(tr("I"));
+	infoAct->setToolTip(tr("License information"));
+	connect(infoAct, SIGNAL(triggered()), this, SLOT(about()));
+	infoTBtn = new QToolButton(actionTB);
+	infoTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	infoTBtn->setDefaultAction(infoAct);
+	actionTB->addWidget(infoTBtn);
 
 	/*		queryOptionsAct = new QAction(QIcon(ICONS_PATH "query.png"), tr("&Queries"), this);
 			queryOptionsAct->setShortcut(tr("Q"));
 			queryOptionsAct->setToolTip(tr("Set filter options for user queries"));
 			connect(queryOptionsAct, SIGNAL(triggered()), this, SLOT(openQueryOptionsView()));
 			queryOptionsTBtn = new QToolButton(actionTB);
-			queryOptionsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+			queryOptionsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 			queryOptionsTBtn->setDefaultAction(queryOptionsAct);
 			actionTB->addWidget(queryOptionsTBtn);
 			*/
 	/* making the window layouting */
-	//		QVBoxLayout *layout = new QVBoxLayout;
-	QHBoxLayout *layout = new QHBoxLayout;
+	QVBoxLayout *layout = new QVBoxLayout;
+	//QHBoxLayout *layout = new QHBoxLayout;
 	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
-	//		actionTB->setOrientation(Qt::Vertical);
-	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-	//		actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	actionTB->setOrientation(Qt::Vertical);
+	//actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	actionTB->setIconSize(QSize(64,64));
 	layout->addWidget(actionTB);
 
+/*	QVBoxLayout *layout = new QVBoxLayout;
+	QPushButton * button;
+	button = new QPushButton(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
+	layout->addWidget(label);
+*/
 	/* restore last state */
 	loadState();
 
 	QSettings settings(this);
+	layout->setContentsMargins(0,0,0,0);
+	setLayout(layout);
 	if(settings.value("mainview/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
 	if(settings.value("mainview/stockview", false).toBool())

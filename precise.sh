@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ./dist-config.sh -- \
-	--debug \
 	--pkg-config-path=/opt/csjp/lib/pkgconfig \
 	--prefix=usr \
 	--fpic \
