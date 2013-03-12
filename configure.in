@@ -32,7 +32,7 @@ function generate ()
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
-                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\"|g" \
+                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}n\"|g" \
 		> $2 || exit $?
 }
 

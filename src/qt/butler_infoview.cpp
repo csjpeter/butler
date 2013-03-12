@@ -12,16 +12,26 @@
 InfoView::InfoView(QWidget *parent) :
 	QWidget(parent)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
+	QString license(ENDUSER_LICENSE);
 
-	QPlainTextEdit * textView = new QPlainTextEdit(this);
+	QVBoxLayout * layout = new QVBoxLayout;
+
+	QPlainTextEdit * textView = new QPlainTextEdit(license, this);
 	textView->setReadOnly(true);
 	layout->addWidget(textView);
+
+	QHBoxLayout * hLayout = new QHBoxLayout;
+
+	hLayout->addStretch(0);
 
 	QPushButton * button = new QPushButton(tr("Close"));
 	button->setDefault(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(close()));
-	layout->addWidget(button);
+	hLayout->addWidget(button);
+
+	hLayout->addStretch(0);
+
+	layout->addLayout(hLayout);
 
 	/* restore last state */
 	loadState();
