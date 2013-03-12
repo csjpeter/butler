@@ -8,5 +8,9 @@
 #define VERSION "@VERSION@"
 #define PREFIX "@PREFIX@"
 #define PKGNAME "@PKGNAME@"
+
 #define ICONS_PATH "/@PREFIX@/share/@PKGNAME@/icons/"
+#define DOCDIR "@DOCDIR@"
+
+#define ENDUSER_LICENSE @ENDUSER_LICENSE@
 

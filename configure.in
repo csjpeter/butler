@@ -3,6 +3,7 @@
 source config
 
 PKGNAME=@PKGNAME@
+ENDUSER_LICENSE="$(cat debian/copyright | sed 's|$|\\\\n\\\\\\|g')"
 
 DEBUG=no
 
@@ -31,6 +32,7 @@ function generate ()
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
+                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\"|g" \
 		> $2 || exit $?
 }
 
