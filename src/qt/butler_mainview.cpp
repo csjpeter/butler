@@ -46,7 +46,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	button = new QPushButton(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"));
 	button->setDefault(false);
 	button->setFlat(true);
-//	button->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	layout->addWidget(button, 0, Qt::AlignLeft);
 

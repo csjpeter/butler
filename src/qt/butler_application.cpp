@@ -3,8 +3,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-/*#include <iostream>*/
-
 #include <QtGui>
 
 #include <config.h>

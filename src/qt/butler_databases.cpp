@@ -52,7 +52,6 @@ private:
 
 		if(desc->driver == "QSQLITE") {
 			database = new Db(*desc);
-			//if(!QFile::exists(filepath))
 		} else
 			throw DbError("Driver '%s' is not yet supported.", C_STR(desc->driver));
 

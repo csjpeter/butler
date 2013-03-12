@@ -15,7 +15,6 @@
 
 int main(int argc, char *args[])
 {
-/*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
 	QString dbFileName;
 	QString defaultDbName("localdb");
 

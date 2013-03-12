@@ -52,7 +52,7 @@ private:
 	void mapToGui();
 	void mapFromGui();
 	
-//	QString stringSetToString(const csjp::OwnerContainer<QString> &strSet);
+	//QString stringSetToString(const csjp::OwnerContainer<QString> &strSet);
 
 private slots:
 	void okClickedSlot(bool);

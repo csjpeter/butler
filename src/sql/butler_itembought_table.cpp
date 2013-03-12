@@ -144,8 +144,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 			if(0 < i)
 				tcmd += " OR";
 			tcmd += " tag = '";
-			/* FIXME need escapeing here */
-			tcmd += q.withTags.queryAt(i);
+			tcmd += q.withTags.queryAt(i).replace("'", "''");
 			tcmd += "'";
 		}
 		tcmd.append(")");
@@ -162,8 +161,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 			if(0 < i)
 				wcmd += " OR";
 			wcmd += " Items.name = '";
-			/* FIXME need escapeing here */
-			wcmd += q.wares.queryAt(i);
+			wcmd += q.wares.queryAt(i).replace("'", "''");
 			wcmd += "'";
 		}
 		wcmd.append(")");
@@ -180,8 +178,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 			if(0 < i)
 				scmd += " OR";
 			scmd += " Shops.name = '";
-			/* FIXME need escapeing here */
-			scmd += q.shops.queryAt(i);
+			scmd += q.shops.queryAt(i).replace("'", "''");
 			scmd += "'";
 		}
 		scmd.append(")");
@@ -199,8 +196,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 			if(0 < i)
 				tcmd += " OR";
 			tcmd += " tag = '";
-			/* FIXME need escapeing here */
-			tcmd += q.withoutTags.queryAt(i);
+			tcmd += q.withoutTags.queryAt(i).replace("'", "''");
 			tcmd += "'";
 		}
 		tcmd += " GROUP BY name)";

@@ -141,7 +141,7 @@ bool ShopsModel::setData(const QModelIndex & index, const QVariant & value, int 
 			return false;
 	}
 
-	//		dataChanged(index, index);
+	//dataChanged(index, index);
 	return true;
 }
 

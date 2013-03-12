@@ -3,8 +3,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-/*#include <iostream>*/
-
 #include <QSessionManager>
 #include <QMessageBox>
 #include <QDir>

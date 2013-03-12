@@ -139,8 +139,7 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 			if(0 < i)
 				cmd += " OR";
 			cmd += " tag = '";
-			/* FIXME need escapeing here */
-			cmd += tags.queryAt(i);
+			cmd += tags.queryAt(i).replace("'", "''");
 			cmd += "'";
 		}
 		if(0 < s)

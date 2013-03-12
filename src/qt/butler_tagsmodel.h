@@ -79,7 +79,7 @@ public:
 public:
 	int index(const QString &name) const
 		__attribute__ ((no_instrument_function));
-	void setTagSet(const TagSet &);
+	//void setTagSet(const TagSet &);
 	const TagSet& tagSet();
 	const Tag& tag(int row)
 		__attribute__ ((no_instrument_function));

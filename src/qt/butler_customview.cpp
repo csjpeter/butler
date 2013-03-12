@@ -231,7 +231,7 @@ void CustomView::editItem()
 	if(!editItemView){
 		editItemView = new EditItemView(dbname, *model, this);
 		editItemView->setModal(true);
-/*		editItemView->setWindowModality(Qt::ApplicationModal);*/
+		//editItemView->setWindowModality(Qt::ApplicationModal);
 		editItemView->setWindowTitle(tr("Edit item details"));
 	}
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
@@ -272,7 +272,7 @@ void CustomView::openAccountingView()
 	if(!accountingView){
 		accountingView = new AccountingView(dbname, *model, this);
 		accountingView->setModal(true);
-/*		accountingView->setWindowModality(Qt::ApplicationModal);*/
+		//accountingView->setWindowModality(Qt::ApplicationModal);
 		accountingView->setWindowTitle(tr("Accounting view"));
 	}
 	accountingView->show();
@@ -309,7 +309,7 @@ void CustomView::filterItems()
 	if(!queryOptsView){
 		queryOptsView = new QueryOptionsView(dbname, model->opts);
 		queryOptsView->setModal(true);
-/*		queryOptsView->setWindowModality(Qt::ApplicationModal);*/
+		//queryOptsView->setWindowModality(Qt::ApplicationModal);
 		queryOptsView->setWindowTitle(tr("Query options view"));
 		connect(queryOptsView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));

@@ -175,6 +175,7 @@ int TagsModel::index(const QString &name) const
 
 /* FIXME find better (reference) solution to avoid full copy and thus
  * have changes automatically adapted by other models and view. */
+/*
 void TagsModel::setTagSet(const TagSet &ts)
 {
 	try {
@@ -186,7 +187,7 @@ void TagsModel::setTagSet(const TagSet &ts)
 		throw;
 	}
 }
-
+*/
 const TagSet& TagsModel::tagSet()
 {
 	return TagsModel::tags;
