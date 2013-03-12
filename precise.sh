@@ -2,7 +2,8 @@
 
 ./dist-config.sh -- \
 	--pkg-config-path=/opt/csjp/lib/pkgconfig \
-	--prefix=usr \
+	--prefix=opt/butler0.1 \
+	--appsdir=usr/share/applications \
 	--fpic \
 	--gnu-source || exit $?
 

@@ -118,6 +118,9 @@ function process_args ()
 			(--libexecdir)
 			        LIBEXEC_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
 			;;
+			(--appsdir)
+			        APPSDIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
 			# Some option we want to accept but do nothing for them
 			(--disable-maintainer-mode)
 			;;
@@ -199,10 +202,9 @@ test "x${INFO_DIR}" = "x" && { INFO_DIR=${TCROOT}${PREFIX}share/info ; }
 test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=${TCROOT}etc ; }
 test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=${TCROOT}var ; }
 test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${TCROOT}${PREFIX}lib ; }
+test "x${APPSDIR}" = "x" && { APPSDIR=${TCROOT}${PREFIX}share/applications ; }
 
 DOCDIR=${TCROOT}${PREFIX}share/doc/${PKGNAME}
-
-APPSDIR=${TCROOT}${PREFIX}share/applications
 
 generate Makefile.in Makefile || exit $?
 generate doxyfile.in doxyfile || exit $?
