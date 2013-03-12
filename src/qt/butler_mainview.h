@@ -28,6 +28,7 @@ class ShopsView;
 class TagsView;
 class WaresView;
 class QueryOptionsView;
+class InfoView;
 
 class MainView : public QWidget
 {
@@ -53,32 +54,13 @@ private slots:
 	void openTagsView();
 	void openWaresView();
 	void openQueryOptionsView();
+	void openInfoView();
 
 	void about();
 	void quit();
 
 private:
 	QString dbname;
-
-	QToolBar *actionTB;
-
-	QToolButton *shoppingTBtn;
-	QToolButton *stockTBtn;
-	QToolButton *customTBtn;
-	QToolButton *shopsTBtn;
-	QToolButton *tagsTBtn;
-	QToolButton *waresTBtn;
-	QToolButton *infoTBtn;
-//	QToolButton *queryOptionsTBtn;
-
-	QAction *shoppingAct;
-	QAction *stockAct;
-	QAction *customAct;
-	QAction *shopsAct;
-	QAction *tagsAct;
-	QAction *waresAct;
-	QAction *infoAct;
-//	QAction *queryOptionsAct;
 
 	ShoppingView *shoppingView;
 	StockView *stockView;
@@ -87,7 +69,7 @@ private:
 	TagsView *tagsView;
 	WaresView *waresView;
 	QueryOptionsView *queryOptionsView;
-//	WaresView *infoView;
+	InfoView *infoView;
 };
 
 #endif

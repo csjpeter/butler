@@ -18,6 +18,7 @@
 #include "butler_waresview.h"
 #include "butler_customview.h"
 #include "butler_queryoptionsview.h"
+#include "butler_infoview.h"
 
 #include "butler_application.h"
 
@@ -32,109 +33,83 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	shopsView(NULL),
 	tagsView(NULL),
 	waresView(NULL),
-	queryOptionsView(NULL)
+	queryOptionsView(NULL),
+	infoView(NULL)
 {
-	/* action toolbar */
-	actionTB = new QToolBar(tr("Action toolbar"));
-
-	/* actions */
-	shoppingAct = new QAction(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"), this);
-	shoppingAct->setShortcut(tr("S"));
-	shoppingAct->setToolTip(tr("Shopping list"));
-	connect(shoppingAct, SIGNAL(triggered()), this, SLOT(openShoppingView()));
-	shoppingTBtn = new QToolButton(actionTB);
-	shoppingTBtn->setDefaultAction(shoppingAct);
-	shoppingTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	actionTB->addWidget(shoppingTBtn);
-
-	stockAct = new QAction(QIcon(ICONS_PATH "stock.png"), tr("&Maintain stock"), this);
-	stockAct->setShortcut(tr("M"));
-	stockAct->setToolTip(tr("Maintain stock list"));
-	connect(stockAct, SIGNAL(triggered()), this, SLOT(openStockView()));
-	stockTBtn = new QToolButton(actionTB);
-	stockTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	stockTBtn->setDefaultAction(stockAct);
-	actionTB->addWidget(stockTBtn);
-
-	customAct = new QAction(QIcon(ICONS_PATH "custom.png"), tr("&Custom list"), this);
-	customAct->setShortcut(tr("C"));
-	customAct->setToolTip(tr("Lists by custom queries"));
-	connect(customAct, SIGNAL(triggered()), this, SLOT(openCustomView()));
-	customTBtn = new QToolButton(actionTB);
-	customTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	customTBtn->setDefaultAction(customAct);
-	actionTB->addWidget(customTBtn);
-
-	shopsAct = new QAction(QIcon(ICONS_PATH "shop.png"), tr("S&hops"), this);
-	shopsAct->setShortcut(tr("L"));
-	shopsAct->setToolTip(tr("List of shops"));
-	connect(shopsAct, SIGNAL(triggered()), this, SLOT(openShopsView()));
-	shopsTBtn = new QToolButton(actionTB);
-	shopsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	shopsTBtn->setDefaultAction(shopsAct);
-	actionTB->addWidget(shopsTBtn);
-
-	tagsAct = new QAction(QIcon(ICONS_PATH "tag.png"), tr("&Tags"), this);
-	tagsAct->setShortcut(tr("T"));
-	tagsAct->setToolTip(tr("Tag editor"));
-	connect(tagsAct, SIGNAL(triggered()), this, SLOT(openTagsView()));
-	tagsTBtn = new QToolButton(actionTB);
-	tagsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	tagsTBtn->setDefaultAction(tagsAct);
-	actionTB->addWidget(tagsTBtn);
-
-	waresAct = new QAction(QIcon(ICONS_PATH "ware.png"), tr("&Wares"), this);
-	waresAct->setShortcut(tr("W"));
-	waresAct->setToolTip(tr("Ware editor"));
-	connect(waresAct, SIGNAL(triggered()), this, SLOT(openWaresView()));
-	waresTBtn = new QToolButton(actionTB);
-	waresTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	waresTBtn->setDefaultAction(waresAct);
-	actionTB->addWidget(waresTBtn);
-
-	infoAct = new QAction(QIcon(ICONS_PATH "info.png"), tr("&Info"), this);
-	infoAct->setShortcut(tr("I"));
-	infoAct->setToolTip(tr("License information"));
-	connect(infoAct, SIGNAL(triggered()), this, SLOT(about()));
-	infoTBtn = new QToolButton(actionTB);
-	infoTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	infoTBtn->setDefaultAction(infoAct);
-	actionTB->addWidget(infoTBtn);
-
-	/*		queryOptionsAct = new QAction(QIcon(ICONS_PATH "query.png"), tr("&Queries"), this);
-			queryOptionsAct->setShortcut(tr("Q"));
-			queryOptionsAct->setToolTip(tr("Set filter options for user queries"));
-			connect(queryOptionsAct, SIGNAL(triggered()), this, SLOT(openQueryOptionsView()));
-			queryOptionsTBtn = new QToolButton(actionTB);
-			queryOptionsTBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-			queryOptionsTBtn->setDefaultAction(queryOptionsAct);
-			actionTB->addWidget(queryOptionsTBtn);
-			*/
-	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-	//QHBoxLayout *layout = new QHBoxLayout;
 	layout->setContentsMargins(0,0,0,0);
-	setLayout(layout);
-	actionTB->setOrientation(Qt::Vertical);
-	//actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	actionTB->setIconSize(QSize(64,64));
-	layout->addWidget(actionTB);
 
-/*	QVBoxLayout *layout = new QVBoxLayout;
 	QPushButton * button;
+
+	layout->addStretch(0);
+
 	button = new QPushButton(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"));
 	button->setDefault(false);
 	button->setFlat(true);
+//	button->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
-	layout->addWidget(label);
-*/
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "stock.png"), tr("&Maintain stock"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "custom.png"), tr("&Custom list"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "shop.png"), tr("S&hops"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "tag.png"), tr("&Tags"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "ware.png"), tr("&Wares"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(ICONS_PATH "info.png"), tr("&Info"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	QHBoxLayout *hLayout = new QHBoxLayout;
+	hLayout->addStretch(0);
+	hLayout->addLayout(layout);
+	hLayout->addStretch(0);
+	setLayout(hLayout);
+
 	/* restore last state */
 	loadState();
 
 	QSettings settings(this);
-	layout->setContentsMargins(0,0,0,0);
-	setLayout(layout);
 	if(settings.value("mainview/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
 	if(settings.value("mainview/stockview", false).toBool())
@@ -149,7 +124,8 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 		QTimer::singleShot(0, this, SLOT(openWaresView()));
 	if(settings.value("mainview/queryoptionsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
-
+	if(settings.value("mainview/infoview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openInfoView()));
 }
 
 MainView::~MainView()
@@ -212,6 +188,8 @@ void MainView::loadState()
 	QSize size = settings.value("mainview/size", QSize()).toSize();
 	if(size.isValid())
 		resize(size);
+	else
+		adjustSize();
 	move(pos);
 }
 
@@ -234,6 +212,8 @@ void MainView::saveState()
 			waresView != NULL && waresView->isVisible());
 	settings.setValue("mainview/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
+	settings.setValue("mainview/infoview",
+			infoView != NULL && infoView->isVisible());
 
 	settings.setValue("mainview/dbfile", databaseDescriptor(dbname).databaseName);
 }
@@ -322,6 +302,17 @@ void MainView::openQueryOptionsView()
 	}
 	queryOptionsView->show();
 #endif
+}
+
+void MainView::openInfoView()
+{
+	if(!infoView){
+		infoView = new InfoView();
+		infoView->setWindowTitle(tr("About this software"));
+	}
+	infoView->show();
+	infoView->raise();
+	infoView->activateWindow();
 }
 
 void MainView::about()

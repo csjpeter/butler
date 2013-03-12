@@ -169,6 +169,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_config.opp \
 	tmp/src/qt/butler_databases.opp \
 	tmp/src/qt/butler_mainview.opp \
+	tmp/src/qt/butler_infoview.opp \
 	tmp/src/qt/butler_tagsmodel.opp \
 	tmp/src/qt/butler_shopsmodel.opp \
 	tmp/src/qt/butler_waresmodel.opp \
@@ -200,6 +201,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_config.opp \
 	tmp/src/qt/moc/butler_databases.opp \
 	tmp/src/qt/moc/butler_mainview.opp \
+	tmp/src/qt/moc/butler_infoview.opp \
 	tmp/src/qt/moc/butler_tagsmodel.opp \
 	tmp/src/qt/moc/butler_shopsmodel.opp \
 	tmp/src/qt/moc/butler_waresmodel.opp \
