@@ -9,7 +9,7 @@
 #define PREFIX "@PREFIX@"
 #define PKGNAME "@PKGNAME@"
 
-#define ICONS_PATH "/@PREFIX@/share/@PKGNAME@/icons/"
+#define ICONS_PATH "/@PREFIX@share/@PKGNAME@/icons/"
 
 #define ENDUSER_LICENSE @ENDUSER_LICENSE@
 
