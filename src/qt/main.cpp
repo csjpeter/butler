@@ -12,6 +12,7 @@
 #include "butler_application.h"
 #include "butler_databases.h"
 #include "butler_mainview.h"
+#include "butler_config.h"
 
 int main(int argc, char *args[])
 {
@@ -59,6 +60,13 @@ int main(int argc, char *args[])
 		return 1;
 	}
 
+	try {
+		Path::initRootPath(args[0]);
+	} catch (std::exception & e) {
+		fprintf(stderr, "Failed to determine the installation root directory.");
+		e.what();
+		return -1;
+	}
 
 	{
 		if(dbFileName == ""){

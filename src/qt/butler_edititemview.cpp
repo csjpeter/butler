@@ -55,7 +55,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	uploadDateTime = new QDateTimeEdit;
 	uploadDateTime->setEnabled(false);
 	uploadDateTime->setCalendarPopup(true);
-	uploadDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	uploadDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(uploadDateTime, 2, 1, 1, 2);
 
 	label = new QLabel(tr("Quantity :"), this);
@@ -90,7 +90,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	gridLayout->addWidget(label, 7, 0, 1, 1);
 	purchaseDateTime = new QDateTimeEdit;
 	purchaseDateTime->setCalendarPopup(true);
-	purchaseDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 2);
 
 	label = new QLabel(tr("Shop (place of buy) :"), this);

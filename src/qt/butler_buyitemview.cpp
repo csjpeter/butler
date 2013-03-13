@@ -59,7 +59,7 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
 	gridLayout->addWidget(label, 7, 0, 1, 1);
 	purchaseDateTime = new QDateTimeEdit;
 	purchaseDateTime->setCalendarPopup(true);
-	purchaseDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 3);
 
 	label = new QLabel(tr("Shop (place of buy):"));

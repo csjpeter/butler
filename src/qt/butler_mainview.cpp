@@ -21,6 +21,7 @@
 #include "butler_infoview.h"
 
 #include "butler_application.h"
+#include "butler_config.h"
 
 #include "butler_mainview.h"
 
@@ -43,7 +44,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"));
+	button = new QPushButton(QIcon(Path::icon("shopping.png")), tr("&Shopping"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
@@ -51,7 +52,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "stock.png"), tr("&Maintain stock"));
+	button = new QPushButton(QIcon(Path::icon("stock.png")), tr("&Maintain stock"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
@@ -59,7 +60,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "custom.png"), tr("&Custom list"));
+	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
@@ -67,7 +68,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "shop.png"), tr("S&hops"));
+	button = new QPushButton(QIcon(Path::icon("shop.png")), tr("S&hops"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
@@ -75,7 +76,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "tag.png"), tr("&Tags"));
+	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Tags"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
@@ -83,7 +84,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "ware.png"), tr("&Wares"));
+	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
@@ -91,7 +92,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(ICONS_PATH "info.png"), tr("&Info"));
+	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));

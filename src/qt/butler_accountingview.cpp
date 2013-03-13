@@ -40,7 +40,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	gridLayout->addWidget(label, 1, 0, 1, 1);
 	purchaseDateTime = new QDateTimeEdit;
 	purchaseDateTime->setCalendarPopup(true);
-	purchaseDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 1, 1, 1, 2);
 	
 	label = new QLabel("", this);
@@ -102,7 +102,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	uploadDateTime = new QDateTimeEdit;
 	uploadDateTime->setEnabled(false);
 	uploadDateTime->setCalendarPopup(true);
-	uploadDateTime->setDisplayFormat(Config::instance().dateTimeFormat());
+	uploadDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(uploadDateTime, 10, 1, 1, 2);
 
 	label = new QLabel(tr("Bought :"), this);

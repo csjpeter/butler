@@ -30,14 +30,14 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	gridLayout->addWidget(label, 1, 0, 1, 1);
 	startDate = new QDateTimeEdit(this);
 	startDate->setCalendarPopup(true);
-	startDate->setDisplayFormat(Config::instance().dateTimeFormat());
+	startDate->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(startDate, 1, 1, 1, 3);
 
 	label = new QLabel(tr("End date :"), this);
 	gridLayout->addWidget(label, 2, 0, 1, 1);
 	endDate = new QDateTimeEdit(this);
 	endDate->setCalendarPopup(true);
-	endDate->setDisplayFormat(Config::instance().dateTimeFormat());
+	endDate->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(endDate, 2, 1, 1, 3);
 
 	label = new QLabel(tr("Wares (any) :"), this);
