@@ -4,6 +4,14 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+build:
+	dh_testdir
+	#dh_auto_configure
+	./configure
+	dh_auto_build
+	#make build
+	dh_auto_test
+
 binary:
 	dh_testroot -O--parallel
 	dh_prep -O--parallel
