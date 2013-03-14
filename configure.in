@@ -80,6 +80,9 @@ function process_args ()
 			(--gnu-source)
 				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
 			;;
+			(--non-gnu-source)
+				CFLAGS="-U_GNU_SOURCE"
+			;;
 			(--fpic)
 				CFLAGS="${CFLAGS} -fPIC"
 			;;
@@ -94,6 +97,9 @@ function process_args ()
 			;;
 			(--libs)
 				LIBS="${LIBS} ${VALUE}"
+			;;
+			(--cflags)
+				CFLAGS="${CFLAGS} ${VALUE}"
 			;;
 			(--ldflags)
 				LDFLAGS="${LDFLAGS} ${VALUE}"
