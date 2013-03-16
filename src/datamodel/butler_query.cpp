@@ -6,15 +6,21 @@
 #include "butler_query.h"
 
 Query::Query() :
-	name("")
+	name(""),
+	startDate(QDate(-4000, 1, 1)),
+	endDate(QDateTime::currentDateTime()),
+	stockOption(ALL_BOUGHT_ITEM),
+	tagOption(MATCH_ANY_TAGS)
 {
 }
 
-Query::Query(const QString &_name)
+Query::Query(const QString & name) :
+	name(name),
+	startDate(QDate(-4000, 1, 1)),
+	endDate(QDateTime::currentDateTime()),
+	stockOption(ALL_BOUGHT_ITEM),
+	tagOption(MATCH_ANY_TAGS)
 {
-	name = _name;
-	stockOption = ALL_BOUGHT_ITEM;
-	tagOption = MATCH_ANY_TAGS;
 }
 
 Query::Query(const Query &qo)
