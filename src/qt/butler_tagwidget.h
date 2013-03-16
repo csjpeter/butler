@@ -37,7 +37,6 @@ public:
 	void deselectAll();
 
 public:
-	virtual QSize sizeHint() const;
 	void resizeEvent(QResizeEvent *event);
 
 private:

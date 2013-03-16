@@ -77,14 +77,6 @@ void TagWidget::prepareContent()
 	updateGeometry();
 }
 
-QSize TagWidget::sizeHint() const
-{
-	if(parentWidget())
-		return QSize(parentWidget()->height(), parentWidget()->width());
-
-	return QSize(100, 100);
-}
-
 void TagWidget::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
