@@ -11,7 +11,7 @@
 
 #include <butler_tag_set.h>
 
-#include <csjp_reference_container.h>
+#include <csjp_sorter_reference_container.h>
 
 #include "butler_databases.h"
 
@@ -27,17 +27,25 @@ private:
 public:
 	TagWidget(const QString & dbname, QWidget *parent);
 
+public slots:
 	void prepareContent();
+
+public:
 	void setTags(const TagNameSet &tags);
 	void getTags(TagNameSet &tags);
 	void selectAll();
 	void deselectAll();
 
+public:
+	virtual QSize sizeHint() const;
+	void resizeEvent(QResizeEvent *event);
+
 private:
 	const QString & dbname;
 	const TagSet & tagSet;
-	csjp::ReferenceContainer<QCheckBox> btnContainer;
+	csjp::SorterReferenceContainer<QCheckBox> btnContainer;
 	QGridLayout *gridLayout;
+	int maxTagCheckboxWidth;
 };
 
 bool operator<(const QCheckBox &a, const QCheckBox &b);

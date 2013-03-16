@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ./dist-config.sh -- \
+	--debug \
 	--pkg-config-path=/opt/csjp/lib/pkgconfig \
 	--prefix=opt/butler0.1 \
 	--appsdir=usr/share/applications \

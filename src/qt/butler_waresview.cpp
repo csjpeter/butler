@@ -10,10 +10,9 @@
 #include "butler_waresview.h"
 #include "butler_newwareview.h"
 #include "butler_editwareview.h"
+#include "butler_config.h"
 
 #include "butler_application.h"
-
-#include "butler_db.h"
 
 WaresView::WaresView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
@@ -26,17 +25,17 @@ WaresView::WaresView(const QString & dbname, QWidget *parent) :
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
-	newAct = new QAction(QIcon(ICONS_PATH "add.png"), tr("&New"), this);
+	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"), this);
 	newAct->setShortcut(tr("N"));
 	newAct->setToolTip(tr("Add new ware to buy"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newWare()));
 
-	editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit ware details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editWare()));
 
-	delAct = new QAction(QIcon(ICONS_PATH "delete.png"), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete ware from wareping list"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delWare()));
@@ -81,7 +80,6 @@ WaresView::WaresView(const QString & dbname, QWidget *parent) :
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 //	QHBoxLayout *layout = new QHBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
 //	actionTB->setOrientation(Qt::Vertical);
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);

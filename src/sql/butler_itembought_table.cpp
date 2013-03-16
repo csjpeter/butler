@@ -216,7 +216,6 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		cmd += QString::number(q.withTags.size());
 	}
 
-	DBG("Assembled select query: %s", qPrintable(cmd));
 	sqlQuery.exec(cmd);
 
 	items.clear();

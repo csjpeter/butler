@@ -30,6 +30,7 @@ protected:
 private:
 	void showEvent(QShowEvent *event);
 	void closeEvent(QCloseEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 	void loadState();
 	void saveState();

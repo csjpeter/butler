@@ -45,6 +45,7 @@ protected:
 private:
 	void showEvent(QShowEvent *event);
 	void closeEvent(QCloseEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 	void loadState();
 	void saveState();
@@ -58,6 +59,8 @@ private slots:
 	void okClickedSlot(bool);
 	void selectAllClickedSlot(bool);
 	void selectNoneClickedSlot(bool);
+	void selectAll2ClickedSlot(bool);
+	void selectNone2ClickedSlot(bool);
 
 private:
 	const QString & dbname;
@@ -85,6 +88,8 @@ private:
 
 	QPushButton *selectAllButton;
 	QPushButton *selectNoneButton;
+	QPushButton *selectAll2Button;
+	QPushButton *selectNone2Button;
 	QPushButton *okButton;
 };
 

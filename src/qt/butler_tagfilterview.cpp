@@ -21,8 +21,11 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 0, 0, 1, 4);
-	tagsSelector = new TagWidget(dbname, this);
-	gridLayout->addWidget(tagsSelector, 1, 0, 1, 4);
+	QScrollArea * sa = new QScrollArea(this);
+	tagsSelector = new TagWidget(dbname, sa);
+	sa->setWidget(tagsSelector);
+	sa->setWidgetResizable(true);
+	gridLayout->addWidget(sa, 1, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
 	connect(selectAllButton, SIGNAL(clicked(bool)),
@@ -61,6 +64,12 @@ void TagFilterView::closeEvent(QCloseEvent *event)
 	saveState();
 
 	QWidget::closeEvent(event);
+}
+
+void TagFilterView::resizeEvent(QResizeEvent *event)
+{
+	QWidget::resizeEvent(event);
+	QTimer::singleShot(0, tagsSelector, SLOT(prepareContent()));
 }
 
 void TagFilterView::loadState()

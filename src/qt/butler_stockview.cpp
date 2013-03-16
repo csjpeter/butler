@@ -13,10 +13,9 @@
 #include "butler_queryoptionsview.h"
 #include "butler_accountingview.h"
 #include "butler_tagfilterview.h"
+#include "butler_config.h"
 
 #include "butler_application.h"
-
-#include "butler_db.h"
 
 StockView::StockView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
@@ -30,28 +29,32 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
-	editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
-	editAct->setShortcut(tr("E"));
-	editAct->setToolTip(tr("Edit item details"));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
-
-	dropAct = new QAction(QIcon(ICONS_PATH "trash.png"), tr("&Drop"), this);
-	dropAct->setShortcut(tr("D"));
-	dropAct->setToolTip(tr("Drop item from stock"));
-	connect(dropAct, SIGNAL(triggered()), this, SLOT(dropItem()));
-
 	accountingAct = new QAction(
-			QIcon(ICONS_PATH "accounting.png"), tr("&Accounting"), this);
+			QIcon(Path::icon("add.png")), tr("&Accounting"), this);
 	accountingAct->setShortcut(tr("A"));
 	accountingAct->setToolTip(tr("Accounting"));
 	connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
 
-	filterAct = new QAction(QIcon(ICONS_PATH "tag.png"), tr("&Filter"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+	editAct->setShortcut(tr("E"));
+	editAct->setToolTip(tr("Edit item details"));
+	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
+
+	dropAct = new QAction(QIcon(Path::icon("trash.png")), tr("&Drop"), this);
+	dropAct->setShortcut(tr("D"));
+	dropAct->setToolTip(tr("Drop item from stock"));
+	connect(dropAct, SIGNAL(triggered()), this, SLOT(dropItem()));
+
+	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"), this);
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
 
 	/* tool buttons */
+	accountingTBtn = new QToolButton(actionTB);
+	actionTB->addWidget(accountingTBtn);
+	accountingTBtn->setDefaultAction(accountingAct);
+
 	editTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(editTBtn);
 	editTBtn->setDefaultAction(editAct);
@@ -59,10 +62,6 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 	dropTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(dropTBtn);
 	dropTBtn->setDefaultAction(dropAct);
-
-	accountingTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(accountingTBtn);
-	accountingTBtn->setDefaultAction(accountingAct);
 
 	filterTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(filterTBtn);
@@ -104,7 +103,6 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 //	QHBoxLayout *layout = new QHBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
 //	actionTB->setOrientation(Qt::Vertical);
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);

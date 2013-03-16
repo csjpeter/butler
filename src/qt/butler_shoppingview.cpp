@@ -14,10 +14,9 @@
 #include "butler_queryoptionsview.h"
 #include "butler_tagfilterview.h"
 #include "butler_shopsmodel.h"
+#include "butler_config.h"
 
 #include "butler_application.h"
-
-#include "butler_db.h"
 
 ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	QWidget(parent),
@@ -32,27 +31,27 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
-	newAct = new QAction(QIcon(ICONS_PATH "add.png"), tr("&New"), this);
+	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"), this);
 	newAct->setShortcut(tr("N"));
 	newAct->setToolTip(tr("Add new item to buy"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newItem()));
 
-	editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit item details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
 
-	delAct = new QAction(QIcon(ICONS_PATH "delete.png"), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete item from shopping list"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
 
-	boughtAct = new QAction(QIcon(ICONS_PATH "buy.png"), tr("&Bought"), this);
+	boughtAct = new QAction(QIcon(Path::icon("buy.png")), tr("&Bought"), this);
 	boughtAct->setShortcut(tr("B"));
 	boughtAct->setToolTip(tr("Mark item as bought"));
 	connect(boughtAct, SIGNAL(triggered()), this, SLOT(buyItem()));
 
-	filterAct = new QAction(QIcon(ICONS_PATH "tag.png"), tr("&Filter"), this);
+	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"), this);
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
@@ -116,6 +115,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 
 	queryView->hideColumn(Item::Uploaded);
 	queryView->hideColumn(Item::Price);
+	queryView->hideColumn(Item::Bought);
 	queryView->hideColumn(Item::Shop);
 	queryView->hideColumn(Item::OnStock);
 	queryView->hideColumn(Item::Purchased);
@@ -123,7 +123,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 //	QHBoxLayout *layout = new QHBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
 //	actionTB->setOrientation(Qt::Vertical);
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);

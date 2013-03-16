@@ -101,8 +101,7 @@ void ItemTable::query(Item& item)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM Items "
-				"WHERE uploaded = ?");
+		selectQuery.prepare("SELECT * FROM Items WHERE uploaded = ?");
 
 	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	selectQuery.exec();
@@ -148,7 +147,6 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	
 	cmd += " GROUP BY Items.uploaded ORDER BY Items.uploaded DESC";
 
-	DBG("Assembled select query: %s", qPrintable(cmd));
 	sqlQuery.exec(cmd);
 
 	items.clear();

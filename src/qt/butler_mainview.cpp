@@ -38,7 +38,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	infoView(NULL)
 {
 	QVBoxLayout *layout = new QVBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
 
 	QPushButton * button;
 

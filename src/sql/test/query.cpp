@@ -59,8 +59,8 @@ void TestQuery::insert()
 	VERIFY(db.query().query(qs));
 
 	VERIFY(qs.size() == 1);
-	LOG("Start date: %s", qPrintable(qs.queryAt(0).startDate.toString(Qt::ISODate)));
-	LOG("End date: %s", qPrintable(qs.queryAt(0).endDate.toString(Qt::ISODate)));
+	LOG("Start date: %s", C_STR(qs.queryAt(0).startDate.toString(Qt::ISODate)));
+	LOG("End date: %s", C_STR(qs.queryAt(0).endDate.toString(Qt::ISODate)));
 	VERIFY(q == qs.queryAt(0));
 
 	/* Lets clean up */

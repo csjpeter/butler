@@ -132,6 +132,7 @@ void SqlConnection::exec(const QString &query)
 	csjp::Object<QSqlQuery> qQuery(new QSqlQuery(db));
 	qQuery->setForwardOnly(true);
 
+	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
 		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
 				C_STR(query),
@@ -211,7 +212,7 @@ void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & db
 		return;
 
 	DBG("Available drivers: %s",
-			qPrintable((QSqlDatabase::drivers().join(", "))));
+			C_STR((QSqlDatabase::drivers().join(", "))));
 
 	QSqlDriver *drv = db.driver();
 	ENSURE(drv != NULL, csjp::LogicError);
@@ -220,7 +221,7 @@ void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & db
 	for(i=0; i<14; i++)
 		format += "\n\t%-25s%3d";
 
-	DBG(qPrintable(format),
+	DBG(C_STR(format),
 			C_STR(dbDesc.name),
 			"Transactions",
 			drv->hasFeature(QSqlDriver::Transactions),

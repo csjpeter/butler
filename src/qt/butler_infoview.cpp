@@ -36,7 +36,6 @@ InfoView::InfoView(QWidget *parent) :
 	/* restore last state */
 	loadState();
 
-	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
 }
 

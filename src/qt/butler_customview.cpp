@@ -13,10 +13,9 @@
 #include "butler_queryoptionsview.h"
 #include "butler_accountingview.h"
 #include "butler_editwareview.h"
+#include "butler_config.h"
 
 #include "butler_application.h"
-
-#include "butler_db.h"
 
 CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *parent) :
 	QWidget(parent),
@@ -33,27 +32,27 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 
 	/* actions */
 	accountingAct = new QAction(
-			QIcon(ICONS_PATH "add.png"), tr("&Accounting"), this);
+			QIcon(Path::icon("add.png")), tr("&Accounting"), this);
 	accountingAct->setShortcut(tr("A"));
 	accountingAct->setToolTip(tr("Accounting"));
 	connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
 
-	editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit item details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
 
-	delAct = new QAction(QIcon(ICONS_PATH "delete.png"), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete item"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
 
-	filterAct = new QAction(QIcon(ICONS_PATH "query.png"), tr("&Filter"), this);
+	filterAct = new QAction(QIcon(Path::icon("query.png")), tr("&Filter"), this);
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
 
-	wareEditAct = new QAction(QIcon(ICONS_PATH "ware.png"), tr("Edit"), this);
+	wareEditAct = new QAction(QIcon(Path::icon("ware.png")), tr("Edit"), this);
 	wareEditAct->setShortcut(tr("W"));
 	wareEditAct->setToolTip(tr("Edit ware details"));
 	connect(wareEditAct, SIGNAL(triggered()), this, SLOT(editWare()));
@@ -143,7 +142,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 //	QHBoxLayout *layout = new QHBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
 	setLayout(layout);
 //	actionTB->setOrientation(Qt::Vertical);
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);

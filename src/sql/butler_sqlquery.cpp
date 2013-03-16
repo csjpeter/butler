@@ -35,6 +35,7 @@ void SqlQuery::exec(const QString &query)
 
 	prepared = false;
 
+	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
 		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
 				C_STR(query),
@@ -70,7 +71,7 @@ void SqlQuery::exec()
 {
 	ENSURE(qQuery, csjp::LogicError);
 
-	DBG("%s", C_STR(qQuery->lastQuery()));
+	DBG("%s", C_STR(queryString()));
 	if(!qQuery->exec())
 		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
 			C_STR(queryString()), C_STR(sql.dbErrorString()));
@@ -101,8 +102,8 @@ QVariant SqlQuery::value(int index)
 	ENSURE(qQuery, csjp::LogicError);
 
 	DBG("%s : [%s]",
-			qPrintable(qQuery->record().fieldName(index)),
-			qPrintable(qQuery->value(index).toString())
+			C_STR(qQuery->record().fieldName(index)),
+			C_STR(qQuery->value(index).toString())
 			);
 
 	return qQuery->value(index);
