@@ -32,3 +32,5 @@ AKIT9_APT=${AKIT9_SDK_HOME}/platform-tools/aapt
 AKIT9_DEX=${AKIT9_SDK_HOME}/platform-tools/dx
 AKIT9_JARSIGNER=$(which jarsigner 2> /dev/null)
 
+# am start -a android.intent.action.MAIN -n csjpeter.butler/org.kde.necessitas.origo.QtActivity
+

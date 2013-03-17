@@ -190,8 +190,6 @@ echo "${CONFIG}" | grep staticbuild > /dev/null && {
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)"
 }
 
-TCROOT="${TCROOT}"
-
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
 STATICS="${STATICS}"
 
