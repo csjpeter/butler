@@ -41,6 +41,9 @@ while ! test "x$1" = "x"; do
 			}
 			TARGET_DIST="${VALUE}"
 		;;
+		(--exec-postfix)
+		        EXEC_POSTFIX=${VALUE}
+		;;
 		(*)
 			echo "Invalid argument ($1) found on command line."
 			exit 1
@@ -68,6 +71,7 @@ function generate ()
 		-e "s|@PRJDESC@|${PRJDESC}|g" \
 		-e "s|@PRJDESCRIPTION@|${PRJDESCRIPTION}|g" \
 		-e "s|@PKGNAME@|${PKGNAME}|g" \
+		-e "s|@PKGNAME_BASE@|${PKGNAME_BASE}|g" \
 		-e "s|@VERSION_MAJOR@|${VERSION_MAJOR}|g" \
 		-e "s|@VERSION_MINOR@|${VERSION_MINOR}|g" \
 		-e "s|@VERSION_PATCH@|${VERSION_PATCH}|g" \
@@ -82,6 +86,7 @@ function generate ()
 		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \
 		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \
                 -e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
+		-e "s|@EXEC_POSTFIX@|${EXEC_POSTFIX}|g" \
 		> $2 || exit $?
 }
 
@@ -126,4 +131,14 @@ echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
 
 generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
 generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
+
+#
+# nsis (windows) packaging directory
+#
+
+! test "x${TARGET_DIST}" != "x${HOST_DIST}" || {
+	test -d ${DIST_DIR}/nsis || { mkdir -p ${DIST_DIR}/nsis || exit $? ; }
+	generate nsis/install.nsi.in ${DIST_DIR}/nsis/${PKGNAME}.nsi.in || exit $?
+	generate binlicense.in ${DIST_DIR}/nsis/license.txt.in || exit $?
+}
 

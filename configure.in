@@ -222,3 +222,13 @@ generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
 test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
 generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
 
+#
+# nsis (windows) packaging directory
+#
+
+! test "x${TARGET_ARCH}" != "x${HOST_ARCH}" || {
+	generate nsis/${PKGNAME}.nsi.in nsis/${PKGNAME}.nsi || exit $?
+	generate nsis/license.txt.in nsis/license.txt || exit $?
+	unix2dos nsis/license.txt || exit $?
+}
+

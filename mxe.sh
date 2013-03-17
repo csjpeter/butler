@@ -4,16 +4,20 @@
 #export LIBS="-lpthread"
 #export LIBS="-lgnurx"
 
-#export PKG_CONFIG_SYSROOT_DIR=;
-#export PKG_CONFIG_LIBDIR=/$(MXE_TC)/lib/pkgconfig;
-#--tcroot=opt/csjp/mxe/i686-pc-mingw32 \
+TCROOT=opt/mxe
 
-./dist-config.sh --target=mxe -- \
+export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
+
+./dist-config.sh --target=mxe \
+	--exec-postfix=.exe \
+	-- \
 	--target=i686-pc-mingw32 \
-	--prefix=butler0.1-win32 \
+	--prefix=butler0.1 \
 	--gnu-source \
-	--static -static-libgcc -static-libstdc++ \
-	--ldflags="-Wl,-subsystem,console" \
+	--static \
+	--ldflags=\"-static-libgcc -static-libstdc++\" \
+	--ldflags=-Wl,-subsystem,console \
 	--stlcompatible || exit $?
 
 pushd precise-x-mxe > /dev/null || exit $?

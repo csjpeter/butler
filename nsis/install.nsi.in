@@ -1,0 +1,60 @@
+!define REG_FOLDER "Software\Microsoft\Windows\CurrentVersion\Uninstall\@AUTHOR@ @PKGNAME_BASE@"
+
+outFile "@PKGNAME_BASE@-installer.exe"
+installDir $PROGRAMFILES\@PKGNAME_BASE@
+# For removing Start Menu shortcut in Windows 7
+RequestExecutionLevel user
+LicenseData "license.txt"
+Name "@PKGNAME_BASE@"
+Icon "../@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico"
+
+!include LogicLib.nsh
+
+page license
+page directory
+Page instfiles
+
+section
+setOutPath $INSTDIR
+file /r /x "*debug*" "../@TCROOT@@PREFIX@/*"
+writeUninstaller "$INSTDIR\uninstall.exe"
+createDirectory "$SMPROGRAMS\@PKGNAME_BASE@"
+createShortCut "$SMPROGRAMS\@PKGNAME_BASE@\uninstall.lnk" "$INSTDIR\uninstall.exe"
+createShortCut "$SMPROGRAMS\@PKGNAME_BASE@\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe"
+createShortCut "$DESKTOP\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe"
+
+WriteRegStr HKLM "${REG_FOLDER}" "DisplayName" "@AUTHOR@ - @PRJDESC@"
+WriteRegStr HKLM "${REG_FOLDER}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+WriteRegStr HKLM "${REG_FOLDER}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
+WriteRegStr HKLM "${REG_FOLDER}" "InstallLocation" "$\"$INSTDIR$\""
+WriteRegStr HKLM "${REG_FOLDER}" "DisplayIcon" "$\"$INSTDIR\logo.ico$\""
+WriteRegStr HKLM "${REG_FOLDER}" "Publisher" "$\"@AUTHOR@$\""
+WriteRegStr HKLM "${REG_FOLDER}" "HelpLink" "$\"@EMAIL@$\""
+WriteRegStr HKLM "${REG_FOLDER}" "URLUpdateInfo" "$\"$\""
+WriteRegStr HKLM "${REG_FOLDER}" "URLInfoAbout" "$\"$\""
+WriteRegStr HKLM "${REG_FOLDER}" "DisplayVersion" "$\"@VERSION@$\""
+WriteRegDWORD HKLM "${REG_FOLDER}" "VersionMajor" @VERSION_MAJOR@
+WriteRegDWORD HKLM "${REG_FOLDER}" "VersionMinor" @VERSION_MINOR@
+WriteRegDWORD HKLM "${REG_FOLDER}" "NoModify" 1
+WriteRegDWORD HKLM "${REG_FOLDER}" "NoRepair" 1
+WriteRegDWORD HKLM "${REG_FOLDER}" "EstimatedSize" 20000
+sectionEnd
+
+function un.onInit
+SetShellVarContext all
+MessageBox MB_OKCANCEL "Permanantly remove @PKGNAME_BASE@?" IDOK next
+Abort
+next:
+functionEnd
+
+section "uninstall"
+delete "$INSTDIR\uninstall.exe"
+rmdir /r "$INSTDIR"
+delete "$SMPROGRAMS\@PKGNAME_BASE@\@PKGNAME_BASE@.lnk"
+delete "$SMPROGRAMS\@PKGNAME_BASE@\uninstall.lnk"
+delete "$DESKTOP\@PKGNAME_BASE@.lnk"
+rmDir "$SMPROGRAMS\@PKGNAME_BASE@"
+
+DeleteRegKey HKLM "${REG_FOLDER}"
+sectionEnd
+

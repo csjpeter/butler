@@ -95,22 +95,22 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 #
 
 TEST_BINARIES=\
-	tmp/bin/test-@PKGNAME@-datamodel-dbifc \
-	tmp/bin/test-@PKGNAME@-datamodel-item \
-	tmp/bin/test-@PKGNAME@-datamodel-item_set \
-	tmp/bin/test-@PKGNAME@-datamodel-query \
-	tmp/bin/test-@PKGNAME@-datamodel-query_set \
-	tmp/bin/test-@PKGNAME@-datamodel-shop \
-	tmp/bin/test-@PKGNAME@-datamodel-shop_set \
-	tmp/bin/test-@PKGNAME@-datamodel-tag \
-	tmp/bin/test-@PKGNAME@-datamodel-tag_set \
-	tmp/bin/test-@PKGNAME@-datamodel-ware \
-	tmp/bin/test-@PKGNAME@-datamodel-ware_set \
-	tmp/bin/test-@PKGNAME@-sql-item \
-	tmp/bin/test-@PKGNAME@-sql-query \
-	tmp/bin/test-@PKGNAME@-sql-shop \
-	tmp/bin/test-@PKGNAME@-sql-tag \
-	tmp/bin/test-@PKGNAME@-sql-ware
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-dbifc@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-item@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-item_set@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-query@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-query_set@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-shop@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-shop_set@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-tag@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-tag_set@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-ware@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-datamodel-ware_set@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-item@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-query@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-shop@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-tag@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-ware@EXEC_POSTFIX@
 
 #
 # temporary files
@@ -236,22 +236,23 @@ BUTLERQT_INCLUDES=-Isrc/qt
 .PRECIOUS: $(BUTLERQT_OBJECTS)
 
 BUTLER_IMAGES=\
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/copyright \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/accounting.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/add.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/buy.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/custom.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/delete.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/edit.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/query.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/shop.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/shopping.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/stock.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/tag.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/trash.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/ware.png \
-	@TCROOT@@PREFIX@share/@PKGNAME@/icons/info.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME@.png
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/copyright \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/accounting.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/add.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/buy.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/custom.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/delete.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/edit.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/query.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shop.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shopping.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/stock.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tag.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/trash.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ware.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/info.png \
+	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png \
+	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico
 
 #
 # main rules
@@ -265,8 +266,8 @@ build: \
 	$(STATIC_LIBDATAMODEL) \
 	$(STATIC_LIBSQL) \
 	$(BUTLER_IMAGES) \
-	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME@ \
-	@TCROOT@@PREFIX@bin/@PKGNAME@
+	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
+	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@
 
 #	$(TEST_BINARIES)
 
@@ -318,6 +319,9 @@ debian-nc: FORCE
 debian-src: FORCE
 	debuild -S
 
+nsis: build
+	makensis nsis/@PKGNAME@.nsi
+
 FORCE:
 
 #
@@ -336,21 +340,21 @@ $(STATIC_LIBSQL): \
 	$(LINK_STATIC)
 	$(RANLIB) $@
 
-tmp/@TCROOT@@PREFIX@bin/@PKGNAME@: \
+tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBDATAMODEL) \
 		$(STATIC_LIBSQL)
 	test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 
-@TCROOT@tmp/bin/test-@PKGNAME@-datamodel-% : \
+@TCROOT@tmp/bin/test-@PKGNAME_BASE@-datamodel-% : \
 		tmp/src/datamodel/test/%.opp \
 		$(STATIC_LIBDATAMODEL)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 #	$(CXX) $(LDFLAGS) $< $(STATICS) $(LIBS) -o $@
 
-@TCROOT@tmp/bin/test-@PKGNAME@-sql-% : \
+@TCROOT@tmp/bin/test-@PKGNAME_BASE@-sql-% : \
 		tmp/src/sql/test/%.opp \
 		$(STATIC_LIBSQL) \
 		$(STATIC_LIBDATAMODEL)
@@ -358,17 +362,22 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME@: \
 	$(LINK)
 #	$(CXX) $(LDFLAGS) $< $(STATICS) $(LIBS) -o $@
 
-@TCROOT@@PREFIX@share/pixmaps/@PKGNAME@.png: \
+@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png: \
 		share/icons/butler.png
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 
-@TCROOT@@PREFIX@share/@PKGNAME@/icons/%.png: \
+@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico: \
+		share/icons/butler.png
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	icotool -c -o $@ $<
+
+@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/%.png: \
 		share/icons/%.png
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 
-@TCROOT@@PREFIX@share/@PKGNAME@/icons/copyright: \
+@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/copyright: \
 		share/icons/copyright
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
