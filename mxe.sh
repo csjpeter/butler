@@ -12,7 +12,7 @@
 	--target=i686-pc-mingw32 \
 	--prefix=butler0.1-win32 \
 	--gnu-source \
-	--static \
+	--static -static-libgcc -static-libstdc++ \
 	--ldflags="-Wl,-subsystem,console" \
 	--stlcompatible || exit $?
 

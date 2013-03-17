@@ -310,7 +310,7 @@ check: $(TEST_BINARIES)
 doxygen: @DOCDIR@/html/index.html
 
 debian: FORCE
-	debuild
+	debuild --preserve-envvar PATH
 
 debian-nc: FORCE
 	debuild -nc

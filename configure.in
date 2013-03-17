@@ -178,7 +178,6 @@ CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.1)"
 echo "${CONFIG}" | grep staticbuild > /dev/null && {
-	LDFLAGS="${LDFLAGS} -static-libgcc -static-libstdc++"
 #	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)"
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)"
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)"
