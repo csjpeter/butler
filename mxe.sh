@@ -12,13 +12,16 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 ./dist-config.sh --target=mxe \
 	--exec-postfix=.exe \
 	-- \
+	--debug \
 	--target=i686-pc-mingw32 \
 	--prefix=butler0.1 \
 	--gnu-source \
 	--static \
 	--ldflags=\"-static-libgcc -static-libstdc++\" \
-	--ldflags=-Wl,-subsystem,console \
+	--ldflags=-Wl,-subsystem,windows \
 	--stlcompatible || exit $?
+
+#--ldflags=-Wl,-subsystem,console
 
 pushd precise-x-mxe > /dev/null || exit $?
 ./configure && make $@

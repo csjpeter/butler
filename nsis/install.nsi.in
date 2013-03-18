@@ -1,12 +1,15 @@
-!define REG_FOLDER "Software\Microsoft\Windows\CurrentVersion\Uninstall\@AUTHOR@ @PKGNAME_BASE@"
-
+Name "@PKGNAME_BASE@"
+LicenseData "license.txt"
+Icon "../@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico"
 outFile "@PKGNAME_BASE@-installer.exe"
-installDir $PROGRAMFILES\@PKGNAME_BASE@
+installDir $PROGRAMFILES\@PREFIX@
+
+!define REG_FOLDER "Software\Microsoft\Windows\CurrentVersion\Uninstall\@AUTHOR@ @PKGNAME_BASE@"
+!define ICON "$INSTDIR\share\pixmaps\@PKGNAME_BASE@.ico"
+!define SMFOLDER "$SMPROGRAMS\@PKGNAME_BASE@"
+
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel user
-LicenseData "license.txt"
-Name "@PKGNAME_BASE@"
-Icon "../@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico"
 
 !include LogicLib.nsh
 
@@ -18,10 +21,10 @@ section
 setOutPath $INSTDIR
 file /r /x "*debug*" "../@TCROOT@@PREFIX@/*"
 writeUninstaller "$INSTDIR\uninstall.exe"
-createDirectory "$SMPROGRAMS\@PKGNAME_BASE@"
-createShortCut "$SMPROGRAMS\@PKGNAME_BASE@\uninstall.lnk" "$INSTDIR\uninstall.exe"
-createShortCut "$SMPROGRAMS\@PKGNAME_BASE@\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe"
-createShortCut "$DESKTOP\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe"
+createDirectory "${SMFOLDER}"
+createShortCut "${SMFOLDER}\uninstall.lnk" "$INSTDIR\uninstall.exe"
+createShortCut "${SMFOLDER}\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe" "" "${ICON}" 0
+createShortCut "$DESKTOP\@PKGNAME_BASE@.lnk" "$INSTDIR\bin\@PKGNAME_BASE@.exe" "" "${ICON}" 0
 
 WriteRegStr HKLM "${REG_FOLDER}" "DisplayName" "@AUTHOR@ - @PRJDESC@"
 WriteRegStr HKLM "${REG_FOLDER}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
@@ -50,10 +53,10 @@ functionEnd
 section "uninstall"
 delete "$INSTDIR\uninstall.exe"
 rmdir /r "$INSTDIR"
-delete "$SMPROGRAMS\@PKGNAME_BASE@\@PKGNAME_BASE@.lnk"
-delete "$SMPROGRAMS\@PKGNAME_BASE@\uninstall.lnk"
+delete "${SMFOLDER}\@PKGNAME_BASE@.lnk"
+delete "${SMFOLDER}\uninstall.lnk"
 delete "$DESKTOP\@PKGNAME_BASE@.lnk"
-rmDir "$SMPROGRAMS\@PKGNAME_BASE@"
+rmDir "${SMFOLDER}"
 
 DeleteRegKey HKLM "${REG_FOLDER}"
 sectionEnd

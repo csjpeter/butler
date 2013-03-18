@@ -48,9 +48,9 @@ const QString icon(const char * fileName)
 void initRootPath(const char * args0)
 {
 	QString prefix(PREFIX);
-	int rootDepth = prefix.count("/") + 1;
+	int rootDepth = prefix.count("/") + 1; /* +1 for bin */
 
-	QString root(QDir::toNativeSeparators(args0));
+	QString root(QDir::fromNativeSeparators(args0));
 	DBG("args0: %s", C_STR(root));
 
 	int pos = root.lastIndexOf("/");
