@@ -316,6 +316,11 @@ debian: FORCE
 debian-nc: FORCE
 	debuild -nc
 
+debian-bin: FORCE
+	debuild -S -us -uc
+	pbuilder-dist @HOST_DIST@ i386 ../@PKGNAME_BASE@_@VERSION@.dsc
+	pbuilder-dist @HOST_DIST@ amd64 ../@PKGNAME_BASE@_@VERSION@.dsc
+
 debian-src: FORCE
 	debuild -S
 
