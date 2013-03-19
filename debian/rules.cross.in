@@ -8,8 +8,8 @@ build:
 	dh_testdir
 	#dh_auto_configure
 	CFLAGS="" LDFLAGS="" ./configure
-	dh_auto_build
-	#make build
+	#dh_auto_build
+	make build -j
 	dh_auto_test
 
 binary:
