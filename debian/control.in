@@ -10,7 +10,7 @@ Build-Depends: make (>=3.0.0), dpkg (>=1.15.0), gawk | mawk, tar (>=1.0.0), gzip
 
 Package: @PKGNAME@
 Section: libs
-Architecture: @DEBIAN_ARCH@
+Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: @PRJDESC@
 @PRJDESCRIPTION@
@@ -18,7 +18,7 @@ Description: @PRJDESC@
 Package: @PKGNAME@-dbg
 Section: debug
 Priority: extra
-Architecture: @DEBIAN_ARCH@
+Architecture: any
 Depends: @PKGNAME@ (= ${binary:Version}), ${misc:Depends}
 Description: Debug files for @PKGNAME@
 @PRJDESCRIPTION@

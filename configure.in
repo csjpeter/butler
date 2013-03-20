@@ -173,9 +173,6 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 	PKGCONFIG=${TARGET_ARCH}-pkg-config
 }
 
-echo PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}
-echo PKG_CONFIG_PATH=${PKG_CONFIG_PATH}
-
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)" || exit $?
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)" || exit $?

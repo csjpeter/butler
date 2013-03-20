@@ -56,7 +56,7 @@ binary:
 	dh_installdeb -O--parallel
 	dh_gencontrol -O--parallel
 	dh_md5sums -O--parallel
-	dh_builddeb -O--parallel
+	dh_builddeb -O--parallel --destdir=../
 
 %:
 	dh --parallel $@

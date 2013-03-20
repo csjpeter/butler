@@ -4,12 +4,25 @@
 #export LIBS="-lpthread"
 #export LIBS="-lgnurx"
 
+source /etc/lsb-release
+
+function exec_in_dir ()
+{
+	pushd $1 > /dev/null || exit $?
+	shift
+	$@
+	let RET=$?
+	popd > /dev/null
+	return ${RET}
+}
+
 TCROOT=opt/mxe
 
 export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
-./dist-config.sh --target=mxe \
+./dist-config.sh \
+	--target=mxe \
 	--exec-postfix=.exe \
 	-- \
 	--debug \
@@ -23,8 +36,5 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
 #--ldflags=-Wl,-subsystem,console
 
-pushd precise-x-mxe > /dev/null || exit $?
-./configure && make $@
-let RET=$?
-popd > /dev/null
-exit ${RET}
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe $@ || exit $?

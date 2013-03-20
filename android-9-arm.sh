@@ -1,4 +1,16 @@
 #!/bin/bash
+ 
+source /etc/lsb-release
+
+function exec_in_dir ()
+{
+	pushd $1 > /dev/null || exit $?
+	shift
+	$@
+	let RET=$?
+	popd > /dev/null
+	return ${RET}
+}
 
 TCROOT=opt/android-9-arm
 
@@ -10,7 +22,9 @@ ANDROID_SDK_HOME=~/necessitas/android-sdk
 export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
-./dist-config.sh --target=android-9-arm -- \
+./dist-config.sh \
+	--target=android-9-arm \
+	-- \
 	--target=arm-linux-androideabi \
 	--prefix= \
 	--tcroot=${TCROOT} \
@@ -25,11 +39,8 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	--libs=\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.4.3/libs/armeabi/libsupc++.a\" \
 	|| exit $?
 
-pushd precise-x-android-9-arm > /dev/null || exit $?
-./configure && make $1
-let RET=$?
-popd > /dev/null
-exit ${RET}
+exec_in_dir ${DISTRIB_CODENAME}-x-android-9-arm ./configure || exit $?
+exec_in_dir ${DISTRIB_CODENAME}-x-android-9-arm make $@ || exit $?
 
 APK_BUILDER=${ANDROID_SDK_HOME}/tools/apkbuilder
 AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt

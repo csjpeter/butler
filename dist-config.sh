@@ -7,7 +7,6 @@ source /etc/lsb-release
 BUILD_DIST=${DISTRIB_CODENAME}
 HOST_DIST=${DISTRIB_CODENAME}
 TARGET_DIST=${DISTRIB_CODENAME}
-DEBIAN_ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
 CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
 CURRENT_YEAR=$(LANG=en date +"%Y")
 
@@ -82,7 +81,6 @@ function generate ()
 		-e "s|@EMAIL@|${EMAIL}|g" \
 		-e "s|@TARGET_DIST@|${TARGET_DIST}|g" \
 		-e "s|@HOST_DIST@|${HOST_DIST}|g" \
-		-e "s|@DEBIAN_ARCH@|${DEBIAN_ARCH}|g" \
 		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \
 		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \
                 -e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
