@@ -51,26 +51,34 @@ function config ()
 
 function release ()
 {
-       local DIST=$1
-       local ARCH=$2
+	local DIST=$1
+	local ARCH=$2
 
-       test "x${DIST}" = "x" && DIST=${DISTRIB_CODENAME}
-       test "x${ARCH}" = "x" && ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
-       test "x${ARCH}" = "x$(dpkg-architecture -qDEB_BUILD_ARCH)" && {
-               BASE_TGZ=$HOME/pbuilder/${DIST}-base.tgz
-       } || {
-               BASE_TGZ=$HOME/pbuilder/${DIST}-${ARCH}-base.tgz
-       }
-       test -e ${BASE_TGZ} || { pbuilder-dist ${DIST} ${ARCH} create || exit$? ; }
+	test "x${DIST}" = "x" && DIST=${DISTRIB_CODENAME}
+	test "x${ARCH}" = "x" && ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
+	test "x${ARCH}" = "x$(dpkg-architecture -qDEB_BUILD_ARCH)" && {
+		BASE_TGZ=$HOME/pbuilder/${DIST}-base.tgz
+	} || {
+		BASE_TGZ=$HOME/pbuilder/${DIST}-${ARCH}-base.tgz
+	}
+	test -e ${BASE_TGZ} || {
+		pbuilder-dist ${DIST} ${ARCH} create || exit $?
+		cat <<EOF > pbuilder-${DIST}-${ARCH}-init.sh
+#!/bin/sh
+echo "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu ${DIST} main" >> /etc/apt/sources.list
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 55A478F4F4F90D5A
+apt-get update
+apt-get install libcsjp*
+EOF
+		chmod u+x pbuilder-${DIST}-${ARCH}-init.sh
+		pbuilder-dist ${DIST} ${ARCH} execute --save-after-exec -- \
+			pbuilder-${DIST}-${ARCH}-init.sh
+	}
 
-       config ${DIST} || exit $?
-       exec_in_dir ${DIST} debuild -S -us -uc || exit$?
-       pbuilder-dist ${DIST} ${ARCH} *.dsc --buildresult ${DIST}/
-               --othermirror "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu precise main"
-#      sudo pbuilder --debuild --distribution ${DIST} --architecture ${ARCH} \
-#              --basetgz ${BASE_TGZ} --buildresult ${DIST}/ --override-config *.dsc
-
-#              --othermirror "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu precise main"
+	config ${DIST} || exit $?
+	exec_in_dir ${DIST} debuild -S -us -uc || exit$?
+	pbuilder-dist ${DIST} ${ARCH} *.dsc --buildresult ${DIST}/ || exit $?
+#		--othermirror "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu precise main"
 }
 
 CMD=$1
