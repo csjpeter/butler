@@ -9,6 +9,7 @@ HOST_DIST=${DISTRIB_CODENAME}
 TARGET_DIST=${DISTRIB_CODENAME}
 CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
 CURRENT_YEAR=$(LANG=en date +"%Y")
+VERSION_PACKAGING=${VERSION}
 
 while ! test "x$1" = "x"; do
 	! test "x$1" = "x--" || {
@@ -39,6 +40,13 @@ while ! test "x$1" = "x"; do
 				exit $?
 			}
 			TARGET_DIST="${VALUE}"
+		;;
+		(--version-postfix)
+			! test "x${VALUE}" = "x" || {
+				echo "Missing version postfix value."
+				exit $?
+			}
+			VERSION_PACKAGING=${VERSION}-${VALUE}
 		;;
 		(--exec-postfix)
 		        EXEC_POSTFIX=${VALUE}
@@ -76,6 +84,7 @@ function generate ()
 		-e "s|@VERSION_PATCH@|${VERSION_PATCH}|g" \
 		-e "s|@VERSION_API@|${VERSION_API}|g" \
 		-e "s|@VERSION@|${VERSION}|g" \
+		-e "s|@VERSION_PACKAGING@|${VERSION_PACKAGING}|g" \
 		-e "s|@DEVELOPMENT_START_YEAR@|${DEVELOPMENT_START_YEAR}|g" \
 		-e "s|@AUTHOR@|${AUTHOR}|g" \
 		-e "s|@EMAIL@|${EMAIL}|g" \

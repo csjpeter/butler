@@ -1,4 +1,4 @@
-@PKGNAME@ (@VERSION@) @HOST_DIST@; urgency=low
+@PKGNAME@ (@VERSION_PACKAGING@) @HOST_DIST@; urgency=low
 
   * Initial public release
 

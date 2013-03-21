@@ -1,23 +1,17 @@
 #!/bin/bash
 
-# ubuntu 13.04 raring
-# ubuntu 12.10 quantal
-# ubuntu 12.04 precise
-# ubuntu 11.10 oneiric
-# ubuntu 10.04 lucid
-# ubuntu 8.04 hardy
+# ubuntu ditributions
+raring=13.04
+quantal=12.10
+precise=12.04
+oneiric=11.10
+lucid=10.04
+hardy=8.04
 
-# debian 6.0 squeeze
-# debian 5.0 lenny
-# debian 4.0 etch
-# debian 3.1 sarge
-# debian 3.0 woody
-# debian 2.2 potato
-# debian 2.1 slink
-# debian 2.0 hamm
-# debian 1.3 bo
-# debian 1.2 rex
-# debian 1.1 buzz
+# debian distributions
+squeeze=6.0
+lenny=5.0
+etch=4.0
 
 source /etc/lsb-release
 
@@ -34,10 +28,12 @@ function exec_in_dir ()
 function config ()
 {
 	local DIST=$1
+	eval VERSION_POSTFIX=\$${DIST}-${DIST}
 	./dist-config.sh \
 		--build=${DIST} \
 		--host=${DIST} \
 		--target=${DIST} \
+		--version-postfix=${VERSION_POSTFIX} \
 		-- \
 		--debug \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp \
@@ -76,7 +72,7 @@ EOF
 	}
 
 	config ${DIST} || exit $?
-	exec_in_dir ${DIST} debuild -S -us -uc || exit$?
+	exec_in_dir ${DIST} debuild --no-tgz-check -S -us -uc || exit$?
 	pbuilder-dist ${DIST} ${ARCH} *.dsc --buildresult ${DIST}/ || exit $?
 #		--othermirror "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu precise main"
 }
