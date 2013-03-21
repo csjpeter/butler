@@ -36,7 +36,7 @@ function config ()
 		--version-postfix=${VERSION_POSTFIX} \
 		-- \
 		--debug \
-		--pkg-config-path=/opt/extras.ubuntu.com/csjp \
+		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=opt/butler0.1 \
 		--appsdir=usr/share/applications \
 		--fpic \
