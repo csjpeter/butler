@@ -21,6 +21,10 @@ int main(int argc, char *args[])
 
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
+
+	DBG("QCoreApplication::applicationDirPath(): %s", C_STR(app.applicationDirPath()));
+	DBG("QDir::homePath(): %s", C_STR(QDir::homePath()));
 
 	int argi = 1;
 
@@ -62,13 +66,14 @@ int main(int argc, char *args[])
 
 	try {
 		Path::initRootPath(args[0]);
+		DBG("Path::icon(""): %s", C_STR(Path::icon("")));
 	} catch (std::exception & e) {
 		fprintf(stderr, "Failed to determine the installation root directory.");
-		e.what();
+		EXCEPTION(e.what());
 		return -1;
 	}
 
-	{
+	try {
 		if(dbFileName == ""){
 			QSettings settings;
 			dbFileName = settings.value("mainview/dbfile", QString()).toString();
@@ -84,13 +89,18 @@ int main(int argc, char *args[])
 				QDir::homePath() + QString("/.butler/db.sqlite")
 				);
 		}
-		
+
+		DBG("dbFileName %s", C_STR(dbFileName));
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = defaultDbName;
 		sqlitedb->driver = "QSQLITE";
 		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
 		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
 		registerDatabase(sqlitedb);
+	} catch (std::exception & e) {
+		fprintf(stderr, "Failed to initialize database.");
+		EXCEPTION(e.what());
+		return -1;
 	}
 
 #ifdef MAEMO
@@ -112,9 +122,15 @@ int main(int argc, char *args[])
 	}
 #endif
 
-	MainView view(defaultDbName);
-//	view.setFixedSize(800, 480);
-	view.show();
+	try {
+		MainView view(defaultDbName);
+		//view.setFixedSize(800, 480);
+		view.show();
 
-	return app.exec();
+		return app.exec();
+	} catch (std::exception & e) {
+		fprintf(stderr, "Failed main view construction or other unexpected exception.");
+		EXCEPTION(e.what());
+		return -1;
+	}
 }

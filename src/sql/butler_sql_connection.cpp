@@ -23,6 +23,10 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 {
 	ENSURE(!db.isValid(), csjp::LogicError);
 
+#ifdef DEBUG
+       DBG("Available drivers: %s", C_STR((QSqlDatabase::drivers().join(", "))));
+#endif
+
 	if(!QSqlDatabase::contains(dbDesc.name)){
 		db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
 		if(db.lastError().isValid())
@@ -210,9 +214,6 @@ void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & db
 
 	if(featuresListed)
 		return;
-
-	DBG("Available drivers: %s",
-			C_STR((QSqlDatabase::drivers().join(", "))));
 
 	QSqlDriver *drv = db.driver();
 	ENSURE(drv != NULL, csjp::LogicError);
