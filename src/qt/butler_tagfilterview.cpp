@@ -21,11 +21,12 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 0, 0, 1, 4);
-	QScrollArea * sa = new QScrollArea(this);
-	tagsSelector = new TagWidget(dbname, sa);
-	sa->setWidget(tagsSelector);
-	sa->setWidgetResizable(true);
-	gridLayout->addWidget(sa, 1, 0, 1, 4);
+	tagScrollArea = new QScrollArea(this);
+	tagsSelector = new TagWidget(dbname, tagScrollArea);
+	tagScrollArea->setWidget(tagsSelector);
+	tagScrollArea->setWidgetResizable(true);
+	tagScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+	gridLayout->addWidget(tagScrollArea, 1, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
 	connect(selectAllButton, SIGNAL(clicked(bool)),
@@ -46,10 +47,13 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 
 	/* restore last state */
 	loadState();
+
+	scroll.enableKineticScrollFor(tagScrollArea);
 }
 
 TagFilterView::~TagFilterView()
 {
+	scroll.disableKineticScrollFor(tagScrollArea);
 }
 
 void TagFilterView::showEvent(QShowEvent *event)

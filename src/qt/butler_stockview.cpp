@@ -118,6 +118,7 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 
 StockView::~StockView()
 {
+	scroll.disableKineticScrollFor(queryView);
 }
 
 void StockView::showEvent(QShowEvent *event)

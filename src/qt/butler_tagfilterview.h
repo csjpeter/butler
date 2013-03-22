@@ -7,6 +7,7 @@
 #define BUTLER_TAGFILTERVIEW_H
 
 #include <QDialog>
+#include <QsKineticScroller.h>
 
 #include "butler_tagsmodel.h"
 
@@ -15,6 +16,7 @@ class QPushButton;
 class QLabel;
 
 class TagWidget;
+class QScrollArea;
 
 class TagFilterView : public QDialog
 {
@@ -47,11 +49,14 @@ private:
 	const QString & dbname;
 	TagNameSet &tags;
 
-	TagWidget *tagsSelector;
+	QScrollArea * tagScrollArea;
+	TagWidget * tagsSelector;
 
-	QPushButton *selectAllButton;
-	QPushButton *selectNoneButton;
-	QPushButton *okButton;
+	QPushButton * selectAllButton;
+	QPushButton * selectNoneButton;
+	QPushButton * okButton;
+
+	QsKineticScroller scroll;
 };
 
 #endif

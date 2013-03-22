@@ -7,6 +7,7 @@
 #define BUTLER_WARESVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 #include <butler_query.h>
 
@@ -68,6 +69,8 @@ private:
 
 	NewWareView *newWareView;
 	EditWareView *editWareView;
+
+	QsKineticScroller scroll;
 };
 
 #endif

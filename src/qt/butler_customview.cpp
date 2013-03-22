@@ -152,10 +152,13 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 
 	/* restore last state */
 	loadState();
+
+	scroll.enableKineticScrollFor(queryView);
 }
 
 CustomView::~CustomView()
 {
+	scroll.disableKineticScrollFor(queryView);
 }
 
 void CustomView::showEvent(QShowEvent *event)

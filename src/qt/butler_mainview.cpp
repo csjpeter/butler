@@ -51,26 +51,18 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(Path::icon("stock.png")), tr("&Maintain stock"));
-	button->setDefault(false);
-	button->setFlat(true);
-	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
-
-	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
-	button->setDefault(false);
-	button->setFlat(true);
-	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
-
 	button = new QPushButton(QIcon(Path::icon("shop.png")), tr("S&hops"));
 	button->setDefault(false);
 	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	layout->addWidget(button, 0, Qt::AlignLeft);
 
 	layout->addStretch(0);
@@ -83,10 +75,18 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
+	button = new QPushButton(QIcon(Path::icon("stock.png")), tr("&Maintain stock"));
 	button->setDefault(false);
 	button->setFlat(true);
-	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
+	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
+	layout->addWidget(button, 0, Qt::AlignLeft);
+
+	layout->addStretch(0);
+
+	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
+	button->setDefault(false);
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	layout->addWidget(button, 0, Qt::AlignLeft);
 
 	layout->addStretch(0);

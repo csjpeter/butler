@@ -36,6 +36,8 @@ private:
 	void loadState();
 	void saveState();
 
+private:
+	QPlainTextEdit * textView;
 	QsKineticScroller scroll;
 };
 

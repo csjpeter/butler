@@ -7,6 +7,7 @@
 #define BUTLER_SHOPSVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 #include <butler_query.h>
 
@@ -68,6 +69,8 @@ private:
 
 	NewShopView *newShopView;
 	EditShopView *editShopView;
+
+	QsKineticScroller scroll;
 };
 
 #endif

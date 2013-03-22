@@ -89,10 +89,13 @@ WaresView::WaresView(const QString & dbname, QWidget *parent) :
 
 	/* restore last state */
 	loadState();
+
+	scroll.enableKineticScrollFor(queryView);
 }
 
 WaresView::~WaresView()
 {
+	scroll.disableKineticScrollFor(queryView);
 }
 
 void WaresView::showEvent(QShowEvent *event)

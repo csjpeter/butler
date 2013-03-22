@@ -36,21 +36,22 @@ class QEvent;
 //! A temporary solution to get kinetic-like scrolling on Symbian.
 class QsKineticScroller: public QObject
 {
-   Q_OBJECT
+Q_OBJECT
 public:
-   QsKineticScroller(QObject* parent = 0);
-   ~QsKineticScroller();
-   //! enabled for one widget only, new calls remove previous association
-   void enableKineticScrollFor(QAbstractScrollArea* scrollArea);
+	QsKineticScroller(QObject* parent = 0);
+	~QsKineticScroller();
+
+	void disableKineticScrollFor(QAbstractScrollArea* scrollArea);
+	void enableKineticScrollFor(QAbstractScrollArea* scrollArea);
 
 protected:
-   bool eventFilter(QObject* object, QEvent* event);
+	bool eventFilter(QObject* object, QEvent* event);
 
 private slots:
-   void onKineticTimerElapsed();
+	void onKineticTimerElapsed();
 
 private:
-   QScopedPointer<QsKineticScrollerImpl> d;
+	QScopedPointer<QsKineticScrollerImpl> d;
 };
 
 #endif

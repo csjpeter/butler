@@ -7,6 +7,7 @@
 #define BUTLER_SHOPPINGVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 #include <butler_query.h>
 
@@ -84,6 +85,8 @@ private:
 	EditItemView *editItemView;
 	BuyItemView *buyItemView;
 	TagFilterView *tagFilterView;
+
+	QsKineticScroller scroll;
 };
 
 #endif

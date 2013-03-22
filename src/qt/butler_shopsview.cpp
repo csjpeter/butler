@@ -89,10 +89,13 @@ ShopsView::ShopsView(const QString & dbname, QWidget *parent) :
 
 	/* restore last state */
 	loadState();
+
+	scroll.enableKineticScrollFor(queryView);
 }
 
 ShopsView::~ShopsView()
 {
+	scroll.disableKineticScrollFor(queryView);
 }
 
 void ShopsView::showEvent(QShowEvent *event)

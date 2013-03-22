@@ -33,30 +33,32 @@ void TagWidget::prepareContent()
 			return; /* No sense to relayout. */
 		QLayoutItem *child;
 		while ((child = gridLayout->takeAt(0)) != 0) {
-			child->widget()->deleteLater();
+//			child->widget()->deleteLater();
 			delete child;
 		}
 		delete layout();
 		gridLayout = 0;
 	}
-	btnContainer.clear();
+//	btnContainer.clear();
 
 	unsigned i, s = tagSet.size();
 
 	/* Trick:
 	 * Add new buttons to a ReferenceContainer in which later we can
 	 * access the button belonging to a particular tag. */
-	for(i = 0; i < s; i++){
-		QCheckBox * tagBox(new QCheckBox);
-		tagBox->setTristate(false);
+	if(btnContainer.empty()){
+		for(i = 0; i < s; i++){
+			QCheckBox * tagBox(new QCheckBox);
+			tagBox->setTristate(false);
 
-		const Tag &tag = tagSet.queryAt(i);
-		tagBox->setText(tag.name);
-		int w = tagBox->sizeHint().width();
-		if(maxTagCheckboxWidth < w)
-			maxTagCheckboxWidth = w;
+			const Tag &tag = tagSet.queryAt(i);
+			tagBox->setText(tag.name);
+			int w = tagBox->minimumSizeHint().width();
+			if(maxTagCheckboxWidth < w)
+				maxTagCheckboxWidth = w;
 
-		btnContainer.add(*tagBox);
+			btnContainer.add(*tagBox);
+		}
 	}
 
 	gridLayout = new QGridLayout();
@@ -80,8 +82,8 @@ void TagWidget::prepareContent()
 void TagWidget::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
-//	if(event->size() != event->oldSize())
-//		QTimer::singleShot(0, this, SLOT(prepareContent()));
+	if(event->size() != event->oldSize())
+		QTimer::singleShot(0, this, SLOT(prepareContent()));
 }
 
 void TagWidget::setTags(const TagNameSet &tags)

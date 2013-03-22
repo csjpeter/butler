@@ -7,6 +7,7 @@
 #define BUTLER_CUSTOMVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 #include <butler_query.h>
 
@@ -89,6 +90,8 @@ private:
 	EditItemView *editItemView;
 	QueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
+
+	QsKineticScroller scroll;
 };
 
 #endif
