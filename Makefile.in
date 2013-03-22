@@ -312,20 +312,16 @@ doxygen: @DOCDIR@/html/index.html
 
 debian: FORCE
 	debuild \
+		--no-tgz-check \
 		--preserve-envvar PATH \
 		--preserve-envvar PKG_CONFIG_LIBDIR \
 		--preserve-envvar PKG_CONFIG_PATH
 
 debian-nc: FORCE
-	debuild -nc
-
-debian-bin: FORCE
-	debuild -S -us -uc
-	pbuilder-dist @HOST_DIST@ i386 ../@PKGNAME_BASE@_@VERSION@.dsc
-	pbuilder-dist @HOST_DIST@ amd64 ../@PKGNAME_BASE@_@VERSION@.dsc
+	debuild --no-tgz-check -nc
 
 debian-src: FORCE
-	debuild -S
+	debuild --no-tgz-check -S
 
 nsis: build
 	makensis nsis/@PKGNAME@.nsi
