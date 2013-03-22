@@ -47,3 +47,5 @@ AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt
 DEX=${ANDROID_SDK_HOME}/platform-tools/dx
 JARSIGNER=$(which jarsigner 2> /dev/null)
 
+# http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
+

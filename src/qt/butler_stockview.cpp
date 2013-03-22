@@ -112,6 +112,8 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 
 	/* restore last state */
 	loadState();
+
+	scroll.enableKineticScrollFor(queryView);
 }
 
 StockView::~StockView()

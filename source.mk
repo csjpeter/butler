@@ -140,6 +140,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_waresmodel.h \
 	$(DIST_DIR)/src/qt/butler_waresview.h \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
+	$(DIST_DIR)/src/qt/QsKineticScroller.cpp \
+	$(DIST_DIR)/src/qt/QsKineticScroller.h \
 	$(DIST_DIR)/src/qt/main.cpp \
 	$(DIST_DIR)/share/icons/copyright \
 	$(DIST_DIR)/share/icons/accounting.png \

@@ -7,6 +7,7 @@
 #define BUTLER_INFOVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 /*forwards*/
 class QAction;
@@ -34,6 +35,8 @@ private:
 
 	void loadState();
 	void saveState();
+
+	QsKineticScroller scroll;
 };
 
 #endif

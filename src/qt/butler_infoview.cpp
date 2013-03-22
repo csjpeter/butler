@@ -37,6 +37,8 @@ InfoView::InfoView(QWidget *parent) :
 	loadState();
 
 	setLayout(layout);
+
+	scroll.enableKineticScrollFor(textView);
 }
 
 InfoView::~InfoView()
