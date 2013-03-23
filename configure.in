@@ -3,9 +3,10 @@
 source config
 
 PKGNAME=@PKGNAME@
-ENDUSER_LICENSE="$(cat debian/copyright | sed 's|$|\\\\n\\\\\\|g')"
+ENDUSER_LICENSE="$(cat enduser-license | sed 's|$|\\\\n\\\\\\|g')"
 
 DEBUG=no
+PACKAGING=""
 
 # param 1 : inflie
 # param 2 : outfile
@@ -133,6 +134,9 @@ function process_args ()
 			;;
 			(--disable-dependency-tracking)
 			;;
+			(--packaging)
+				PACKAGING=${VALUE}
+			;;
 			(*)
 				echo "Invalid argument ($1) found on command line."
 				exit 1
@@ -210,25 +214,35 @@ test "x${APPSDIR}" = "x" && { APPSDIR=${TCROOT}${PREFIX}share/applications ; }
 
 DOCDIR=${TCROOT}${PREFIX}share/doc/${PKGNAME}
 
-generate Makefile.in Makefile || exit $?
-generate doxyfile.in doxyfile || exit $?
-generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
-generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
-generate config.h.in src/config.h || exit $?
 
-test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
-generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
+function debian_packaging ()
+{
+	generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
+	generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
+}
 
-test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
-generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
-
-#
-# nsis (windows) packaging directory
-#
-
-! test "x${TARGET_ARCH}" != "x${HOST_ARCH}" || {
+function windows_packaging ()
+{
 	generate nsis/${PKGNAME}.nsi.in nsis/${PKGNAME}.nsi || exit $?
 	generate nsis/license.txt.in nsis/license.txt || exit $?
 	unix2dos nsis/license.txt || exit $?
 }
 
+function android_packaging ()
+{
+	echo empty
+}
+
+
+generate Makefile.in Makefile || exit $?
+generate doxyfile.in doxyfile || exit $?
+generate config.h.in src/config.h || exit $?
+test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
+generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
+test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
+generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
+
+
+test "x${PACKAGING}" = "x" || {
+	${PACKAGING}_packaging || exit $?
+}

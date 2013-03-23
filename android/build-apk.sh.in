@@ -1,6 +1,6 @@
 #!/bin/bash
 
-API=$1
+SDK_API=$1
 ARCH=$2
 shift 2
 
@@ -8,36 +8,39 @@ APK_BUILDER=${ANDROID_SDK_HOME}/tools/apkbuilder
 AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt
 DEX=${ANDROID_SDK_HOME}/platform-tools/dx
 JARSIGNER=$(which jarsigner 2> /dev/null)
+ZIPALIGN=${ANDROID_SDK_HOME}/tools/zipalign
 
 make $@ || exit $?
-make install DESTDIR=android || exit $?
+
+#make install DESTDIR=android || exit $?
+test -d android/lib || { mkdir -p android/lib || exit $? ; }
+cp @TCROOT@@PREFIX@lib/@PKGNAME_BASE@.so android/lib/
 
 ${AAPT} package -f \
 	-M android/AndroidManifest.xml \
 	-F @PKGNAME_BASE@.aapt \
-	-I ${ANDROID_SDK_HOME}/platforms/${API}/android.jar \
-	-S @PKGNAME_BASE@/res || exit $?
+	-I ${ANDROID_SDK_HOME}/platforms/${SDK_API}/android.jar \
+	-S android/res || exit $?
 
 ${DEX} --dex \
-	--output @PKGNAME_BASE@/classes.dex \
-	@PKGNAME_BASE@/bin/classes \
+	--output android/classes.dex \
+	android/bin/classes \
 	${ANDROID_SDK_HOME}/tools/support/annotations.jar || exit $?
 
 ${APK_BUILDER} @PKGNAME_BASE@.unsigned.apk \
 	-u \
 	-z @PKGNAME_BASE@.aapt \
-	-nf @PKGNAME_BASE@/libs || exit $?
+	-nf android/libs || exit $?
 
 ${JARSIGNER} \
 	-sigalg MD5withRSA -digestalg SHA1 \
-	-keystore keystore/debug.keystore -keypass android -storepass android \
+	-keystore android/debug.keystore -keypass android -storepass android \
 	-signedjar @PKGNAME_BASE@.debug.unaligned.apk \
 	@PKGNAME_BASE@.unsigned.apk \
 	androiddebugkey || exit $?
 
-${ANDROID_SDK_HOME}/tools/zipalign -v 4 \
-	@PKGNAME_BASE@.debug.unaligned.apk \
-	$@ || exit $?
+${ZIPALIGN} -v 4 @PKGNAME_BASE@.debug.unaligned.apk \
+		@PKGNAME_BASE@.debug.apk || exit $?
 
 #android update project -p . -s --target 1 || exit $?
 #ant debug || exit $?

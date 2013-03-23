@@ -80,20 +80,20 @@ EOF
 CMD=$1
 
 case "${CMD}" in
-       (release)
+	(release)
 		shift
 		release $1 $2
-       ;;
-       (release-all)
+	;;
+	(release-all)
 		shift
 		release precise amd64
 		release precise i386
 		release quantal amd64
 		release quantal i386
-       ;;
-       (*)
+	;;
+	(*)
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
-       ;;
+	;;
 esac
 

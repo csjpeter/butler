@@ -79,14 +79,14 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	$(MOC) -o $@ $<
 	$(TARGETFINISHED)
 
-@TCROOT@@PREFIX@libs/% : \
-		tmp/@TCROOT@@PREFIX@libs/%
+@TCROOT@@PREFIX@lib/% : \
+		tmp/@TCROOT@@PREFIX@lib/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $^ $@
 	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
 
-@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@libs/% : \
-		tmp/@TCROOT@@PREFIX@libs/%
+@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/% : \
+		tmp/@TCROOT@@PREFIX@lib/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(OBJCOPY) --only-keep-debug $^ $@
 
@@ -272,8 +272,7 @@ BUTLER_IMAGES=\
 #
 
 all: \
-	build \
-	debian/@PKGNAME@.install
+	build
 
 build: \
 	$(STATIC_LIBDATAMODEL) \
@@ -281,8 +280,8 @@ build: \
 	$(BUTLER_IMAGES) \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
 	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
-	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@libs/armeabi/@PKGNAME_BASE@.so \
-	@TCROOT@@PREFIX@libs/armeabi/@PKGNAME_BASE@.so
+	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/armeabi/@PKGNAME_BASE@.so \
+	@TCROOT@@PREFIX@lib/armeabi/@PKGNAME_BASE@.so
 
 #	$(TEST_BINARIES)
 
@@ -293,7 +292,6 @@ clean:
 	! test -d tmp || rm -fr tmp
 	! test -d @TCROOT@@PREFIX@bin || rm -fr @TCROOT@@PREFIX@bin
 	! test -d @TCROOT@@PREFIX@lib || rm -fr @TCROOT@@PREFIX@lib
-	! test -d @TCROOT@@PREFIX@libs || rm -fr @TCROOT@@PREFIX@libs
 	! test -d @TCROOT@@PREFIX@share || rm -fr @TCROOT@@PREFIX@share
 	! test -d @TCROOT@@PREFIX@test || rm -fr @TCROOT@@PREFIX@test
 	! test -d @TCROOT@@PREFIX@include || rm -fr @TCROOT@@PREFIX@include
@@ -367,7 +365,7 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 	test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 
-tmp/@TCROOT@@PREFIX@libs/armeabi/@PKGNAME_BASE@.so: \
+tmp/@TCROOT@@PREFIX@lib/armeabi/@PKGNAME_BASE@.so: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBDATAMODEL) \
 		$(STATIC_LIBSQL)

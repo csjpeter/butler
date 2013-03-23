@@ -22,6 +22,7 @@ function config ()
 	local API=$1
 	local ARCH=$2
 	local DIST=$3
+	shift 3
 	TCROOT=opt/${API}-${ARCH}
 	export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
 	export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
@@ -46,30 +47,31 @@ function config ()
 	exec_in_dir ${DIST} ./configure || exit $?
 }
 
+SDK_API=android-8
 API=android-9
 ARCH=arm
 
 CMD=$1
 
 case "${CMD}" in
-       (debian)
-		test "x$2" = "x" || { API=$2 }
-		test "x$3" = "x" || { ARCH=$3 }
+	(debian)
+		test "x$2" = "x" || API=$2
+		test "x$3" = "x" || ARCH=$3
 		shift 3
 		DIST=${DISTRIB_CODENAME}-x-${API}-${ARCH}
 
 		config ${API} ${ARCH} ${DIST} \
 			--target=${API}-${ARCH} \
 			--packaging=debian || exit $?
-		exec-in-dir ${DIST} debuild \
+		exec_in_dir ${DIST} debuild \
 			--no-tgz-check \
 			--preserve-envvar PATH \
 			--preserve-envvar PKG_CONFIG_LIBDIR \
 			--preserve-envvar PKG_CONFIG_PATH || exit $?
-       ;;
-       (apk)
-		test "x$2" = "x" || { API=$2 }
-		test "x$3" = "x" || { ARCH=$3 }
+	;;
+	(apk)
+		test "x$2" = "x" || API=$2
+		test "x$3" = "x" || ARCH=$3
 		shift 3
 		DIST=${API}-${ARCH}
 
@@ -77,11 +79,11 @@ case "${CMD}" in
 			--host=${API}-${ARCH} \
 			--target=${API}-${ARCH} \
 			--packaging=android || exit $?
-		exec-in-dir ${DIST} android/build-apk.sh ${API} ${ARCH} || exit $?
-       ;;
-       (*)
-		test "x$2" = "x" || { API=$2 }
-		test "x$3" = "x" || { ARCH=$3 }
+		exec_in_dir ${DIST} android/build-apk.sh ${SDK_API} ${ARCH} || exit $?
+	;;
+	(*)
+		test "x$2" = "x" || API=$2
+		test "x$3" = "x" || ARCH=$3
 		shift 3
 		DIST=${API}-${ARCH}
 
@@ -90,7 +92,7 @@ case "${CMD}" in
 			--target=${API}-${ARCH} \
 			--packaging=android || exit $?
 		exec_in_dir ${DIST} make $@ || exit $?
-       ;;
+	;;
 esac
 
 # Android examples:

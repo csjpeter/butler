@@ -50,10 +50,10 @@ while ! test "x$1" = "x"; do
 			VERSION_PACKAGING=${VERSION}-${VALUE}
 		;;
 		(--packaging)
-		        PACKAGING=${VALUE}
+			PACKAGING=${VALUE}
 		;;
 		(--exec-postfix)
-		        EXEC_POSTFIX=${VALUE}
+			EXEC_POSTFIX=${VALUE}
 		;;
 		(*)
 			echo "Invalid argument ($1) found on command line."
@@ -96,7 +96,7 @@ function generate ()
 		-e "s|@HOST_DIST@|${HOST_DIST}|g" \
 		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \
 		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \
-                -e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
+		-e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
 		-e "s|@EXEC_POSTFIX@|${EXEC_POSTFIX}|g" \
 		> $2 || exit $?
 }
@@ -133,12 +133,16 @@ function windows_packaging ()
 
 function android_packaging ()
 {
-	test -d ${DIST_DIR}/android || { mkdir -p ${DIST_DIR}/android || exit $? ; }
+	test -d ${DIST_DIR}/android/res/values || { 
+		mkdir -p ${DIST_DIR}/android/res/values || exit $?
+	}
 
 	# http://developer.android.com/guide/topics/manifest/manifest-intro.html
 	generate android/AndroidManifest.xml.in ${DIST_DIR}/android/AndroidManifest.xml || exit $?
 	generate android/strings.xml.in ${DIST_DIR}/android/res/values/strings.xml || exit $?
 	generate android/build-apk.sh.in ${DIST_DIR}/android/build-apk.sh || exit $?
+	chmod u+x ${DIST_DIR}/android/build-apk.sh || exit $?
+	cp android/debug.keystore ${DIST_DIR}/android/ || exit $?
 }
 
 #
@@ -151,13 +155,14 @@ cp -p config ${DIST_DIR}/config || exit $?
 generate configure.in ${DIST_DIR}/configure || exit $?
 chmod u+x ${DIST_DIR}/configure || exit $?
 generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
-generate srclicense.in ${DIST_DIR}/license || exit $?
+generate srclicense.in ${DIST_DIR}/source-license || exit $?
 #generate binlicense.in ${DIST_DIR}/license.binary || exit $?
 #generate srclicense.in ${DIST_DIR}/license.source || exit $?
 generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
 generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 generate config.h.in ${DIST_DIR}/config.h.in || exit $?
+generate binlicense.in ${DIST_DIR}/enduser-license || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 
