@@ -67,9 +67,12 @@ int main(int argc, char *args[])
 	try {
 		Path::initRootPath(args[0]);
 		DBG("Path::icon(""): %s", C_STR(Path::icon("")));
+	} catch (csjp::Exception & e) {
+		EXCEPTION(e);
+		return -1;
 	} catch (std::exception & e) {
-		fprintf(stderr, "Failed to determine the installation root directory.");
-		EXCEPTION(e.what());
+		fprintf(stderr, "Failed to determine the installation root directory. "
+				"Unexpected exception: %s", e.what());
 		return -1;
 	}
 
@@ -97,9 +100,12 @@ int main(int argc, char *args[])
 		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
 		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
 		registerDatabase(sqlitedb);
+	} catch (csjp::Exception & e) {
+		EXCEPTION(e);
+		return -1;
 	} catch (std::exception & e) {
-		fprintf(stderr, "Failed to initialize database.");
-		EXCEPTION(e.what());
+		fprintf(stderr, "Failed to initialize database. Unexpected exception: %s",
+				e.what());
 		return -1;
 	}
 
@@ -128,9 +134,12 @@ int main(int argc, char *args[])
 		view.show();
 
 		return app.exec();
+	} catch (csjp::Exception & e) {
+		EXCEPTION(e);
+		return -1;
 	} catch (std::exception & e) {
-		fprintf(stderr, "Failed main view construction or other unexpected exception.");
-		EXCEPTION(e.what());
+		fprintf(stderr, "Failed main view construction or other unexpected exception: %s",
+				e.what());
 		return -1;
 	}
 }

@@ -41,6 +41,8 @@
 #include <QtDebug>
 #include <cstddef> // for NULL
 
+// http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
+
 // A number of mouse moves are ignored after a press to differentiate
 // it from a press & drag. FIXME drag should be started with long tap
 static const int gMaxIgnoredMouseMoves = 2;

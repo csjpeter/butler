@@ -81,19 +81,19 @@ CMD=$1
 
 case "${CMD}" in
        (release)
-               shift
-               release $1 $2
+		shift
+		release $1 $2
        ;;
        (release-all)
-               shift
-               release precise amd64
-               release precise i386
-               release quantal amd64
-               release quantal i386
+		shift
+		release precise amd64
+		release precise i386
+		release quantal amd64
+		release quantal i386
        ;;
        (*)
-               config ${DISTRIB_CODENAME} || exit $?
-               exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
+		config ${DISTRIB_CODENAME} || exit $?
+		exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
        ;;
 esac
 

@@ -10,6 +10,7 @@ TARGET_DIST=${DISTRIB_CODENAME}
 CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
 CURRENT_YEAR=$(LANG=en date +"%Y")
 VERSION_PACKAGING=${VERSION}
+PACKAGING=""
 
 while ! test "x$1" = "x"; do
 	! test "x$1" = "x--" || {
@@ -47,6 +48,9 @@ while ! test "x$1" = "x"; do
 				exit $?
 			}
 			VERSION_PACKAGING=${VERSION}-${VALUE}
+		;;
+		(--packaging)
+		        PACKAGING=${VALUE}
 		;;
 		(--exec-postfix)
 		        EXEC_POSTFIX=${VALUE}
@@ -97,6 +101,46 @@ function generate ()
 		> $2 || exit $?
 }
 
+function debian_packaging ()
+{
+	test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
+
+	generate binlicense.in ${DIST_DIR}/debian/copyright || exit $?
+	generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
+	generate debian/control.in ${DIST_DIR}/debian/control || exit $?
+	test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {
+		generate debian/rules.native.in ${DIST_DIR}/debian/rules || exit $?
+	} || {
+		generate debian/rules.cross.in ${DIST_DIR}/debian/rules || exit $?
+	}
+	chmod u+x ${DIST_DIR}/debian/rules || exit $?
+	echo "5" > ${DIST_DIR}/debian/compat || exit $?
+
+	test -d ${DIST_DIR}/debian/source || { mkdir -p ${DIST_DIR}/debian/source || exit $? ; }
+	echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
+
+	generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
+	generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
+}
+
+function windows_packaging ()
+{
+	test -d ${DIST_DIR}/nsis || { mkdir -p ${DIST_DIR}/nsis || exit $? ; }
+
+	generate nsis/install.nsi.in ${DIST_DIR}/nsis/${PKGNAME}.nsi.in || exit $?
+	generate binlicense.in ${DIST_DIR}/nsis/license.txt.in || exit $?
+}
+
+function android_packaging ()
+{
+	test -d ${DIST_DIR}/android || { mkdir -p ${DIST_DIR}/android || exit $? ; }
+
+	# http://developer.android.com/guide/topics/manifest/manifest-intro.html
+	generate android/AndroidManifest.xml.in ${DIST_DIR}/android/AndroidManifest.xml || exit $?
+	generate android/strings.xml.in ${DIST_DIR}/android/res/values/strings.xml || exit $?
+	generate android/build-apk.sh.in ${DIST_DIR}/android/build-apk.sh || exit $?
+}
+
 #
 # project directory
 #
@@ -117,35 +161,6 @@ generate config.h.in ${DIST_DIR}/config.h.in || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 
-#
-# debian packaging directory
-#
-test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
-
-generate binlicense.in ${DIST_DIR}/debian/copyright || exit $?
-generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
-generate debian/control.in ${DIST_DIR}/debian/control || exit $?
-test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {
-	generate debian/rules.native.in ${DIST_DIR}/debian/rules || exit $?
-} || {
-	generate debian/rules.cross.in ${DIST_DIR}/debian/rules || exit $?
+test "x${PACKAGING}" = "x" || {
+	${PACKAGING}_packaging || exit $?
 }
-chmod u+x ${DIST_DIR}/debian/rules || exit $?
-echo "5" > ${DIST_DIR}/debian/compat || exit $?
-
-test -d ${DIST_DIR}/debian/source || { mkdir -p ${DIST_DIR}/debian/source || exit $? ; }
-echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
-
-generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
-generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
-
-#
-# nsis (windows) packaging directory
-#
-
-! test "x${TARGET_DIST}" != "x${HOST_DIST}" || {
-	test -d ${DIST_DIR}/nsis || { mkdir -p ${DIST_DIR}/nsis || exit $? ; }
-	generate nsis/install.nsi.in ${DIST_DIR}/nsis/${PKGNAME}.nsi.in || exit $?
-	generate binlicense.in ${DIST_DIR}/nsis/license.txt.in || exit $?
-}
-
