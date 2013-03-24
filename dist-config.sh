@@ -150,6 +150,15 @@ function android_packaging ()
 	cp android/debug.keystore ${DIST_DIR}/android/ || exit $?
 	cp share/icons/butler.png ${DIST_DIR}/android/res/drawable/icon.png || exit $?
 	cp -pdr android/src ${DIST_DIR}/android/ || exit $?
+	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE} || {
+		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE} || exit $?
+	}
+	cp -pdr share/icons ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/ || exit $?
+	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css || {
+		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css || exit $?
+	}
+	cp -pdr share/css/${PACKAGING}.css \
+		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css/application.css || exit $?
 }
 
 #

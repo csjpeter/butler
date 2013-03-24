@@ -35,6 +35,7 @@ function generate ()
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
 		-e "s|@APPSDIR@|${APPSDIR}|g" \
 		-e "s|@ICONS_PREFIX@|${ICONS_PREFIX}|g" \
+		-e "s|@CSS_PREFIX@|${CSS_PREFIX}|g" \
                 -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}n\"|g" \
 		> $2 || exit $?
 }
@@ -70,6 +71,9 @@ function process_args ()
 			(--prefix)
 				PREFIX=$(echo ${VALUE} | sed 's|^/*||g')
 				prefix=$PREFIX # dh_auto_configure compatibility
+			;;
+			(--css-prefix)
+				CSS_PREFIX=${VALUE}
 			;;
 			(--icons-prefix)
 				ICONS_PREFIX=${VALUE}
@@ -214,6 +218,7 @@ CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
 test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 test "x${ICONS_PREFIX}" = "x" && { ICONS_PREFIX=${PREFIX} ; }
+test "x${CSS_PREFIX}" = "x" && { CSS_PREFIX=${PREFIX} ; }
 
 test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${TCROOT}${PREFIX}include ; }
 test "x${MAN_DIR}" = "x" && { MAN_DIR=${TCROOT}${PREFIX}share/man ; }

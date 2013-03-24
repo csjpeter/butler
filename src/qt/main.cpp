@@ -22,7 +22,11 @@ int main(int argc, char *args[])
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
-/*
+
+#ifdef DEBUG
+	csjp::verboseMode = true;
+#endif
+
 	int argi = 1;
 
 	if(1 <= argc - argi && (
@@ -57,79 +61,54 @@ int main(int argc, char *args[])
 			argi++;
 			continue;
 		}
-		fprintf(stderr, "Bad arguments given.\n");
+
+		if(!strcmp(args[argi], "")) /* The rests are Qt arguments. */
+			break;
+
+		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
+		DBG("Bad argument given: '%s'", args[argi]);
 		return 1;
 	}
-*/
-	csjp::verboseMode = true;
 
 	try {
 		Path::initRootPath(args[0]);
-	} catch (csjp::Exception & e) {
-		EXCEPTION(e);
-		return -1;
-	} catch (std::exception & e) {
-		fprintf(stderr, "Failed to determine the installation root directory. "
-				"Unexpected exception: %s", e.what());
-		return -1;
-	}
 
-	try {
+		/* Init the local database */
 		if(dbFileName == ""){
 			QSettings settings;
 			dbFileName = settings.value("mainview/dbfile", QString()).toString();
 		}
-		
 		if(dbFileName == ""){
 			QDir dir(QDir::homePath());
 
-			/* TODO check if .butler is directory and not file */
 			if(!dir.exists(".butler"))
 				dir.mkdir(".butler");
 			dbFileName = QDir::toNativeSeparators(
 				QDir::homePath() + QString("/.butler/db.sqlite")
 				);
 		}
-
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = defaultDbName;
 		sqlitedb->driver = "QSQLITE";
 		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
 		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
 		registerDatabase(sqlitedb);
-	} catch (csjp::Exception & e) {
-		EXCEPTION(e);
-		return -1;
-	} catch (std::exception & e) {
-		fprintf(stderr, "Failed to initialize database. Unexpected exception: %s",
-				e.what());
-		return -1;
-	}
 
-#ifdef MAEMO
-#define CSS_BUFFER_SIZE 64*1024
-	{
-		MSG("Loading css file...");
-		char buf[CSS_BUFFER_SIZE];
-		QFile cssFile("/usr/share/butler/css/maemo.css");
-		if(cssFile.open(QIODevice::ReadOnly)){
-			int read = cssFile.read(buf, CSS_BUFFER_SIZE-1);
-			if(0 < read){
-				buf[read] = 0;
-				MSG("%s", buf);
-				app.setStyleSheet(buf);
-			}
-		} else {
-			WARNING("Cant open css file");
-		}
-	}
-#endif
 
-	try {
+		/* Init the styleshhet */
+		QString cssFileName(Path::css("application.css"));
+		QFile cssFile(cssFileName);
+		if(!cssFile.open(QIODevice::ReadOnly))
+			throw csjp::FileError("Cant open css file: %s", C_STR(cssFileName));
+		QByteArray data = cssFile.readAll();
+		app.setStyleSheet(data);
+		DBG("CSS content:\n%s", data.constData());
+
+		/* Mainview */
 		MainView view(defaultDbName);
-		//view.setFixedSize(800, 480);
 		view.show();
 
+		/* Run the app */
 		return app.exec();
 	} catch (csjp::Exception & e) {
 		EXCEPTION(e);

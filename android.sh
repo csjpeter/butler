@@ -32,6 +32,7 @@ function config ()
 		--debug \
 		--target=arm-linux-androideabi \
 		--prefix= \
+		--css-prefix=assets:/ \
 		--icons-prefix=assets:/ \
 		--tcroot=${TCROOT} \
 		--fpic \
@@ -77,7 +78,7 @@ case "${CMD}" in
 		test "x$1" = "x" || { ARCH=$1 ; shift ; }
 		DIST=${API}-${ARCH}
 
-		rm -fr ${DIST}/android # force cleanup ant files
+		#rm -fr ${DIST}/android # force cleanup ant files
 		config ${API} ${ARCH} ${DIST} \
 			--host=${API}-${ARCH} \
 			--target=${API}-${ARCH} \

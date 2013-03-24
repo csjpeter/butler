@@ -18,8 +18,6 @@ make $@ || exit $?
 
 test -d android/lib/armeabi || { mkdir -p android/libs/armeabi || exit $? ; }
 cp @TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so android/libs/armeabi/ || exit $?
-test -d android/assets || { mkdir -p android/assets || exit $? ; }
-cp -pdr @TCROOT@@PREFIX@/share android/assets/ || exit $?
 
 echo "target=${SDK_API}" > android/project.properties
 echo "sdk.dir=${ANDROID_SDK_HOME}" > android/local.properties

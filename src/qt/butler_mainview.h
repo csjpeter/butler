@@ -7,11 +7,13 @@
 #define BUTLER_MAINVIEW_H
 
 #include <QWidget>
+#include <QsKineticScroller.h>
 
 #include <butler_query.h>
 #include <butler_databases.h>
 
 /*forwards*/
+class QScrollArea;
 class QAction;
 class QToolButton;
 class QMenu;
@@ -62,6 +64,8 @@ private slots:
 private:
 	QString dbname;
 
+	QScrollArea * scrollArea;
+
 	ShoppingView *shoppingView;
 	StockView *stockView;
 	CustomView *customView;
@@ -70,6 +74,8 @@ private:
 	WaresView *waresView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;
+
+	QsKineticScroller scroll;
 };
 
 #endif

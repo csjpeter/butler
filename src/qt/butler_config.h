@@ -19,6 +19,7 @@ namespace Path {
 	void initRootPath(const char * args0);
 
 	const QString icon(const char * fileName);
+	const QString css(const char * fileName);
 }
 
 #endif

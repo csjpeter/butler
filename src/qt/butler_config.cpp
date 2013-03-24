@@ -47,6 +47,18 @@ const QString icon(const char * fileName)
 	return iconPath;
 }
 
+const QString css(const char * fileName)
+{
+	QString cssPath;
+#ifdef RELATIVE_PATH
+	cssPath += rootDir;
+#endif
+	cssPath.append(CSS_PATH);
+	cssPath.append(fileName);
+	DBG("CSS path: %s", C_STR(cssPath));
+	return cssPath;
+}
+
 void initRootPath(const char * args0)
 {
 	QString prefix(PREFIX);

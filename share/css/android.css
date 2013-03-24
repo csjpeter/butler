@@ -1,12 +1,12 @@
 
 QCheckBox::indicator {
-	width: 30px;
-	height: 30px;
+	width: 20px;
+	height: 20px;
 }
 
 QRadioButton::indicator {
-	width: 30px;
-	height: 30px;
+	width: 20px;
+	height: 20px;
 }
 /*
 QWidget {
@@ -15,7 +15,7 @@ QWidget {
 */
 QWidget {
 	font-family: "Times New Roman";
-	font-size: 20px;
+	font-size: 10px;
 }
 
 QSpinBox::up-arrow {
@@ -25,13 +25,13 @@ QSpinBox::up-arrow {
 }
 
 QScrollBar {
-	width: 30px;
-	height: 30px;
+	width: 3px;
+	height: 3px;
 }
 
 QScrollBar::handle {
-	 min-width: 50px;
-	 min-height: 50px;
+	 min-width: 10px;
+	 min-height: 10px;
 }
 
 /*
