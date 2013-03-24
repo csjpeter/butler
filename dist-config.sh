@@ -63,7 +63,7 @@ while ! test "x$1" = "x"; do
 	shift
 done
 
-PRECONFIGURATION=$*
+PRECONFIGURATION="--packaging=${PACKAGING} $*"
 
 test "x${HOST_DIST}" = "x${TARGET_DIST}" && {
 	PKGNAME=${PKGNAME_BASE}
@@ -136,13 +136,20 @@ function android_packaging ()
 	test -d ${DIST_DIR}/android/res/values || { 
 		mkdir -p ${DIST_DIR}/android/res/values || exit $?
 	}
+	test -d ${DIST_DIR}/android/res/drawable || {
+		mkdir -p ${DIST_DIR}/android/res/drawable || exit $?
+	}
 
 	# http://developer.android.com/guide/topics/manifest/manifest-intro.html
 	generate android/AndroidManifest.xml.in ${DIST_DIR}/android/AndroidManifest.xml || exit $?
-	generate android/strings.xml.in ${DIST_DIR}/android/res/values/strings.xml || exit $?
-	generate android/build-apk.sh.in ${DIST_DIR}/android/build-apk.sh || exit $?
-	chmod u+x ${DIST_DIR}/android/build-apk.sh || exit $?
+	generate android/res/values/strings.xml.in ${DIST_DIR}/android/res/values/strings.xml \
+		|| exit $?
+	generate android/build-apk.sh.in ${DIST_DIR}/android/build-apk.sh.in || exit $?
+	generate android/build.xml.in ${DIST_DIR}/android/build.xml || exit $?
+	cp android/res/values/libs.xml ${DIST_DIR}/android/res/values/libs.xml || exit $?
 	cp android/debug.keystore ${DIST_DIR}/android/ || exit $?
+	cp share/icons/butler.png ${DIST_DIR}/android/res/drawable/icon.png || exit $?
+	cp -pdr android/src ${DIST_DIR}/android/ || exit $?
 }
 
 #

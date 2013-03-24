@@ -22,10 +22,7 @@ int main(int argc, char *args[])
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
-
-	DBG("QCoreApplication::applicationDirPath(): %s", C_STR(app.applicationDirPath()));
-	DBG("QDir::homePath(): %s", C_STR(QDir::homePath()));
-
+/*
 	int argi = 1;
 
 	if(1 <= argc - argi && (
@@ -63,10 +60,11 @@ int main(int argc, char *args[])
 		fprintf(stderr, "Bad arguments given.\n");
 		return 1;
 	}
+*/
+	csjp::verboseMode = true;
 
 	try {
 		Path::initRootPath(args[0]);
-		DBG("Path::icon(""): %s", C_STR(Path::icon("")));
 	} catch (csjp::Exception & e) {
 		EXCEPTION(e);
 		return -1;
@@ -93,7 +91,6 @@ int main(int argc, char *args[])
 				);
 		}
 
-		DBG("dbFileName %s", C_STR(dbFileName));
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = defaultDbName;
 		sqlitedb->driver = "QSQLITE";

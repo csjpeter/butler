@@ -26,6 +26,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	--exec-postfix=.exe \
 	-- \
 	--debug \
+	--relative-path \
 	--target=i686-pc-mingw32 \
 	--prefix=butler0.1 \
 	--gnu-source \

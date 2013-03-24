@@ -1,46 +1,78 @@
 #!/bin/bash
 
+function exec_in_dir ()
+{
+	pushd $1 > /dev/null || exit $?
+	shift
+	$@
+	let RET=$?
+	popd > /dev/null
+	return ${RET}
+}
+
 SDK_API=$1
 ARCH=$2
 shift 2
 
-APK_BUILDER=${ANDROID_SDK_HOME}/tools/apkbuilder
-AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt
-DEX=${ANDROID_SDK_HOME}/platform-tools/dx
-JARSIGNER=$(which jarsigner 2> /dev/null)
-ZIPALIGN=${ANDROID_SDK_HOME}/tools/zipalign
-
 make $@ || exit $?
 
-#make install DESTDIR=android || exit $?
-test -d android/lib || { mkdir -p android/lib || exit $? ; }
-cp @TCROOT@@PREFIX@lib/@PKGNAME_BASE@.so android/lib/
+test -d android/lib/armeabi || { mkdir -p android/libs/armeabi || exit $? ; }
+cp @TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so android/libs/armeabi/ || exit $?
+test -d android/assets || { mkdir -p android/assets || exit $? ; }
+cp -pdr @TCROOT@@PREFIX@/share android/assets/ || exit $?
 
-${AAPT} package -f \
-	-M android/AndroidManifest.xml \
-	-F @PKGNAME_BASE@.aapt \
-	-I ${ANDROID_SDK_HOME}/platforms/${SDK_API}/android.jar \
-	-S android/res || exit $?
+echo "target=${SDK_API}" > android/project.properties
+echo "sdk.dir=${ANDROID_SDK_HOME}" > android/local.properties
 
-${DEX} --dex \
-	--output android/classes.dex \
-	android/bin/classes \
-	${ANDROID_SDK_HOME}/tools/support/annotations.jar || exit $?
+exec_in_dir android ant debug || exit $?
 
-${APK_BUILDER} @PKGNAME_BASE@.unsigned.apk \
-	-u \
-	-z @PKGNAME_BASE@.aapt \
-	-nf android/libs || exit $?
+#AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt
+#DEX=${ANDROID_SDK_HOME}/platform-tools/dx
+#APK_BUILDER=${ANDROID_SDK_HOME}/tools/apkbuilder
+#JARSIGNER=$(which jarsigner 2> /dev/null)
+#ZIPALIGN=${ANDROID_SDK_HOME}/tools/zipalign
 
-${JARSIGNER} \
-	-sigalg MD5withRSA -digestalg SHA1 \
-	-keystore android/debug.keystore -keypass android -storepass android \
-	-signedjar @PKGNAME_BASE@.debug.unaligned.apk \
-	@PKGNAME_BASE@.unsigned.apk \
-	androiddebugkey || exit $?
+#! test -e @PKGNAME_BASE@.aapt || rm @PKGNAME_BASE@.aapt
 
-${ZIPALIGN} -v 4 @PKGNAME_BASE@.debug.unaligned.apk \
-		@PKGNAME_BASE@.debug.apk || exit $?
+#${AAPT} package -f \
+#	-M android/AndroidManifest.xml \
+#	-F @PKGNAME_BASE@.aapt \
+#	-I ${ANDROID_SDK_HOME}/platforms/${SDK_API}/android.jar \
+#	-S android/res || exit $?
+
+#! test -e android/classes.dex || rm android/classes.dex
+
+#${DEX} --dex \
+#	--output android/classes.dex \
+#	android/bin/classes \
+#	${ANDROID_SDK_HOME}/tools/support/annotations.jar || exit $?
+
+#! test -e @PKGNAME_BASE@.unsigned.apk || rm @PKGNAME_BASE@.unsigned.apk
+
+#DATA_FILES=
+#for f in $(find android/share -type f); do
+#	DATA_FILES="${DATA_FILES} -f $f"
+#done
+
+#${APK_BUILDER} @PKGNAME_BASE@.unsigned.apk \
+#	-u \
+#	-z @PKGNAME_BASE@.aapt \
+#	-nf android/lib \
+#	${DATA_FILES} \
+#	|| exit $?
+
+#! test -e @PKGNAME_BASE@.debug.unaligned.apk || rm @PKGNAME_BASE@.debug.unaligned.apk
+
+#${JARSIGNER} \
+#	-sigalg MD5withRSA -digestalg SHA1 \
+#	-keystore android/debug.keystore -keypass android -storepass android \
+#	-signedjar @PKGNAME_BASE@.debug.unaligned.apk \
+#	@PKGNAME_BASE@.unsigned.apk \
+#	androiddebugkey || exit $?
+
+#! test -e @PKGNAME_BASE@.debug.apk || rm @PKGNAME_BASE@.debug.apk
+
+#${ZIPALIGN} -v 4 @PKGNAME_BASE@.debug.unaligned.apk @PKGNAME_BASE@.debug.apk || exit $?
 
 #android update project -p . -s --target 1 || exit $?
 #ant debug || exit $?

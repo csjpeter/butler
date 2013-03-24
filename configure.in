@@ -6,7 +6,7 @@ PKGNAME=@PKGNAME@
 ENDUSER_LICENSE="$(cat enduser-license | sed 's|$|\\\\n\\\\\\|g')"
 
 DEBUG=no
-PACKAGING=""
+PACKAGING=
 
 # param 1 : inflie
 # param 2 : outfile
@@ -34,6 +34,7 @@ function generate ()
 		-e "s|@CONFIG@|${CONFIG}|g" \
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
 		-e "s|@APPSDIR@|${APPSDIR}|g" \
+		-e "s|@ICONS_PREFIX@|${ICONS_PREFIX}|g" \
                 -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}n\"|g" \
 		> $2 || exit $?
 }
@@ -70,6 +71,9 @@ function process_args ()
 				PREFIX=$(echo ${VALUE} | sed 's|^/*||g')
 				prefix=$PREFIX # dh_auto_configure compatibility
 			;;
+			(--icons-prefix)
+				ICONS_PREFIX=${VALUE}
+			;;
 			(--tcroot)
 				TCROOT="${VALUE}"
 			;;
@@ -77,6 +81,9 @@ function process_args ()
 				CFLAGS="${CFLAGS} -fno-builtin -O0"
 				DEFINES="${DEFINES} -DDEBUG"
 				DEBUG=yes
+			;;
+			(--relative-path)
+				DEFINES="${DEFINES} -DRELATIVE_PATH"
 			;;
 			(--gnu-source)
 				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
@@ -190,11 +197,14 @@ echo "${CONFIG}" | grep staticbuild > /dev/null && {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)" || exit $?
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)" || exit $?
+	test "x${PACKAGING}" = "xandroid" && {
+		STATICS+="${STATICS} /${TCROOT}/lib/libcsjp0.1.a" || exit $?
+	} || {
+		LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)" || exit $?
+	}
 }
 
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
-STATICS="${STATICS}"
 
 INCLUDES=-Isrc
 
@@ -203,6 +213,7 @@ CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 # Adjusting PREFIX and TCROOT if non-empty
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
 test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
+test "x${ICONS_PREFIX}" = "x" && { ICONS_PREFIX=${PREFIX} ; }
 
 test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${TCROOT}${PREFIX}include ; }
 test "x${MAN_DIR}" = "x" && { MAN_DIR=${TCROOT}${PREFIX}share/man ; }
@@ -230,7 +241,8 @@ function windows_packaging ()
 
 function android_packaging ()
 {
-	echo empty
+	generate android/build-apk.sh.in android/build-apk.sh || exit $?
+	chmod u+x android/build-apk.sh || exit $?
 }
 
 

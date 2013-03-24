@@ -5,8 +5,7 @@
 
 #include <QtGui>
 
-#include "csjp_exception.h"
-#include "csjp_logger.h"
+#include <csjp_logger.h>
 
 #include "config.h"
 #include "butler_config.h"
@@ -38,7 +37,10 @@ namespace Path {
 
 const QString icon(const char * fileName)
 {
-	QString iconPath(rootDir);
+	QString iconPath;
+#ifdef RELATIVE_PATH
+	iconPath += rootDir;
+#endif
 	iconPath.append(ICONS_PATH);
 	iconPath.append(fileName);
 	DBG("Icon path: %s", C_STR(iconPath));
@@ -55,13 +57,14 @@ void initRootPath(const char * args0)
 
 	int pos = root.lastIndexOf("/");
 	root.chop(root.size() - pos - 1);
-	DBG("args0 without binary name: %s", C_STR(root));
 
 	for(int i = 0; i < rootDepth; i++)
 		root.append("../");
-	DBG("root: %s", C_STR(root));
 
-	rootDir = root;
+	rootDir = QDir::cleanPath(root);
+
+	DBG("root: %s", C_STR(rootDir));
+	DBG("QDir::homePath(): %s", C_STR(QDir::homePath()));
 }
 
 }

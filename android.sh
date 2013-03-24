@@ -29,8 +29,10 @@ function config ()
 	./dist-config.sh \
 		$@ \
 		-- \
+		--debug \
 		--target=arm-linux-androideabi \
 		--prefix= \
+		--icons-prefix=assets:/ \
 		--tcroot=${TCROOT} \
 		--fpic \
 		--non-gnu-source \
@@ -55,9 +57,9 @@ CMD=$1
 
 case "${CMD}" in
 	(debian)
-		test "x$2" = "x" || API=$2
-		test "x$3" = "x" || ARCH=$3
-		shift 3
+		shift
+		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { ARCH=$1 ; shift ; }
 		DIST=${DISTRIB_CODENAME}-x-${API}-${ARCH}
 
 		config ${API} ${ARCH} ${DIST} \
@@ -70,11 +72,12 @@ case "${CMD}" in
 			--preserve-envvar PKG_CONFIG_PATH || exit $?
 	;;
 	(apk)
-		test "x$2" = "x" || API=$2
-		test "x$3" = "x" || ARCH=$3
-		shift 3
+		shift
+		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { ARCH=$1 ; shift ; }
 		DIST=${API}-${ARCH}
 
+		rm -fr ${DIST}/android # force cleanup ant files
 		config ${API} ${ARCH} ${DIST} \
 			--host=${API}-${ARCH} \
 			--target=${API}-${ARCH} \
@@ -82,9 +85,9 @@ case "${CMD}" in
 		exec_in_dir ${DIST} android/build-apk.sh ${SDK_API} ${ARCH} || exit $?
 	;;
 	(*)
-		test "x$2" = "x" || API=$2
-		test "x$3" = "x" || ARCH=$3
-		shift 3
+		shift
+		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { ARCH=$1 ; shift ; }
 		DIST=${API}-${ARCH}
 
 		config ${API} ${ARCH} ${DIST} \
