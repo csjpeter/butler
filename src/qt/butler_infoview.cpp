@@ -10,16 +10,16 @@
 #include "butler_infoview.h"
 
 InfoView::InfoView(QWidget *parent) :
-	QWidget(parent),
-	textView(0)
+	PannView(parent),
+	label(0)
 {
 	QString license(ENDUSER_LICENSE);
 
 	QVBoxLayout * layout = new QVBoxLayout;
 
-	textView = new QPlainTextEdit(license, this);
-	textView->setReadOnly(true);
-	layout->addWidget(textView);
+	label = new QLabel(license, this);
+	label->setWordWrap(true);
+	layout->addWidget(label);
 
 	QHBoxLayout * hLayout = new QHBoxLayout;
 
@@ -38,13 +38,10 @@ InfoView::InfoView(QWidget *parent) :
 	loadState();
 
 	setLayout(layout);
-
-	scroll.enableKineticScrollFor(textView);
 }
 
 InfoView::~InfoView()
 {
-	scroll.disableKineticScrollFor(textView);
 }
 
 void InfoView::showEvent(QShowEvent *event)

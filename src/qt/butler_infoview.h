@@ -6,8 +6,7 @@
 #ifndef BUTLER_INFOVIEW_H
 #define BUTLER_INFOVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include "butler_pannview.h"
 
 /*forwards*/
 class QAction;
@@ -20,7 +19,7 @@ class QStandardItemModel;
 class QSqlTableModel;
 class QPlainTextEdit;
 
-class InfoView : public QWidget
+class InfoView : public PannView
 {
 private:
 	Q_OBJECT
@@ -37,8 +36,7 @@ private:
 	void saveState();
 
 private:
-	QPlainTextEdit * textView;
-	QsKineticScroller scroll;
+	QLabel * label;
 };
 
 #endif

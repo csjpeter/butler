@@ -73,7 +73,7 @@ void initRootPath(const char * args0)
 	for(int i = 0; i < rootDepth; i++)
 		root.append("../");
 
-	rootDir = QDir::cleanPath(root);
+	rootDir = QDir::cleanPath(root) + "/";
 
 	DBG("root: %s", C_STR(rootDir));
 	DBG("QDir::homePath(): %s", C_STR(QDir::homePath()));

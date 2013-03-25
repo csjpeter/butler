@@ -26,7 +26,7 @@
 #include "butler_mainview.h"
 
 MainView::MainView(const QString & dbname, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	shoppingView(NULL),
 	stockView(NULL),
@@ -94,26 +94,17 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));
 	button->setDefault(false);
 	button->setFlat(true);
-	button->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+	button->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));
 	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	layout->addWidget(button, 0, Qt::AlignLeft);
 
 	layout->addStretch(0);
 
-	QWidget * main = new QWidget();
 	QHBoxLayout * hLayout = new QHBoxLayout;
 	hLayout->addStretch(0);
 	hLayout->addLayout(layout);
 	hLayout->addStretch(0);
-	main->setLayout(hLayout);
-
-	scrollArea = new QScrollArea(this);
-	scrollArea->setWidget(main);
-	scrollArea->setWidgetResizable(true);
-//	scrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	layout = new QVBoxLayout;
-	layout->addWidget(scrollArea);
-	setLayout(layout);
+	setLayout(hLayout);
 
 	/* restore last state */
 	loadState();
@@ -135,13 +126,10 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
 	if(settings.value("mainview/infoview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openInfoView()));
-
-	scroll.enableKineticScrollFor(scrollArea);
 }
 
 MainView::~MainView()
 {
-	scroll.disableKineticScrollFor(scrollArea);
 }
 
 void MainView::showEvent(QShowEvent *event)

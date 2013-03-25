@@ -10,7 +10,7 @@ TARGET_DIST=${DISTRIB_CODENAME}
 CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
 CURRENT_YEAR=$(LANG=en date +"%Y")
 VERSION_PACKAGING=${VERSION}
-PACKAGING=""
+PACKAGING="debian"
 
 while ! test "x$1" = "x"; do
 	! test "x$1" = "x--" || {
@@ -179,6 +179,9 @@ generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
 generate config.h.in ${DIST_DIR}/config.h.in || exit $?
 generate binlicense.in ${DIST_DIR}/enduser-license || exit $?
+
+test -d ${DIST_DIR}/share/css || { mkdir -p ${DIST_DIR}/share/css || exit $? ; }
+cp -pdr share/css/${PACKAGING}.css ${DIST_DIR}/share/css/application.css || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 

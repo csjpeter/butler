@@ -102,7 +102,7 @@ int main(int argc, char *args[])
 			throw csjp::FileError("Cant open css file: %s", C_STR(cssFileName));
 		QByteArray data = cssFile.readAll();
 		app.setStyleSheet(data);
-		DBG("CSS content:\n%s", data.constData());
+		//DBG("CSS content:\n%s", data.constData());
 
 		/* Mainview */
 		MainView view(defaultDbName);

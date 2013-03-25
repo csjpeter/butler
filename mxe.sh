@@ -38,4 +38,4 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 #--ldflags=-Wl,-subsystem,console
 
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe $@ || exit $?
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe make $@ || exit $?

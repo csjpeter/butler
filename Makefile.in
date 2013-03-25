@@ -209,8 +209,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
 	tmp/src/qt/butler_waresview.opp \
-	tmp/src/qt/QsKineticScroller.opp \
-	tmp/src/qt/moc/QsKineticScroller.opp \
 	tmp/src/qt/moc/butler_config.opp \
 	tmp/src/qt/moc/butler_databases.opp \
 	tmp/src/qt/moc/butler_mainview.opp \
@@ -242,7 +240,13 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_tagfilterview.opp \
 	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \
-	tmp/src/qt/moc/butler_waresview.opp
+	tmp/src/qt/moc/butler_waresview.opp \
+	tmp/src/qt/butler_pannable.opp \
+	tmp/src/qt/moc/butler_pannable.opp \
+	tmp/src/qt/butler_pannview.opp \
+	tmp/src/qt/moc/butler_pannview.opp \
+	tmp/src/qt/QsKineticScroller.opp \
+	tmp/src/qt/moc/QsKineticScroller.opp
 
 BUTLERQT_INCLUDES=-Isrc/qt
 
@@ -265,7 +269,8 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ware.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/info.png \
 	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico
+	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/application.css \
 
 #
 # main rules
@@ -280,6 +285,7 @@ build: \
 	$(BUTLER_IMAGES) \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
 	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
+	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@-dbg@EXEC_POSTFIX@ \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so \
 	@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so
 
@@ -358,6 +364,11 @@ $(STATIC_LIBSQL): \
 	$(LINK_STATIC)
 	$(RANLIB) $@
 
+@TCROOT@@PREFIX@bin/@PKGNAME_BASE@-dbg@EXEC_POSTFIX@: \
+		tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
 tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBDATAMODEL) \
@@ -397,6 +408,11 @@ tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
 
 @TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/%.png: \
 		share/icons/%.png
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
+@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/%.css: \
+		share/css/%.css
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 

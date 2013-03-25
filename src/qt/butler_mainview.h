@@ -6,9 +6,7 @@
 #ifndef BUTLER_MAINVIEW_H
 #define BUTLER_MAINVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
-
+#include <butler_pannview.h>
 #include <butler_query.h>
 #include <butler_databases.h>
 
@@ -32,7 +30,7 @@ class WaresView;
 class QueryOptionsView;
 class InfoView;
 
-class MainView : public QWidget
+class MainView : public PannView
 {
 private:
 	Q_OBJECT
@@ -64,8 +62,6 @@ private slots:
 private:
 	QString dbname;
 
-	QScrollArea * scrollArea;
-
 	ShoppingView *shoppingView;
 	StockView *stockView;
 	CustomView *customView;
@@ -74,8 +70,6 @@ private:
 	WaresView *waresView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;
-
-	QsKineticScroller scroll;
 };
 
 #endif
