@@ -6,7 +6,8 @@
 #ifndef BUTLER_TAGSVIEW_H
 #define BUTLER_TAGSVIEW_H
 
-#include <QWidget>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -25,7 +26,7 @@ class QSqlTableModel;
 class NewTagView;
 class EditTagView;
 
-class TagsView : public QWidget
+class TagsView : public PannView
 {
 private:
 	Q_OBJECT
@@ -53,7 +54,7 @@ private:
 	const QString & dbname;
 	TagsModel & model;
 
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 
 	QToolBar *actionTB;

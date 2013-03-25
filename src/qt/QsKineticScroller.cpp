@@ -23,6 +23,11 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
+// The original code is improved much by Peter Csaszar <csjpeter@gmail.com>
+// All rights are reserved for the applicable improvements.
+// Copyright (C) 2013 Peter Csaszar
+// The license shall remain the original given by Razvan Petru.
+
 #include <csjp_logger.h>
 
 #include "QsKineticScroller.h"
@@ -37,8 +42,8 @@
 #include <QEvent>
 #include <QTimer>
 #include <QList>
+#include <QVector2D>
 #include <QtDebug>
-#include <cstddef> // for NULL
 
 // http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
 
@@ -55,43 +60,40 @@ class QsKineticScrollerImpl
 {
 public:
 	QsKineticScrollerImpl() :
-		scrollArea(NULL),
+		scrollArea(0),
 		isPressed(false),
-		isMoving(false),
-		lastMouseYPos(0),
-		lastScrollBarPosition(0),
-		speed(0),
-		ignoredMouseMoves(0)
+		lastMousePos(0, 0),
+		lastScrollBarPosition(0, 0),
+		speed(0, 0),
+		ignoredMouseMoves(0),
+		vertical(false),
+		horizontal(false)
 	{}
-
-	void stopMotion()
-	{
-		isMoving = false;
-		speed = 0;
-		kineticTimer.stop();
-	}
 
 	QAbstractScrollArea* scrollArea;
 	bool isPressed;
-	bool isMoving;
 	QPoint lastPressPoint;
-	int lastMouseYPos;
-	int lastScrollBarPosition;
-	double speed;
+	QPoint lastMousePos;
+	QPoint lastScrollBarPosition;
+	QVector2D speed;
 	int ignoredMouseMoves;
 	QTimer kineticTimer;
+
+	bool vertical;
+	bool horizontal;
 
 	QList<QEvent*> ignoreList;
 };
 
-QsKineticScroller::QsKineticScroller(QObject *parent) :
+QsKineticScroller::QsKineticScroller(QObject *parent, bool vertical, bool horizontal) :
 	QObject(parent),
 	d(new QsKineticScrollerImpl)
 {
+	d->vertical = vertical;
+	d->horizontal = horizontal;
 	connect(&d->kineticTimer, SIGNAL(timeout()), SLOT(onKineticTimerElapsed()));
 }
 
-// needed by smart pointer
 QsKineticScroller::~QsKineticScroller()
 {
 	if(d->scrollArea)
@@ -100,9 +102,8 @@ QsKineticScroller::~QsKineticScroller()
 
 void QsKineticScroller::disableKineticScrollFor(QAbstractScrollArea* scrollArea)
 {
-	ENSURE(scrollArea != NULL, csjp::LogicError);
+	ENSURE(scrollArea != 0, csjp::LogicError);
 
-	// remove existing association
 	QList<QAbstractButton*> buttons = d->scrollArea->findChildren<QAbstractButton*>();
 	Q_FOREACH(QAbstractButton *button, buttons)
 		button->removeEventFilter(this);
@@ -121,17 +122,16 @@ void QsKineticScroller::disableKineticScrollFor(QAbstractScrollArea* scrollArea)
 
 	d->scrollArea->viewport()->removeEventFilter(this);
 	d->scrollArea->removeEventFilter(this);
-	d->scrollArea = NULL;
+	d->scrollArea = 0;
 }
 
 void QsKineticScroller::enableKineticScrollFor(QAbstractScrollArea* scrollArea)
 {
-	ENSURE(scrollArea != NULL, csjp::LogicError);
+	ENSURE(scrollArea != 0, csjp::LogicError);
 
 	if(d->scrollArea)
 		disableKineticScrollFor(scrollArea);
 
-	// associate
 	scrollArea->installEventFilter(this);
 	scrollArea->viewport()->installEventFilter(this);
 	d->scrollArea = scrollArea;
@@ -176,9 +176,12 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 					mouseEvent->globalPos().y());
 			d->isPressed = true;
 			d->lastPressPoint = mouseEvent->globalPos();
-			d->lastScrollBarPosition = d->scrollArea->verticalScrollBar()->value();
-			if(d->isMoving) // press while kinetic scrolling, so stop
-				d->stopMotion();
+			d->lastScrollBarPosition.setX(
+					d->scrollArea->horizontalScrollBar()->value());
+			d->lastScrollBarPosition.setY(d->scrollArea->verticalScrollBar()->value());
+			// press while kinetic scrolling, so stop
+			d->speed.setX(0);
+			d->speed.setY(0);
 			break;
 		case QEvent::MouseMove:
 			if(!d->isPressed)
@@ -187,25 +190,35 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			DBG("[scroll] move pos %d, %d",
 					mouseEvent->globalPos().x(),
 					mouseEvent->globalPos().y());
-			if(!d->isMoving){
+			if(d->speed.isNull()){
 				// A few move events are ignored as "click jitter", but after
 				// that we assume that the user is doing a click & drag
 				if( d->ignoredMouseMoves < gMaxIgnoredMouseMoves )
 					++d->ignoredMouseMoves;
 				else {
 					d->ignoredMouseMoves = 0;
-					d->isMoving = true;
-					d->lastMouseYPos = mouseEvent->globalPos().y();
+					d->lastMousePos = mouseEvent->globalPos();
+					d->speed.setY(1); // Do real computation here
 					if( !d->kineticTimer.isActive() )
 						d->kineticTimer.start(gTimerInterval);
 				}
 			} else {
 				// manual scroll
-				const int dragDistance =
-					mouseEvent->globalPos().y() - d->lastPressPoint.y();
-				const int newScrollPos = d->lastScrollBarPosition - dragDistance;
-				d->scrollArea->verticalScrollBar()->setValue(newScrollPos);
-				DBG("[scroll] manual scroll to %u", newScrollPos);
+				const QPoint newScrollPos = d->lastScrollBarPosition -
+					(mouseEvent->globalPos() - d->lastPressPoint);
+
+				if(d->horizontal){
+					d->scrollArea->verticalScrollBar()->setValue(
+							newScrollPos.y());
+					DBG("[scroll] manual horizontal scroll to %u",
+							newScrollPos.x());
+				}
+				if(d->vertical){
+					d->scrollArea->horizontalScrollBar()->setValue(
+							newScrollPos.x());
+					DBG("[scroll] manual vertical scroll to %u",
+							newScrollPos.y());
+				}
 			}
 			break;
 		case QEvent::MouseButtonRelease:
@@ -213,7 +226,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 					mouseEvent->pos().x(), mouseEvent->pos().y());
 			d->isPressed = false;
 			d->ignoredMouseMoves = 0;
-			if(d->isMoving)
+			if(!d->speed.isNull())
 				break;
 
 			// Looks like the user wanted a single click. Simulate the click,
@@ -260,32 +273,65 @@ void QsKineticScroller::onKineticTimerElapsed()
 {
 	if(!d->scrollArea)
 		return;
+	if(d->speed.isNull()){
+		d->kineticTimer.stop();
+		return;
+	}
 
-	if(d->isPressed && d->isMoving){
+	if(d->isPressed){
 		// the speed is measured between two timer ticks
-		const int cursorYPos = QCursor::pos().y();
+		const QPoint cursorPos = QCursor::pos();
 
-		DBG("[scroll] cursor Y pos %u; last is %u", cursorYPos, d->lastMouseYPos);
+		DBG("[scroll] cursor pos %u, %u; last is %u, %u",
+				cursorPos.x(), cursorPos.y(),
+				d->lastMousePos.x(), d->lastMousePos.y());
 
-		d->speed = (cursorYPos - d->lastMouseYPos) / gSpeedReducingFactor;
-		d->speed = qBound(-gMaxSpeed, d->speed, gMaxSpeed);
-		d->lastMouseYPos = cursorYPos;
-	} else if(!d->isPressed && d->isMoving){
-		// use the previously recorded speed and gradually decelerate
-		if(qAbs(d->speed) < qAbs(gDecceleration)) {
-			d->speed = 0;
-			d->stopMotion();
-		} else {
-			if(0 < d->speed)
-				d->speed -= gDecceleration;
-			else
-				d->speed += gDecceleration;
+		if(d->speed.x()){
+			d->speed.setX((cursorPos.x() - d->lastMousePos.x()) / gSpeedReducingFactor);
+			d->speed.setX(qBound(-gMaxSpeed, d->speed.x(), gMaxSpeed));
 		}
 
-		const int newScrollPos = d->scrollArea->verticalScrollBar()->value() - d->speed;
-		d->scrollArea->verticalScrollBar()->setValue(newScrollPos);
+		if(d->speed.y()){
+			d->speed.setY((cursorPos.y() - d->lastMousePos.y()) / gSpeedReducingFactor);
+			d->speed.setY(qBound(-gMaxSpeed, d->speed.y(), gMaxSpeed));
+		}
 
-		DBG("[scroll] kinetic scroll to %u with speed %2.2f", newScrollPos, d->speed);
-	} else
-		d->stopMotion();
+		d->lastMousePos = cursorPos;
+		return;
+	}
+
+	if(d->speed.x()){
+		// use the previously recorded speed and gradually decelerate
+		if(qAbs(d->speed.x()) < qAbs(gDecceleration)) {
+			d->speed.setX(0);
+		} else {
+			if(0 < d->speed.x())
+				d->speed.setX(d->speed.x() - gDecceleration);
+			else
+				d->speed.setX(d->speed.x() + gDecceleration);
+			const int newScrollPosX =
+				d->scrollArea->verticalScrollBar()->value() - d->speed.x();
+			d->scrollArea->verticalScrollBar()->setValue(newScrollPosX);
+
+			DBG("[scroll] kinetic horizontal scroll to %u with speed %2.2f",
+					newScrollPosX, d->speed.x());
+		}
+	}
+
+	if(d->speed.y()){
+		if(qAbs(d->speed.y()) < qAbs(gDecceleration)) {
+			d->speed.setY(0);
+		} else {
+			if(0 < d->speed.y())
+				d->speed.setY(d->speed.y() - gDecceleration);
+			else
+				d->speed.setY(d->speed.y() + gDecceleration);
+			const int newScrollPosY =
+				d->scrollArea->verticalScrollBar()->value() - d->speed.y();
+			d->scrollArea->verticalScrollBar()->setValue(newScrollPosY);
+
+			DBG("[scroll] kinetic vertical scroll to %u with speed %2.2f",
+					newScrollPosY, d->speed.y());
+		}
+	}
 }

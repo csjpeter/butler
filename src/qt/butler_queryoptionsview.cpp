@@ -12,7 +12,7 @@
 #include "butler_shopsmodel.h"
 
 QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	query(query)
 {

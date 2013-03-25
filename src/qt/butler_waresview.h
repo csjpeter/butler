@@ -6,8 +6,8 @@
 #ifndef BUTLER_WARESVIEW_H
 #define BUTLER_WARESVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -26,7 +26,7 @@ class QSqlTableModel;
 class NewWareView;
 class EditWareView;
 
-class WaresView : public QWidget
+class WaresView : public PannView
 {
 private:
 	Q_OBJECT
@@ -54,7 +54,7 @@ private:
 	const QString & dbname;
 	WaresModel & model;
 
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 
 	QToolBar *actionTB;
@@ -69,8 +69,6 @@ private:
 
 	NewWareView *newWareView;
 	EditWareView *editWareView;
-
-	QsKineticScroller scroll;
 };
 
 #endif

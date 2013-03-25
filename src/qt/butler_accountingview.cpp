@@ -15,12 +15,11 @@
 #include "butler_shopsmodel.h"
 
 AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(model)
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add already bought new item"));
 	
 	QLabel *label;
@@ -144,7 +143,7 @@ void AccountingView::showEvent(QShowEvent *event)
 {
 	uploadDateTime->setDateTime(QDateTime::currentDateTime());
 
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 
 	mapToGui();
 }
@@ -153,7 +152,7 @@ void AccountingView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void AccountingView::loadState()

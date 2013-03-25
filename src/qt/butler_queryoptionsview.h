@@ -6,7 +6,7 @@
 #ifndef BUTLER_QUERYOPTIONSVIEW_H
 #define BUTLER_QUERYOPTIONSVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 
 #include "butler_databases.h"
 
@@ -24,14 +24,13 @@ class QToolBar;
 class QLabel;
 class QComboBox;
 class QCheckBox;
-class QTableView;
 class QScrollArea;
 class QListView;
 class QStandardItemModel;
 
 class TagWidget;
 
-class QueryOptionsView : public QDialog
+class QueryOptionsView : public PannView
 {
 private:
 	Q_OBJECT

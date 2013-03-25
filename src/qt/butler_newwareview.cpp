@@ -10,12 +10,11 @@
 #include "butler_tagwidget.h"
 
 NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::WindowModal);
 	setWindowTitle(tr("Add new ware with details"));
 	
 	QLabel *label = NULL;
@@ -60,7 +59,7 @@ NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
 
 void NewWareView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 
 	mapToGui();
 }
@@ -69,7 +68,7 @@ void NewWareView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void NewWareView::loadState()

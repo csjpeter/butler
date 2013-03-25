@@ -9,12 +9,11 @@
 #include "butler_shopsmodel.h"
 
 NewShopView::NewShopView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::WindowModal);
 	setWindowTitle(tr("Add new shop with details"));
 
 	QGridLayout *gridLayout = new QGridLayout();
@@ -65,7 +64,7 @@ NewShopView::NewShopView(const QString & dbname, QWidget *parent) :
 
 void NewShopView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 
 	mapToGui();
 }
@@ -74,7 +73,7 @@ void NewShopView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void NewShopView::loadState()

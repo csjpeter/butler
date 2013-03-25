@@ -10,7 +10,7 @@
 #include "butler_tagwidget.h"
 
 TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	tags(tags)
 {
@@ -47,32 +47,29 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 
 	/* restore last state */
 	loadState();
-
-	scroll.enableKineticScrollFor(tagScrollArea);
 }
 
 TagFilterView::~TagFilterView()
 {
-	scroll.disableKineticScrollFor(tagScrollArea);
 }
 
 void TagFilterView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void TagFilterView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void TagFilterView::resizeEvent(QResizeEvent *event)
 {
-	QWidget::resizeEvent(event);
+	PannView::resizeEvent(event);
 	QTimer::singleShot(0, tagsSelector, SLOT(prepareContent()));
 }
 

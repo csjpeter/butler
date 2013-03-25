@@ -19,7 +19,7 @@
 #include "butler_application.h"
 
 ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname)),
 	newItemView(NULL),
@@ -129,22 +129,19 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addLayout(shopLayout);
-	layout->addWidget(queryView);
+	layout->addWidget(&queryView);
 
 	/* restore last state */
 	loadState();
-
-	scroll.enableKineticScrollFor(queryView);
 }
 
 ShoppingView::~ShoppingView()
 {
-	scroll.disableKineticScrollFor(queryView);
 }
 
 void ShoppingView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 	QSettings settings(this);
 
 	QDateTime uploaded = settings.value("shoppingview/currentitem", "").toDateTime();
@@ -158,7 +155,7 @@ void ShoppingView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void ShoppingView::loadState()
@@ -198,10 +195,10 @@ void ShoppingView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder orde
 void ShoppingView::newItem()
 {
 	if(!newItemView)
-		newItemView = new NewItemView(dbname, this);
+		newItemView = new NewItemView(dbname);
 
-	connect(newItemView, SIGNAL(finished(int)), this, SLOT(finishedNewItem(int)));
-	newItemView->show();
+//	connect(newItemView, SIGNAL(finished(int)), this, SLOT(finishedNewItem(int)));
+	newItemView->activate();
 }
 
 void ShoppingView::finishedNewItem(int res)
@@ -272,7 +269,7 @@ void ShoppingView::buyItem()
 	if(!buyItemView){
 		buyItemView = new BuyItemView(dbname, this);
 		buyItemView->setWindowTitle(tr("Mark item as bought"));
-		buyItemView->setModal(true);
+		buyItemView->setWindowModality(Qt::ApplicationModal);
 		connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
 	}
 	buyItemView->setItem(queryView->currentIndex().row(), shopBox->currentIndex());
@@ -290,8 +287,7 @@ void ShoppingView::filterItems()
 {
 	if(!tagFilterView){
 		tagFilterView = new TagFilterView(dbname, model.queryTagNames);
-		tagFilterView->setModal(true);
-/*		tagFilterView->setWindowModality(Qt::ApplicationModal);*/
+		tagFilterView->setWindowModality(Qt::ApplicationModal);
 		tagFilterView->setWindowTitle(tr("Tag filter view"));
 		connect(tagFilterView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));

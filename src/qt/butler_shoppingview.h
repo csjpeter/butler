@@ -6,8 +6,8 @@
 #ifndef BUTLER_SHOPPINGVIEW_H
 #define BUTLER_SHOPPINGVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -31,7 +31,7 @@ class QueryOptionsView;
 class BuyItemView;
 class TagFilterView;
 
-class ShoppingView : public QWidget
+class ShoppingView : public PannView
 {
 private:
 	Q_OBJECT
@@ -64,7 +64,7 @@ private:
 	ShoppingModel & model;
 
 	QComboBox *shopBox;
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 
 	QToolBar *actionTB;
@@ -85,8 +85,6 @@ private:
 	EditItemView *editItemView;
 	BuyItemView *buyItemView;
 	TagFilterView *tagFilterView;
-
-	QsKineticScroller scroll;
 };
 
 #endif

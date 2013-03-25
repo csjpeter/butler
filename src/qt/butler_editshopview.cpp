@@ -10,12 +10,11 @@
 #include "butler_shopsmodel.h"
 
 EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Edit shop details"));
 
 	QLabel *label = NULL;
@@ -91,14 +90,14 @@ EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
 
 void EditShopView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void EditShopView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void EditShopView::loadState()

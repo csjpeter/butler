@@ -6,8 +6,8 @@
 #ifndef BUTLER_STOCKVIEW_H
 #define BUTLER_STOCKVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -23,14 +23,13 @@ class QTableView;
 class QStandardItemModel;
 class QSqlTableModel;
 
-class NewItemView;
 class EditItemView;
 class QueryOptionsView;
 class ShoppingView;
 class AccountingView;
 class TagFilterView;
 
-class StockView : public QWidget
+class StockView : public PannView
 {
 private:
 	Q_OBJECT
@@ -59,7 +58,7 @@ private:
 	const QString & dbname;
 	StockModel & model;
 
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 
 	QToolBar *actionTB;
 
@@ -76,8 +75,6 @@ private:
 	EditItemView *editItemView;
 	AccountingView *accountingView;
 	TagFilterView *tagFilterView;
-
-	QsKineticScroller scroll;
 };
 
 #endif

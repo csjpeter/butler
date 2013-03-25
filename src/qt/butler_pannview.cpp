@@ -11,7 +11,8 @@
 
 PannView::PannView(QWidget *parent) :
 	QWidget(parent),
-	scrollArea(0)
+	scrollArea(0),
+	scroll(0, true, true)
 {
 }
 

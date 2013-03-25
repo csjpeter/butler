@@ -12,12 +12,11 @@
 
 
 NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("New item"));
 	
 	QLabel *label;
@@ -77,7 +76,7 @@ NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
 
 void NewItemView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 
 	mapToGui();
 }
@@ -86,7 +85,7 @@ void NewItemView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void NewItemView::loadState()
@@ -148,7 +147,7 @@ void NewItemView::doneClickedSlot(bool toggled)
 	}
 	item = Item();
 	mapToGui();
-	return accept();
+	hide();
 }
 
 void NewItemView::nameEditFinishedSlot()

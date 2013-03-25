@@ -14,7 +14,7 @@ SDK_API=$1
 ARCH=$2
 shift 2
 
-make $@ || exit $?
+make -j $@ || exit $?
 
 test -d android/lib/armeabi || { mkdir -p android/libs/armeabi || exit $? ; }
 cp @TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so android/libs/armeabi/ || exit $?

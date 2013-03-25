@@ -6,7 +6,7 @@
 #ifndef BUTLER_NEWITEMVIEW_H
 #define BUTLER_NEWITEMVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 
 /*forwards*/
 class QAction;
@@ -19,7 +19,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardItemModel;
 class QListView;
@@ -33,13 +32,13 @@ class QComboBox;
 
 class TagWidget;
 
-class NewItemView : public QDialog
+class NewItemView : public PannView
 {
 private:
 	Q_OBJECT
 
 public:
-	NewItemView(const QString & dbname, QWidget *parent);
+	NewItemView(const QString & dbname, QWidget *parent = NULL);
 
 private:
 	void showEvent(QShowEvent *event);

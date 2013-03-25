@@ -6,7 +6,7 @@
 #ifndef BUTLER_NEWTAGVIEW_H
 #define BUTLER_NEWTAGVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 
 /*forwards*/
 class QAction;
@@ -18,7 +18,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardItemModel;
 class QListView;
@@ -31,7 +30,7 @@ class QModelIndex;
 
 class TagWidget;
 
-class NewTagView : public QDialog
+class NewTagView : public PannView
 {
 private:
 	Q_OBJECT

@@ -6,7 +6,7 @@
 #ifndef BUTLER_EDITSHOPVIEW_H
 #define BUTLER_EDITSHOPVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 #include <QDataWidgetMapper>
 #include <QModelIndex>
 
@@ -25,7 +25,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardShopModel;
 class QListView;
@@ -33,7 +32,7 @@ class QStandardShopModel;
 
 class TagWidget;
 
-class EditShopView : public QDialog
+class EditShopView : public PannView
 {
 private:
 	Q_OBJECT

@@ -11,12 +11,11 @@
 #include "butler_tagsmodel.h"
 
 EditTagView::EditTagView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::WindowModal);
 	setWindowTitle(tr("Edit tag"));
 
 	QHBoxLayout *hbox = NULL;
@@ -74,14 +73,14 @@ EditTagView::EditTagView(const QString & dbname, QWidget *parent) :
 
 void EditTagView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void EditTagView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void EditTagView::loadState()

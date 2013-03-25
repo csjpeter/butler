@@ -11,12 +11,11 @@
 
 
 NewTagView::NewTagView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::WindowModal);
 	setWindowTitle(tr("Add new tag"));
 	
 	QGridLayout *gridLayout = new QGridLayout();
@@ -49,14 +48,14 @@ NewTagView::NewTagView(const QString & dbname, QWidget *parent) :
 
 void NewTagView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void NewTagView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void NewTagView::loadState()

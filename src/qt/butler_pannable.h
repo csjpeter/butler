@@ -17,11 +17,18 @@ template <typename Type>
 class Pannable
 {
 public:
-	Pannable(Type * ptr = 0) : ptr(ptr)
+	Pannable(bool vertical = true, bool horizontal = false) :
+		ptr(0),
+		scroll(0, vertical, horizontal)
+	{}
+
+	Pannable(Type * ptr, bool vertical = true, bool horizontal = false) :
+		ptr(ptr),
+		scroll(0, vertical, horizontal)
 	{
-		if(ptr)
-			scroll.enableKineticScrollFor(ptr);
+		scroll.enableKineticScrollFor(ptr);
 	}
+
 	~Pannable()
 	{
 		if(ptr)

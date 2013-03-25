@@ -15,7 +15,7 @@
 #include "butler_application.h"
 
 WaresView::WaresView(const QString & dbname, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname)),
 	newWareView(NULL),
@@ -85,22 +85,19 @@ WaresView::WaresView(const QString & dbname, QWidget *parent) :
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
-	layout->addWidget(queryView);
+	layout->addWidget(&queryView);
 
 	/* restore last state */
 	loadState();
-
-	scroll.enableKineticScrollFor(queryView);
 }
 
 WaresView::~WaresView()
 {
-	scroll.disableKineticScrollFor(queryView);
 }
 
 void WaresView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 
 	QSettings settings(this);
 
@@ -115,7 +112,7 @@ void WaresView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void WaresView::loadState()

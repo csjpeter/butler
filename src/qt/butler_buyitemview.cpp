@@ -13,14 +13,13 @@
 #include "butler_shopsmodel.h"
 
 BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Buy item"));
-	
+
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
 	setLayout(gridLayout);
@@ -92,14 +91,14 @@ void BuyItemView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void BuyItemView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void BuyItemView::loadState()

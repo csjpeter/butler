@@ -6,7 +6,7 @@
 #ifndef BUTLER_NEWSHOPVIEW_H
 #define BUTLER_NEWSHOPVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 
 /*forwards*/
 class QAction;
@@ -18,7 +18,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardShopModel;
 class QListView;
@@ -32,7 +31,7 @@ class QModelIndex;
 
 class TagWidget;
 
-class NewShopView : public QDialog
+class NewShopView : public PannView
 {
 private:
 	Q_OBJECT

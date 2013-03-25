@@ -6,8 +6,8 @@
 #ifndef BUTLER_SHOPSVIEW_H
 #define BUTLER_SHOPSVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -26,7 +26,7 @@ class QSqlTableModel;
 class NewShopView;
 class EditShopView;
 
-class ShopsView : public QWidget
+class ShopsView : public PannView
 {
 private:
 	Q_OBJECT
@@ -54,7 +54,7 @@ private:
 	const QString & dbname;
 	ShopsModel & model;
 
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 
 	QToolBar *actionTB;
@@ -69,8 +69,6 @@ private:
 
 	NewShopView *newShopView;
 	EditShopView *editShopView;
-
-	QsKineticScroller scroll;
 };
 
 #endif

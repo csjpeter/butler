@@ -6,7 +6,7 @@
 #ifndef BUTLER_ACCOUNTINGVIEW_H
 #define BUTLER_ACCOUNTINGVIEW_H
 
-#include <QDialog>
+#include <butler_pannview.h>
 #include <QDataWidgetMapper>
 #include <QModelIndex>
 
@@ -26,7 +26,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardItemModel;
 class QListView;
@@ -35,7 +34,7 @@ class QComboBox;
 
 class TagWidget;
 
-class AccountingView : public QDialog
+class AccountingView : public PannView
 {
 private:
 	Q_OBJECT

@@ -18,7 +18,7 @@
 #include "butler_application.h"
 
 StockView::StockView(const QString & dbname, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(stockModel(dbname)),
 	editItemView(NULL),
@@ -108,22 +108,19 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
-	layout->addWidget(queryView);
+	layout->addWidget(&queryView);
 
 	/* restore last state */
 	loadState();
-
-	scroll.enableKineticScrollFor(queryView);
 }
 
 StockView::~StockView()
 {
-	scroll.disableKineticScrollFor(queryView);
 }
 
 void StockView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 
 	QSettings settings(this);
 
@@ -138,7 +135,7 @@ void StockView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void StockView::loadState()
@@ -180,8 +177,7 @@ void StockView::editItem()
 
 	if(!editItemView){
 		editItemView = new EditItemView(dbname, model, this);
-		editItemView->setModal(true);
-/*		editItemView->setWindowModality(Qt::ApplicationModal);*/
+		editItemView->setWindowModality(Qt::ApplicationModal);
 		editItemView->setWindowTitle(tr("Edit item details"));
 	}
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
@@ -224,8 +220,7 @@ void StockView::openAccountingView()
 {
 	if(!accountingView){
 		accountingView = new AccountingView(dbname, model, this);
-		accountingView->setModal(true);
-/*		accountingView->setWindowModality(Qt::ApplicationModal);*/
+		accountingView->setWindowModality(Qt::ApplicationModal);
 		accountingView->setWindowTitle(tr("Accounting view"));
 	}
 	accountingView->show();
@@ -235,11 +230,9 @@ void StockView::filterItems()
 {
 	if(!tagFilterView){
 		tagFilterView = new TagFilterView(dbname, model.opts.withTags);
-		tagFilterView->setModal(true);
-/*		tagFilterView->setWindowModality(Qt::ApplicationModal);*/
+		tagFilterView->setWindowModality(Qt::ApplicationModal);
 		tagFilterView->setWindowTitle(tr("Tag filter view"));
-		connect(tagFilterView, SIGNAL(accepted()),
-				this, SLOT(filterAcceptedSlot()));
+		connect(tagFilterView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
 	}
 	tagFilterView->show();
 }

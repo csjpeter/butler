@@ -23,6 +23,11 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
+// The original code is improved much by Peter Csaszar <csjpeter@gmail.com>
+// All rights are reserved for the applicable improvements.
+// Copyright (C) 2013 Peter Csaszar
+// The license shall remain the original given by Razvan Petru.
+
 #ifndef QSKINETICSCROLLER_H
 #define QSKINETICSCROLLER_H
 
@@ -38,7 +43,7 @@ class QsKineticScroller: public QObject
 {
 Q_OBJECT
 public:
-	QsKineticScroller(QObject* parent = 0);
+	QsKineticScroller(QObject* parent = 0, bool vertical = true, bool horizontal = false);
 	~QsKineticScroller();
 
 	void disableKineticScrollFor(QAbstractScrollArea* scrollArea);

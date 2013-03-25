@@ -6,7 +6,7 @@
 #ifndef BUTLER_BUYITEMVIEW_H
 #define BUTLER_BUYITEMVIEW_H
 
-#include <QtGui>
+#include <butler_pannview.h>
 #include <QDataWidgetMapper>
 #include <QModelIndex>
 
@@ -21,7 +21,6 @@ class QPushButton;
 class QMenu;
 class QToolBar;
 class QLabel;
-class QTableView;
 class QScrollArea;
 class QStandardItemModel;
 class QListView;
@@ -35,7 +34,7 @@ class NumPad;
 class ItemsModel;
 class ShopsModel;
 
-class BuyItemView : public QDialog
+class BuyItemView : public PannView
 {
 private:
 	Q_OBJECT

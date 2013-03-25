@@ -12,12 +12,11 @@
 #include "butler_tagwidget.h"
 
 EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname))
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Edit ware details"));
 
 	QLabel *label = NULL;
@@ -97,14 +96,14 @@ void EditWareView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 	
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void EditWareView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void EditWareView::loadState()

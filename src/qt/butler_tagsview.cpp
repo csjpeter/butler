@@ -14,7 +14,7 @@
 #include "butler_application.h"
 
 TagsView::TagsView(const QString & dbname, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname)),
 	newTagView(NULL),
@@ -82,7 +82,7 @@ TagsView::TagsView(const QString & dbname, QWidget *parent) :
 //	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
-	layout->addWidget(queryView);
+	layout->addWidget(&queryView);
 
 	/* restore last state */
 	loadState();
@@ -94,7 +94,7 @@ TagsView::~TagsView()
 
 void TagsView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 
 	QSettings settings(this);
 
@@ -109,7 +109,7 @@ void TagsView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void TagsView::loadState()

@@ -15,12 +15,11 @@
 #include "butler_shopsmodel.h"
 
 EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *parent) :
-	QDialog(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(model)
 {
-	setModal(true);
-//	setWindowModality(Qt::ApplicationModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Edit item details"));
 	
 	QHBoxLayout *hbox;
@@ -154,7 +153,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 
 void EditItemView::showEvent(QShowEvent *event)
 {
-	QDialog::showEvent(event);
+	PannView::showEvent(event);
 
 	mapToGui();
 }
@@ -163,7 +162,7 @@ void EditItemView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
-	QDialog::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void EditItemView::loadState()

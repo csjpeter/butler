@@ -18,7 +18,7 @@
 #include "butler_application.h"
 
 CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *parent) :
-	QWidget(parent),
+	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
 	selfDestruct(selfDestruct),
@@ -148,22 +148,19 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addLayout(statGrid);
-	layout->addWidget(queryView);
+	layout->addWidget(&queryView);
 
 	/* restore last state */
 	loadState();
-
-	scroll.enableKineticScrollFor(queryView);
 }
 
 CustomView::~CustomView()
 {
-	scroll.disableKineticScrollFor(queryView);
 }
 
 void CustomView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 
 	QueriesModel & qm = queriesModel(dbname);
 	if(qm.rowCount())
@@ -189,7 +186,7 @@ void CustomView::closeEvent(QCloseEvent *event)
 	else
 		deleteLater();
 
-	QWidget::closeEvent(event);
+	PannView::closeEvent(event);
 }
 
 void CustomView::loadState()
@@ -231,8 +228,7 @@ void CustomView::editItem()
 
 	if(!editItemView){
 		editItemView = new EditItemView(dbname, *model, this);
-		editItemView->setModal(true);
-		//editItemView->setWindowModality(Qt::ApplicationModal);
+		editItemView->setWindowModality(Qt::ApplicationModal);
 		editItemView->setWindowTitle(tr("Edit item details"));
 	}
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
@@ -272,8 +268,7 @@ void CustomView::openAccountingView()
 {
 	if(!accountingView){
 		accountingView = new AccountingView(dbname, *model, this);
-		accountingView->setModal(true);
-		//accountingView->setWindowModality(Qt::ApplicationModal);
+		accountingView->setWindowModality(Qt::ApplicationModal);
 		accountingView->setWindowTitle(tr("Accounting view"));
 	}
 	accountingView->show();
@@ -309,8 +304,7 @@ void CustomView::filterItems()
 {
 	if(!queryOptsView){
 		queryOptsView = new QueryOptionsView(dbname, model->opts);
-		queryOptsView->setModal(true);
-		//queryOptsView->setWindowModality(Qt::ApplicationModal);
+		queryOptsView->setWindowModality(Qt::ApplicationModal);
 		queryOptsView->setWindowTitle(tr("Query options view"));
 		connect(queryOptsView, SIGNAL(accepted()),
 				this, SLOT(filterAcceptedSlot()));

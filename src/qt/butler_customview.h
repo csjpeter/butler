@@ -6,8 +6,8 @@
 #ifndef BUTLER_CUSTOMVIEW_H
 #define BUTLER_CUSTOMVIEW_H
 
-#include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_pannview.h>
+#include <butler_pannable.h>
 
 #include <butler_query.h>
 
@@ -29,7 +29,7 @@ class EditItemView;
 class QueryOptionsView;
 class EditWareView;
 
-class CustomView : public QWidget
+class CustomView : public PannView
 {
 private:
 	Q_OBJECT
@@ -63,7 +63,7 @@ private:
 	csjp::Object<CustomModel> model;
 	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
-	QTableView *queryView;
+	Pannable<QTableView> queryView;
 
 	QToolBar *actionTB;
 
@@ -90,8 +90,6 @@ private:
 	EditItemView *editItemView;
 	QueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
-
-	QsKineticScroller scroll;
 };
 
 #endif
