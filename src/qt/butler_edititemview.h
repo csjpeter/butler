@@ -15,21 +15,16 @@
 #include "butler_databases.h"
 
 /*forwards*/
-class QAction;
-class QToolButton;
 class QLineEdit;
 class QDoubleSpinBox;
 class QTextEdit;
 class QCheckBox;
 class QDateTimeEdit;
 class QPushButton;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QScrollArea;
 class QStandardItemModel;
 class QListView;
-class QStandardItemModel;
 class QComboBox;
 
 class EditItemView : public PannView

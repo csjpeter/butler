@@ -15,13 +15,8 @@
 #include "butler_queriesmodel.h"
 
 /*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QTableView;
-class QStandardItemModel;
 class QSqlTableModel;
 
 class AccountingView;
@@ -64,20 +59,6 @@ private:
 	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
 	Pannable<QTableView> queryView;
-
-	QToolBar *actionTB;
-
-	QToolButton *editTBtn;
-	QToolButton *delTBtn;
-	QToolButton *accountingTBtn;
-	QToolButton *filterTBtn;
-	QToolButton *wareEditTBtn;
-
-	QAction *editAct;
-	QAction *delAct;
-	QAction *accountingAct;
-	QAction *filterAct;
-	QAction *wareEditAct;
 
 	QLabel *itemCountLabel;
 	QLabel *itemSumQuantityLabel;

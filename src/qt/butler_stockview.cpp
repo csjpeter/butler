@@ -26,49 +26,26 @@ StockView::StockView(const QString & dbname, QWidget * parent) :
 	tagFilterView(NULL)
 {
 	setWindowTitle(tr("Stock list"));
-#if 0
-	/* action toolbar */
-	actionTB = new QToolBar(tr("Action toolbar"));
 
-	/* actions */
-	accountingAct = new QAction(
-			QIcon(Path::icon("add.png")), tr("&Accounting"));
-	accountingAct->setShortcut(tr("A"));
-	accountingAct->setToolTip(tr("Accounting"));
-	connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
+	QHBoxLayout * cLayout = new QHBoxLayout;
+	QPushButton * button;
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	editAct->setShortcut(tr("E"));
-	editAct->setToolTip(tr("Edit item details"));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
+	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&Accounting"));
+	connect(button, SIGNAL(clicked()), this, SLOT(openAccountingView()));
+	cLayout->addWidget(button);
 
-	dropAct = new QAction(QIcon(Path::icon("trash.png")), tr("&Drop"));
-	dropAct->setShortcut(tr("D"));
-	dropAct->setToolTip(tr("Drop item from stock"));
-	connect(dropAct, SIGNAL(triggered()), this, SLOT(dropItem()));
+	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
+	connect(button, SIGNAL(clicked()), this, SLOT(editItem()));
+	cLayout->addWidget(button);
 
-	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"));
-	filterAct->setShortcut(tr("F"));
-	filterAct->setToolTip(tr("Filter by tags"));
-	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
+	button = new QPushButton(QIcon(Path::icon("trash.png")), tr("&Drop"));
+	connect(button, SIGNAL(clicked()), this, SLOT(dropItem()));
+	cLayout->addWidget(button);
 
-	/* tool buttons */
-	accountingTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(accountingTBtn);
-	accountingTBtn->setDefaultAction(accountingAct);
+	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Filter"));
+	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
+	cLayout->addWidget(button);
 
-	editTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(editTBtn);
-	editTBtn->setDefaultAction(editAct);
-
-	dropTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(dropTBtn);
-	dropTBtn->setDefaultAction(dropAct);
-
-	filterTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(filterTBtn);
-	filterTBtn->setDefaultAction(filterAct);
-#endif
 	/* query result list */
 	queryView = new QTableView;
 	queryView->setModel(&model);
@@ -102,8 +79,7 @@ StockView::StockView(const QString & dbname, QWidget * parent) :
 */
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	layout->addWidget(actionTB);
+	layout->addLayout(cLayout);
 	layout->addWidget(&queryView);
 
 	setLayout(layout);

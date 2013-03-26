@@ -14,16 +14,10 @@
 #include "butler_databases.h"
 
 /*forwards*/
-class QAction;
-class QToolButton;
 class QComboBox;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QTableView;
-class QStandardItemModel;
 class QSqlTableModel;
-class QComboBox;
 
 class NewItemView;
 class EditItemView;
@@ -66,20 +60,6 @@ private:
 	QComboBox *shopBox;
 	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
-
-	QToolBar *actionTB;
-
-	QToolButton *newTBtn;
-	QToolButton *editTBtn;
-	QToolButton *delTBtn;
-	QToolButton *boughtTBtn;
-	QToolButton *filterTBtn;
-
-	QAction *newAct;
-	QAction *editAct;
-	QAction *delAct;
-	QAction *boughtAct;
-	QAction *filterAct;
 
 	NewItemView *newItemView;
 	EditItemView *editItemView;

@@ -23,39 +23,21 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 {
 	setWindowTitle(tr("Shop list"));
 
-	/* action toolbar */
-	actionTB = new QToolBar(tr("Action toolbar"));
-#if 0
-	/* actions */
-	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"));
-	newAct->setShortcut(tr("N"));
-	newAct->setToolTip(tr("Add new shop to buy"));
-	connect(newAct, SIGNAL(triggered()), this, SLOT(newShop()));
+	QHBoxLayout * cLayout = new QHBoxLayout;
+	QPushButton * button;
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	editAct->setShortcut(tr("E"));
-	editAct->setToolTip(tr("Edit shop details"));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(editShop()));
+	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&New"));
+	connect(button, SIGNAL(clicked()), this, SLOT(newShop()));
+	cLayout->addWidget(button);
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	delAct->setShortcut(tr("D"));
-	delAct->setToolTip(tr("Delete shop from shopping list"));
-	connect(delAct, SIGNAL(triggered()), this, SLOT(delShop()));
+	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
+	connect(button, SIGNAL(clicked()), this, SLOT(editShop()));
+	cLayout->addWidget(button);
 
-	/* tool buttons */
-	newTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(newTBtn);
-	newTBtn->setContentsMargins(20,20,20,20);
-	newTBtn->setDefaultAction(newAct);
+	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
+	connect(button, SIGNAL(clicked()), this, SLOT(delShop()));
+	cLayout->addWidget(button);
 
-	delTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(delTBtn);
-	delTBtn->setDefaultAction(delAct);
-
-	editTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(editTBtn);
-	editTBtn->setDefaultAction(editAct);
-#endif
 	/* query result list */
 	queryView = new QTableView;
 	queryView->setModel(&model);
@@ -79,8 +61,7 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	layout->addWidget(actionTB);
+	layout->addLayout(cLayout);
 	layout->addWidget(&queryView);
 
 	setLayout(layout);

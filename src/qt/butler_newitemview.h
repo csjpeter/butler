@@ -9,15 +9,11 @@
 #include <butler_pannview.h>
 
 /*forwards*/
-class QAction;
-class QToolButton;
 class QLineEdit;
 class QDoubleSpinBox;
 class QTextEdit;
 class QDateTimeEdit;
 class QPushButton;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QScrollArea;
 class QStandardItemModel;

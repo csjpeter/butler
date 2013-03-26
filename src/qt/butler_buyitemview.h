@@ -12,17 +12,12 @@
 
 #include "butler_databases.h"
 
-class QAction;
-class QToolButton;
 class QLineEdit;
 class QTextEdit;
 class QDateTimeEdit;
 class QPushButton;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QScrollArea;
-class QStandardItemModel;
 class QListView;
 class QComboBox;
 class QDoubleSpinBox;

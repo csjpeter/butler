@@ -11,16 +11,6 @@
 #include <butler_databases.h>
 
 /*forwards*/
-class QScrollArea;
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QStandardItemModel;
-class QSqlTableModel;
-
 class ShoppingView;
 class StockView;
 class CustomView;

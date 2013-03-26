@@ -28,58 +28,30 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	tagFilterView(NULL)
 {
 	setWindowTitle(tr("Shopping list"));
-#if 0
-	/* action toolbar */
-	actionTB = new QToolBar(tr("Action toolbar"));
 
-	/* actions */
-	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"));
-	newAct->setShortcut(tr("N"));
-	newAct->setToolTip(tr("Add new item to buy"));
-	connect(newAct, SIGNAL(triggered()), this, SLOT(newItem()));
+	QHBoxLayout * cLayout = new QHBoxLayout;
+	QPushButton * button;
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	editAct->setShortcut(tr("E"));
-	editAct->setToolTip(tr("Edit item details"));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
+	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&New"));
+	connect(button, SIGNAL(clicked()), this, SLOT(newItem()));
+	cLayout->addWidget(button);
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	delAct->setShortcut(tr("D"));
-	delAct->setToolTip(tr("Delete item from shopping list"));
-	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
+	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
+	connect(button, SIGNAL(clicked()), this, SLOT(editItem()));
+	cLayout->addWidget(button);
 
-	boughtAct = new QAction(QIcon(Path::icon("buy.png")), tr("&Bought"));
-	boughtAct->setShortcut(tr("B"));
-	boughtAct->setToolTip(tr("Mark item as bought"));
-	connect(boughtAct, SIGNAL(triggered()), this, SLOT(buyItem()));
+	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
+	connect(button, SIGNAL(clicked()), this, SLOT(delItem()));
+	cLayout->addWidget(button);
 
-	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"));
-	filterAct->setShortcut(tr("F"));
-	filterAct->setToolTip(tr("Filter by tags"));
-	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
+	button = new QPushButton(QIcon(Path::icon("buy.png")), tr("&Bought"));
+	connect(button, SIGNAL(clicked()), this, SLOT(buyItem()));
+	cLayout->addWidget(button);
 
-	/* tool buttons */
-	newTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(newTBtn);
-	newTBtn->setContentsMargins(20,20,20,20);
-	newTBtn->setDefaultAction(newAct);
+	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Filter"));
+	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
+	cLayout->addWidget(button);
 
-	delTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(delTBtn);
-	delTBtn->setDefaultAction(delAct);
-
-	editTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(editTBtn);
-	editTBtn->setDefaultAction(editAct);
-
-	boughtTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(boughtTBtn);
-	boughtTBtn->setDefaultAction(boughtAct);
-
-	filterTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(filterTBtn);
-	filterTBtn->setDefaultAction(filterAct);
-#endif
 	/* shop selector */
 	QGridLayout *shopLayout = new QGridLayout;
 
@@ -122,8 +94,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	layout->addWidget(actionTB);
+	layout->addLayout(cLayout);
 	layout->addLayout(shopLayout);
 	layout->addWidget(&queryView);
 

@@ -9,15 +9,7 @@
 #include "butler_pannview.h"
 
 /*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
 class QLabel;
-class QTableView;
-class QStandardItemModel;
-class QSqlTableModel;
-class QPlainTextEdit;
 
 class InfoView : public PannView
 {

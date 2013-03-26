@@ -14,13 +14,8 @@
 #include "butler_databases.h"
 
 /*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
 class QLabel;
 class QTableView;
-class QStandardItemModel;
 class QSqlTableModel;
 
 class NewShopView;
@@ -56,16 +51,6 @@ private:
 
 	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
-
-	QToolBar *actionTB;
-
-	QToolButton *newTBtn;
-	QToolButton *editTBtn;
-	QToolButton *delTBtn;
-
-	QAction *newAct;
-	QAction *editAct;
-	QAction *delAct;
 
 	NewShopView *newShopView;
 	EditShopView *editShopView;

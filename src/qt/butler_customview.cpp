@@ -44,56 +44,25 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	QPushButton * button;
 	
 	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&Accounting"));
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openAccountingView()));
-	cLayout->addWidget(button, 0, Qt::AlignLeft);
+	cLayout->addWidget(button);
 
-#if 0
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	editAct->setShortcut(tr("E"));
-	editAct->setToolTip(tr("Edit item details"));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
+	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
+	connect(button, SIGNAL(clicked()), this, SLOT(editItem()));
+	cLayout->addWidget(button);
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	delAct->setShortcut(tr("D"));
-	delAct->setToolTip(tr("Delete item"));
-	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
+	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
+	connect(button, SIGNAL(clicked()), this, SLOT(delItem()));
+	cLayout->addWidget(button);
 
-	filterAct = new QAction(QIcon(Path::icon("query.png")), tr("&Filter"));
-	filterAct->setShortcut(tr("F"));
-	filterAct->setToolTip(tr("Filter by tags"));
-	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
+	button = new QPushButton(QIcon(Path::icon("query.png")), tr("&Filter"));
+	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
+	cLayout->addWidget(button);
 
-	wareEditAct = new QAction(QIcon(Path::icon("ware.png")), tr("Edit"));
-	wareEditAct->setShortcut(tr("W"));
-	wareEditAct->setToolTip(tr("Edit ware details"));
-	connect(wareEditAct, SIGNAL(triggered()), this, SLOT(editWare()));
+	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("Edit"));
+	connect(button, SIGNAL(clicked()), this, SLOT(editWare()));
+	cLayout->addWidget(button);
 
-	/* upload bills */
-	accountingTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(accountingTBtn);
-	accountingTBtn->setDefaultAction(accountingAct);
-
-	/* tool buttons */
-	editTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(editTBtn);
-	editTBtn->setDefaultAction(editAct);
-
-	/* delete button */
-	delTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(delTBtn);
-	delTBtn->setDefaultAction(delAct);
-
-	/* adjust query details */
-	filterTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(filterTBtn);
-	filterTBtn->setDefaultAction(filterAct);
-
-	/* edit ware details */
-	wareEditTBtn = new QToolButton(actionTB);
-	actionTB->addWidget(wareEditTBtn);
-	wareEditTBtn->setDefaultAction(wareEditAct);
-#endif
 	/* query result list */
 	queryView = new QTableView;
 	queryView->setModel(&model);
@@ -151,7 +120,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addLayout(cLayout);
 	layout->addLayout(statGrid);
 	layout->addWidget(&queryView);
