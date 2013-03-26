@@ -4,12 +4,12 @@
 /*	font-family: "Times";*/
 /*	border-radius: 4px;*/
 	background-color: black;
-	font-size: 12px;
+	font-size: 14px;
 	font-style: normal;
 	font-weight: normal;
-	border-color: gray;
+	border-color: #444444;
 	border-style: solid;
-	color: white;
+	color: #cccccc;
 	gridline-color: black;
 	margin: 0px;
 	padding: 0px;
@@ -69,5 +69,43 @@ MainView QPushButton:hover {
 
 QLineEdit {
 	border-width: 1px;
+	padding: 2px;
+}
+
+QPlainTextEdit {
+	border-width: 1px;
+	padding: 2px;
+}
+
+QTextEdit {
+	border-width: 1px;
+	padding: 2px;
+}
+
+QLabel {
+	color: #aaaaaa;
+}
+
+QComboBox {
+	border-radius: 2px;
+	border-width: 1px;
+	background-color: black;
+	border-color: #444444;
+	padding: 2px;
+}
+
+QSpinBox {
+	border-radius: 2px;
+	border-width: 1px;
+	background-color: black;
+	border-color: #444444;
+	padding: 2px;
+}
+
+QDateTimeEdit {
+	border-radius: 2px;
+	border-width: 1px;
+	background-color: black;
+	border-color: #444444;
 	padding: 2px;
 }
