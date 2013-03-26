@@ -11,7 +11,7 @@
 #include "butler_waresmodel.h"
 
 
-NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
+NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname))
@@ -23,7 +23,6 @@ NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	label = new QLabel(tr("Common name :"), this);
 	gridLayout->addWidget(label, 0, 0, 1, 1);
@@ -66,6 +65,8 @@ NewItemView::NewItemView(const QString & dbname, QWidget *parent) :
 	connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(doneClickedSlot(bool)));
 	doneButton->setText(tr("Done"));
 	gridLayout->addWidget(doneButton, 6, 3, 1, 1);
+
+	setLayout(gridLayout);
 
 	connect(nameEditor, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));

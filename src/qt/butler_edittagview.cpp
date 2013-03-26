@@ -10,19 +10,18 @@
 #include "butler_tagsmodel.h"
 #include "butler_tagsmodel.h"
 
-EditTagView::EditTagView(const QString & dbname, QWidget *parent) :
+EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname))
 {
-	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Edit tag"));
 
 	QHBoxLayout *hbox = NULL;
 	QLabel *label = NULL;
 	
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	setLayout(layout);
 	
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
@@ -59,6 +58,8 @@ EditTagView::EditTagView(const QString & dbname, QWidget *parent) :
 	nextButton->setText(tr("Next"));
 	nextButton->setAutoDefault(false);
 	hbox->addWidget(nextButton);
+
+	setLayout(layout);
 
 	/* restore last state */
 	loadState();

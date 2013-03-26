@@ -36,7 +36,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditWareView(const QString & dbname, QWidget *parent);
+	EditWareView(const QString & dbname, QWidget * parent = 0);
 
 	void setCursor(const QModelIndex& index);
 

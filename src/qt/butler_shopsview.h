@@ -32,7 +32,7 @@ private:
 	Q_OBJECT
 
 public:
-	ShopsView(const QString & dbname, QWidget *parent = 0);
+	ShopsView(const QString & dbname, QWidget * parent = 0);
 	~ShopsView();
 
 private:

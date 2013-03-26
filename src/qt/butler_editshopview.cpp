@@ -9,7 +9,7 @@
 #include "butler_editshopview.h"
 #include "butler_shopsmodel.h"
 
-EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
+EditShopView::EditShopView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname))
@@ -21,7 +21,6 @@ EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
 	QHBoxLayout *hbox;
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	setLayout(layout);
 	
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
@@ -76,6 +75,8 @@ EditShopView::EditShopView(const QString & dbname, QWidget *parent) :
 	nextButton->setText(tr("Next"));
 	nextButton->setAutoDefault(false);
 	hbox->addWidget(nextButton);
+
+	setLayout(layout);
 
 	/* restore last state */
 	loadState();

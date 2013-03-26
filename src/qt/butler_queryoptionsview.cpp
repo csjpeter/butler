@@ -11,13 +11,15 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget *parent) :
+QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	query(query)
 {
+	setWindowModality(Qt::ApplicationModal);
+	setWindowTitle(tr("Edit query view"));
+
 	QGridLayout *gridLayout = new QGridLayout();
-	setLayout(gridLayout);
 
 	QLabel *label = NULL;
 
@@ -135,6 +137,8 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	connect(okButton, SIGNAL(clicked(bool)), this, SLOT(okClickedSlot(bool)));
 	okButton->setText(tr("Ok"));
 	gridLayout->addWidget(okButton, 17, 3, 1, 1);
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

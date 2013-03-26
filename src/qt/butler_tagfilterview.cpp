@@ -9,24 +9,26 @@
 #include "butler_tagfilterview.h"
 #include "butler_tagwidget.h"
 
-TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *parent) :
+TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	tags(tags)
 {
+	setWindowModality(Qt::ApplicationModal);
+	setWindowTitle(tr("Tag filter view"));
+
 	QGridLayout *gridLayout = new QGridLayout();
-	setLayout(gridLayout);
 
 	QLabel *label = NULL;
 
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 0, 0, 1, 4);
 	tagScrollArea = new QScrollArea(this);
-	tagsSelector = new TagWidget(dbname, tagScrollArea);
+	tagsSelector = new TagWidget(dbname, &tagScrollArea);
 	tagScrollArea->setWidget(tagsSelector);
 	tagScrollArea->setWidgetResizable(true);
 	tagScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	gridLayout->addWidget(tagScrollArea, 1, 0, 1, 4);
+	gridLayout->addWidget(&tagScrollArea, 1, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
 	connect(selectAllButton, SIGNAL(clicked(bool)),
@@ -44,6 +46,8 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 	connect(okButton, SIGNAL(clicked(bool)), this, SLOT(okClickedSlot(bool)));
 	okButton->setText(tr("Ok"));
 	gridLayout->addWidget(okButton, 3, 3, 1, 1);
+	
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

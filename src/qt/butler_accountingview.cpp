@@ -14,7 +14,7 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget *parent) :
+AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model)
@@ -26,7 +26,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	label = new QLabel(tr("Shop (place of buy) :"), this);
 	gridLayout->addWidget(label, 0, 0, 1, 1);
@@ -134,6 +133,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 			this, SLOT(unitPriceEditingFinishedSlot()));
 	connect(grossPriceEditor, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

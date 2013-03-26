@@ -14,13 +14,15 @@
 
 #include "butler_application.h"
 
-ShopsView::ShopsView(const QString & dbname, QWidget *parent) :
+ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname)),
 	newShopView(NULL),
 	editShopView(NULL)
 {
+	setWindowTitle(tr("Shop list"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -71,21 +73,18 @@ ShopsView::ShopsView(const QString & dbname, QWidget *parent) :
 	queryView->hideColumn(Shop::Address);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -150,10 +149,10 @@ void ShopsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void ShopsView::newShop()
 {
 	if(!newShopView)
-		newShopView = new NewShopView(dbname, this);
+		newShopView = new NewShopView(dbname);
 
 	connect(newShopView, SIGNAL(finished(int)), this, SLOT(finishedNewShop(int)));
-	newShopView->show();
+	newShopView->activate();
 }
 
 void ShopsView::finishedNewShop(int res)
@@ -172,11 +171,11 @@ void ShopsView::editShop()
 	}
 
 	if(!editShopView)
-		editShopView = new EditShopView(dbname, this);
+		editShopView = new EditShopView(dbname);
 
 	connect(editShopView, SIGNAL(finished(int)), this, SLOT(finishedEditShop(int)));
 	editShopView->setCursor(queryView->currentIndex());
-	editShopView->show();
+	editShopView->activate();
 }
 
 void ShopsView::finishedEditShop(int res)

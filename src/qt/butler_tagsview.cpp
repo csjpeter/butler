@@ -13,13 +13,15 @@
 
 #include "butler_application.h"
 
-TagsView::TagsView(const QString & dbname, QWidget *parent) :
+TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname)),
 	newTagView(NULL),
 	editTagView(NULL)
 {
+	setWindowTitle(tr("Tag editor"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -66,8 +68,6 @@ TagsView::TagsView(const QString & dbname, QWidget *parent) :
 			TagsModel::Description, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
@@ -76,13 +76,12 @@ TagsView::TagsView(const QString & dbname, QWidget *parent) :
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -147,10 +146,10 @@ void TagsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void TagsView::newTag()
 {
 	if(!newTagView)
-		newTagView = new NewTagView(dbname, this);
+		newTagView = new NewTagView(dbname);
 
 	connect(newTagView, SIGNAL(finished(int)), this, SLOT(finishedNewTag(int)));
-	newTagView->show();
+	newTagView->activate();
 }
 
 void TagsView::finishedNewTag(int res)
@@ -169,11 +168,11 @@ void TagsView::editTag()
 	}
 
 	if(!editTagView)
-		editTagView = new EditTagView(dbname, this);
+		editTagView = new EditTagView(dbname);
 
 	connect(editTagView, SIGNAL(finished(int)), this, SLOT(finishedEditTag(int)));
 	editTagView->setCursor(queryView->currentIndex());
-	editTagView->show();
+	editTagView->activate();
 }
 
 void TagsView::finishedEditTag(int res)

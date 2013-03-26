@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	StockView(const QString & dbname, QWidget *parent = 0);
+	StockView(const QString & dbname, QWidget * parent = 0);
 	~StockView();
 
 private:

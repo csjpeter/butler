@@ -11,7 +11,7 @@
 #include "butler_tagsmodel.h"
 #include "butler_tagwidget.h"
 
-EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
+EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname))
@@ -23,7 +23,6 @@ EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
 	QHBoxLayout *hbox;
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	setLayout(layout);
 	
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
@@ -81,6 +80,8 @@ EditWareView::EditWareView(const QString & dbname, QWidget *parent) :
 
 	/* restore last state */
 	loadState();
+
+	setLayout(layout);
 
 	connect(prevButton, SIGNAL(clicked()),
 			this, SLOT(prevClickedSlot()));

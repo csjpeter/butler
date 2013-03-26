@@ -32,7 +32,7 @@ private:
 	Q_OBJECT
 
 public:
-	TagsView(const QString & dbname, QWidget *parent = 0);
+	TagsView(const QString & dbname, QWidget * parent = 0);
 	~TagsView();
 
 private:

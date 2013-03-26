@@ -17,23 +17,8 @@ template <typename Type>
 class Pannable
 {
 public:
-	Pannable(bool vertical = true, bool horizontal = false) :
-		ptr(0),
-		scroll(0, vertical, horizontal)
-	{}
-
-	Pannable(Type * ptr, bool vertical = true, bool horizontal = false) :
-		ptr(ptr),
-		scroll(0, vertical, horizontal)
-	{
-		scroll.enableKineticScrollFor(ptr);
-	}
-
-	~Pannable()
-	{
-		if(ptr)
-			scroll.disableKineticScrollFor(ptr);
-	}
+	Pannable(Type * ptr = 0) : ptr(ptr), scroll(0) {}
+	~Pannable() { if(ptr) scroll.disableKineticScrollFor(ptr); }
 
 	Type * operator->() const { return ptr; }
 	Type *& operator&() { return ptr; }
@@ -41,13 +26,12 @@ public:
 	{
 		if(ptr){
 			scroll.disableKineticScrollFor(ptr);
-			delete ptr;
+			delete ptr; /* This already migth have been assigned to a parent. */
 		}
 		ptr = t;
-		if(ptr)
-			scroll.enableKineticScrollFor(ptr);
 		return *this;
 	}
+	void enablePanning() { scroll.enableKineticScrollFor(ptr); }
 
 private:
 	Type * ptr;

@@ -38,7 +38,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewItemView(const QString & dbname, QWidget *parent = NULL);
+	NewItemView(const QString & dbname, QWidget *parent = 0);
 
 private:
 	void showEvent(QShowEvent *event);

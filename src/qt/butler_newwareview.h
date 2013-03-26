@@ -35,7 +35,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewWareView(const QString & dbname, QWidget *parent);
+	NewWareView(const QString & dbname, QWidget * parent = 0);
 
 private:
 	void showEvent(QShowEvent *event);

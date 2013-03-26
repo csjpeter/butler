@@ -17,7 +17,7 @@
 
 #include "butler_application.h"
 
-CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *parent) :
+CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
@@ -27,6 +27,8 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 	queryOptsView(NULL),
 	editWareView(NULL)
 {
+	setWindowTitle(tr("User query result"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -99,8 +101,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 			Item::Comment, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder))
@@ -141,14 +141,13 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget *paren
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addLayout(statGrid);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -226,14 +225,12 @@ void CustomView::editItem()
 		return;
 	}
 
-	if(!editItemView){
-		editItemView = new EditItemView(dbname, *model, this);
-		editItemView->setWindowModality(Qt::ApplicationModal);
-		editItemView->setWindowTitle(tr("Edit item details"));
-	}
+	if(!editItemView)
+		editItemView = new EditItemView(dbname, *model);
+
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(queryView->currentIndex());
-	editItemView->show();
+	editItemView->activate();
 }
 
 void CustomView::finishedEditItem(int res)
@@ -266,12 +263,9 @@ void CustomView::delItem()
 
 void CustomView::openAccountingView()
 {
-	if(!accountingView){
-		accountingView = new AccountingView(dbname, *model, this);
-		accountingView->setWindowModality(Qt::ApplicationModal);
-		accountingView->setWindowTitle(tr("Accounting view"));
-	}
-	accountingView->show();
+	if(!accountingView)
+		accountingView = new AccountingView(dbname, *model);
+	accountingView->activate();
 }
 
 void CustomView::editWare()
@@ -284,13 +278,13 @@ void CustomView::editWare()
 
 	WaresModel & wm = waresModel(dbname);
 	if(!editWareView)
-		editWareView = new EditWareView(dbname, this);
+		editWareView = new EditWareView(dbname);
 
 	const Item &item = model->item(queryView->currentIndex().row());
 
 	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
-	editWareView->show();
+	editWareView->activate();
 }
 
 void CustomView::finishedEditWare(int res)
@@ -304,16 +298,13 @@ void CustomView::filterItems()
 {
 	if(!queryOptsView){
 		queryOptsView = new QueryOptionsView(dbname, model->opts);
-		queryOptsView->setWindowModality(Qt::ApplicationModal);
-		queryOptsView->setWindowTitle(tr("Query options view"));
-		connect(queryOptsView, SIGNAL(accepted()),
-				this, SLOT(filterAcceptedSlot()));
+		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
 		QueriesModel & qm = queriesModel(dbname);
 		if(qm.rowCount())
 			model->opts = qm.query(0);
 		model->opts.name = "default";
 	}
-	queryOptsView->show();
+	queryOptsView->activate();
 }
 
 void CustomView::filterAcceptedSlot()

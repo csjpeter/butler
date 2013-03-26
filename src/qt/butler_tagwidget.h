@@ -25,7 +25,7 @@ private:
 	Q_OBJECT
 
 public:
-	TagWidget(const QString & dbname, QWidget *parent);
+	TagWidget(const QString & dbname, QWidget * parent = 0);
 
 public slots:
 	void prepareContent();

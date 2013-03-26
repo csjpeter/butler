@@ -13,6 +13,9 @@ InfoView::InfoView(QWidget *parent) :
 	PannView(parent),
 	label(0)
 {
+	setWindowTitle(tr("About this software"));
+	setWindowModality(Qt::ApplicationModal);
+
 	QString license(ENDUSER_LICENSE);
 
 	QVBoxLayout * layout = new QVBoxLayout;

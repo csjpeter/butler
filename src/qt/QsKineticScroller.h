@@ -32,8 +32,11 @@
 #define QSKINETICSCROLLER_H
 
 #include <QObject>
-#include <QScopedPointer>
-class QsKineticScrollerImpl;
+#include <QPoint>
+#include <QTimer>
+#include <QVector2D>
+#include <QScrollBar>
+
 class QAbstractScrollArea;
 class QEvent;
 
@@ -43,7 +46,7 @@ class QsKineticScroller: public QObject
 {
 Q_OBJECT
 public:
-	QsKineticScroller(QObject* parent = 0, bool vertical = true, bool horizontal = false);
+	QsKineticScroller(QObject* parent = 0);
 	~QsKineticScroller();
 
 	void disableKineticScrollFor(QAbstractScrollArea* scrollArea);
@@ -52,11 +55,25 @@ public:
 protected:
 	bool eventFilter(QObject* object, QEvent* event);
 
+private:
+	double computeSpeed(double currPos, double lastPos, double lastSpeed);
+	double deccelerate(QScrollBar * scroll, double speed);
+
 private slots:
+	void onSpeedTimerElapsed(); /* Compute/Update the speed on speedTimer tick. */
 	void onKineticTimerElapsed();
 
 private:
-	QScopedPointer<QsKineticScrollerImpl> d;
+	QAbstractScrollArea* scrollArea;
+	QPoint lastPressPoint;
+	QPoint lastMousePos;
+	QPoint pressedScrollBarPosition;
+	QVector2D speed;
+	int ignoredMouseMoves;
+	QTimer speedTimer; /* active iff mouse button is pressed */
+	QTimer kineticTimer;
+
+	QList<QEvent*> ignoreList;
 };
 
 #endif

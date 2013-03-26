@@ -12,7 +12,7 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
+BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname))
@@ -22,7 +22,6 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	QLabel *label = NULL;
 
@@ -79,6 +78,8 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget *parent) :
 			this, SLOT(unitPriceEditingFinishedSlot()));
 	connect(grossPriceEditor, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
+
+	setLayout(gridLayout);
 
 	loadState();
 }

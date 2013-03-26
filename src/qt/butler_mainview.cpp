@@ -104,6 +104,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	hLayout->addStretch(0);
 	hLayout->addLayout(layout);
 	hLayout->addStretch(0);
+
 	setLayout(hLayout);
 
 	/* restore last state */
@@ -220,99 +221,68 @@ void MainView::saveState()
 
 void MainView::openShoppingView()
 {
-	if(!shoppingView){
+	if(!shoppingView)
 		shoppingView = new ShoppingView(dbname);
-		shoppingView->setWindowTitle(tr("Shopping list"));
-	}
-	shoppingView->show();
-	shoppingView->raise();
-	shoppingView->activateWindow();
+	shoppingView->activate();
 }
 
 void MainView::openStockView()
 {
-	if(!stockView){
+	if(!stockView)
 		stockView = new StockView(dbname);
-		stockView->setWindowTitle(tr("Stock list"));
-	}
-	stockView->show();
-	stockView->raise();
-	stockView->activateWindow();
+	stockView->activate();
 }
 
 void MainView::openShopsView()
 {
-	if(!shopsView){
+	if(!shopsView)
 		shopsView = new ShopsView(dbname);
-		shopsView->setWindowTitle(tr("Shop list"));
-	}
-	shopsView->show();
-	shopsView->raise();
-	shopsView->activateWindow();
+	shopsView->activate();
 }
 
 void MainView::openCustomView()
 {
-	if(!customView){
+	if(!customView)
 		customView = new CustomView(dbname);
-		customView->setWindowTitle(tr("User query result"));
-	}
+
 	if(!customView->isVisible()){
-		customView->show();
-		customView->raise();
-		customView->activateWindow();
+		customView->activate();
 	} else {
 		CustomView *anotherCustomView;
 		anotherCustomView = new CustomView(dbname, true); /* Deletes itself on close. */
 		anotherCustomView->setWindowTitle(tr("User query result"));
-		anotherCustomView->show();
-		anotherCustomView->raise();
-		anotherCustomView->activateWindow();
+		anotherCustomView->activate();
 	}
 }
 
 void MainView::openTagsView()
 {
-	if(!tagsView){
+	if(!tagsView)
 		tagsView = new TagsView(dbname);
-		tagsView->setWindowTitle(tr("Tag editor"));
-	}
-	tagsView->show();
-	tagsView->raise();
-	tagsView->activateWindow();
+	tagsView->activate();
 }
 
 void MainView::openWaresView()
 {
-	if(!waresView){
+	if(!waresView)
 		waresView = new WaresView(dbname);
-		waresView->setWindowTitle(tr("Ware editor"));
-	}
-	waresView->show();
-	waresView->raise();
-	waresView->activateWindow();
+	waresView->activate();
 }
 
 void MainView::openQueryOptionsView()
 {
 #if 0
-	if(!queryOptionsView){
-	queryOptionsView = new QueryOptionsView();
-	queryOptionsView->setWindowTitle(tr("Set query options"));
-	}
-	queryOptionsView->show();
+	if(!queryOptionsView)
+		queryOptionsView = new QueryOptionsView();
+	queryOptionsView->activate();
 #endif
 }
 
 void MainView::openInfoView()
 {
-	if(!infoView){
+	if(!infoView)
 		infoView = new InfoView();
-		infoView->setWindowTitle(tr("About this software"));
-	}
-	infoView->show();
-	infoView->raise();
-	infoView->activateWindow();
+	infoView->activate();
 }
 
 void MainView::about()

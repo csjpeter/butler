@@ -37,7 +37,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditTagView(const QString & dbname, QWidget *parent);
+	EditTagView(const QString & dbname, QWidget * parent = 0);
 
 	void setCursor(const QModelIndex& index);
 

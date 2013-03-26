@@ -40,7 +40,7 @@ private:
 	Q_OBJECT
 
 public:
-	EditItemView(const QString & dbname, ItemsModel & model, QWidget *parent);
+	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
 
 	void setCursor(const QModelIndex& index);
 

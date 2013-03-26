@@ -43,11 +43,8 @@ public:
 public slots:
 	void activate()
 	{
-		DBG("SHOW");
-		QWidget::show();
-		raise();
-		activateWindow();
-		setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+		QWidget::show(); raise(); activateWindow();
+//		setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
 	}
 	void accept() { emit this->accepted(); emit this->finished(1); }
 	void reject() { emit this->rejected(); emit this->finished(0); }

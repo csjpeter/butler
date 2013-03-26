@@ -36,7 +36,7 @@ private:
 	Q_OBJECT
 
 public:
-	NewTagView(const QString & dbname, QWidget *parent);
+	NewTagView(const QString & dbname, QWidget * parent = 0);
 
 private:
 	void showEvent(QShowEvent *event);

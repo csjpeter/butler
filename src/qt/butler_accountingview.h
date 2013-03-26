@@ -40,7 +40,7 @@ private:
 	Q_OBJECT
 
 public:
-	AccountingView(const QString & dbname, ItemsModel & model, QWidget *parent);
+	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
 
 private:
 	void showEvent(QShowEvent *event);

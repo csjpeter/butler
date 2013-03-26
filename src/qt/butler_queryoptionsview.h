@@ -36,7 +36,7 @@ private:
 	Q_OBJECT
 
 public:
-	QueryOptionsView(const QString & dbname, Query &query, QWidget *parent = 0);
+	QueryOptionsView(const QString & dbname, Query &query, QWidget * parent = 0);
 	virtual ~QueryOptionsView();
 
 protected:

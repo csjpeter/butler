@@ -40,7 +40,7 @@ private:
 	Q_OBJECT
 
 public:
-	BuyItemView(const QString & dbname, QWidget *parent);
+	BuyItemView(const QString & dbname, QWidget *parent = 0);
 	virtual ~BuyItemView();
 
 	void setItem(unsigned itemRow, unsigned shopRow);

@@ -14,7 +14,7 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *parent) :
+EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model)
@@ -27,7 +27,6 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	label = new QLabel(tr("Common name :"), this);
 	gridLayout->addWidget(label, 0, 0, 1, 1);
@@ -146,6 +145,8 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 			this, SLOT(unitPriceEditingFinishedSlot()));
 	connect(grossPriceEditor, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

@@ -32,7 +32,7 @@ private:
 	Q_OBJECT
 
 public:
-	WaresView(const QString & dbname, QWidget *parent = 0);
+	WaresView(const QString & dbname, QWidget * parent = 0);
 	~WaresView();
 
 private:

@@ -17,7 +17,7 @@
 
 #include "butler_application.h"
 
-StockView::StockView(const QString & dbname, QWidget *parent) :
+StockView::StockView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(stockModel(dbname)),
@@ -25,6 +25,8 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 	accountingView(NULL),
 	tagFilterView(NULL)
 {
+	setWindowTitle(tr("Stock list"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -82,8 +84,6 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 			Item::Comment, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 //	queryView->columnMoved(ItemsModel::OnStock, 0);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
@@ -102,13 +102,12 @@ StockView::StockView(const QString & dbname, QWidget *parent) :
 */
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -175,14 +174,12 @@ void StockView::editItem()
 		return;
 	}
 
-	if(!editItemView){
-		editItemView = new EditItemView(dbname, model, this);
-		editItemView->setWindowModality(Qt::ApplicationModal);
-		editItemView->setWindowTitle(tr("Edit item details"));
-	}
+	if(!editItemView)
+		editItemView = new EditItemView(dbname, model);
+
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(queryView->currentIndex());
-	editItemView->show();
+	editItemView->activate();
 }
 
 void StockView::finishedEditItem(int res)
@@ -218,23 +215,17 @@ void StockView::dropItem()
 
 void StockView::openAccountingView()
 {
-	if(!accountingView){
-		accountingView = new AccountingView(dbname, model, this);
-		accountingView->setWindowModality(Qt::ApplicationModal);
-		accountingView->setWindowTitle(tr("Accounting view"));
-	}
-	accountingView->show();
+	if(!accountingView)
+		accountingView = new AccountingView(dbname, model);
+	accountingView->activate();
 }
 
 void StockView::filterItems()
 {
-	if(!tagFilterView){
+	if(!tagFilterView)
 		tagFilterView = new TagFilterView(dbname, model.opts.withTags);
-		tagFilterView->setWindowModality(Qt::ApplicationModal);
-		tagFilterView->setWindowTitle(tr("Tag filter view"));
-		connect(tagFilterView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
-	}
-	tagFilterView->show();
+	connect(tagFilterView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
+	tagFilterView->activate();
 }
 
 void StockView::filterAcceptedSlot()

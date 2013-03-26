@@ -37,7 +37,7 @@ private:
 	Q_OBJECT
 
 public:
-	ShoppingView(const QString & dbname, QWidget *parent = 0);
+	ShoppingView(const QString & dbname, QWidget * parent = 0);
 	~ShoppingView();
 
 private:

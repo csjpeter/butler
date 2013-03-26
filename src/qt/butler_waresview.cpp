@@ -14,13 +14,15 @@
 
 #include "butler_application.h"
 
-WaresView::WaresView(const QString & dbname, QWidget *parent) :
+WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname)),
 	newWareView(NULL),
 	editWareView(NULL)
 {
+	setWindowTitle(tr("Ware editor"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -71,21 +73,18 @@ WaresView::WaresView(const QString & dbname, QWidget *parent) :
 			WaresModel::Tags, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -150,10 +149,10 @@ void WaresView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void WaresView::newWare()
 {
 	if(!newWareView)
-		newWareView = new NewWareView(dbname, this);
+		newWareView = new NewWareView(dbname);
 
 	connect(newWareView, SIGNAL(finished(int)), this, SLOT(finishedNewWare(int)));
-	newWareView->show();
+	newWareView->activate();
 }
 
 void WaresView::finishedNewWare(int res)
@@ -172,11 +171,11 @@ void WaresView::editWare()
 	}
 
 	if(!editWareView)
-		editWareView = new EditWareView(dbname, this);
+		editWareView = new EditWareView(dbname);
 
 	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
 	editWareView->setCursor(queryView->currentIndex());
-	editWareView->show();
+	editWareView->activate();
 }
 
 void WaresView::finishedEditWare(int res)

@@ -8,17 +8,16 @@
 #include "butler_newshopview.h"
 #include "butler_shopsmodel.h"
 
-NewShopView::NewShopView(const QString & dbname, QWidget *parent) :
+NewShopView::NewShopView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname))
 {
-	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add new shop with details"));
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	QLabel *label = NULL;
 
@@ -57,6 +56,8 @@ NewShopView::NewShopView(const QString & dbname, QWidget *parent) :
 	connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(doneClickedSlot(bool)));
 	doneButton->setText(tr("Done"));
 	gridLayout->addWidget(doneButton, 5, 3, 1, 1);
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

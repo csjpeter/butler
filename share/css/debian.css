@@ -1,110 +1,52 @@
-/*
-QCheckBox::indicator {
-	width: 30px;
-	height: 30px;
+
+* {
+	background-color: black;
+	font-family: "Times";
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	border-color: gray;
+/*	border-radius: 4px;*/
+	border-style: solid;
+	border-width: 0px;
+	color: white;
+	gridline-color: black;
 }
 
-QRadioButton::indicator {
-	width: 30px;
-	height: 30px;
-}
-*/
-/*
-QWidget {
-	font: bold italic large "Times New Roman";
-}
-*/
-/*
-QWidget {
-	font-family: "Times New Roman";
-	font-size: 20px;
-}
-
-QSpinBox::up-arrow {
-	image: url(:/images/up_arrow.png);
-	width: 15px;
-	height: 15px;
-}
-
-QScrollBar {
-	width: 30px;
-	height: 30px;
+QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
+	border-width: 0px;
 }
 
 QScrollBar::handle {
-	 min-width: 50px;
-	 min-height: 50px;
+	background-color: gray;
 }
-*/
-/*
+
 QScrollBar:vertical {
-	border: 2px solid grey;
-	background: black;
-	width: 30px;
-	margin: 30px 0px 30px 0px;
+	width: 4px;
 }
-
-QScrollBar::handle:vertical {
-	 background: #000088;
-	 min-height: 50px;
-}
-
-QScrollBar::add-line:vertical {
-	 border: 2px solid red;
-	 background: blue;
-	 height: 30px;
-	 subcontrol-position: bottom;
-	 subcontrol-origin: margin;
-}
-
-QScrollBar::sub-line:vertical {
-	 border: 2px solid grey;
-	 background: black;
-	 height: 30px;
-	 subcontrol-position: top;
-	 subcontrol-origin: margin;
-}
-
-QScrollBar::down-button:vertical {
-	 border: 2px solid grey;
-	 background: black;
-	 height: 30px;
-	 width: 30px;
-}
-
-QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-	border: 2px solid grey;
-	width: 15px;
-	height: 15px;
-	background: black;
-}
-
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-	background: green;
-}
-
 
 QScrollBar:horizontal {
-	width: 30px;
-}
-*/
-/*
-QScrollBar::handle:horizontal {
-	 min-height: 50px;
+	height: 4px;
 }
 
-QScrollBar::add-line:horizontal {
+QLineEdit {
+	border-width: 1px;
 }
 
-QScrollBar::sub-line:horizontal {
+
+QPushButton {
+	flat="true";
+	font-size: 14px;
+	font-style: normal;
+	font-weight: normal;
 }
 
-QScrollBar::up-arrow:horizotal, QScrollBar::down-arrow:horizontal {
-	width: 5px;
-	height: 5px;
+QLabel {
 }
 
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+QCheckBox {
 }
-*/
+
+QRadioButton {
+}
 

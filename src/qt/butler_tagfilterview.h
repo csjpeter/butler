@@ -24,7 +24,7 @@ private:
 	Q_OBJECT
 
 public:
-	TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *parent = 0);
+	TagFilterView(const QString & dbname, TagNameSet &tags, QWidget * parent = 0);
 	virtual ~TagFilterView();
 
 protected:
@@ -49,7 +49,7 @@ private:
 	const QString & dbname;
 	TagNameSet &tags;
 
-	QScrollArea * tagScrollArea;
+	Pannable<QScrollArea> tagScrollArea;
 	TagWidget * tagsSelector;
 
 	QPushButton * selectAllButton;

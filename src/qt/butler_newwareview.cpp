@@ -9,19 +9,18 @@
 #include "butler_waresmodel.h"
 #include "butler_tagwidget.h"
 
-NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
+NewWareView::NewWareView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname))
 {
-	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add new ware with details"));
 	
 	QLabel *label = NULL;
 
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	/* ware name */
 	label = new QLabel(tr("Name :"));
@@ -52,6 +51,8 @@ NewWareView::NewWareView(const QString & dbname, QWidget *parent) :
 	connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(doneClickedSlot(bool)));
 	doneButton->setText(tr("Done"));
 	gridLayout->addWidget(doneButton, 5, 3, 1, 1);
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();

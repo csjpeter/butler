@@ -18,7 +18,7 @@
 
 #include "butler_application.h"
 
-ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
+ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shoppingModel(dbname)),
@@ -27,6 +27,8 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 	buyItemView(NULL),
 	tagFilterView(NULL)
 {
+	setWindowTitle(tr("Shopping list"));
+
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -106,8 +108,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 			Item::Comment, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	queryView->setBackgroundRole(QPalette::AlternateBase);
-	queryView->setBackgroundRole(QPalette::Window);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder))
@@ -122,14 +122,13 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget *parent) :
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
-//	QHBoxLayout *layout = new QHBoxLayout;
-	setLayout(layout);
-//	actionTB->setOrientation(Qt::Vertical);
-//	actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	layout->addWidget(actionTB);
 	layout->addLayout(shopLayout);
 	layout->addWidget(&queryView);
+
+	setLayout(layout);
+	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();
@@ -197,7 +196,7 @@ void ShoppingView::newItem()
 	if(!newItemView)
 		newItemView = new NewItemView(dbname);
 
-//	connect(newItemView, SIGNAL(finished(int)), this, SLOT(finishedNewItem(int)));
+	connect(newItemView, SIGNAL(finished(int)), this, SLOT(finishedNewItem(int)));
 	newItemView->activate();
 }
 
@@ -217,11 +216,11 @@ void ShoppingView::editItem()
 	}
 
 	if(!editItemView)
-		editItemView = new EditItemView(dbname, model, this);
+		editItemView = new EditItemView(dbname, model);
 
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(queryView->currentIndex());
-	editItemView->show();
+	editItemView->activate();
 }
 
 void ShoppingView::finishedEditItem(int res)
@@ -266,14 +265,12 @@ void ShoppingView::buyItem()
 		return;
 	}
 
-	if(!buyItemView){
-		buyItemView = new BuyItemView(dbname, this);
-		buyItemView->setWindowTitle(tr("Mark item as bought"));
-		buyItemView->setWindowModality(Qt::ApplicationModal);
-		connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
-	}
+	if(!buyItemView)
+		buyItemView = new BuyItemView(dbname);
+
+	connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
 	buyItemView->setItem(queryView->currentIndex().row(), shopBox->currentIndex());
-	buyItemView->show();
+	buyItemView->activate();
 }
 
 void ShoppingView::finishedBuyItem(int price)
@@ -285,14 +282,11 @@ void ShoppingView::finishedBuyItem(int price)
 
 void ShoppingView::filterItems()
 {
-	if(!tagFilterView){
+	if(!tagFilterView)
 		tagFilterView = new TagFilterView(dbname, model.queryTagNames);
-		tagFilterView->setWindowModality(Qt::ApplicationModal);
-		tagFilterView->setWindowTitle(tr("Tag filter view"));
-		connect(tagFilterView, SIGNAL(accepted()),
-				this, SLOT(filterAcceptedSlot()));
-	}
-	tagFilterView->show();
+
+	connect(tagFilterView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
+	tagFilterView->activate();
 }
 
 void ShoppingView::filterAcceptedSlot()

@@ -10,17 +10,16 @@
 #include "butler_tagsmodel.h"
 
 
-NewTagView::NewTagView(const QString & dbname, QWidget *parent) :
+NewTagView::NewTagView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(tagsModel(dbname))
 {
-	setWindowModality(Qt::WindowModal);
+	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add new tag"));
 	
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->setColumnStretch(1, 1);
-	setLayout(gridLayout);
 
 	QLabel *label = NULL;
 
@@ -41,6 +40,8 @@ NewTagView::NewTagView(const QString & dbname, QWidget *parent) :
 	connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(doneClickedSlot(bool)));
 	doneButton->setText(tr("Done"));
 	gridLayout->addWidget(doneButton, 3, 3, 1, 1);
+
+	setLayout(gridLayout);
 
 	/* restore last state */
 	loadState();
