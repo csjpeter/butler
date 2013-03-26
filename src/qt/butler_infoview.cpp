@@ -20,7 +20,7 @@ InfoView::InfoView(QWidget *parent) :
 
 	QVBoxLayout * layout = new QVBoxLayout;
 
-	label = new QLabel(license, this);
+	label = new QLabel(license);
 	label->setWordWrap(true);
 	layout->addWidget(label);
 
@@ -60,7 +60,7 @@ void InfoView::closeEvent(QCloseEvent *event)
 
 void InfoView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("infoview/position", QPoint()).toPoint();
 	QSize size = settings.value("infoview/size", QSize()).toSize();
 	if(size.isValid())
@@ -72,7 +72,7 @@ void InfoView::loadState()
 
 void InfoView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("infoview/position", pos());
 	settings.setValue("infoview/size", size());
 }

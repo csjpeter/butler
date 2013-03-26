@@ -19,30 +19,30 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Edit query view"));
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 
 	QLabel *label = NULL;
 
-	label = new QLabel(tr("Name :"), this);
+	label = new QLabel(tr("Name :"));
 	gridLayout->addWidget(label, 0, 0, 1, 1);
-	nameEditor = new QLineEdit(this);
+	nameEditor = new QLineEdit;
 	gridLayout->addWidget(nameEditor, 0, 1, 1, 3);
 
-	label = new QLabel(tr("Start date :"), this);
+	label = new QLabel(tr("Start date :"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
-	startDate = new QDateTimeEdit(this);
+	startDate = new QDateTimeEdit;
 	startDate->setCalendarPopup(true);
 	startDate->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(startDate, 1, 1, 1, 3);
 
-	label = new QLabel(tr("End date :"), this);
+	label = new QLabel(tr("End date :"));
 	gridLayout->addWidget(label, 2, 0, 1, 1);
-	endDate = new QDateTimeEdit(this);
+	endDate = new QDateTimeEdit;
 	endDate->setCalendarPopup(true);
 	endDate->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(endDate, 2, 1, 1, 3);
 
-	label = new QLabel(tr("Wares (any) :"), this);
+	label = new QLabel(tr("Wares (any) :"));
 	gridLayout->addWidget(label, 3, 0, 1, 1);
 	wareFilter = new QCheckBox;
 	wareFilter->setTristate(false);
@@ -52,7 +52,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	wareBox->setModelColumn(WaresModel::Name);
 	gridLayout->addWidget(wareBox, 3, 2, 1, 2);
 
-	label = new QLabel(tr("Shops (any) :"), this);
+	label = new QLabel(tr("Shops (any) :"));
 	gridLayout->addWidget(label, 4, 0, 1, 1);
 	shopFilter = new QCheckBox;
 	shopFilter->setTristate(false);
@@ -64,8 +64,8 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 
 	label = new QLabel(tr("Stock option :"));
 	gridLayout->addWidget(label, 5, 0, 1, 4);
-	QHBoxLayout * hLayout = new QHBoxLayout();
-	stockOptions = new QButtonGroup();
+	QHBoxLayout * hLayout = new QHBoxLayout;
+	stockOptions = new QButtonGroup;
 	stockOptAll = new QRadioButton;
 	stockOptAll->setText(tr("all bought items"));
 	stockOptions->addButton(stockOptAll);
@@ -82,7 +82,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 
 	label = new QLabel(tr("With these tags :"));
 	gridLayout->addWidget(label, 7, 0, 1, 4);
-	tagOptions = new QButtonGroup();
+	tagOptions = new QButtonGroup;
 	tagOptAllMatch = new QRadioButton;
 	tagOptAllMatch->setText(tr("all selected tag need to match"));
 	tagOptions->addButton(tagOptAllMatch);
@@ -91,7 +91,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	tagOptAnyMatch->setText(tr("any selected tag enough to match"));
 	tagOptions->addButton(tagOptAnyMatch);
 	gridLayout->addWidget(tagOptAnyMatch, 9, 1, 1, 2);
-	tagsSelector = new TagWidget(dbname, this);
+	tagsSelector = new TagWidget(dbname);
 	gridLayout->addWidget(tagsSelector, 10, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
@@ -110,7 +110,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 
 	label = new QLabel(tr("Without these tags :"));
 	gridLayout->addWidget(label, 12, 0, 1, 4);
-	withoutTagsSelector = new TagWidget(dbname, withoutTagsSelector);
+	withoutTagsSelector = new TagWidget(dbname);
 	gridLayout->addWidget(withoutTagsSelector, 13, 0, 1, 4);
 
 	selectAll2Button = new QPushButton;
@@ -167,7 +167,7 @@ void QueryOptionsView::resizeEvent(QResizeEvent *event)
 
 void QueryOptionsView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("queryoptionsview/position", QPoint()).toPoint();
 	QSize size = settings.value("queryoptionsview/size", QSize()).toSize();
 	if(size.isValid())
@@ -179,7 +179,7 @@ void QueryOptionsView::loadState()
 
 void QueryOptionsView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("queryoptionsview/position", pos());
 	settings.setValue("queryoptionsview/size", size());
 }
@@ -190,10 +190,8 @@ void QueryOptionsView::mapToGui()
 	startDate->setDateTime(query.startDate);
 	endDate->setDateTime(query.endDate);
 
-
-/* FIXME *///		waresEditor->setText(stringSetToString(query.wares));
-/* FIXME *///		shopsEditor->setText(stringSetToString(query.shops));
-		
+/* FIXME *///waresEditor->setText(stringSetToString(query.wares));
+/* FIXME *///shopsEditor->setText(stringSetToString(query.shops));
 		
 	tagsSelector->setTags(query.withTags);
 	withoutTagsSelector->setTags(query.withoutTags);
@@ -259,7 +257,7 @@ void QueryOptionsView::okClickedSlot(bool)
 QString QueryOptionsView::stringSetToString(
 		const csjp::OwnerContainer<QString> &strSet)
 {
-	QString result("");
+	QString result;
 
 	int s = strSet.size();
 	if(s == 0)

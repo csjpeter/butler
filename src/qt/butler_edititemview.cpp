@@ -25,10 +25,10 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	QHBoxLayout *hbox;
 	QLabel *label;
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
-	label = new QLabel(tr("Common name :"), this);
+	label = new QLabel(tr("Common name :"));
 	gridLayout->addWidget(label, 0, 0, 1, 1);
 	nameEditor = new QLineEdit;
 	nameBox = new QComboBox;
@@ -39,7 +39,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 2);
 
-	label = new QLabel(tr("Category name :"), this);
+	label = new QLabel(tr("Category name :"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
 	categoryEditor = new QLineEdit;
 	categoryBox = new QComboBox;
@@ -48,7 +48,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	categoryBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(categoryBox, 1, 1, 1, 2);
 
-	label = new QLabel(tr("Upload date :"), this);
+	label = new QLabel(tr("Upload date :"));
 	gridLayout->addWidget(label, 2, 0, 1, 1);
 	uploadDateTime = new QDateTimeEdit;
 	uploadDateTime->setEnabled(false);
@@ -56,55 +56,55 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	uploadDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(uploadDateTime, 2, 1, 1, 2);
 
-	label = new QLabel(tr("Quantity :"), this);
+	label = new QLabel(tr("Quantity :"));
 	gridLayout->addWidget(label, 3, 0, 1, 1);
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
 	gridLayout->addWidget(quantityEditor, 3, 1, 1, 1);
-	unitLabel = new QLabel(tr(""), this);
+	unitLabel = new QLabel;
 	gridLayout->addWidget(unitLabel, 3, 2, 1, 1);
 
-	label = new QLabel(tr("Bought :"), this);
+	label = new QLabel(tr("Bought :"));
 	gridLayout->addWidget(label, 4, 0, 1, 1);
 	boughtCheck = new QCheckBox;
 	gridLayout->addWidget(boughtCheck, 4, 1, 1, 2);
 
-	label = new QLabel(tr("Unit price :"), this);
+	label = new QLabel(tr("Unit price :"));
 	gridLayout->addWidget(label, 5, 0, 1, 1);
 	unitPriceEditor = new QDoubleSpinBox;
 	unitPriceEditor->setRange(0, INT_MAX);
 	unitPriceEditor->setDecimals(2);
 	gridLayout->addWidget(unitPriceEditor, 5, 1, 1, 2);
 
-	label = new QLabel(tr("Gross price :"), this);
+	label = new QLabel(tr("Gross price :"));
 	gridLayout->addWidget(label, 6, 0, 1, 1);
 	grossPriceEditor = new QDoubleSpinBox;
 	grossPriceEditor->setRange(0, INT_MAX);
 	grossPriceEditor->setDecimals(2);
 	gridLayout->addWidget(grossPriceEditor, 6, 1, 1, 2);
 
-	label = new QLabel(tr("Purchase date :"), this);
+	label = new QLabel(tr("Purchase date :"));
 	gridLayout->addWidget(label, 7, 0, 1, 1);
 	purchaseDateTime = new QDateTimeEdit;
 	purchaseDateTime->setCalendarPopup(true);
 	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 2);
 
-	label = new QLabel(tr("Shop (place of buy) :"), this);
+	label = new QLabel(tr("Shop (place of buy) :"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
 	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 2);
 
-	label = new QLabel(tr("On stock :"), this);
+	label = new QLabel(tr("On stock :"));
 	gridLayout->addWidget(label, 9, 0, 1, 1);
 	onStockCheck = new QCheckBox;
 	gridLayout->addWidget(onStockCheck, 9, 1, 1, 2);
 
 	/* buttons: prev, save, next */
-	hbox = new QHBoxLayout();
+	hbox = new QHBoxLayout;
 	gridLayout->addLayout(hbox, 10, 0, 1, 3);
 
 	prevButton = new QPushButton;
@@ -168,7 +168,7 @@ void EditItemView::closeEvent(QCloseEvent *event)
 
 void EditItemView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("edititemview/position", QPoint()).toPoint();
 	QSize size = settings.value("edititemview/size", QSize()).toSize();
 	if(size.isValid())
@@ -180,7 +180,7 @@ void EditItemView::loadState()
 
 void EditItemView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("edititemview/position", pos());
 	settings.setValue("edititemview/size", size());
 }

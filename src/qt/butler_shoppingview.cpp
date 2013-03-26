@@ -28,32 +28,32 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	tagFilterView(NULL)
 {
 	setWindowTitle(tr("Shopping list"));
-
+#if 0
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
-	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"), this);
+	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"));
 	newAct->setShortcut(tr("N"));
 	newAct->setToolTip(tr("Add new item to buy"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newItem()));
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit item details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete item from shopping list"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
 
-	boughtAct = new QAction(QIcon(Path::icon("buy.png")), tr("&Bought"), this);
+	boughtAct = new QAction(QIcon(Path::icon("buy.png")), tr("&Bought"));
 	boughtAct->setShortcut(tr("B"));
 	boughtAct->setToolTip(tr("Mark item as bought"));
 	connect(boughtAct, SIGNAL(triggered()), this, SLOT(buyItem()));
 
-	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"), this);
+	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"));
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
@@ -79,9 +79,9 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	filterTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(filterTBtn);
 	filterTBtn->setDefaultAction(filterAct);
-
+#endif
 	/* shop selector */
-	QGridLayout *shopLayout = new QGridLayout();
+	QGridLayout *shopLayout = new QGridLayout;
 
 	QLabel *label = new QLabel(tr("Shop (place of buy):"));
 	shopLayout->addWidget(label, 0, 0);
@@ -92,7 +92,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	shopLayout->addWidget(shopBox, 0, 1);
 
 	/* query result list */
-	queryView = new QTableView();
+	queryView = new QTableView;
 	queryView->setModel(&model);
 	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setMovable(true);
@@ -141,7 +141,7 @@ ShoppingView::~ShoppingView()
 void ShoppingView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	QSettings settings(this);
+	QSettings settings;
 
 	QDateTime uploaded = settings.value("shoppingview/currentitem", "").toDateTime();
 	queryView->selectRow(model.index(uploaded));
@@ -159,7 +159,7 @@ void ShoppingView::closeEvent(QCloseEvent *event)
 
 void ShoppingView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("shoppingview/position", QPoint()).toPoint();
 	QSize size = settings.value("shoppingview/size", QSize()).toSize();
 	if(size.isValid())
@@ -171,7 +171,7 @@ void ShoppingView::loadState()
 
 void ShoppingView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("shoppingview/position", pos());
 	settings.setValue("shoppingview/size", size());
 

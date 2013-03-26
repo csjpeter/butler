@@ -19,7 +19,7 @@ NewWareView::NewWareView(const QString & dbname, QWidget * parent) :
 	
 	QLabel *label = NULL;
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
 	/* ware name */
@@ -43,7 +43,7 @@ NewWareView::NewWareView(const QString & dbname, QWidget * parent) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(dbname, this);
+	tagsSelector = new TagWidget(dbname);
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 	
 	/* buttons: done */
@@ -74,7 +74,7 @@ void NewWareView::closeEvent(QCloseEvent *event)
 
 void NewWareView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("newwareview/position", QPoint()).toPoint();
 	QSize size = settings.value("newwareview/size", QSize()).toSize();
 	if(size.isValid())
@@ -86,7 +86,7 @@ void NewWareView::loadState()
 
 void NewWareView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("newwareview/position", pos());
 	settings.setValue("newwareview/size", size());
 }

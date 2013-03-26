@@ -22,7 +22,7 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	editWareView(NULL)
 {
 	setWindowTitle(tr("Ware editor"));
-
+#if 0
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
@@ -32,12 +32,12 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	newAct->setToolTip(tr("Add new ware to buy"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newWare()));
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit ware details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editWare()));
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete ware from wareping list"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delWare()));
@@ -55,9 +55,9 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	editTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(editTBtn);
 	editTBtn->setDefaultAction(editAct);
-
+#endif
 	/* query result list */
-	queryView = new QTableView();
+	queryView = new QTableView;
 	queryView->setModel(&model);
 	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setMovable(true);
@@ -98,7 +98,7 @@ void WaresView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
 
-	QSettings settings(this);
+	QSettings settings;
 
 	QString name = settings.value("waresview/currentitem", "").toString();
 	queryView->selectRow(model.index(name));
@@ -116,7 +116,7 @@ void WaresView::closeEvent(QCloseEvent *event)
 
 void WaresView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("waresview/position", QPoint()).toPoint();
 	QSize size = settings.value("waresview/size", QSize()).toSize();
 	if(size.isValid())
@@ -128,7 +128,7 @@ void WaresView::loadState()
 
 void WaresView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("waresview/position", pos());
 	settings.setValue("waresview/size", size());
 

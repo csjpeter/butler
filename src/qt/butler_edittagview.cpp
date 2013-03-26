@@ -21,9 +21,9 @@ EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
 	QHBoxLayout *hbox = NULL;
 	QLabel *label = NULL;
 	
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	QVBoxLayout *layout = new QVBoxLayout;
 	
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 	layout->addLayout(gridLayout);
 
@@ -40,7 +40,7 @@ EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
 	gridLayout->addWidget(descEditor, 1, 1, 1, 1);
 
 	/* buttons: prev, save, next */
-	hbox = new QHBoxLayout();
+	hbox = new QHBoxLayout;
 	layout->addLayout(hbox);
 
 	prevButton = new QPushButton;
@@ -86,7 +86,7 @@ void EditTagView::closeEvent(QCloseEvent *event)
 
 void EditTagView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("edittagview/position", QPoint()).toPoint();
 	QSize size = settings.value("edittagview/size", QSize()).toSize();
 	if(size.isValid())
@@ -98,7 +98,7 @@ void EditTagView::loadState()
 
 void EditTagView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("edittagview/position", pos());
 	settings.setValue("edittagview/size", size());
 }

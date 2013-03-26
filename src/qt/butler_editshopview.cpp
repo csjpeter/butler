@@ -20,9 +20,9 @@ EditShopView::EditShopView(const QString & dbname, QWidget * parent) :
 	QLabel *label = NULL;
 	QHBoxLayout *hbox;
 
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	QVBoxLayout *layout = new QVBoxLayout;
 	
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 	layout->addLayout(gridLayout);
 
@@ -57,7 +57,7 @@ EditShopView::EditShopView(const QString & dbname, QWidget * parent) :
 	gridLayout->addWidget(companyEditor, 4, 1, 1, 2);
 
 	/* buttons: prev, save, next */
-	hbox = new QHBoxLayout();
+	hbox = new QHBoxLayout;
 	layout->addLayout(hbox);
 
 	prevButton = new QPushButton;
@@ -103,7 +103,7 @@ void EditShopView::closeEvent(QCloseEvent *event)
 
 void EditShopView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("editshopview/position", QPoint()).toPoint();
 	QSize size = settings.value("editshopview/size", QSize()).toSize();
 	if(size.isValid())
@@ -115,7 +115,7 @@ void EditShopView::loadState()
 
 void EditShopView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("editshopview/position", pos());
 	settings.setValue("editshopview/size", size());
 }

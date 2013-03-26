@@ -26,28 +26,28 @@ StockView::StockView(const QString & dbname, QWidget * parent) :
 	tagFilterView(NULL)
 {
 	setWindowTitle(tr("Stock list"));
-
+#if 0
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
 	accountingAct = new QAction(
-			QIcon(Path::icon("add.png")), tr("&Accounting"), this);
+			QIcon(Path::icon("add.png")), tr("&Accounting"));
 	accountingAct->setShortcut(tr("A"));
 	accountingAct->setToolTip(tr("Accounting"));
 	connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit item details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
 
-	dropAct = new QAction(QIcon(Path::icon("trash.png")), tr("&Drop"), this);
+	dropAct = new QAction(QIcon(Path::icon("trash.png")), tr("&Drop"));
 	dropAct->setShortcut(tr("D"));
 	dropAct->setToolTip(tr("Drop item from stock"));
 	connect(dropAct, SIGNAL(triggered()), this, SLOT(dropItem()));
 
-	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"), this);
+	filterAct = new QAction(QIcon(Path::icon("tag.png")), tr("&Filter"));
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
@@ -68,9 +68,9 @@ StockView::StockView(const QString & dbname, QWidget * parent) :
 	filterTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(filterTBtn);
 	filterTBtn->setDefaultAction(filterAct);
-
+#endif
 	/* query result list */
-	queryView = new QTableView();
+	queryView = new QTableView;
 	queryView->setModel(&model);
 //	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
@@ -97,7 +97,7 @@ StockView::StockView(const QString & dbname, QWidget * parent) :
 	queryView->hideColumn(Item::Shop);
 	queryView->hideColumn(Item::OnStock);
 
-/*	CheckBoxDelegate *delegate = new CheckBoxDelegate();
+/*	CheckBoxDelegate *delegate = new CheckBoxDelegate;
 	queryView->setItemDelegate(delegate);
 */
 	/* making the window layouting */
@@ -121,7 +121,7 @@ void StockView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
 
-	QSettings settings(this);
+	QSettings settings;
 
 	QDateTime uploaded = settings.value("stockview/currentitem", "").toDateTime();
 	queryView->selectRow(model.index(uploaded));
@@ -139,7 +139,7 @@ void StockView::closeEvent(QCloseEvent *event)
 
 void StockView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("stockview/position", QPoint()).toPoint();
 	QSize size = settings.value("stockview/size", QSize()).toSize();
 	if(size.isValid())
@@ -151,7 +151,7 @@ void StockView::loadState()
 
 void StockView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("stockview/position", pos());
 	settings.setValue("stockview/size", size());
 

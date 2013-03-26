@@ -21,22 +21,22 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	editTagView(NULL)
 {
 	setWindowTitle(tr("Tag editor"));
-
+#if 0
 	/* action toolbar */
 	actionTB = new QToolBar(tr("Action toolbar"));
 
 	/* actions */
-	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"), this);
+	newAct = new QAction(QIcon(Path::icon("add.png")), tr("&New"));
 	newAct->setShortcut(tr("N"));
 	newAct->setToolTip(tr("Add new tag to buy"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newTag()));
 
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit tag details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editTag()));
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete tag from tagping list"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delTag()));
@@ -54,9 +54,9 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	editTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(editTBtn);
 	editTBtn->setDefaultAction(editAct);
-
+#endif
 	/* query result list */
-	queryView = new QTableView();
+	queryView = new QTableView;
 	queryView->setModel(&model);
 	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setMovable(true);
@@ -95,7 +95,7 @@ void TagsView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
 
-	QSettings settings(this);
+	QSettings settings;
 
 	QString name = settings.value("tagsview/currentitem", "").toString();
 	queryView->selectRow(model.index(name));
@@ -113,7 +113,7 @@ void TagsView::closeEvent(QCloseEvent *event)
 
 void TagsView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("tagsview/position", QPoint()).toPoint();
 	QSize size = settings.value("tagsview/size", QSize()).toSize();
 	if(size.isValid())
@@ -125,7 +125,7 @@ void TagsView::loadState()
 
 void TagsView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("tagsview/position", pos());
 	settings.setValue("tagsview/size", size());
 

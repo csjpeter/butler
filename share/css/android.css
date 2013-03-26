@@ -20,25 +20,32 @@ QScrollBar::handle { background-color: gray; }
 QScrollBar:vertical { width: 4px; }
 QScrollBar:horizontal { height: 4px; }
 
-/*
+QPushButton {
+	flat="true";
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	border-radius: 3px;
+	border-width: 1px;
+}
+
 QLineEdit {
 	border-width: 1px;
 }
 
-
-QPushButton {
-	flat="true";
-	font-size: 14px;
-	font-style: normal;
-	font-weight: normal;
+QPushButton:hover {
+	border-color: blue;
 }
 
-QLabel {
+QLineEdit:hover {
+	border-color: blue;
 }
 
-QCheckBox {
+QCheckBox:hover {
+	border-color: blue;
 }
 
-QRadioButton {
+QRadioButton:hover {
+	border-color: blue;
 }
-*/
+

@@ -22,9 +22,9 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	QLabel *label = NULL;
 	QHBoxLayout *hbox;
 
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	QVBoxLayout *layout = new QVBoxLayout;
 	
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 	layout->addLayout(gridLayout);
 
@@ -49,11 +49,11 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	/* tags */
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(dbname, this);
+	tagsSelector = new TagWidget(dbname);
 	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
 
 	/* buttons: prev, save, next, close */
-	hbox = new QHBoxLayout();
+	hbox = new QHBoxLayout;
 	layout->addLayout(hbox);
 
 	prevButton = new QPushButton;
@@ -109,7 +109,7 @@ void EditWareView::closeEvent(QCloseEvent *event)
 
 void EditWareView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("editwareview/position", QPoint()).toPoint();
 	QSize size = settings.value("editwareview/size", QSize()).toSize();
 	if(size.isValid())
@@ -121,7 +121,7 @@ void EditWareView::loadState()
 
 void EditWareView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("editwareview/position", pos());
 	settings.setValue("editwareview/size", size());
 }

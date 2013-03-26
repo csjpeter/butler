@@ -38,65 +38,40 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	infoView(NULL)
 {
 	QVBoxLayout *layout = new QVBoxLayout;
+	layout->setContentsMargins(0,0,0,0);
+	layout->setSpacing(0);
 
 	QPushButton * button;
 
 	layout->addStretch(0);
 
 	button = new QPushButton(QIcon(Path::icon("shopping.png")), tr("&Shopping"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("shop.png")), tr("S&hops"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Tags"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("stock.png")), tr("&Maintain stock"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
-	button->setDefault(false);
-	button->setFlat(true);
 	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
-
-	layout->addStretch(0);
+	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));
-	button->setDefault(false);
-	button->setFlat(true);
-	button->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));
 	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));
-	layout->addWidget(button, 0, Qt::AlignLeft);
+	layout->addWidget(button);
 
 	layout->addStretch(0);
 
@@ -110,7 +85,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	/* restore last state */
 	loadState();
 
-	QSettings settings(this);
+	QSettings settings;
 	if(settings.value("mainview/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
 	if(settings.value("mainview/stockview", false).toBool())
@@ -184,7 +159,7 @@ void MainView::closeEvent(QCloseEvent *event)
 
 void MainView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("mainview/position", QPoint()).toPoint();
 	QSize size = settings.value("mainview/size", QSize()).toSize();
 	if(size.isValid())
@@ -196,7 +171,7 @@ void MainView::loadState()
 
 void MainView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("mainview/position", pos());
 	settings.setValue("mainview/size", size());
 	settings.setValue("mainview/shoppingview",
@@ -273,7 +248,7 @@ void MainView::openQueryOptionsView()
 {
 #if 0
 	if(!queryOptionsView)
-		queryOptionsView = new QueryOptionsView();
+		queryOptionsView = new QueryOptionsView;
 	queryOptionsView->activate();
 #endif
 }
@@ -281,7 +256,7 @@ void MainView::openQueryOptionsView()
 void MainView::openInfoView()
 {
 	if(!infoView)
-		infoView = new InfoView();
+		infoView = new InfoView;
 	infoView->activate();
 }
 

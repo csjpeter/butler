@@ -17,13 +17,13 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Tag filter view"));
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 
 	QLabel *label = NULL;
 
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 0, 0, 1, 4);
-	tagsSelector = new TagWidget(dbname, this);
+	tagsSelector = new TagWidget(dbname);
 	gridLayout->addWidget(tagsSelector, 1, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
@@ -75,7 +75,7 @@ void TagFilterView::resizeEvent(QResizeEvent *event)
 
 void TagFilterView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("tagsfilterview/position", QPoint()).toPoint();
 	QSize size = settings.value("tagsfilterview/size", QSize()).toSize();
 	if(size.isValid())
@@ -87,7 +87,7 @@ void TagFilterView::loadState()
 
 void TagFilterView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("tagsfilterview/position", pos());
 	settings.setValue("tagsfilterview/size", size());
 }

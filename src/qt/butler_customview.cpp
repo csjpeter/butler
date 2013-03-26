@@ -17,6 +17,17 @@
 
 #include "butler_application.h"
 
+/*
+QPixmap pixmap("image.jpg");
+QPalette palette;    
+QPushButton *button= new QPushButton(this);
+palette.setBrush(button->backgroundRole(), QBrush(pixmap));
+
+button->setFlat(true);
+button->setAutoFillBackground(true);    
+button->setPalette(palette);
+*/
+
 CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
@@ -29,32 +40,31 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 {
 	setWindowTitle(tr("User query result"));
 
-	/* action toolbar */
-	actionTB = new QToolBar(tr("Action toolbar"));
+	QHBoxLayout * cLayout = new QHBoxLayout;
+	QPushButton * button;
+	
+	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&Accounting"));
+	button->setFlat(true);
+	connect(button, SIGNAL(clicked()), this, SLOT(openAccountingView()));
+	cLayout->addWidget(button, 0, Qt::AlignLeft);
 
-	/* actions */
-	accountingAct = new QAction(
-			QIcon(Path::icon("add.png")), tr("&Accounting"), this);
-	accountingAct->setShortcut(tr("A"));
-	accountingAct->setToolTip(tr("Accounting"));
-	connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
-
-	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"), this);
+#if 0
+	editAct = new QAction(QIcon(Path::icon("edit.png")), tr("&Edit"));
 	editAct->setShortcut(tr("E"));
 	editAct->setToolTip(tr("Edit item details"));
 	connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
 
-	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"), this);
+	delAct = new QAction(QIcon(Path::icon("delete.png")), tr("&Delete"));
 	delAct->setShortcut(tr("D"));
 	delAct->setToolTip(tr("Delete item"));
 	connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
 
-	filterAct = new QAction(QIcon(Path::icon("query.png")), tr("&Filter"), this);
+	filterAct = new QAction(QIcon(Path::icon("query.png")), tr("&Filter"));
 	filterAct->setShortcut(tr("F"));
 	filterAct->setToolTip(tr("Filter by tags"));
 	connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
 
-	wareEditAct = new QAction(QIcon(Path::icon("ware.png")), tr("Edit"), this);
+	wareEditAct = new QAction(QIcon(Path::icon("ware.png")), tr("Edit"));
 	wareEditAct->setShortcut(tr("W"));
 	wareEditAct->setToolTip(tr("Edit ware details"));
 	connect(wareEditAct, SIGNAL(triggered()), this, SLOT(editWare()));
@@ -83,9 +93,9 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	wareEditTBtn = new QToolButton(actionTB);
 	actionTB->addWidget(wareEditTBtn);
 	wareEditTBtn->setDefaultAction(wareEditAct);
-
+#endif
 	/* query result list */
-	queryView = new QTableView();
+	queryView = new QTableView;
 	queryView->setModel(&model);
 //	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
@@ -109,40 +119,40 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	queryView->hideColumn(Item::Bought);
 
 	/* statistics in grid layout */
-	QGridLayout *statGrid = new QGridLayout();
+	QGridLayout *statGrid = new QGridLayout;
 	QLabel *label;
 
 	label = new QLabel(tr("Number of queried items : "));
 	statGrid->addWidget(label, 0, 0, 1, 1);
-	itemCountLabel = new QLabel();
+	itemCountLabel = new QLabel;
 	statGrid->addWidget(itemCountLabel, 0, 1, 1, 1);
 	label = new QLabel(tr("Minimal unit price : "));
 	statGrid->addWidget(label, 0, 2, 1, 1);
-	minUnitPriceLabel = new QLabel();
+	minUnitPriceLabel = new QLabel;
 	statGrid->addWidget(minUnitPriceLabel, 0, 3, 1, 1);
 	label = new QLabel(tr("Maximal unit price : "));
 	statGrid->addWidget(label, 0, 4, 1, 1);
-	maxUnitPriceLabel = new QLabel();
+	maxUnitPriceLabel = new QLabel;
 	statGrid->addWidget(maxUnitPriceLabel, 0, 5, 1, 1);
 
 
 	label = new QLabel(tr("Summary of queried quantites : "));
 	statGrid->addWidget(label, 1, 0, 1, 1);
-	itemSumQuantityLabel = new QLabel();
+	itemSumQuantityLabel = new QLabel;
 	statGrid->addWidget(itemSumQuantityLabel, 1, 1, 1, 1);
 	label = new QLabel(tr("Summary of paid prices : "));
 	statGrid->addWidget(label, 1, 2, 1, 1);
-	itemSumPriceLabel = new QLabel();
+	itemSumPriceLabel = new QLabel;
 	statGrid->addWidget(itemSumPriceLabel, 1, 3, 1, 1);
 	label = new QLabel(tr("Avergae unit price : "));
 	statGrid->addWidget(label, 1, 4, 1, 1);
-	avgUnitPriceLabel = new QLabel();
+	avgUnitPriceLabel = new QLabel;
 	statGrid->addWidget(avgUnitPriceLabel, 1, 5, 1, 1);
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 	actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	layout->addWidget(actionTB);
+	layout->addLayout(cLayout);
 	layout->addLayout(statGrid);
 	layout->addWidget(&queryView);
 
@@ -169,7 +179,7 @@ void CustomView::showEvent(QShowEvent *event)
 	model->query();
 	updateStatistics();
 	
-	QSettings settings(this);
+	QSettings settings;
 
 	QDateTime uploaded = settings.value("customview/currentitem", "").toDateTime();
 	queryView->selectRow(model->index(uploaded));
@@ -190,7 +200,7 @@ void CustomView::closeEvent(QCloseEvent *event)
 
 void CustomView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("customview/position", QPoint()).toPoint();
 	QSize size = settings.value("customview/size", QSize()).toSize();
 	if(size.isValid())
@@ -202,7 +212,7 @@ void CustomView::loadState()
 
 void CustomView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("customview/position", pos());
 	settings.setValue("customview/size", size());
 

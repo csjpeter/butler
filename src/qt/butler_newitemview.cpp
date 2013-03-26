@@ -21,10 +21,10 @@ NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	
 	QLabel *label;
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
-	label = new QLabel(tr("Common name :"), this);
+	label = new QLabel(tr("Common name :"));
 	gridLayout->addWidget(label, 0, 0, 1, 1);
 	nameEditor = new QLineEdit;
 	nameBox = new QComboBox;
@@ -35,7 +35,7 @@ NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 3);
 
-	label = new QLabel(tr("Category name :"), this);
+	label = new QLabel(tr("Category name :"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
 	categoryEditor = new QLineEdit;
 	categoryBox = new QComboBox;
@@ -44,13 +44,13 @@ NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	categoryBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(categoryBox, 1, 1, 1, 3);
 
-	label = new QLabel(tr("Quantity :"), this);
+	label = new QLabel(tr("Quantity :"));
 	gridLayout->addWidget(label, 3, 0, 1, 1);
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
 	gridLayout->addWidget(quantityEditor, 3, 1, 1, 2);
-	unitLabel = new QLabel(tr(""), this);
+	unitLabel = new QLabel;
 	gridLayout->addWidget(unitLabel, 3, 3, 1, 1);
 
 	/* comments */
@@ -91,7 +91,7 @@ void NewItemView::closeEvent(QCloseEvent *event)
 
 void NewItemView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("newitemview/position", QPoint()).toPoint();
 	QSize size = settings.value("newitemview/size", QSize()).toSize();
 	if(size.isValid())
@@ -103,7 +103,7 @@ void NewItemView::loadState()
 
 void NewItemView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("newitemview/position", pos());
 	settings.setValue("newitemview/size", size());
 }

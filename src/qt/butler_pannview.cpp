@@ -29,11 +29,11 @@ void PannView::setLayout(QLayout * layout)
 		delete scrollArea;
 	}
 
-	scrollArea = new QScrollArea(this);
-	scrollArea->setFrameStyle(QFrame::NoFrame);
-	QWidget * main = new QWidget(scrollArea);
+	QWidget * main = new QWidget;
 	main->setLayout(layout);
 
+	scrollArea = new QScrollArea;
+	scrollArea->setFrameStyle(QFrame::NoFrame);
 	scrollArea->setWidget(main);
 	scrollArea->setWidgetResizable(true);
 //	scrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));

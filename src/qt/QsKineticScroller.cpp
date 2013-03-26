@@ -211,7 +211,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 
 			// A few move events are ignored as "click jitter", but after
 			// that we assume that the user is doing a click & drag
-			if( ignoredMouseMoves < gMaxIgnoredMouseMoves ){
+			if(ignoredMouseMoves < gMaxIgnoredMouseMoves){
 				++ignoredMouseMoves;
 				return true;
 			}
@@ -242,6 +242,9 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 				kineticTimer.start(gTimerInterval);
 				return true;
 			}
+			
+			if(gMaxIgnoredMouseMoves <= ignoredMouseMoves) /* There was scrolling */
+				return true;
 
 			// Looks like the user wanted a single click. Simulate the click,
 			// as the events were already consumed

@@ -20,14 +20,14 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Buy item"));
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
 	QLabel *label = NULL;
 
 	label = new QLabel(tr("Name:"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
-	nameLabel = new QLabel();
+	nameLabel = new QLabel;
 	gridLayout->addWidget(nameLabel, 1, 1, 1, 3);
 
 	label = new QLabel(tr("Quantity:"));
@@ -36,7 +36,7 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
 	gridLayout->addWidget(quantityEditor, 3, 1, 1, 2);
-	unitLabel = new QLabel(tr(""), this);
+	unitLabel = new QLabel;
 	gridLayout->addWidget(unitLabel, 3, 3, 1, 1);
 
 	label = new QLabel(tr("Unit price:"));
@@ -67,7 +67,7 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
 
-	buyButton = new QPushButton(tr("Mark bought"), this);
+	buyButton = new QPushButton(tr("Mark bought"));
 	gridLayout->addWidget(buyButton, 10, 3, 1, 1);
 
 	connect(buyButton, SIGNAL(clicked()), this, SLOT(buy()));
@@ -104,7 +104,7 @@ void BuyItemView::closeEvent(QCloseEvent *event)
 
 void BuyItemView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("buyitemview/position", QPoint()).toPoint();
 	QSize size = settings.value("buyitemview/size", QSize()).toSize();
 	if(size.isValid())
@@ -116,7 +116,7 @@ void BuyItemView::loadState()
 
 void BuyItemView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("buyitemview/position", pos());
 	settings.setValue("buyitemview/size", size());
 }

@@ -31,9 +31,10 @@ void TagWidget::prepareContent()
 	if(gridLayout){
 		if(gridLayout->columnCount() == columns)
 			return; /* No sense to relayout. */
-		QLayoutItem *child;
+		QLayoutItem * child;
 		while ((child = gridLayout->takeAt(0)) != 0) {
 //			child->widget()->deleteLater();
+			LOG("Parent: %p", child->widget()->parent());
 			delete child;
 		}
 		delete layout();
@@ -48,7 +49,7 @@ void TagWidget::prepareContent()
 	 * access the button belonging to a particular tag. */
 	if(btnContainer.empty()){
 		for(i = 0; i < s; i++){
-			QCheckBox * tagBox(new QCheckBox);
+			QCheckBox * tagBox(new QCheckBox());
 			tagBox->setTristate(false);
 
 			const Tag &tag = tagSet.queryAt(i);
@@ -61,7 +62,7 @@ void TagWidget::prepareContent()
 		}
 	}
 
-	gridLayout = new QGridLayout();
+	gridLayout = new QGridLayout;
 	setLayout(gridLayout);
 
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;

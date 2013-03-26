@@ -18,7 +18,7 @@ NewTagView::NewTagView(const QString & dbname, QWidget * parent) :
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add new tag"));
 	
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
 	QLabel *label = NULL;
@@ -61,7 +61,7 @@ void NewTagView::closeEvent(QCloseEvent *event)
 
 void NewTagView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("newtagview/position", QPoint()).toPoint();
 	QSize size = settings.value("newtagview/size", QSize()).toSize();
 	if(size.isValid())
@@ -73,7 +73,7 @@ void NewTagView::loadState()
 
 void NewTagView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("newtagview/position", pos());
 	settings.setValue("newtagview/size", size());
 }

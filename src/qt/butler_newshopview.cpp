@@ -16,7 +16,7 @@ NewShopView::NewShopView(const QString & dbname, QWidget * parent) :
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add new shop with details"));
 
-	QGridLayout *gridLayout = new QGridLayout();
+	QGridLayout *gridLayout = new QGridLayout;
 	gridLayout->setColumnStretch(1, 1);
 
 	QLabel *label = NULL;
@@ -79,7 +79,7 @@ void NewShopView::closeEvent(QCloseEvent *event)
 
 void NewShopView::loadState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	QPoint pos = settings.value("newshopview/position", QPoint()).toPoint();
 	QSize size = settings.value("newshopview/size", QSize()).toSize();
 	if(size.isValid())
@@ -91,7 +91,7 @@ void NewShopView::loadState()
 
 void NewShopView::saveState()
 {
-	QSettings settings(this);
+	QSettings settings;
 	settings.setValue("newshopview/position", pos());
 	settings.setValue("newshopview/size", size());
 }
