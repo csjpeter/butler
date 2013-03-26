@@ -30,8 +30,6 @@ class QStandardShopModel;
 class QListView;
 class QStandardShopModel;
 
-class TagWidget;
-
 class EditShopView : public PannView
 {
 private:

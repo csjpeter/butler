@@ -29,7 +29,6 @@ function config ()
 	./dist-config.sh \
 		$@ \
 		-- \
-		--debug \
 		--target=arm-linux-androideabi \
 		--prefix= \
 		--css-prefix=assets:/ \

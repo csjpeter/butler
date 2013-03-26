@@ -23,12 +23,8 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 
 	label = new QLabel(tr("Tags :"));
 	gridLayout->addWidget(label, 0, 0, 1, 4);
-	tagScrollArea = new QScrollArea(this);
-	tagsSelector = new TagWidget(dbname, &tagScrollArea);
-	tagScrollArea->setWidget(tagsSelector);
-	tagScrollArea->setWidgetResizable(true);
-	tagScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	gridLayout->addWidget(&tagScrollArea, 1, 0, 1, 4);
+	tagsSelector = new TagWidget(dbname, this);
+	gridLayout->addWidget(tagsSelector, 1, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
 	connect(selectAllButton, SIGNAL(clicked(bool)),

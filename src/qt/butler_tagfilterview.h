@@ -49,7 +49,6 @@ private:
 	const QString & dbname;
 	TagNameSet &tags;
 
-	Pannable<QScrollArea> tagScrollArea;
 	TagWidget * tagsSelector;
 
 	QPushButton * selectAllButton;

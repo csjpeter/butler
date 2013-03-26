@@ -32,8 +32,6 @@ class QListView;
 class QStandardItemModel;
 class QComboBox;
 
-class TagWidget;
-
 class EditItemView : public PannView
 {
 private:

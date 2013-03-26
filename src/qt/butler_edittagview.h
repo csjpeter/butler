@@ -29,8 +29,6 @@ class QScrollArea;
 class QStandardItemModel;
 class QListView;
 
-class TagWidget;
-
 class EditTagView : public PannView
 {
 private:

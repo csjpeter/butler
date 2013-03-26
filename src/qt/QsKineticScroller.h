@@ -57,7 +57,10 @@ protected:
 
 private:
 	double computeSpeed(double currPos, double lastPos, double lastSpeed);
-	double deccelerate(QScrollBar * scroll, double speed);
+	double doScroll( /* Returns the computed new scroll position. */
+		double origPixPos, double currPixPos, double contentPixSize,
+		double origScrollPos, QScrollBar * scroll);
+	void stopIfAtEnd();
 
 private slots:
 	void onSpeedTimerElapsed(); /* Compute/Update the speed on speedTimer tick. */
@@ -65,13 +68,17 @@ private slots:
 
 private:
 	QAbstractScrollArea* scrollArea;
-	QPoint lastPressPoint;
-	QPoint lastMousePos;
-	QPoint pressedScrollBarPosition;
-	QVector2D speed;
 	int ignoredMouseMoves;
-	QTimer speedTimer; /* active iff mouse button is pressed */
+
+	QPoint pressedScrollBarPosition;
+	QPoint pressedMousePosition;
+	QPoint lastMousePos;
+	QVector2D speed;
+	QTimer speedTimer; /* should be active iff mouse button is pressed */
 	QTimer kineticTimer;
+
+	/* Copy of QScrollBar's value. This is redundancy but we need it to be real number. */
+	QVector2D computedScrollBarPosition;
 
 	QList<QEvent*> ignoreList;
 };

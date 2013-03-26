@@ -30,8 +30,6 @@ class QComboBox;
 
 #include "butler_databases.h"
 
-class TagWidget;
-
 class NewItemView : public PannView
 {
 private:
@@ -59,8 +57,6 @@ private:
 	Item item;
 	const QString & dbname;
 	ShoppingModel & model;
-
-	TagWidget *tagwidget;
 
 	QLineEdit *nameEditor;
 	QComboBox *nameBox;

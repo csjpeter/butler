@@ -28,8 +28,6 @@ class QModelIndex;
 
 #include "butler_databases.h"
 
-class TagWidget;
-
 class NewTagView : public PannView
 {
 private:

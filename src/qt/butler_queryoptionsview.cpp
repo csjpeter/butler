@@ -62,81 +62,77 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 4, 2, 1, 2);
 
-	label = new QLabel(tr("With these tags :"));
+	label = new QLabel(tr("Stock option :"));
 	gridLayout->addWidget(label, 5, 0, 1, 4);
+	QHBoxLayout * hLayout = new QHBoxLayout();
+	stockOptions = new QButtonGroup();
+	stockOptAll = new QRadioButton;
+	stockOptAll->setText(tr("all bought items"));
+	stockOptions->addButton(stockOptAll);
+	hLayout->addWidget(stockOptAll);
+	stockOptOnStock = new QRadioButton;
+	stockOptOnStock->setText(tr("items on stock"));
+	stockOptions->addButton(stockOptOnStock);
+	hLayout->addWidget(stockOptOnStock);
+	stockOptUsedUp = new QRadioButton;
+	stockOptUsedUp->setText(tr("items used up"));
+	stockOptions->addButton(stockOptUsedUp);
+	hLayout->addWidget(stockOptUsedUp);
+	gridLayout->addLayout(hLayout, 6, 1, 1, 3);
+
+	label = new QLabel(tr("With these tags :"));
+	gridLayout->addWidget(label, 7, 0, 1, 4);
 	tagOptions = new QButtonGroup();
 	tagOptAllMatch = new QRadioButton;
 	tagOptAllMatch->setText(tr("all selected tag need to match"));
 	tagOptions->addButton(tagOptAllMatch);
-	gridLayout->addWidget(tagOptAllMatch, 6, 1, 1, 2);
+	gridLayout->addWidget(tagOptAllMatch, 8, 1, 1, 2);
 	tagOptAnyMatch = new QRadioButton;
 	tagOptAnyMatch->setText(tr("any selected tag enough to match"));
 	tagOptions->addButton(tagOptAnyMatch);
-	gridLayout->addWidget(tagOptAnyMatch, 7, 1, 1, 2);
-	QScrollArea * sa = new QScrollArea(this);
-	tagsSelector = new TagWidget(dbname, sa);
-	sa->setWidget(tagsSelector);
-	sa->setWidgetResizable(true);
-	gridLayout->addWidget(sa, 8, 0, 1, 4);
+	gridLayout->addWidget(tagOptAnyMatch, 9, 1, 1, 2);
+	tagsSelector = new TagWidget(dbname, this);
+	gridLayout->addWidget(tagsSelector, 10, 0, 1, 4);
 
 	selectAllButton = new QPushButton;
 	selectAllButton->setAutoDefault(false);
 	connect(selectAllButton, SIGNAL(clicked(bool)),
 			this, SLOT(selectAllClickedSlot(bool)));
 	selectAllButton->setText(tr("Select all tags"));
-	gridLayout->addWidget(selectAllButton, 9, 1, 1, 1);
+	gridLayout->addWidget(selectAllButton, 11, 1, 1, 1);
 
 	selectNoneButton = new QPushButton;
 	selectNoneButton->setAutoDefault(false);
 	connect(selectNoneButton, SIGNAL(clicked(bool)),
 			this, SLOT(selectNoneClickedSlot(bool)));
 	selectNoneButton->setText(tr("Deselect all tags"));
-	gridLayout->addWidget(selectNoneButton, 9, 2, 1, 1);
+	gridLayout->addWidget(selectNoneButton, 11, 2, 1, 1);
 
 	label = new QLabel(tr("Without these tags :"));
-	gridLayout->addWidget(label, 10, 0, 1, 4);
-	sa = new QScrollArea(this);
-	withoutTagsSelector = new TagWidget(dbname, sa);
-	sa->setWidget(withoutTagsSelector);
-	sa->setWidgetResizable(true);
-	gridLayout->addWidget(sa, 11, 0, 1, 4);
+	gridLayout->addWidget(label, 12, 0, 1, 4);
+	withoutTagsSelector = new TagWidget(dbname, withoutTagsSelector);
+	gridLayout->addWidget(withoutTagsSelector, 13, 0, 1, 4);
 
 	selectAll2Button = new QPushButton;
 	selectAll2Button->setAutoDefault(false);
 	connect(selectAll2Button, SIGNAL(clicked(bool)),
 			this, SLOT(selectAll2ClickedSlot(bool)));
 	selectAll2Button->setText(tr("Select all tags"));
-	gridLayout->addWidget(selectAll2Button, 12, 1, 1, 1);
+	gridLayout->addWidget(selectAll2Button, 14, 1, 1, 1);
 
 	selectNone2Button = new QPushButton;
 	selectNone2Button->setAutoDefault(false);
 	connect(selectNone2Button, SIGNAL(clicked(bool)),
 			this, SLOT(selectNone2ClickedSlot(bool)));
 	selectNone2Button->setText(tr("Deselect all tags"));
-	gridLayout->addWidget(selectNone2Button, 12, 2, 1, 1);
-
-	label = new QLabel(tr("Stock option :"));
-	gridLayout->addWidget(label, 13, 0, 1, 4);
-	stockOptions = new QButtonGroup();
-	stockOptAll = new QRadioButton;
-	stockOptAll->setText(tr("all bought items"));
-	stockOptions->addButton(stockOptAll);
-	gridLayout->addWidget(stockOptAll, 14, 1, 1, 2);
-	stockOptOnStock = new QRadioButton;
-	stockOptOnStock->setText(tr("items on stock"));
-	stockOptions->addButton(stockOptOnStock);
-	gridLayout->addWidget(stockOptOnStock, 15, 1, 1, 2);
-	stockOptUsedUp = new QRadioButton;
-	stockOptUsedUp->setText(tr("items used up"));
-	stockOptions->addButton(stockOptUsedUp);
-	gridLayout->addWidget(stockOptUsedUp, 16, 1, 1, 2);
+	gridLayout->addWidget(selectNone2Button, 14, 2, 1, 1);
 
 	okButton = new QPushButton;
 	okButton->setAutoDefault(false);
 	okButton->setDefault(true);
 	connect(okButton, SIGNAL(clicked(bool)), this, SLOT(okClickedSlot(bool)));
 	okButton->setText(tr("Ok"));
-	gridLayout->addWidget(okButton, 17, 3, 1, 1);
+	gridLayout->addWidget(okButton, 15, 3, 1, 1);
 
 	setLayout(gridLayout);
 

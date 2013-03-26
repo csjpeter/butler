@@ -1,14 +1,14 @@
 
 * {
 	background-color: black;
-	font-family: "Times";
+/*	font-family: "Times";*/
 	font-size: 12px;
 	font-style: normal;
 	font-weight: normal;
 	border-color: gray;
 /*	border-radius: 4px;*/
 	border-style: solid;
-	border-width: 0px;
+/*	border-width: 0px;*/
 	color: white;
 	gridline-color: black;
 }
@@ -16,29 +16,20 @@
 QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
 	border-width: 0px;
 }
-
-QScrollBar::handle {
-	background-color: gray;
-}
-
-QScrollBar:vertical {
-	width: 4px;
-}
-
-QScrollBar:horizontal {
-	height: 4px;
-}
-
-QLineEdit {
-	border-width: 1px;
-}
-
+QScrollBar::handle { background-color: gray; }
+QScrollBar:vertical { width: 4px; }
+QScrollBar:horizontal { height: 4px; }
 
 QPushButton {
 	flat="true";
-	font-size: 14px;
+	font-size: 16px;
 	font-style: normal;
 	font-weight: normal;
+}
+
+/*
+QLineEdit {
+	border-width: 1px;
 }
 
 QLabel {
@@ -49,4 +40,4 @@ QCheckBox {
 
 QRadioButton {
 }
-
+*/
