@@ -16,7 +16,7 @@ InfoView::InfoView(QWidget *parent) :
 	setWindowTitle(tr("About this software"));
 	setWindowModality(Qt::ApplicationModal);
 
-	QString license(ENDUSER_LICENSE);
+	QString license = QString::fromUtf8(ENDUSER_LICENSE);
 
 	QVBoxLayout * layout = new QVBoxLayout;
 

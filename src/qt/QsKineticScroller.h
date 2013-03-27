@@ -69,7 +69,7 @@ private slots:
 
 private:
 	QAbstractScrollArea* scrollArea;
-	int ignoredMouseMoves;
+	bool scrolled;
 	bool manualStop;
 
 	QPoint pressedScrollBarPosition;

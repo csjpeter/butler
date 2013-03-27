@@ -73,11 +73,6 @@ QLineEdit {
 	padding: 2px;
 }
 
-QPlainTextEdit {
-	border-width: 1px;
-	padding: 2px;
-}
-
 QTextEdit {
 	border-width: 1px;
 	padding: 2px;

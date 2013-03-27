@@ -75,12 +75,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
-	QHBoxLayout * hLayout = new QHBoxLayout;
-	hLayout->addStretch(0);
-	hLayout->addLayout(layout);
-	hLayout->addStretch(0);
-
-	setLayout(hLayout);
+	setLayout(layout);
 
 	/* restore last state */
 	loadState();

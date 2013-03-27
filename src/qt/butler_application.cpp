@@ -14,9 +14,9 @@
 Application::Application(int &argc, char *argv[]) :
 	QApplication(argc, argv)
 {
-	QCoreApplication::setOrganizationName(AUTHOR);
-	QCoreApplication::setOrganizationDomain("no.domain");
-	QCoreApplication::setApplicationName("ButlerQt");
+	QCoreApplication::setOrganizationName(ORGANIZATION);
+	QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN_NAME);
+	QCoreApplication::setApplicationName(PKGNAME);
 }
 
 Application::~Application()

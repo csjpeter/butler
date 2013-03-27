@@ -28,6 +28,8 @@
 // Copyright (C) 2013 Peter Csaszar
 // The license shall remain the original given by Razvan Petru.
 
+#include <math.h>
+
 #include <csjp_logger.h>
 
 #include <QApplication>
@@ -43,9 +45,7 @@
 
 // http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
 
-// A number of mouse moves are ignored after a press to differentiate
-// it from a press & drag. FIXME drag should be started with long tap
-static const int gMaxIgnoredMouseMoves = 2;
+static const int gThresholdScrollDistance = 20; /* Distance from presspos, threshold for scroll. */
 
 static const int gTimerInterval = 40; // milisec periodic time to check move speed && set scroll pos
 static const double gDecceleration = 0.05;
@@ -53,7 +53,7 @@ static const double gDecceleration = 0.05;
 QsKineticScroller::QsKineticScroller(QObject *parent) :
 	QObject(parent),
 	scrollArea(0),
-	ignoredMouseMoves(0),
+	scrolled(0),
 	manualStop(false)
 {
 	connect(&speedTimer, SIGNAL(timeout()), SLOT(onSpeedTimerElapsed()));
@@ -207,19 +207,19 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			pressedScrollBarPosition.setX(scrollArea->horizontalScrollBar()->value());
 			pressedScrollBarPosition.setY(scrollArea->verticalScrollBar()->value());
 			lastMousePos = pressedMousePosition = mouseEvent->globalPos();
-			ignoredMouseMoves = 0;
+			scrolled = 0;
 			speedTimer.start(gTimerInterval);
 			return true;
 		case QEvent::MouseMove:
 			if(!speedTimer.isActive())
 				return false; /* We have nothing to do with move without press. */
 
-			// A few move events are ignored as "click jitter", but after
-			// that we assume that the user is doing a click & drag
-			if(ignoredMouseMoves < gMaxIgnoredMouseMoves){
-				++ignoredMouseMoves;
+			if(sqrt(pow(pressedMousePosition.x() - mouseEvent->globalPos().x(), 2) +
+				pow(pressedMousePosition.y() - mouseEvent->globalPos().y(), 2)) <
+					gThresholdScrollDistance)
 				return true;
-			}
+
+			scrolled = true;
 
 			computedScrollBarPosition.setY(doScroll(
 					pressedMousePosition.y(),
@@ -248,7 +248,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 				return true;
 			}
 
-			if(gMaxIgnoredMouseMoves <= ignoredMouseMoves) /* There was scrolling */
+			if(scrolled)
 				return true;
 
 			if(manualStop)

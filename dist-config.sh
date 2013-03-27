@@ -92,6 +92,8 @@ function generate ()
 		-e "s|@DEVELOPMENT_START_YEAR@|${DEVELOPMENT_START_YEAR}|g" \
 		-e "s|@AUTHOR@|${AUTHOR}|g" \
 		-e "s|@EMAIL@|${EMAIL}|g" \
+		-e "s|@ORGANIZATION@|${ORGANIZATION}|g" \
+		-e "s|@ORGANIZATION_DOMAIN_NAME@|${ORGANIZATION_DOMAIN_NAME}|g" \
 		-e "s|@TARGET_DIST@|${TARGET_DIST}|g" \
 		-e "s|@HOST_DIST@|${HOST_DIST}|g" \
 		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \

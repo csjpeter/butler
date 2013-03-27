@@ -16,6 +16,8 @@ PRJDESCRIPTION=" Butler is a shopping list like basic home\
 
 DEVELOPMENT_START_YEAR=2009
 
-AUTHOR="Peter Csaszar"
+AUTHOR="Császár Péter"
 EMAIL=csjpeter@gmail.com
+ORGANIZATION="Peter Csaszar"
+ORGANIZATION_DOMAIN_NAME="csjpeter.dyndns.org"
 
