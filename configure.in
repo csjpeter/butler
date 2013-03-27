@@ -29,11 +29,11 @@ function generate ()
 		-e "s|@RANLIB@|${RANLIB}|g" \
 		-e "s|@OBJCOPY@|${OBJCOPY}|g" \
 		-e "s|@MOC@|${MOC}|g" \
-		-e "s|@DOCDIR@|${DOCDIR}|g" \
+		-e "s|@DOC_DIR@|${DOC_DIR}|g" \
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
-		-e "s|@APPSDIR@|${APPSDIR}|g" \
+		-e "s|@APPS_DIR@|${APPS_DIR}|g" \
 		-e "s|@ICONS_PREFIX@|${ICONS_PREFIX}|g" \
 		-e "s|@CSS_PREFIX@|${CSS_PREFIX}|g" \
                 -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}n\"|g" \
@@ -138,7 +138,7 @@ function process_args ()
 			        LIBEXEC_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
 			;;
 			(--appsdir)
-			        APPSDIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			        APPS_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
 			;;
 			# Some option we want to accept but do nothing for them
 			(--disable-maintainer-mode)
@@ -220,44 +220,39 @@ test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
 test "x${ICONS_PREFIX}" = "x" && { ICONS_PREFIX=${PREFIX} ; }
 test "x${CSS_PREFIX}" = "x" && { CSS_PREFIX=${PREFIX} ; }
 
-test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${TCROOT}${PREFIX}include ; }
-test "x${MAN_DIR}" = "x" && { MAN_DIR=${TCROOT}${PREFIX}share/man ; }
-test "x${INFO_DIR}" = "x" && { INFO_DIR=${TCROOT}${PREFIX}share/info ; }
-test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=${TCROOT}etc ; }
-test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=${TCROOT}var ; }
-test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${TCROOT}${PREFIX}lib ; }
-test "x${APPSDIR}" = "x" && { APPSDIR=${TCROOT}${PREFIX}share/applications ; }
+test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${PREFIX}include ; }
+test "x${MAN_DIR}" = "x" && { MAN_DIR=${PREFIX}share/man ; }
+test "x${INFO_DIR}" = "x" && { INFO_DIR=${PREFIX}share/info ; }
+test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=etc ; }
+test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=var ; }
+test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${PREFIX}lib ; }
+test "x${APPS_DIR}" = "x" && { APPS_DIR=${PREFIX}share/applications ; }
 
-DOCDIR=${TCROOT}${PREFIX}share/doc/${PKGNAME}
+DOC_DIR=${PREFIX}share/doc/${PKGNAME}
 
+echo "Configuring files..."
+for f in $(find . -name \*\.in); do
+	F=$(echo $f | sed 's|\.in$||g')
+	echo $F
+	generate $f $F || exit $?
+done
+echo "Configure done"
+exit 0
 
 function debian_packaging ()
 {
-	generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
-	generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
+	true
 }
 
 function windows_packaging ()
 {
-	generate nsis/${PKGNAME}.nsi.in nsis/${PKGNAME}.nsi || exit $?
-	generate nsis/license.txt.in nsis/license.txt || exit $?
 	unix2dos nsis/license.txt || exit $?
 }
 
 function android_packaging ()
 {
-	generate android/build-apk.sh.in android/build-apk.sh || exit $?
-	chmod u+x android/build-apk.sh || exit $?
+	true
 }
-
-
-generate Makefile.in Makefile || exit $?
-generate doxyfile.in doxyfile || exit $?
-generate config.h.in src/config.h || exit $?
-test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
-generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
-test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
-generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
 
 
 test "x${PACKAGING}" = "x" || {

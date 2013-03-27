@@ -269,8 +269,7 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ware.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/info.png \
 	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/application.css \
+	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico
 
 #
 # main rules
@@ -283,6 +282,9 @@ build: \
 	$(STATIC_LIBDATAMODEL) \
 	$(STATIC_LIBSQL) \
 	$(BUTLER_IMAGES) \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/application.css \
+	@TCROOT@@APPS_DIR@/@PKGNAME_BASE@.desktop \
+	@TCROOT@@MAN_DIR@/man1/@PKGNAME_BASE@.1 \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
 	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
 	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@-dbg@EXEC_POSTFIX@ \
@@ -324,11 +326,11 @@ check: $(TEST_BINARIES)
 		false ; \
 	}
 
-@DOCDIR@/html/index.html: $(HEADERS)
-	@test -d @DOCDIR@ || mkdir -p @DOCDIR@
+@TCROOT@@DOC_DIR@/html/index.html: $(HEADERS)
+	@test -d $(dir $@) || mkdir -p $(dir $@)
 	doxygen - < doxyfile
 
-doxygen: @DOCDIR@/html/index.html
+doxygen: @TCROOT@@DOC_DIR@/html/index.html
 
 debian: FORCE
 	debuild \
@@ -395,6 +397,16 @@ tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
 		$(STATIC_LIBDATAMODEL)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
+
+@TCROOT@@APPS_DIR@/@PKGNAME_BASE@.desktop: \
+		@PRJNAME@.desktop
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
+@TCROOT@@MAN_DIR@/man1/@PKGNAME_BASE@.1: \
+		@PRJNAME@.man
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
 
 @TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png: \
 		share/icons/butler.png
