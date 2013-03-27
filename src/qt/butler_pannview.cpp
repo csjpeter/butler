@@ -18,14 +18,12 @@ PannView::PannView(QWidget *parent) :
 
 PannView::~PannView()
 {
-	if(scrollArea)
-		scroll.disableKineticScrollFor(scrollArea);
 }
 
 void PannView::setLayout(QLayout * layout)
 {
 	if(scrollArea){
-		scroll.disableKineticScrollFor(scrollArea);
+		scroll.disableKineticScroll();
 		delete scrollArea;
 	}
 

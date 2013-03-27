@@ -13,6 +13,7 @@
 	gridline-color: black;
 	margin: 0px;
 	padding: 0px;
+	selection-background-color: #222288;
 }
 
 QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
@@ -92,6 +93,20 @@ QComboBox {
 	background-color: black;
 	border-color: #444444;
 	padding: 2px;
+}
+/*
+QComboBox QAbstractItemView::text {
+	padding-top: 1ex;
+	padding-bottom: 1ex;
+}
+*/
+QComboBox QAbstractItemView {
+	border-width: 1px;
+	show-decoration-selected: 1;
+}
+
+QComboBox::drop-down {
+	width: 24px;
 }
 
 QSpinBox {

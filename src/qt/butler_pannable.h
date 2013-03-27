@@ -18,14 +18,14 @@ class Pannable
 {
 public:
 	Pannable(Type * ptr = 0) : ptr(ptr), scroll(0) {}
-	~Pannable() { if(ptr) scroll.disableKineticScrollFor(ptr); }
+	~Pannable() { }
 
 	Type * operator->() const { return ptr; }
 	Type *& operator&() { return ptr; }
 	Pannable & operator=(Type * t)
 	{
 		if(ptr){
-			scroll.disableKineticScrollFor(ptr);
+			scroll.disableKineticScroll();
 			delete ptr; /* This already migth have been assigned to a parent. */
 		}
 		ptr = t;

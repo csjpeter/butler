@@ -18,6 +18,7 @@ class QComboBox;
 class QLabel;
 class QTableView;
 class QSqlTableModel;
+class QAbstractItemView;
 
 class NewItemView;
 class EditItemView;
@@ -58,6 +59,7 @@ private:
 	ShoppingModel & model;
 
 	QComboBox *shopBox;
+	Pannable<QAbstractItemView> shopListView;
 	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 

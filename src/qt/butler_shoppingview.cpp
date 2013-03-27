@@ -61,6 +61,8 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	shopBox = new QComboBox;
 	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
+	shopListView = shopBox->view();
+	shopListView.enablePanning();
 	shopLayout->addWidget(shopBox, 0, 1);
 
 	/* query result list */

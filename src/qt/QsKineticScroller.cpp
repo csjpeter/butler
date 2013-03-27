@@ -53,7 +53,8 @@ static const double gDecceleration = 0.05;
 QsKineticScroller::QsKineticScroller(QObject *parent) :
 	QObject(parent),
 	scrollArea(0),
-	ignoredMouseMoves(0)
+	ignoredMouseMoves(0),
+	manualStop(false)
 {
 	connect(&speedTimer, SIGNAL(timeout()), SLOT(onSpeedTimerElapsed()));
 	connect(&kineticTimer, SIGNAL(timeout()), SLOT(onKineticTimerElapsed()));
@@ -62,10 +63,10 @@ QsKineticScroller::QsKineticScroller(QObject *parent) :
 QsKineticScroller::~QsKineticScroller()
 {
 	if(scrollArea)
-		disableKineticScrollFor(scrollArea);
+		disableKineticScroll();
 }
 
-void QsKineticScroller::disableKineticScrollFor(QAbstractScrollArea* scrollArea)
+void QsKineticScroller::disableKineticScroll()
 {
 	ENSURE(scrollArea != 0, csjp::LogicError);
 
@@ -87,6 +88,7 @@ void QsKineticScroller::disableKineticScrollFor(QAbstractScrollArea* scrollArea)
 
 	scrollArea->viewport()->removeEventFilter(this);
 	scrollArea->removeEventFilter(this);
+	disconnect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
 	scrollArea = 0;
 }
 
@@ -95,8 +97,9 @@ void QsKineticScroller::enableKineticScrollFor(QAbstractScrollArea* newScrollAre
 	ENSURE(newScrollArea != 0, csjp::LogicError);
 
 	if(scrollArea)
-		disableKineticScrollFor(scrollArea);
+		disableKineticScroll();
 	scrollArea = newScrollArea;
+	connect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
 
 	scrollArea->installEventFilter(this);
 	scrollArea->viewport()->installEventFilter(this);
@@ -195,8 +198,10 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 		return false;
 
 	QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
+
 	switch(eventType){
 		case QEvent::MouseButtonPress:
+			manualStop = !speed.isNull();
 			speed.setX(0);
 			speed.setY(0);
 			pressedScrollBarPosition.setX(scrollArea->horizontalScrollBar()->value());
@@ -242,8 +247,11 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 				kineticTimer.start(gTimerInterval);
 				return true;
 			}
-			
+
 			if(gMaxIgnoredMouseMoves <= ignoredMouseMoves) /* There was scrolling */
+				return true;
+
+			if(manualStop)
 				return true;
 
 			// Looks like the user wanted a single click. Simulate the click,

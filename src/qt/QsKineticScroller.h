@@ -49,7 +49,8 @@ public:
 	QsKineticScroller(QObject* parent = 0);
 	~QsKineticScroller();
 
-	void disableKineticScrollFor(QAbstractScrollArea* scrollArea);
+public slots:
+	void disableKineticScroll();
 	void enableKineticScrollFor(QAbstractScrollArea* scrollArea);
 
 protected:
@@ -69,6 +70,7 @@ private slots:
 private:
 	QAbstractScrollArea* scrollArea;
 	int ignoredMouseMoves;
+	bool manualStop;
 
 	QPoint pressedScrollBarPosition;
 	QPoint pressedMousePosition;
