@@ -45,7 +45,7 @@
 
 // http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
 
-static const int gThresholdScrollDistance = 20; /* Distance from presspos, threshold for scroll. */
+static const int gThresholdScrollDistance = 15; /* Distance from presspos, threshold for scroll. */
 
 static const int gTimerInterval = 40; // milisec periodic time to check move speed && set scroll pos
 static const double gDecceleration = 0.05;

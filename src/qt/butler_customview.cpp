@@ -95,34 +95,37 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	statGrid->addWidget(label, 0, 0, 1, 1);
 	itemCountLabel = new QLabel;
 	statGrid->addWidget(itemCountLabel, 0, 1, 1, 1);
-	label = new QLabel(tr("Minimal unit price : "));
-	statGrid->addWidget(label, 0, 2, 1, 1);
-	minUnitPriceLabel = new QLabel;
-	statGrid->addWidget(minUnitPriceLabel, 0, 3, 1, 1);
-	label = new QLabel(tr("Maximal unit price : "));
-	statGrid->addWidget(label, 0, 4, 1, 1);
-	maxUnitPriceLabel = new QLabel;
-	statGrid->addWidget(maxUnitPriceLabel, 0, 5, 1, 1);
-
 
 	label = new QLabel(tr("Summary of queried quantites : "));
 	statGrid->addWidget(label, 1, 0, 1, 1);
 	itemSumQuantityLabel = new QLabel;
 	statGrid->addWidget(itemSumQuantityLabel, 1, 1, 1, 1);
+
 	label = new QLabel(tr("Summary of paid prices : "));
-	statGrid->addWidget(label, 1, 2, 1, 1);
+	statGrid->addWidget(label, 2, 0, 1, 1);
 	itemSumPriceLabel = new QLabel;
-	statGrid->addWidget(itemSumPriceLabel, 1, 3, 1, 1);
+	statGrid->addWidget(itemSumPriceLabel, 2, 1, 1, 1);
+
 	label = new QLabel(tr("Avergae unit price : "));
-	statGrid->addWidget(label, 1, 4, 1, 1);
+	statGrid->addWidget(label, 3, 0, 1, 1);
 	avgUnitPriceLabel = new QLabel;
-	statGrid->addWidget(avgUnitPriceLabel, 1, 5, 1, 1);
+	statGrid->addWidget(avgUnitPriceLabel, 3, 1, 1, 1);
+
+	label = new QLabel(tr("Minimal unit price : "));
+	statGrid->addWidget(label, 4, 0, 1, 1);
+	minUnitPriceLabel = new QLabel;
+	statGrid->addWidget(minUnitPriceLabel, 4, 1, 1, 1);
+
+	label = new QLabel(tr("Maximal unit price : "));
+	statGrid->addWidget(label, 5, 0, 1, 1);
+	maxUnitPriceLabel = new QLabel;
+	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->addLayout(cLayout);
-	layout->addLayout(statGrid);
 	layout->addWidget(&queryView);
+//	layout->addLayout(statGrid);
 
 	setLayout(layout);
 	queryView.enablePanning();
