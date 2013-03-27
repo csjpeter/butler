@@ -6,7 +6,6 @@ PKGNAME=@PKGNAME@
 ENDUSER_LICENSE="$(cat enduser-license | sed 's|$|\\\\n\\\\\\|g')"
 
 DEBUG=no
-PACKAGING=
 
 # param 1 : inflie
 # param 2 : outfile
@@ -145,9 +144,6 @@ function process_args ()
 			;;
 			(--disable-dependency-tracking)
 			;;
-			(--packaging)
-				PACKAGING=${VALUE}
-			;;
 			(*)
 				echo "Invalid argument ($1) found on command line."
 				exit 1
@@ -201,11 +197,7 @@ echo "${CONFIG}" | grep staticbuild > /dev/null && {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)" || exit $?
-	test "x${PACKAGING}" = "xandroid" && {
-		STATICS+="${STATICS} /${TCROOT}/lib/libcsjp0.1.a" || exit $?
-	} || {
-		LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)" || exit $?
-	}
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)" || exit $?
 }
 
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
@@ -235,26 +227,6 @@ for f in $(find . -name \*\.in); do
 	F=$(echo $f | sed 's|\.in$||g')
 	echo $F
 	generate $f $F || exit $?
+	! echo $F | grep "\.sh$" || { chmod u+x $F || exit $? ; }
 done
 echo "Configure done"
-exit 0
-
-function debian_packaging ()
-{
-	true
-}
-
-function windows_packaging ()
-{
-	unix2dos nsis/license.txt || exit $?
-}
-
-function android_packaging ()
-{
-	true
-}
-
-
-test "x${PACKAGING}" = "x" || {
-	${PACKAGING}_packaging || exit $?
-}

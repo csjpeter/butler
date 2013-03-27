@@ -38,3 +38,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe make $@ || exit $?
+
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe unix2dos nsis/license.txt || exit $?
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe makensis nsis/@PKGNAME@.nsi
+

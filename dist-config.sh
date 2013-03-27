@@ -63,7 +63,7 @@ while ! test "x$1" = "x"; do
 	shift
 done
 
-PRECONFIGURATION="--packaging=${PACKAGING} $*"
+PRECONFIGURATION=$*
 
 test "x${HOST_DIST}" = "x${TARGET_DIST}" && {
 	PKGNAME=${PKGNAME_BASE}
@@ -165,7 +165,7 @@ function android_packaging ()
 # project directory
 #
 
-test -d ${DIST_DIR} || { mkdir -p ${DIST_DIR} || exit $? ; }
+test -d ${DIST_DIR}/src || { mkdir -p ${DIST_DIR}/src || exit $? ; }
 
 cp -p config ${DIST_DIR}/config || exit $?
 generate configure.in ${DIST_DIR}/configure || exit $?
@@ -177,7 +177,7 @@ generate srclicense.in ${DIST_DIR}/source-license || exit $?
 generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
 generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
 generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
-generate config.h.in ${DIST_DIR}/config.h.in || exit $?
+generate src/config.h.in ${DIST_DIR}/src/config.h.in || exit $?
 generate binlicense.in ${DIST_DIR}/enduser-license || exit $?
 
 test -d ${DIST_DIR}/share/css || { mkdir -p ${DIST_DIR}/share/css || exit $? ; }

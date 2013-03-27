@@ -345,9 +345,6 @@ debian-nc: FORCE
 debian-src: FORCE
 	debuild --no-tgz-check -S
 
-nsis: build
-	makensis nsis/@PKGNAME@.nsi
-
 FORCE:
 
 #
