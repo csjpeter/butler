@@ -30,17 +30,6 @@
 
 #include <math.h>
 
-#include <csjp_logger.h>
-
-#include <QApplication>
-#include <QAbstractButton>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QComboBox>
-#include <QAbstractScrollArea>
-#include <QMouseEvent>
-#include <QEvent>
-
 #include "QsKineticScroller.h"
 
 // http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
@@ -68,7 +57,8 @@ QsKineticScroller::~QsKineticScroller()
 
 void QsKineticScroller::disableKineticScroll()
 {
-	ENSURE(scrollArea != 0, csjp::LogicError);
+	if(!scrollArea)
+		return;
 
 	QList<QAbstractButton*> buttons = scrollArea->findChildren<QAbstractButton*>();
 	Q_FOREACH(QAbstractButton *button, buttons)

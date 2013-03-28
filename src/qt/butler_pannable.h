@@ -6,11 +6,8 @@
 #ifndef BUTLER_PANNABLE_H
 #define BUTLER_PANNABLE_H
 
-#include <QWidget>
+#include <QtGui>
 #include <QsKineticScroller.h>
-
-/*forwards*/
-class QScrollArea;
 
 /** Note: this class is not owner of the received ptr, we just referencing it. */
 template <typename Type>

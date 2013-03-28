@@ -16,10 +16,10 @@ TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
 	gridLayout(0),
 	maxTagCheckboxWidth(50)
 {
-	prepareContent();
+	relayout();
 }
 
-void TagWidget::prepareContent()
+void TagWidget::relayout()
 {
 	/* Guessing practical number of columns. */
 	int columns = 1;
@@ -32,9 +32,8 @@ void TagWidget::prepareContent()
 		if(gridLayout->columnCount() == columns)
 			return; /* No sense to relayout. */
 		QLayoutItem * child;
-		while ((child = gridLayout->takeAt(0)) != 0) {
+		while((child = gridLayout->takeAt(0)) != 0) {
 //			child->widget()->deleteLater();
-			LOG("Parent: %p", child->widget()->parent());
 			delete child;
 		}
 		delete layout();
@@ -84,13 +83,13 @@ void TagWidget::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
 	if(event->size() != event->oldSize())
-		QTimer::singleShot(0, this, SLOT(prepareContent()));
+		QTimer::singleShot(0, this, SLOT(relayout()));
 }
 
 void TagWidget::setTags(const TagNameSet &tags)
 {
 	if(tagSet.size() != btnContainer.size())
-		prepareContent();
+		relayout();
 	
 	unsigned i, s = tagSet.size();
 	for(i = 0; i < s; i++){

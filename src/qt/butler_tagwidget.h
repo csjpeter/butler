@@ -6,18 +6,12 @@
 #ifndef BUTLER_TAGWIDGET_H
 #define BUTLER_TAGWIDGET_H
 
-#include <QWidget>
-#include <QCheckBox>
+#include <QtGui>
 
 #include <butler_tag_set.h>
-
 #include <csjp_sorter_reference_container.h>
 
 #include "butler_databases.h"
-
-class QGridLayout;
-
-class TagWidget;
 
 class TagWidget : public QWidget
 {
@@ -28,7 +22,7 @@ public:
 	TagWidget(const QString & dbname, QWidget * parent = 0);
 
 public slots:
-	void prepareContent();
+	void relayout();
 
 public:
 	void setTags(const TagNameSet &tags);

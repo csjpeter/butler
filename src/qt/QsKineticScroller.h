@@ -31,17 +31,10 @@
 #ifndef QSKINETICSCROLLER_H
 #define QSKINETICSCROLLER_H
 
-#include <QObject>
-#include <QPoint>
-#include <QTimer>
-#include <QVector2D>
-#include <QScrollBar>
+#include <QtGui>
 
-class QAbstractScrollArea;
-class QEvent;
+#include <csjp_logger.h>
 
-//! Vertical kinetic scroller implementation without overshoot and bouncing.
-//! A temporary solution to get kinetic-like scrolling on Symbian.
 class QsKineticScroller: public QObject
 {
 Q_OBJECT
