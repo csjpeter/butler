@@ -59,7 +59,6 @@ private:
 	QLineEdit *categoryEditor;
 	QComboBox *categoryBox;
 	QDoubleSpinBox *quantityEditor;
-	QLabel *unitLabel;
 	QTextEdit *commentEditor;
 
 	QPushButton *doneButton;

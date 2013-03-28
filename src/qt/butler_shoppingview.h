@@ -59,7 +59,7 @@ private:
 	ShoppingModel & model;
 
 	QComboBox *shopBox;
-	Pannable<QAbstractItemView> shopListView;
+	Pannable<QTableView> shopTableView;
 	Pannable<QTableView> queryView;
 	QSqlTableModel *queryTable;
 

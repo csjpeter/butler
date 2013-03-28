@@ -61,9 +61,8 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
-	gridLayout->addWidget(quantityEditor, 3, 1, 1, 1);
-	unitLabel = new QLabel;
-	gridLayout->addWidget(unitLabel, 3, 2, 1, 1);
+	quantityEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	gridLayout->addWidget(quantityEditor, 3, 1, 1, 2);
 
 	label = new QLabel(tr("Bought :"));
 	gridLayout->addWidget(label, 4, 0, 1, 1);
@@ -75,6 +74,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	unitPriceEditor = new QDoubleSpinBox;
 	unitPriceEditor->setRange(0, INT_MAX);
 	unitPriceEditor->setDecimals(2);
+	unitPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(unitPriceEditor, 5, 1, 1, 2);
 
 	label = new QLabel(tr("Gross price :"));
@@ -82,6 +82,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	grossPriceEditor = new QDoubleSpinBox;
 	grossPriceEditor->setRange(0, INT_MAX);
 	grossPriceEditor->setDecimals(2);
+	grossPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(grossPriceEditor, 6, 1, 1, 2);
 
 	label = new QLabel(tr("Purchase date :"));
@@ -295,7 +296,7 @@ void EditItemView::nameEditFinishedSlot()
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
-		unitLabel->setText("");
+		quantityEditor->setSuffix("");
 		return;
 	}
 
@@ -304,7 +305,7 @@ void EditItemView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
 	
-	unitLabel->setText(w.unit);
+	quantityEditor->setSuffix(w.unit);
 }
 
 void EditItemView::quantityValueChangedSlot(double q)

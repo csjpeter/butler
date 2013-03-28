@@ -35,15 +35,15 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
-	gridLayout->addWidget(quantityEditor, 3, 1, 1, 2);
-	unitLabel = new QLabel;
-	gridLayout->addWidget(unitLabel, 3, 3, 1, 1);
+	quantityEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	gridLayout->addWidget(quantityEditor, 3, 1, 1, 3);
 
 	label = new QLabel(tr("Unit price:"));
 	gridLayout->addWidget(label, 4, 0, 1, 1);
 	unitPriceEditor = new QDoubleSpinBox;
 	unitPriceEditor->setRange(0, INT_MAX);
 	unitPriceEditor->setDecimals(2);
+	unitPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(unitPriceEditor, 4, 1, 1, 3);
 
 	label = new QLabel(tr("Gross price:"));
@@ -51,6 +51,7 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	grossPriceEditor = new QDoubleSpinBox;
 	grossPriceEditor->setRange(0, INT_MAX);
 	grossPriceEditor->setDecimals(2);
+	grossPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(grossPriceEditor, 5, 1, 1, 3);
 
 	label = new QLabel(tr("Date of purchase:"));
@@ -151,10 +152,10 @@ void BuyItemView::mapToGui()
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(item.name);
 	if(i == -1) {
-		unitLabel->setText("");
+		quantityEditor->setSuffix("");
 	} else {
 		const Ware &w = wm.ware(i);
-		unitLabel->setText(w.unit);
+		quantityEditor->setSuffix(w.unit);
 	}
 }
 

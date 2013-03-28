@@ -9,6 +9,9 @@
 #include <butler_pannview.h>
 #include <QDataWidgetMapper>
 #include <QModelIndex>
+#include <QDoubleSpinBox>
+#include <QDateTimeEdit>
+#include <QLineEdit>
 
 #include <butler_item.h>
 
@@ -25,6 +28,32 @@ class QLabel;
 class QScrollArea;
 class QListView;
 class QComboBox;
+
+class MySpinBox : public QDoubleSpinBox
+{
+private:
+	Q_OBJECT
+public:
+	MySpinBox(QWidget * parent = 0) :
+		QDoubleSpinBox(parent)
+	{
+		QAbstractSpinBox::lineEdit()->setStyleSheet(
+				"QLineEdit { margin: 0px; padding: 0px; }");
+	}
+};
+
+class MyDateTimeEdit : public QDateTimeEdit
+{
+private:
+	Q_OBJECT
+public:
+	MyDateTimeEdit(QWidget * parent = 0) :
+		QDateTimeEdit(parent)
+	{
+		QAbstractSpinBox::lineEdit()->setStyleSheet(
+				"QLineEdit { margin: 0px; padding: 0px; }");
+	}
+};
 
 class AccountingView : public PannView
 {
@@ -62,7 +91,6 @@ private:
 	QLineEdit *categoryEditor;
 	QComboBox *categoryBox;
 	QDoubleSpinBox *quantityEditor;
-	QLabel *unitLabel;
 	QTextEdit *commentEditor;
 
 	QCheckBox *boughtCheck;

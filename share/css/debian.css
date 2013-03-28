@@ -14,6 +14,7 @@
 	padding: 0px;
 	selection-color: #cccccc;
 	selection-background-color: #222288;
+	alternate-background-color: #111111;
 	gridline-color: transparent;
 }
 
@@ -42,21 +43,21 @@ QScrollBar:horizontal { height: 4px; min-width: 20px; }
 
 /* Some common interactive rule */
 
-QPushButton:hover, QLineEdit:hover, QCheckBox:hover, QRadioButton:hover, QComboBox:hover, QDateTimeEdit:hover, QTextEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover QDoubleSpinBox::down-button:hover, QSpinBox::down-button:hover, QDoubleSpinBox::up-button:hover, QSpinBox::up-button:hover {
+QPushButton:hover, QLineEdit:hover, QCheckBox:hover, QRadioButton:hover, QComboBox:hover, QDateTimeEdit:hover, QTextEdit:hover, QAbstractSpinBox:hover {
 	border: 1px solid #3333bb;
 }
 
-QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QTextEdit, QSpinBox, QDoubleSpinBox {
-	padding: 2px;
+QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
+	padding: 5px;
 }
 
-QPushButton, QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QDoubleSpinBox::down-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QSpinBox::up-button {
+QPushButton, QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
 	border-width: 1px;
 	border-radius: 2px;
 }
 
-QPushButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QSpinBox:disabled, QDoubleSpinBox:disabled {
-	color: #222222;
+QPushButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QAbstractSpinBox:disabled {
+	color: #444444;
 	border-color: #222222;
 }
 
@@ -88,6 +89,34 @@ QMessageBox {
 	icon-size: 64px;
 }
 
+/* QSpinBox and QDoubleSpinBox */
+
+QAbstractSpinBox QAbstractSpinBox:no-frame {
+	padding: 0px;
+	margin: 0px;
+}
+
+/* QTableView and QHeaderView */
+
+QTableView {
+	border-width: 1px;
+	alternate-background-color: #111111;
+	color: #cccccc;
+}
+
+QTableView QHeaderView::section {
+	border-width: 0px;
+	border-color: #222222;
+	border-right-width: 1px;
+	border-right-style: dotted;
+	border-left-width: 1px;
+	border-left-style: dotted;
+	background-color: #666666;
+	color: #dddddd;
+}
+
+/* QCheckBox and QRadioButton */
+
 QCheckBox::indicator, QCheckBox::indicator{
 	height: 20px;
 	width: 20px;
@@ -110,15 +139,23 @@ QRadioButton::indicator:unchecked, QRadioButton::indicator:checked {
 	border-radius: 10px;
 }
 
-/* QSpinBox */
+/* QDateTimeEdit */
 
-QDoubleSpinBox::down-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QSpinBox::up-button {
-	width: 20px;
-	height: 20px;
+QDateTimeEdit * {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
 }
 
-QDoubleSpinBox::up-button, QSpinBox::up-button { right: 20px; top: 0px; }
-QDoubleSpinBox::down-button, QSpinBox::down-button { right: 0px; top: 0px; }
+QDateTimeEdit *:hover {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
 
 /* QComboBox */
 
@@ -153,10 +190,8 @@ MainView QPushButton {
 	font-style: normal;
 	font-weight: normal;
 	border-radius: 0px;
-	border-top-width: 0px;
+	border-width: 0px;
 	border-bottom-width: 1px;
-	border-left-width: 0px;
-	border-right-width: 0px;
 	text-align: left;
 	padding: 12px;
 	padding-right: 2em;
@@ -166,4 +201,7 @@ MainView QPushButton {
 
 MainView QPushButton:hover {
 	background-color: #222288;
+	border-width: 0px;
+	border-bottom-width: 1px;
+	border-color: #444444;
 }

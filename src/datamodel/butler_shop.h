@@ -38,10 +38,10 @@ public:
 	
 	enum Fields {
 		Name = 0,
-		StoreName,
 		City,
 		Address,
 		Company,
+		StoreName,
 		NumOfFields
 	};
 

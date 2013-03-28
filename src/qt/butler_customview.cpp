@@ -66,7 +66,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	/* query result list */
 	queryView = new QTableView;
 	queryView->setModel(&model);
-//	queryView->verticalHeader()->hide();
+	queryView->verticalHeader()->hide();
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
 	queryView->horizontalHeader()->setMovable(true);
 	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);

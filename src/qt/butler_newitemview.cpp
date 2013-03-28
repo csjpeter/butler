@@ -49,9 +49,8 @@ NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
-	gridLayout->addWidget(quantityEditor, 3, 1, 1, 2);
-	unitLabel = new QLabel;
-	gridLayout->addWidget(unitLabel, 3, 3, 1, 1);
+	quantityEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	gridLayout->addWidget(quantityEditor, 3, 1, 1, 3);
 
 	/* comments */
 	label = new QLabel(tr("Comments:"));
@@ -158,7 +157,7 @@ void NewItemView::nameEditFinishedSlot()
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
-		unitLabel->setText("");
+		quantityEditor->setSuffix("");
 		return;
 	}
 
@@ -167,7 +166,7 @@ void NewItemView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
 	
-	unitLabel->setText(w.unit);
+	quantityEditor->setSuffix(w.unit);
 }
 
 void NewItemView::nameCurrentIndexChangedSlot(int index)

@@ -58,12 +58,23 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	QLabel *label = new QLabel(tr("Shop (place of buy):"));
 	shopLayout->addWidget(label, 0, 0);
 
+	shopTableView = new QTableView;
 	shopBox = new QComboBox;
 	shopBox->setModel(&shopsModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
-	shopListView = shopBox->view();
-	shopListView.enablePanning();
+	shopBox->setView(&shopTableView);
 	shopLayout->addWidget(shopBox, 0, 1);
+/*	shopTableView->hideColumn(Shop::StoreName);
+	shopTableView->hideColumn(Shop::City);
+	shopTableView->hideColumn(Shop::Address);
+	shopTableView->hideColumn(Shop::Company);*/
+	shopTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+	shopTableView->verticalHeader()->hide();
+	shopTableView->setAlternatingRowColors(true);
+	shopTableView->setAutoScroll(false);
+	shopTableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+	shopTableView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+	shopTableView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
 	/* query result list */
 	queryView = new QTableView;
@@ -102,6 +113,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 
 	setLayout(layout);
 	queryView.enablePanning();
+	shopTableView.enablePanning();
 
 	/* restore last state */
 	loadState();

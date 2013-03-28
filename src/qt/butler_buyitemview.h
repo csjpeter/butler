@@ -67,7 +67,6 @@ private:
 
 	QLabel *nameLabel;
 	QDoubleSpinBox *quantityEditor;
-	QLabel *unitLabel;
 	QDoubleSpinBox *unitPriceEditor;
 	QDoubleSpinBox *grossPriceEditor;
 	QDateTimeEdit *purchaseDateTime;

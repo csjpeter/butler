@@ -36,7 +36,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	label = new QLabel(tr("Purchase date :"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
-	purchaseDateTime = new QDateTimeEdit;
+	purchaseDateTime = new MyDateTimeEdit;
 	purchaseDateTime->setCalendarPopup(true);
 	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 1, 1, 1, 2);
@@ -69,22 +69,26 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	quantityEditor = new QDoubleSpinBox;
 	quantityEditor->setRange(0, INT_MAX);
 	quantityEditor->setDecimals(3);
-	gridLayout->addWidget(quantityEditor, 5, 1, 1, 1);
-	unitLabel = new QLabel;
-	gridLayout->addWidget(unitLabel, 5, 2, 1, 1);
+	quantityEditor->setFrame(false);
+	quantityEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	gridLayout->addWidget(quantityEditor, 5, 1, 1, 2);
 
 	label = new QLabel(tr("Unit price :"));
 	gridLayout->addWidget(label, 6, 0, 1, 1);
 	unitPriceEditor = new QDoubleSpinBox;
 	unitPriceEditor->setRange(0, INT_MAX);
 	unitPriceEditor->setDecimals(2);
+	unitPriceEditor->setFrame(false);
+	unitPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(unitPriceEditor, 6, 1, 1, 2);
 
 	label = new QLabel(tr("Gross price :"));
 	gridLayout->addWidget(label, 7, 0, 1, 1);
-	grossPriceEditor = new QDoubleSpinBox;
+	grossPriceEditor = new MySpinBox;
 	grossPriceEditor->setRange(0, INT_MAX);
 	grossPriceEditor->setDecimals(2);
+	grossPriceEditor->setFrame(false);
+	grossPriceEditor->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	gridLayout->addWidget(grossPriceEditor, 7, 1, 1, 2);
 
 	label = new QLabel(tr("On stock :"));
@@ -97,7 +101,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	label = new QLabel(tr("Upload date :"));
 	gridLayout->addWidget(label, 10, 0, 1, 1);
-	uploadDateTime = new QDateTimeEdit;
+	uploadDateTime = new MyDateTimeEdit;
 	uploadDateTime->setEnabled(false);
 	uploadDateTime->setCalendarPopup(true);
 	uploadDateTime->setDisplayFormat(Config::dateTimeFormat());
@@ -138,6 +142,11 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	/* restore last state */
 	loadState();
+
+	quantityEditor->dumpObjectInfo();
+	quantityEditor->dumpObjectTree();
+	purchaseDateTime->dumpObjectInfo();
+	purchaseDateTime->dumpObjectTree();
 }
 
 void AccountingView::showEvent(QShowEvent *event)
@@ -256,7 +265,7 @@ void AccountingView::nameEditFinishedSlot()
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
-		unitLabel->setText("");
+		quantityEditor->setSuffix("");
 		return;
 	}
 
@@ -265,7 +274,7 @@ void AccountingView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
 
-	unitLabel->setText(w.unit);
+	quantityEditor->setSuffix(w.unit);
 }
 
 void AccountingView::quantityValueChangedSlot(double q)
