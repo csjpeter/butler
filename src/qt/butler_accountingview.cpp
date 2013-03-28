@@ -142,11 +142,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	/* restore last state */
 	loadState();
-
-	quantityEditor->dumpObjectInfo();
-	quantityEditor->dumpObjectTree();
-	purchaseDateTime->dumpObjectInfo();
-	purchaseDateTime->dumpObjectTree();
 }
 
 void AccountingView::showEvent(QShowEvent *event)
