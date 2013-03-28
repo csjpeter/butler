@@ -75,6 +75,7 @@ public:
 			int row, int count, const QModelIndex &parent=QModelIndex());
 	virtual bool insertRows(
 			int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
 	int index(const QString &name) const

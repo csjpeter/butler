@@ -20,17 +20,44 @@
 	QVBoxLayout * portrait() \
 	{ \
 		QVBoxLayout * layout = new QVBoxLayout; \
-		layout->addWidget(&label); \
+		layout->addWidget(&label, 0, Qt::AlignBottom); \
 		layout->addWidget(this); \
 		return layout; \
 	} \
 	QHBoxLayout * landscape() \
 	{ \
 		QHBoxLayout * layout = new QHBoxLayout; \
-		layout->addWidget(&label); \
+		layout->addWidget(&label, 0, Qt::AlignTop); \
 		layout->addWidget(this); \
 		return layout; \
 	}
+
+class TableView : public QTableView
+{
+private:
+	Q_OBJECT
+public:
+	TableView(QWidget * parent = 0) :
+		QTableView(parent)
+	{
+		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+		setAlternatingRowColors(true);
+		setAutoScroll(false);
+		setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+		setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+		setSelectionBehavior(QAbstractItemView::SelectRows);
+		setSelectionMode(QAbstractItemView::SingleSelection);
+		verticalHeader()->hide();
+		//horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+		horizontalHeader()->setMovable(true);
+		horizontalHeader()->setSortIndicatorShown(true);
+		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	}
+
+	void enableKineticScroll() { scroll.enableKineticScrollFor(this); }
+
+	QsKineticScroller scroll;
+};
 
 class QuantityEditor : public QDoubleSpinBox
 {
@@ -113,15 +140,24 @@ public:
 		setModel(&waresModel(dbname));
 		setModelColumn(WaresModel::Name);
 		completer()->setCompletionMode(QCompleter::PopupCompletion);
+		completer()->setPopup(&completerTableView);
+		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		setView(&tableView);
 	}
 
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
+	void enableKineticScroll() {
+		tableView.enableKineticScroll();
+		completerTableView.enableKineticScroll();
+	}
 
 	EDITOR_LAYOUTS
 
 	QLineEdit lineEdit;
 	QLabel label;
+	TableView tableView;
+	TableView completerTableView;
 };
 
 class CategoryEditor : public QComboBox
@@ -136,6 +172,8 @@ public:
 		setEditable(true);
 		setLineEdit(&lineEdit);
 		completer()->setCompletionMode(QCompleter::PopupCompletion);
+		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		setView(&tableView);
 	}
 
 	QString text() const { return lineEdit.text(); }
@@ -145,6 +183,7 @@ public:
 
 	QLineEdit lineEdit;
 	QLabel label;
+	TableView tableView;
 };
 
 class ShopSelector : public QComboBox
@@ -158,11 +197,13 @@ public:
 	{
 		setModel(&shopsModel(dbname));
 		setModelColumn(Shop::Name);
+		setView(&tableView);
 	}
 
 	EDITOR_LAYOUTS
 
 	QLabel label;
+	TableView tableView;
 };
 
 class DateTimeEditor : public QDateTimeEdit

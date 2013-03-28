@@ -27,7 +27,7 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
-	void relayout();
+	virtual void relayout();
 
 private slots:
 	void saveSlot();
@@ -41,6 +41,7 @@ private:
 	ItemsModel & model;
 	Item item;
 
+	QPushButton saveButton;
 	ShopSelector shopSelector;
 	PurchaseDateTimeEditor purchaseDateTime;
 	WareEditor wareEditor;
@@ -51,8 +52,8 @@ private:
 	QCheckBox onStockCheck;
 	UploadDateTimeEditor uploadDateTime;
 	QCheckBox boughtCheck;
-	QPushButton saveButton;
 	CommentEditor commentEditor;
+	QPushButton saveBottomButton;
 };
 
 #endif

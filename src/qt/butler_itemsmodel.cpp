@@ -279,6 +279,11 @@ bool ItemsModel::insertRows(
 	return true;
 }
 
+void ItemsModel::sort(int column, Qt::SortOrder order)
+{
+	sort(column, order == Qt::AscendingOrder);
+}
+
 int ItemsModel::index(const QDateTime &uploaded) const
 {
 	if(items.has(uploaded))

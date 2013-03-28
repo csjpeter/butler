@@ -196,6 +196,11 @@ bool ShopsModel::insertRows(
 	return true;
 }
 
+void ShopsModel::sort(int column, Qt::SortOrder order)
+{
+	sort(column, order == Qt::AscendingOrder);
+}
+
 int ShopsModel::index(const QString &name) const
 {
 	if(shops.has(name))

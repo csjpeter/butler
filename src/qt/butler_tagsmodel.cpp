@@ -165,6 +165,11 @@ bool TagsModel::insertRows(
 	return true;
 }
 
+void TagsModel::sort(int column, Qt::SortOrder order)
+{
+	sort(column, order == Qt::AscendingOrder);
+}
+
 int TagsModel::index(const QString &name) const
 {
 	if(tags.has(name))

@@ -18,11 +18,12 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	PannView(parent),
 	dbname(dbname),
 	model(model),
+	saveButton(tr("Save")),
 	shopSelector(dbname),
 	wareEditor(dbname),
 	onStockCheck(tr("On stock:")),
 	boughtCheck(tr("Bought:")),
-	saveButton(tr("Save"))
+	saveBottomButton(tr("Save"))
 {
 	setWindowModality(Qt::ApplicationModal);
 	setWindowTitle(tr("Add already bought new item"));
@@ -32,6 +33,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	relayout();
 
 	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&saveBottomButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
 	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));
@@ -51,6 +53,7 @@ void AccountingView::relayout()
 	QVBoxLayout * layout = new QVBoxLayout;
 
 	if(orientation == ScreenOrientation::Portrait) {
+		layout->addWidget(&saveButton);
 		layout->addLayout(shopSelector.landscape());
 		layout->addLayout(purchaseDateTime.landscape());
 		layout->addLayout(wareEditor.landscape());
@@ -61,10 +64,11 @@ void AccountingView::relayout()
 		layout->addWidget(&onStockCheck);
 		layout->addLayout(uploadDateTime.landscape());
 		layout->addWidget(&boughtCheck);
-		layout->addWidget(&saveButton);
 		layout->addLayout(commentEditor.landscape());
+		layout->addWidget(&saveBottomButton);
 		orientation = ScreenOrientation::Landscape;
 	} else {
+		layout->addWidget(&saveButton);
 		layout->addLayout(shopSelector.portrait());
 		layout->addLayout(purchaseDateTime.portrait());
 		layout->addLayout(wareEditor.portrait());
@@ -75,12 +79,15 @@ void AccountingView::relayout()
 		layout->addWidget(&onStockCheck);
 		layout->addLayout(uploadDateTime.portrait());
 		layout->addWidget(&boughtCheck);
-		layout->addWidget(&saveButton);
 		layout->addLayout(commentEditor.portrait());
+		layout->addWidget(&saveBottomButton);
 		orientation = ScreenOrientation::Portrait;
 	}
 
 	setLayout(layout);
+	shopSelector.tableView.enableKineticScroll();
+	wareEditor.enableKineticScroll();
+	categoryEditor.tableView.enableKineticScroll();
 }
 
 void AccountingView::showEvent(QShowEvent *event)
@@ -208,7 +215,7 @@ void AccountingView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryEditor.addItems(cats.split(", ", QString::SkipEmptyParts));
 
-	quantityEditor.setSuffix(w.unit);
+	quantityEditor.setSuffix(" " + w.unit);
 }
 
 void AccountingView::quantityValueChangedSlot(double q)

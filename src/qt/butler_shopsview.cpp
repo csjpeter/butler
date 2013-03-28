@@ -45,12 +45,9 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 	queryView->horizontalHeader()->setMovable(true);
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
 	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView->horizontalHeader()->setResizeMode(
-			Shop::Name, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Shop::City, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Shop::Company, QHeaderView::Stretch);
+	queryView->horizontalHeader()->setResizeMode(Shop::Name, QHeaderView::ResizeToContents);
+	queryView->horizontalHeader()->setResizeMode(Shop::City, QHeaderView::ResizeToContents);
+	queryView->horizontalHeader()->setResizeMode(Shop::Company, QHeaderView::Stretch);
 	queryView->hideColumn(Shop::StoreName);
 	queryView->hideColumn(Shop::Address);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);

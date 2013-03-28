@@ -180,6 +180,11 @@ bool QueriesModel::insertRows(
 	return true;
 }
 
+void QueriesModel::sort(int column, Qt::SortOrder order)
+{
+	sort(column, order == Qt::AscendingOrder);
+}
+
 int QueriesModel::index(const QString &name) const
 {
 	if(queries.has(name))
