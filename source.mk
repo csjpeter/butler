@@ -99,8 +99,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
 	$(DIST_DIR)/src/qt/butler_shopsmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_shopsview.cpp \
-	$(DIST_DIR)/src/qt/butler_stockmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_stockview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagfilterview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
@@ -131,8 +129,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_shoppingview.h \
 	$(DIST_DIR)/src/qt/butler_shopsmodel.h \
 	$(DIST_DIR)/src/qt/butler_shopsview.h \
-	$(DIST_DIR)/src/qt/butler_stockmodel.h \
-	$(DIST_DIR)/src/qt/butler_stockview.h \
 	$(DIST_DIR)/src/qt/butler_tagfilterview.h \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
 	$(DIST_DIR)/src/qt/butler_tagsview.h \

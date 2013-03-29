@@ -33,11 +33,11 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	dbname(dbname),
 	model(customModel(dbname)),
 	selfDestruct(selfDestruct),
-	addButton(tr("Add new item")),
-	editButton(tr("Edit item")),
-	delButton(tr("Delete item")),
-	dropButton(tr("Drop from stock")),
-	filterButton(tr("Query settings")),
+	addButton(tr("Add new item"), QIcon(Path::icon("add.png"))),
+	editButton(tr("Edit item"), QIcon(Path::icon("edit.png"))),
+	delButton(tr("Delete item"), QIcon(Path::icon("delete.png"))),
+	dropButton(tr("Drop from stock"), QIcon(Path::icon("trash.png"))),
+	filterButton(tr("Query settings"), QIcon(Path::icon("query.png"))),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -119,10 +119,11 @@ void CustomView::relayout()
 		toolLayout->addWidget(filterButton.portrait());
 		orientation = ScreenOrientation::Portrait;
 	}
-/*
+
 	toolLayout->addStretch();
-	toolLayout->addWidget(&doneButton);
-*/
+//	toolLayout->addWidget(&doneButton);
+
+	layout->addLayout(toolLayout);
 	layout->addWidget(&tableView);
 
 	setLayout(layout);

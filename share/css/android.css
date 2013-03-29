@@ -87,6 +87,11 @@ QPushButton {
 	icon-size: 24px;
 }
 
+QToolButton {
+	icon-size: 32px;
+	font-size: 10px;
+}
+
 QMessageBox {
 	dialogbuttonbox-buttons-have-icons: true;
 	icon-size: 64px;

@@ -50,11 +50,11 @@ private:
 	csjp::Object<CustomModel> model;
 	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
-	AddToolButton addButton;
-	EditToolButton editButton;
-	DelToolButton delButton;
-	DropToolButton dropButton;
-	FilterToolButton filterButton;
+	ToolButton addButton;
+	ToolButton editButton;
+	ToolButton delButton;
+	ToolButton dropButton;
+	ToolButton filterButton;
 
 	TableView tableView;
 

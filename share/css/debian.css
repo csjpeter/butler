@@ -8,3 +8,9 @@ MainView QPushButton {
 	padding-left: 1em;
 	icon-size: 32px;
 }
+
+QToolButton {
+	icon-size: 32px;
+	font-size: 8pt;
+}
+

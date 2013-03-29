@@ -372,47 +372,26 @@ class ToolButton : public QToolButton
 private:
 	Q_OBJECT
 public:
-	ToolButton(QWidget * parent = 0) :
+	ToolButton(const QString & text, const QIcon & icon, QWidget * parent = 0) :
 		QToolButton(parent)
 	{
+		setText(text);
+		setIcon(icon);
 	}
 
 	ToolButton * portrait()
 	{
-//		setToolButtonStyle(Qt::ToolButtonIconOnly);
-		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+		setToolButtonStyle(Qt::ToolButtonIconOnly);
+		//setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 		return this;
 	}
 
 	ToolButton * landscape()
 	{
-		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		//setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 		return this;
 	}
 };
-
-#define TOOL_BUTTON(class_name, image_name) \
-	class class_name : public ToolButton \
-	{ \
-	private: \
-		Q_OBJECT \
-	public: \
-		class_name(const QString & text, QWidget * parent = 0) : \
-			ToolButton(parent) \
-		{ \
-			setText(text); \
-			setIcon(QIcon(Path::icon(image_name))); \
-		} \
-		virtual ~class_name() {} \
-	}
-
-TOOL_BUTTON(AddToolButton, "add.png");
-TOOL_BUTTON(EditToolButton, "edit.png");
-TOOL_BUTTON(DelToolButton, "delete.png");
-TOOL_BUTTON(DropToolButton, "trash.png");
-TOOL_BUTTON(FilterToolButton, "filter.png");
-//TOOL_BUTTON(WareEditToolButton, "ware.png");
-TOOL_BUTTON(BuyToolButton, "buy.png");
-TOOL_BUTTON(TagToolButton, "tag.png");
 
 #endif
