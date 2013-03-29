@@ -30,6 +30,7 @@
 		QHBoxLayout * layout = new QHBoxLayout; \
 		layout->addWidget(&label, 0, Qt::AlignTop); \
 		layout->addWidget(this); \
+		layout->setStretch(1, 1); \
 		return layout; \
 	}
 
@@ -72,7 +73,6 @@ public:
 	{
 		QAbstractSpinBox::lineEdit()->setStyleSheet(
 				"QLineEdit { margin: 0px; padding: 0px; }");
-		setFrame(false);
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
 		setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred));
 	}
@@ -146,6 +146,8 @@ public:
 		setView(&tableView);
 		//setSizeAdjustPolicy(QComboBox::AdjustToContents);
 		setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+		if(lineEdit())
+			lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 	}
 
 	virtual void resizeEvent(QResizeEvent * event)

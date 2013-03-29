@@ -4,7 +4,8 @@
 /*	font-family: "Times";*/
 /*	border-radius: 4px;*/
 	background-color: black;
-	font-size: 12px;
+/*	font-size: 11pt;*/
+	font-size: 13px;
 	font-style: normal;
 	font-weight: normal;
 	border-color: #444444;
@@ -14,7 +15,7 @@
 	padding: 0px;
 	selection-color: #cccccc;
 	selection-background-color: #222288;
-	alternate-background-color: #111111;
+	alternate-background-color: #181818;
 	gridline-color: transparent;
 }
 
@@ -25,7 +26,6 @@
 	background-color: #111133;
 }
 
-/* QListView * { font-size: 20px; }
 /* disables selection-color and selection-background-color */
 /*QAbstractItemView::item {
 	border-width: 1px;
@@ -49,7 +49,8 @@ QPushButton:hover, QLineEdit:hover, QCheckBox:hover, QRadioButton:hover, QComboB
 
 QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
 	padding: 5px;
-	font-size: 14px;
+/*	font-size: 12pt;*/
+	font-size: 15px;
 }
 
 QPushButton, QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
@@ -70,6 +71,8 @@ QComboBox::drop-down, QDateTimeEdit::drop-down {
 
 QLabel {
 	color: #888888;
+/*	font-size: 10pt;*/
+	font-size: 13px;
 }
 
 QPushButton:pressed {
@@ -109,7 +112,6 @@ QAbstractSpinBox QAbstractSpinBox:no-frame {
 
 QTableView {
 	border-width: 1px;
-	alternate-background-color: #111111;
 	color: #cccccc;
 }
 
@@ -168,6 +170,12 @@ QDateTimeEdit *:hover {
 
 /* QComboBox */
 
+QComboBox QLabel {
+	border-width: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
 QComboBox QLineEdit {
 	border-width: 0px;
 }
@@ -181,6 +189,7 @@ QComboBox QLineEdit:hover {
 QCalendarWidget * {
 	border-radius: 4px;
 	border-width: 1px;
+/*	font-size: 12pt;*/
 	font-size: 16px;
 	icon-size: 24;
 }
@@ -195,6 +204,7 @@ QCalendarWidget QAbstractButton {
 /* MainView specials */
 
 MainView QPushButton {
+/*	font-size: 12pt;*/
 	font-size: 16px;
 	font-style: normal;
 	font-weight: normal;
