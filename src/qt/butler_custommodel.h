@@ -32,6 +32,9 @@ public:
 	virtual void update(int row, Item &modified);
 	virtual bool queryFilter(const Item &modified);
 
+	void addShoppingItem(int row);
+	void drop(int row);
+
 public:
 	QuerySet queries;
 	Query opts;

@@ -6,18 +6,7 @@
 #ifndef BUTLER_CUSTOMVIEW_H
 #define BUTLER_CUSTOMVIEW_H
 
-#include <butler_pannview.h>
-#include <butler_pannable.h>
-
-#include <butler_query.h>
-
-#include "butler_custommodel.h"
-#include "butler_queriesmodel.h"
-
-/*forwards*/
-class QLabel;
-class QTableView;
-class QSqlTableModel;
+#include <butler_widgets.h>
 
 class AccountingView;
 class EditItemView;
@@ -39,6 +28,8 @@ private:
 
 	void loadState();
 	void saveState();
+
+	virtual void relayout();
 	
 	void updateStatistics();
 
@@ -52,13 +43,20 @@ private slots:
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void editWare();
 	void finishedEditWare(int);
+	void dropItem();
 
 private:
 	const QString & dbname;
 	csjp::Object<CustomModel> model;
 	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
-	Pannable<QTableView> queryView;
+	AddToolButton addButton;
+	EditToolButton editButton;
+	DelToolButton delButton;
+	DropToolButton dropButton;
+	FilterToolButton filterButton;
+
+	TableView tableView;
 
 	QLabel *itemCountLabel;
 	QLabel *itemSumQuantityLabel;

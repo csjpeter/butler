@@ -33,6 +33,11 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	dbname(dbname),
 	model(customModel(dbname)),
 	selfDestruct(selfDestruct),
+	addButton(tr("Add new item")),
+	editButton(tr("Edit item")),
+	delButton(tr("Delete item")),
+	dropButton(tr("Drop from stock")),
+	filterButton(tr("Query settings")),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -40,52 +45,14 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 {
 	setWindowTitle(tr("User query result"));
 
-	QHBoxLayout * cLayout = new QHBoxLayout;
-	QPushButton * button;
-	
-	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&Accounting"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openAccountingView()));
-	cLayout->addWidget(button);
+	tableView.setModel(&model);
 
-	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	connect(button, SIGNAL(clicked()), this, SLOT(editItem()));
-	cLayout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	connect(button, SIGNAL(clicked()), this, SLOT(delItem()));
-	cLayout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("query.png")), tr("&Filter"));
-	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
-	cLayout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("Edit"));
-	connect(button, SIGNAL(clicked()), this, SLOT(editWare()));
-	cLayout->addWidget(button);
-
-	/* query result list */
-	queryView = new QTableView;
-	queryView->setModel(&model);
-	queryView->verticalHeader()->hide();
-	queryView->horizontalHeader()->setSortIndicatorShown(true);
-	queryView->horizontalHeader()->setMovable(true);
-	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView->horizontalHeader()->setResizeMode(
-			Item::Uploaded, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Item::Purchased, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Item::OnStock, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Item::Comment, QHeaderView::Stretch);
-	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	connect(queryView->horizontalHeader(),
-			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder))
-			);
-	
-	queryView->hideColumn(Item::Bought);
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
+	connect(&dropButton, SIGNAL(clicked()), this, SLOT(dropItem()));
+	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
+//	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
 	/* statistics in grid layout */
 	QGridLayout *statGrid = new QGridLayout;
@@ -121,14 +88,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	maxUnitPriceLabel = new QLabel;
 	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
 
-	/* making the window layouting */
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->addLayout(cLayout);
-	layout->addWidget(&queryView);
-//	layout->addLayout(statGrid);
-
-	setLayout(layout);
-	queryView.enablePanning();
+	relayout();
 
 	/* restore last state */
 	loadState();
@@ -136,6 +96,37 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 
 CustomView::~CustomView()
 {
+}
+
+void CustomView::relayout()
+{
+	QVBoxLayout * layout = new QVBoxLayout;
+
+	QHBoxLayout * toolLayout = new QHBoxLayout;
+
+	if(orientation == ScreenOrientation::Portrait) {
+		toolLayout->addWidget(addButton.landscape());
+		toolLayout->addWidget(editButton.landscape());
+		toolLayout->addWidget(delButton.landscape());
+		toolLayout->addWidget(dropButton.landscape());
+		toolLayout->addWidget(filterButton.landscape());
+		orientation = ScreenOrientation::Landscape;
+	} else {
+		toolLayout->addWidget(addButton.portrait());
+		toolLayout->addWidget(editButton.portrait());
+		toolLayout->addWidget(delButton.portrait());
+		toolLayout->addWidget(dropButton.portrait());
+		toolLayout->addWidget(filterButton.portrait());
+		orientation = ScreenOrientation::Portrait;
+	}
+/*
+	toolLayout->addStretch();
+	toolLayout->addWidget(&doneButton);
+*/
+	layout->addWidget(&tableView);
+
+	setLayout(layout);
+	tableView.enableKineticScroll();
 }
 
 void CustomView::showEvent(QShowEvent *event)
@@ -153,7 +144,7 @@ void CustomView::showEvent(QShowEvent *event)
 	QSettings settings;
 
 	QDateTime uploaded = settings.value("customview/currentitem", "").toDateTime();
-	queryView->selectRow(model->index(uploaded));
+	tableView.selectRow(model->index(uploaded));
 
 	if(settings.value("customview/edititemview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
@@ -188,8 +179,8 @@ void CustomView::saveState()
 	settings.setValue("customview/size", size());
 
 	QString uploaded;
-	if(queryView->currentIndex().isValid()){
-		const Item &item = model->item(queryView->currentIndex().row());
+	if(tableView.currentIndex().isValid()){
+		const Item &item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue("customview/currentitem", uploaded);
@@ -200,7 +191,7 @@ void CustomView::saveState()
 
 void CustomView::editItem()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select item first!"));
 		return;
@@ -210,7 +201,7 @@ void CustomView::editItem()
 		editItemView = new EditItemView(dbname, *model);
 
 	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
-	editItemView->setCursor(queryView->currentIndex());
+	editItemView->setCursor(tableView.currentIndex());
 	editItemView->activate();
 }
 
@@ -223,13 +214,13 @@ void CustomView::finishedEditItem(int res)
 
 void CustomView::delItem()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select item first!"));
 		return;
 	}
 
-	int row = queryView->currentIndex().row();
+	int row = tableView.currentIndex().row();
 	const Item &item = model->item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -251,7 +242,7 @@ void CustomView::openAccountingView()
 
 void CustomView::editWare()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select an item first!"));
 		return;
@@ -261,7 +252,7 @@ void CustomView::editWare()
 	if(!editWareView)
 		editWareView = new EditWareView(dbname);
 
-	const Item &item = model->item(queryView->currentIndex().row());
+	const Item &item = model->item(tableView.currentIndex().row());
 
 	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
@@ -316,4 +307,28 @@ void CustomView::updateStatistics()
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model->sort(logicalIndex, order == Qt::AscendingOrder);
+}
+
+void CustomView::dropItem()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select item first!"));
+		return;
+	}
+
+	int row = tableView.currentIndex().row();
+	const Item &item = model->item(row);
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Deleting an item from stock"),
+			QString("Shall we add a corresponding item to the shopping list:\n") +
+			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+			0, Qt::Dialog));
+	int res = msg->exec();
+	if(res == QMessageBox::Yes)
+		model->addShoppingItem(row);
+	if(res == QMessageBox::Yes || res == QMessageBox::No)
+		model->drop(row);
 }

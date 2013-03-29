@@ -12,7 +12,6 @@
 
 /*forwards*/
 class ShoppingView;
-class StockView;
 class CustomView;
 class ShopsView;
 class TagsView;
@@ -38,7 +37,6 @@ private:
 
 private slots:
 	void openShoppingView();
-	void openStockView();
 	void openCustomView();
 	void openShopsView();
 	void openTagsView();
@@ -53,7 +51,6 @@ private:
 	QString dbname;
 
 	ShoppingView *shoppingView;
-	StockView *stockView;
 	CustomView *customView;
 	ShopsView *shopsView;
 	TagsView *tagsView;

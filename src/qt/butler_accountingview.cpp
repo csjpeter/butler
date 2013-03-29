@@ -29,7 +29,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	relayout();
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
-	connect(&doneBottomButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
 	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));
@@ -46,52 +45,43 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 void AccountingView::relayout()
 {
+	QHBoxLayout * toolLayout = new QHBoxLayout;
+	toolLayout->addStretch();
+	toolLayout->addWidget(&doneButton);
+
+	QHBoxLayout * hlayout = new QHBoxLayout;
+	hlayout->addLayout(quantityEditor.portrait());
+	hlayout->addLayout(grossPriceEditor.portrait());
+	hlayout->addLayout(unitPriceEditor.portrait());
+
+	QHBoxLayout * h2layout = new QHBoxLayout;
+	h2layout->addWidget(&onStockCheck);
+	h2layout->addWidget(&boughtCheck);
+
 	QVBoxLayout * layout = new QVBoxLayout;
-	QHBoxLayout * hlayout = 0;
 
 	if(orientation == ScreenOrientation::Portrait) {
-		layout->addWidget(&doneButton);
+		layout->addLayout(toolLayout);
+		layout->addSpacing(3);
 		layout->addLayout(shopSelector.landscape());
 		layout->addLayout(wareEditor.landscape());
 		layout->addLayout(categoryEditor.landscape());
-
-		hlayout = new QHBoxLayout;
-		hlayout->addLayout(quantityEditor.portrait());
-		hlayout->addLayout(grossPriceEditor.portrait());
-		hlayout->addLayout(unitPriceEditor.portrait());
 		layout->addLayout(hlayout);
-
-		hlayout = new QHBoxLayout;
-		hlayout->addWidget(&onStockCheck);
-		hlayout->addWidget(&boughtCheck);
-		layout->addLayout(hlayout);
-
+		layout->addLayout(h2layout);
 		layout->addLayout(purchaseDateTime.landscape());
 		layout->addLayout(commentEditor.landscape());
 		layout->addLayout(uploadDateTime.landscape());
-		layout->addWidget(&doneBottomButton);
 		orientation = ScreenOrientation::Landscape;
 	} else {
-		layout->addWidget(&doneButton);
+		layout->addLayout(toolLayout);
 		layout->addLayout(shopSelector.portrait());
 		layout->addLayout(wareEditor.portrait());
 		layout->addLayout(categoryEditor.portrait());
-
-		hlayout = new QHBoxLayout;
-		hlayout->addLayout(quantityEditor.portrait());
-		hlayout->addLayout(grossPriceEditor.portrait());
-		hlayout->addLayout(unitPriceEditor.portrait());
 		layout->addLayout(hlayout);
-
-		hlayout = new QHBoxLayout;
-		hlayout->addWidget(&onStockCheck);
-		hlayout->addWidget(&boughtCheck);
-		layout->addLayout(hlayout);
-
+		layout->addLayout(h2layout);
 		layout->addLayout(purchaseDateTime.portrait());
 		layout->addLayout(commentEditor.portrait());
 		layout->addLayout(uploadDateTime.portrait());
-		layout->addWidget(&doneBottomButton);
 		orientation = ScreenOrientation::Portrait;
 	}
 

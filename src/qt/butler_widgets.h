@@ -9,6 +9,8 @@
 #include <QtGui>
 #include <QString>
 
+#include <config.h>
+
 #include "QsKineticScroller.h"
 #include "butler_pannable.h"
 #include "butler_pannview.h"
@@ -30,7 +32,7 @@
 		QHBoxLayout * layout = new QHBoxLayout; \
 		layout->addWidget(&label, 0, Qt::AlignTop); \
 		layout->addWidget(this); \
-		layout->setStretch(1, 1); \
+		layout->setStretch(1, 0); \
 		return layout; \
 	}
 
@@ -56,6 +58,15 @@ public:
 		horizontalHeader()->setSortIndicatorShown(true);
 		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
+	}
+
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		QTableView::resizeEvent(event);
+		if(event->size() == event->oldSize())
+			return;
+		if(isVisible())
+			resizeColumnsToContents();
 	}
 
 	void enableKineticScroll() { scroll.enableKineticScrollFor(this); }
@@ -155,8 +166,9 @@ public:
 		QComboBox::resizeEvent(event);
 		if(event->size() == event->oldSize())
 			return;
-		tableView.resizeColumnsToContents();
-		tableView.horizontalHeader()->resizeSection(modelColumn(), event->size().width());
+		if(tableView.isVisible())
+			tableView.horizontalHeader()->resizeSection(
+					modelColumn(), event->size().width());
 	}
 
 	void enableKineticScroll() {
@@ -181,21 +193,22 @@ public:
 		completer()->setPopup(&completerTableView);
 	}
 
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		Selector::resizeEvent(event);
-		if(event->size() == event->oldSize())
-			return;
-		completerTableView.resizeColumnsToContents();
-		completerTableView.horizontalHeader()->resizeSection(modelColumn(), event->size().width());
-	}
-
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
 
 	void enableKineticScroll() {
 		tableView.enableKineticScroll();
 		completerTableView.enableKineticScroll();
+	}
+
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		QComboBox::resizeEvent(event);
+		if(event->size() == event->oldSize())
+			return;
+		if(completerTableView.isVisible())
+			completerTableView.horizontalHeader()->resizeSection(
+					modelColumn(), event->size().width());
 	}
 
 	QLineEdit lineEdit;
@@ -353,5 +366,53 @@ public:
 	{
 	}
 };
+
+class ToolButton : public QToolButton
+{
+private:
+	Q_OBJECT
+public:
+	ToolButton(QWidget * parent = 0) :
+		QToolButton(parent)
+	{
+	}
+
+	ToolButton * portrait()
+	{
+//		setToolButtonStyle(Qt::ToolButtonIconOnly);
+		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+		return this;
+	}
+
+	ToolButton * landscape()
+	{
+		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		return this;
+	}
+};
+
+#define TOOL_BUTTON(class_name, image_name) \
+	class class_name : public ToolButton \
+	{ \
+	private: \
+		Q_OBJECT \
+	public: \
+		class_name(const QString & text, QWidget * parent = 0) : \
+			ToolButton(parent) \
+		{ \
+			setText(text); \
+			setIcon(QIcon(Path::icon(image_name))); \
+		} \
+		virtual ~class_name() {} \
+	}
+
+TOOL_BUTTON(AddToolButton, "add.png");
+TOOL_BUTTON(EditToolButton, "edit.png");
+TOOL_BUTTON(DelToolButton, "delete.png");
+TOOL_BUTTON(DropToolButton, "trash.png");
+TOOL_BUTTON(FilterToolButton, "filter.png");
+//TOOL_BUTTON(WareEditToolButton, "ware.png");
+TOOL_BUTTON(BuyToolButton, "buy.png");
+TOOL_BUTTON(TagToolButton, "tag.png");
 
 #endif

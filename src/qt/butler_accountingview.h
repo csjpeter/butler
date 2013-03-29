@@ -53,7 +53,6 @@ private:
 	UploadDateTimeEditor uploadDateTime;
 	BoughtCheckBox boughtCheck;
 	CommentEditor commentEditor;
-	DoneButton doneBottomButton;
 };
 
 #endif

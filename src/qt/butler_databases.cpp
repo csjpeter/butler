@@ -12,7 +12,6 @@ public:
 		desc(0),
 		database(0),
 		shoppingModel(0),
-		stockModel(0),
 		tagsModel(0),
 		shopsModel(0),
 		waresModel(0),
@@ -27,7 +26,6 @@ public:
 	{
 		delete queriesModel;
 		delete shoppingModel;
-		delete stockModel;
 		delete tagsModel;
 		delete shopsModel;
 		delete waresModel;
@@ -77,13 +75,6 @@ public:
 		return *shoppingModel;
 	}
 
-	StockModel & stockItems()
-	{
-		if(!stockModel)
-			stockModel = new StockModel(db(), wares());
-		return *stockModel;
-	}
-
 	TagsModel & tags()
 	{
 		if(!tagsModel)
@@ -116,7 +107,6 @@ private:
 	DatabaseDescriptor * desc;
 	Db * database;
 	ShoppingModel * shoppingModel;
-	StockModel * stockModel;
 	TagsModel * tagsModel;
 	ShopsModel * shopsModel;
 	WaresModel * waresModel;
@@ -176,11 +166,6 @@ const DatabaseDescriptor & databaseDescriptor(const QString & dbname)
 ShoppingModel & shoppingModel(const QString & dbname)
 {
 	return databases.query(dbname).shoppingItems();
-}
-
-StockModel & stockModel(const QString & dbname)
-{
-	return databases.query(dbname).stockItems();
 }
 
 TagsModel & tagsModel(const QString & dbname)

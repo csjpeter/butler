@@ -181,7 +181,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_itemsmodel.opp \
 	tmp/src/qt/butler_custommodel.opp \
 	tmp/src/qt/butler_shoppingmodel.opp \
-	tmp/src/qt/butler_stockmodel.opp \
 	tmp/src/qt/butler_queriesmodel.opp \
 	tmp/src/qt/butler_customview.opp \
 	tmp/src/qt/butler_accountingview.opp \
@@ -198,7 +197,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_queryoptionsview.opp \
 	tmp/src/qt/butler_shoppingview.opp \
 	tmp/src/qt/butler_shopsview.opp \
-	tmp/src/qt/butler_stockview.opp \
 	tmp/src/qt/butler_tagfilterview.opp \
 	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
@@ -213,7 +211,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_itemsmodel.opp \
 	tmp/src/qt/moc/butler_custommodel.opp \
 	tmp/src/qt/moc/butler_shoppingmodel.opp \
-	tmp/src/qt/moc/butler_stockmodel.opp \
 	tmp/src/qt/moc/butler_queriesmodel.opp \
 	tmp/src/qt/moc/butler_customview.opp \
 	tmp/src/qt/moc/butler_accountingview.opp \
@@ -230,7 +227,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_queryoptionsview.opp \
 	tmp/src/qt/moc/butler_shoppingview.opp \
 	tmp/src/qt/moc/butler_shopsview.opp \
-	tmp/src/qt/moc/butler_stockview.opp \
 	tmp/src/qt/moc/butler_tagfilterview.opp \
 	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \

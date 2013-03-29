@@ -13,7 +13,6 @@
 
 #include "butler_shoppingview.h"
 #include "butler_shopsview.h"
-#include "butler_stockview.h"
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
 #include "butler_customview.h"
@@ -29,7 +28,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
 	shoppingView(NULL),
-	stockView(NULL),
 	customView(NULL),
 	shopsView(NULL),
 	tagsView(NULL),
@@ -61,10 +59,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	layout->addWidget(button);
 
-	button = new QPushButton(QIcon(Path::icon("stock.png")), tr("&Maintain stock"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openStockView()));
-	layout->addWidget(button);
-
 	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
 	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	layout->addWidget(button);
@@ -83,8 +77,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	QSettings settings;
 	if(settings.value("mainview/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
-	if(settings.value("mainview/stockview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openStockView()));
 	if(settings.value("mainview/customview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openCustomView()));
 	if(settings.value("mainview/shopsview", false).toBool())
@@ -115,11 +107,6 @@ void MainView::closeEvent(QCloseEvent *event)
 	if(shoppingView){
 		shoppingView->deleteLater();
 		shoppingView->close();
-	}
-
-	if(stockView){
-		stockView->deleteLater();
-		stockView->close();
 	}
 
 	if(customView){
@@ -171,8 +158,6 @@ void MainView::saveState()
 	settings.setValue("mainview/size", size());
 	settings.setValue("mainview/shoppingview",
 			shoppingView != NULL && shoppingView->isVisible());
-	settings.setValue("mainview/stockview",
-			stockView != NULL && stockView->isVisible());
 	settings.setValue("mainview/customview",
 			customView != NULL && customView->isVisible());
 	settings.setValue("mainview/shopsview",
@@ -194,13 +179,6 @@ void MainView::openShoppingView()
 	if(!shoppingView)
 		shoppingView = new ShoppingView(dbname);
 	shoppingView->activate();
-}
-
-void MainView::openStockView()
-{
-	if(!stockView)
-		stockView = new StockView(dbname);
-	stockView->activate();
 }
 
 void MainView::openShopsView()

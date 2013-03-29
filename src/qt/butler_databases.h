@@ -15,7 +15,6 @@
 #include <butler_itemsmodel.h>
 #include <butler_custommodel.h>
 #include <butler_shoppingmodel.h>
-#include <butler_stockmodel.h>
 #include <butler_tagsmodel.h>
 #include <butler_shopsmodel.h>
 #include <butler_waresmodel.h>
@@ -27,7 +26,6 @@ const DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 
 csjp::Object<CustomModel> customModel(const QString & dbname);
 ShoppingModel & shoppingModel(const QString & dbname);
-StockModel & stockModel(const QString & dbname);
 TagsModel & tagsModel(const QString & dbname);
 ShopsModel & shopsModel(const QString & dbname);
 WaresModel & waresModel(const QString & dbname);
