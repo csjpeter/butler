@@ -226,6 +226,7 @@ echo "Configuring files..."
 for f in $(find . -name \*\.in); do
 	F=$(echo $f | sed 's|\.in$||g')
 	echo $F
+	echo $F | grep -q "config\.h$" && continue; # dont regenerate config.h if it already exists
 	generate $f $F || exit $?
 	! echo $F | grep "\.sh$" || { chmod u+x $F || exit $? ; }
 done

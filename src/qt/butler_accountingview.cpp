@@ -51,6 +51,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 void AccountingView::relayout()
 {
 	QVBoxLayout * layout = new QVBoxLayout;
+	QHBoxLayout * hlayout = 0;
 
 	if(orientation == ScreenOrientation::Portrait) {
 		layout->addWidget(&saveButton);
@@ -58,15 +59,18 @@ void AccountingView::relayout()
 		layout->addLayout(wareEditor.landscape());
 		layout->addLayout(categoryEditor.landscape());
 
-		QHBoxLayout * hlayout = new QHBoxLayout;
+		hlayout = new QHBoxLayout;
 		hlayout->addLayout(quantityEditor.landscape());
 		hlayout->addLayout(grossPriceEditor.landscape());
 		hlayout->addLayout(unitPriceEditor.landscape());
 		layout->addLayout(hlayout);
 
-		layout->addLayout(purchaseDateTime.landscape());
+		hlayout = new QHBoxLayout;
 		layout->addWidget(&onStockCheck);
 		layout->addWidget(&boughtCheck);
+		layout->addLayout(hlayout);
+
+		layout->addLayout(purchaseDateTime.landscape());
 		layout->addLayout(commentEditor.landscape());
 		layout->addLayout(uploadDateTime.landscape());
 		layout->addWidget(&saveBottomButton);
@@ -77,15 +81,18 @@ void AccountingView::relayout()
 		layout->addLayout(wareEditor.portrait());
 		layout->addLayout(categoryEditor.portrait());
 
-		QHBoxLayout * hlayout = new QHBoxLayout;
+		hlayout = new QHBoxLayout;
 		hlayout->addLayout(quantityEditor.portrait());
 		hlayout->addLayout(grossPriceEditor.portrait());
 		hlayout->addLayout(unitPriceEditor.portrait());
 		layout->addLayout(hlayout);
 
-		layout->addLayout(purchaseDateTime.portrait());
+		hlayout = new QHBoxLayout;
 		layout->addWidget(&onStockCheck);
 		layout->addWidget(&boughtCheck);
+		layout->addLayout(hlayout);
+
+		layout->addLayout(purchaseDateTime.portrait());
 		layout->addLayout(commentEditor.portrait());
 		layout->addLayout(uploadDateTime.portrait());
 		layout->addWidget(&saveBottomButton);
