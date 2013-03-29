@@ -89,7 +89,12 @@ QMessageBox {
 	icon-size: 64px;
 }
 
-QTextEdit, QTextEdit QScrollBar, QTextEdit QScrollBar:hover, QTextEdit QScrollBar:disable {
+QTextEdit {
+	border-width: 1px;
+	min-height: 5ex;
+}
+
+QTextEdit QScrollBar, QTextEdit QScrollBar:hover, QTextEdit QScrollBar:disable {
 	border-width: 0px;
 }
 

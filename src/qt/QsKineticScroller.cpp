@@ -204,6 +204,13 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			if(!speedTimer.isActive())
 				return false; /* We have nothing to do with move without press. */
 
+			/* If for some reason we missed the release event, on next pressless move
+			 * lets not do any scrolling. */
+			if(mouseEvent->buttons() == Qt::NoButton){
+				speedTimer.stop();
+				return false;
+			}
+
 			if(sqrt(pow(pressedMousePosition.x() - mouseEvent->globalPos().x(), 2) +
 				pow(pressedMousePosition.y() - mouseEvent->globalPos().y(), 2)) <
 					gThresholdScrollDistance)

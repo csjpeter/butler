@@ -22,6 +22,7 @@
 		QVBoxLayout * layout = new QVBoxLayout; \
 		layout->addWidget(&label, 0, Qt::AlignBottom); \
 		layout->addWidget(this); \
+		layout->setSpacing(1); \
 		return layout; \
 	} \
 	QHBoxLayout * landscape() \
@@ -48,10 +49,12 @@ public:
 		setSelectionBehavior(QAbstractItemView::SelectRows);
 		setSelectionMode(QAbstractItemView::SingleSelection);
 		verticalHeader()->hide();
-		//horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+		setSortingEnabled(true);
+		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 		horizontalHeader()->setMovable(true);
 		horizontalHeader()->setSortIndicatorShown(true);
 		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
 	}
 
 	void enableKineticScroll() { scroll.enableKineticScrollFor(this); }
@@ -126,6 +129,26 @@ public:
 	}
 };
 
+class ShopSelector : public QComboBox
+{
+private:
+	Q_OBJECT
+public:
+	ShopSelector(const QString & dbname, QWidget * parent = 0) :
+		QComboBox(parent),
+		label(tr("Shop (place of buy):"))
+	{
+		setModel(&shopsModel(dbname));
+		setModelColumn(Shop::Name);
+		setView(&tableView);
+	}
+
+	EDITOR_LAYOUTS
+
+	QLabel label;
+	TableView tableView;
+};
+
 class WareEditor : public QComboBox
 {
 private:
@@ -137,13 +160,17 @@ public:
 	{
 		setEditable(true);
 		setLineEdit(&lineEdit);
+		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		setModel(&waresModel(dbname));
 		setModelColumn(WaresModel::Name);
 		completer()->setCompletionMode(QCompleter::PopupCompletion);
 		completer()->setPopup(&completerTableView);
-		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		setView(&tableView);
-	}
+/*		tableView.resizeColumnsToContents();
+		tableView.horizontalHeader()->resizeSection(WaresModel::Name, width());
+		completerTableView.resizeColumnsToContents();
+		completerTableView.horizontalHeader()->resizeSection(WaresModel::Name, width());
+*/	}
 
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
@@ -186,26 +213,6 @@ public:
 	TableView tableView;
 };
 
-class ShopSelector : public QComboBox
-{
-private:
-	Q_OBJECT
-public:
-	ShopSelector(const QString & dbname, QWidget * parent = 0) :
-		QComboBox(parent),
-		label(tr("Shop (place of buy):"))
-	{
-		setModel(&shopsModel(dbname));
-		setModelColumn(Shop::Name);
-		setView(&tableView);
-	}
-
-	EDITOR_LAYOUTS
-
-	QLabel label;
-	TableView tableView;
-};
-
 class DateTimeEditor : public QDateTimeEdit
 {
 private:
@@ -218,6 +225,7 @@ public:
 				"QLineEdit { margin: 0px; padding: 0px; }");
 		setCalendarPopup(true);
 		setDisplayFormat(Config::dateTimeFormat());
+		setDateTime(QDateTime::currentDateTime());
 	}
 
 	EDITOR_LAYOUTS

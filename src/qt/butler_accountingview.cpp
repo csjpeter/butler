@@ -55,31 +55,39 @@ void AccountingView::relayout()
 	if(orientation == ScreenOrientation::Portrait) {
 		layout->addWidget(&saveButton);
 		layout->addLayout(shopSelector.landscape());
-		layout->addLayout(purchaseDateTime.landscape());
 		layout->addLayout(wareEditor.landscape());
 		layout->addLayout(categoryEditor.landscape());
-		layout->addLayout(quantityEditor.landscape());
-		layout->addLayout(unitPriceEditor.landscape());
-		layout->addLayout(grossPriceEditor.landscape());
+
+		QHBoxLayout * hlayout = new QHBoxLayout;
+		hlayout->addLayout(quantityEditor.landscape());
+		hlayout->addLayout(grossPriceEditor.landscape());
+		hlayout->addLayout(unitPriceEditor.landscape());
+		layout->addLayout(hlayout);
+
+		layout->addLayout(purchaseDateTime.landscape());
 		layout->addWidget(&onStockCheck);
-		layout->addLayout(uploadDateTime.landscape());
 		layout->addWidget(&boughtCheck);
 		layout->addLayout(commentEditor.landscape());
+		layout->addLayout(uploadDateTime.landscape());
 		layout->addWidget(&saveBottomButton);
 		orientation = ScreenOrientation::Landscape;
 	} else {
 		layout->addWidget(&saveButton);
 		layout->addLayout(shopSelector.portrait());
-		layout->addLayout(purchaseDateTime.portrait());
 		layout->addLayout(wareEditor.portrait());
 		layout->addLayout(categoryEditor.portrait());
-		layout->addLayout(quantityEditor.portrait());
-		layout->addLayout(unitPriceEditor.portrait());
-		layout->addLayout(grossPriceEditor.portrait());
+
+		QHBoxLayout * hlayout = new QHBoxLayout;
+		hlayout->addLayout(quantityEditor.portrait());
+		hlayout->addLayout(grossPriceEditor.portrait());
+		hlayout->addLayout(unitPriceEditor.portrait());
+		layout->addLayout(hlayout);
+
+		layout->addLayout(purchaseDateTime.portrait());
 		layout->addWidget(&onStockCheck);
-		layout->addLayout(uploadDateTime.portrait());
 		layout->addWidget(&boughtCheck);
 		layout->addLayout(commentEditor.portrait());
+		layout->addLayout(uploadDateTime.portrait());
 		layout->addWidget(&saveBottomButton);
 		orientation = ScreenOrientation::Portrait;
 	}
