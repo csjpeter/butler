@@ -45,16 +45,16 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
 	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 	queryView->horizontalHeader()->setResizeMode(
-			TagsModel::Name, QHeaderView::ResizeToContents);
+			Tag::Name, QHeaderView::ResizeToContents);
 	queryView->horizontalHeader()->setResizeMode(
-			TagsModel::Description, QHeaderView::Stretch);
+			Tag::Description, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
 	connect(queryView->horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
 
-//	queryView->hideColumn(TagsModel::Description);
+//	queryView->hideColumn(Tag::Description);
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;

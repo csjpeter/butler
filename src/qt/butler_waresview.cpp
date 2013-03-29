@@ -46,13 +46,13 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	queryView->horizontalHeader()->setSortIndicatorShown(true);
 	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 	queryView->horizontalHeader()->setResizeMode(
-			WaresModel::Name, QHeaderView::ResizeToContents);
+			Ware::Name, QHeaderView::ResizeToContents);
 	queryView->horizontalHeader()->setResizeMode(
-			WaresModel::Unit, QHeaderView::ResizeToContents);
+			Ware::Unit, QHeaderView::ResizeToContents);
 	queryView->horizontalHeader()->setResizeMode(
-			WaresModel::Categories, QHeaderView::ResizeToContents);
+			Ware::Categories, QHeaderView::ResizeToContents);
 	queryView->horizontalHeader()->setResizeMode(
-			WaresModel::Tags, QHeaderView::Stretch);
+			Ware::Tags, QHeaderView::Stretch);
 	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
 	connect(queryView->horizontalHeader(),

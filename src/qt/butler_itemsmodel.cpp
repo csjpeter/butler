@@ -104,13 +104,7 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			return QVariant(items.queryAt(index.row()).comment);
 			break;
 		case Item::UnitPrice :
-			{
-				Item &item = items.queryAt(index.row());
-				double price = 0;
-				if(DBL_EPSILON <= item.quantity)
-					price = item.price / item.quantity;
-				return QVariant(price);
-			}
+			return QVariant(items.queryAt(index.row()).unitPrice());
 			break;
 		default :
 			return QVariant();

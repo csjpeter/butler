@@ -29,13 +29,6 @@ private:
 	Q_OBJECT;
 
 public:
-	enum Column {
-		Name = 0,
-		Description,
-		NumOfColumns
-	};
-
-public:
 	TagsModel(Db & db);
 	~TagsModel();
 

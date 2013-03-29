@@ -110,10 +110,11 @@ private slots:
 			return;
 
 		relayout();
-
+/*
 		updateGeometry();
 		scrollArea.updateGeometry();
 		main.updateGeometry();
+*/
 	}
 
 signals:

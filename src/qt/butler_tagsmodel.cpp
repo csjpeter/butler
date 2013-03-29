@@ -25,7 +25,7 @@ QModelIndex TagsModel::index(int row, int column, const QModelIndex & parent) co
 Qt::ItemFlags TagsModel::flags(const QModelIndex & index) const
 {
 	if(index.row() < (int)tags.size() && 
-			index.column() < NumOfColumns){
+			index.column() < Tag::NumOfFields){
 		if(index.column() != 8)
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 		else
@@ -49,10 +49,10 @@ QVariant TagsModel::data(const QModelIndex & index, int role) const
 		return QVariant();
 
 	switch(index.column()){
-		case TagsModel::Name :
+		case Tag::Name :
 			return tags.queryAt(index.row()).name;
 			break;
-		case TagsModel::Description :
+		case Tag::Description :
 			return tags.queryAt(index.row()).description;
 			break;
 		default :
@@ -72,10 +72,10 @@ QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int rol
 		return QVariant("---");
 
 	switch(section){
-		case TagsModel::Name :
+		case Tag::Name :
 			return QVariant("Tag name");
 			break;
-		case TagsModel::Description :
+		case Tag::Description :
 			return QVariant("Description");
 			break;
 		default :
@@ -100,10 +100,10 @@ bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int r
 		return false;
 
 	switch(index.column()){
-		case TagsModel::Name :
+		case Tag::Name :
 			tags.queryAt(index.row()).name = value.toString();
 			break;
-		case TagsModel::Description :
+		case Tag::Description :
 			tags.queryAt(index.row()).description = value.toString();
 			break;
 		default :
@@ -136,7 +136,7 @@ int TagsModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return NumOfColumns;
+	return Tag::NumOfFields;
 }
 
 bool TagsModel::removeRows(
@@ -235,7 +235,7 @@ void TagsModel::update(int row, Tag &modified)
 	Tag &orig = tags.queryAt(row);
 	db.tag.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, TagsModel::NumOfColumns-1));
+	dataChanged(index(row, 0), index(row, Tag::NumOfFields-1));
 }
 
 void TagsModel::query()

@@ -62,21 +62,19 @@ public:
 	QsKineticScroller scroll;
 };
 
-class QuantityEditor : public QDoubleSpinBox
+class DoubleEditor : public QDoubleSpinBox
 {
 private:
 	Q_OBJECT
 public:
-	QuantityEditor(QWidget * parent = 0) :
-		QDoubleSpinBox(parent),
-		label(tr("Quantity:"))
+	DoubleEditor(QWidget * parent = 0) :
+		QDoubleSpinBox(parent)
 	{
 		QAbstractSpinBox::lineEdit()->setStyleSheet(
 				"QLineEdit { margin: 0px; padding: 0px; }");
-		setRange(0, INT_MAX);
-		setDecimals(3);
 		setFrame(false);
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
+		setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred));
 	}
 
 	EDITOR_LAYOUTS
@@ -84,25 +82,31 @@ public:
 	QLabel label;
 };
 
-class PriceEditor : public QDoubleSpinBox
+class QuantityEditor : public DoubleEditor
+{
+private:
+	Q_OBJECT
+public:
+	QuantityEditor(QWidget * parent = 0) :
+		DoubleEditor(parent)
+	{
+		label.setText(tr("Quantity:"));
+		setRange(0, INT_MAX);
+		setDecimals(3);
+	}
+};
+
+class PriceEditor : public DoubleEditor
 {
 private:
 	Q_OBJECT
 public:
 	PriceEditor(QWidget * parent = 0) :
-		QDoubleSpinBox(parent)
+		DoubleEditor(parent)
 	{
-		QAbstractSpinBox::lineEdit()->setStyleSheet(
-				"QLineEdit { margin: 0px; padding: 0px; }");
 		setRange(0, INT_MAX);
 		setDecimals(2);
-		setFrame(false);
-		setButtonSymbols(QAbstractSpinBox::NoButtons);
 	}
-
-	EDITOR_LAYOUTS
-
-	QLabel label;
 };
 
 class UnitPriceEditor : public PriceEditor
@@ -129,62 +133,103 @@ public:
 	}
 };
 
-class ShopSelector : public QComboBox
+class Selector : public QComboBox
 {
 private:
 	Q_OBJECT
 public:
-	ShopSelector(const QString & dbname, QWidget * parent = 0) :
-		QComboBox(parent),
-		label(tr("Shop (place of buy):"))
+	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
+		QComboBox(parent)
 	{
-		setModel(&shopsModel(dbname));
-		setModelColumn(Shop::Name);
+		setModel(model);
+		setModelColumn(column);
 		setView(&tableView);
+		//setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
 	}
 
-	EDITOR_LAYOUTS
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		QComboBox::resizeEvent(event);
+		if(event->size() == event->oldSize())
+			return;
+		tableView.resizeColumnsToContents();
+		tableView.horizontalHeader()->resizeSection(modelColumn(), event->size().width());
+	}
 
-	QLabel label;
+	void enableKineticScroll() {
+		tableView.enableKineticScroll();
+	}
+
 	TableView tableView;
 };
 
-class WareEditor : public QComboBox
+class ComboSelector : public Selector
 {
 private:
 	Q_OBJECT
 public:
-	WareEditor(const QString & dbname, QWidget * parent = 0) :
-		QComboBox(parent),
-		label(tr("Common ware name:"))
+	ComboSelector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
+		Selector(model, column, parent)
 	{
 		setEditable(true);
 		setLineEdit(&lineEdit);
 		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		setModel(&waresModel(dbname));
-		setModelColumn(WaresModel::Name);
 		completer()->setCompletionMode(QCompleter::PopupCompletion);
 		completer()->setPopup(&completerTableView);
-		setView(&tableView);
-/*		tableView.resizeColumnsToContents();
-		tableView.horizontalHeader()->resizeSection(WaresModel::Name, width());
+	}
+
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		Selector::resizeEvent(event);
+		if(event->size() == event->oldSize())
+			return;
 		completerTableView.resizeColumnsToContents();
-		completerTableView.horizontalHeader()->resizeSection(WaresModel::Name, width());
-*/	}
+		completerTableView.horizontalHeader()->resizeSection(modelColumn(), event->size().width());
+	}
 
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
+
 	void enableKineticScroll() {
 		tableView.enableKineticScroll();
 		completerTableView.enableKineticScroll();
 	}
 
+	QLineEdit lineEdit;
+	TableView completerTableView;
+};
+
+class ShopSelector : public Selector
+{
+private:
+	Q_OBJECT
+public:
+	ShopSelector(const QString & dbname, QWidget * parent = 0) :
+		Selector(&shopsModel(dbname), Shop::Name, parent),
+		label(tr("Shop (place of buy):"))
+	{
+	}
+
 	EDITOR_LAYOUTS
 
-	QLineEdit lineEdit;
 	QLabel label;
-	TableView tableView;
-	TableView completerTableView;
+};
+
+class WareEditor : public ComboSelector
+{
+private:
+	Q_OBJECT
+public:
+	WareEditor(const QString & dbname, QWidget * parent = 0) :
+		ComboSelector(&waresModel(dbname), Ware::Name, parent),
+		label(tr("Common ware name:"))
+	{
+	}
+
+	EDITOR_LAYOUTS
+
+	QLabel label;
 };
 
 class CategoryEditor : public QComboBox
@@ -272,6 +317,39 @@ public:
 	EDITOR_LAYOUTS
 
 	QLabel label;
+};
+
+class DoneButton : public QPushButton
+{
+private:
+	Q_OBJECT
+public:
+	DoneButton(QWidget * parent = 0) :
+		QPushButton(tr("Done"), parent)
+	{
+	}
+};
+
+class OnStockCheckBox : public QCheckBox
+{
+private:
+	Q_OBJECT
+public:
+	OnStockCheckBox(QWidget * parent = 0) :
+		QCheckBox(tr("on stock"), parent)
+	{
+	}
+};
+
+class BoughtCheckBox : public QCheckBox
+{
+private:
+	Q_OBJECT
+public:
+	BoughtCheckBox(QWidget * parent = 0) :
+		QCheckBox(tr("bought"), parent)
+	{
+	}
 };
 
 #endif

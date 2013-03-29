@@ -225,9 +225,10 @@ DOC_DIR=${PREFIX}share/doc/${PKGNAME}
 echo "Configuring files..."
 for f in $(find . -name \*\.in); do
 	F=$(echo $f | sed 's|\.in$||g')
+	# dont regenerate config.h if it already exists
+	echo $F | grep -q "config\.h$" && test -f $F && continue;
 	echo $F
-	echo $F | grep -q "config\.h$" && continue; # dont regenerate config.h if it already exists
 	generate $f $F || exit $?
-	! echo $F | grep "\.sh$" || { chmod u+x $F || exit $? ; }
+	! echo $F | grep -q "\.sh$" || { chmod u+x $F || exit $? ; }
 done
 echo "Configure done"

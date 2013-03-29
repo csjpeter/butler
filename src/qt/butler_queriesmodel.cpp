@@ -24,7 +24,7 @@ QModelIndex QueriesModel::index(int row, int column, const QModelIndex & parent)
 
 Qt::ItemFlags QueriesModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)queries.size() && index.column() < NumOfColumns){
+	if(index.row() < (int)queries.size() && index.column() < Query::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
@@ -47,13 +47,13 @@ QVariant QueriesModel::data(const QModelIndex & index, int role) const
 	QString result;
 
 	switch(index.column()){
-		case QueriesModel::Name :
+		case Query::Name :
 			return QVariant(queries.queryAt(index.row()).name);
 			break;
-		case QueriesModel::StartDate :
+		case Query::StartDate :
 			return QVariant(queries.queryAt(index.row()).startDate);
 			break;
-		case QueriesModel::EndDate :
+		case Query::EndDate :
 			return QVariant(queries.queryAt(index.row()).endDate);
 			break;
 		default :
@@ -73,13 +73,13 @@ QVariant QueriesModel::headerData(int section, Qt::Orientation orientation, int 
 		return QVariant("---");
 
 	switch(section){
-		case QueriesModel::Name :
+		case Query::Name :
 			return QVariant("Name");
 			break;
-		case QueriesModel::StartDate :
+		case Query::StartDate :
 			return QVariant("Start date");
 			break;
-		case QueriesModel::EndDate :
+		case Query::EndDate :
 			return QVariant("End date");
 			break;
 		default :
@@ -109,15 +109,15 @@ bool QueriesModel::setData(const QModelIndex & index, const QVariant & value, in
 	QString str;
 
 	switch(index.column()){
-		case QueriesModel::Name :
+		case Query::Name :
 			modified.name = value.toString();
 			update(row, modified);
 			break;
-		case QueriesModel::StartDate :
+		case Query::StartDate :
 			modified.startDate = value.toDateTime();
 			update(row, modified);
 			break;
-		case QueriesModel::EndDate :
+		case Query::EndDate :
 			modified.endDate = value.toDateTime();
 			update(row, modified);
 			break;
@@ -151,7 +151,7 @@ int QueriesModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return NumOfColumns;
+	return Query::NumOfFields;
 }
 
 bool QueriesModel::removeRows(
@@ -230,7 +230,7 @@ void QueriesModel::update(int row, Query &modified)
 	Query &orig = queries.queryAt(row);
 	db.query.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, QueriesModel::NumOfColumns-1));
+	dataChanged(index(row, 0), index(row, Query::NumOfFields-1));
 }
 
 void QueriesModel::query()

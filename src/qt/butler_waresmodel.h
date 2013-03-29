@@ -23,15 +23,6 @@ private:
 	Q_OBJECT;
 
 public:
-	enum Column {
-		Name = 0,
-		Unit,
-		Categories,
-		Tags,
-		NumOfColumns
-	};
-
-public:
 	WaresModel(Db & db);
 	~WaresModel();
 

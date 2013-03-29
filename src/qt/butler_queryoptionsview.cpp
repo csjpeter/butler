@@ -49,7 +49,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	gridLayout->addWidget(wareFilter, 3, 1, 1, 1);
 	wareBox = new QComboBox;
 	wareBox->setModel(&waresModel(dbname));
-	wareBox->setModelColumn(WaresModel::Name);
+	wareBox->setModelColumn(Ware::Name);
 	gridLayout->addWidget(wareBox, 3, 2, 1, 2);
 
 	label = new QLabel(tr("Shops (any) :"));

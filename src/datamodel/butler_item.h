@@ -30,6 +30,8 @@ public:
 	bool isLess(const QDateTime &dt) const;
 	bool isMore(const QDateTime &dt) const;
 
+	double unitPrice() const;
+
 public:
 	QDateTime uploaded; /* non editable */
 	QString name;
@@ -61,7 +63,7 @@ public:
 		Shop,
 		Price,
 		OnStock,
-		UnitPrice,
+		UnitPrice, /* virtual field (computed) */
 		NumOfFields
 	};
 private:

@@ -3,6 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#include <math.h>
+
 #include "butler_item.h"
 
 Item::Item() :
@@ -91,6 +93,13 @@ void Item::copy(const Item &i)
 	shop = i.shop;
 	price = i.price;
 	onStock = i.onStock;
+}
+
+double Item::unitPrice() const
+{
+//	if(isnormal(quantity)) /*FIXME*/
+		return price / quantity;
+//	return 0;
 }
 
 bool operator==(const Item &a, const Item &b)

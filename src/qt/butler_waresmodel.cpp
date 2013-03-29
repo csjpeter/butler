@@ -24,7 +24,7 @@ QModelIndex WaresModel::index(int row, int column, const QModelIndex & parent) c
 
 Qt::ItemFlags WaresModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)wares.size() && index.column() < NumOfColumns){
+	if(index.row() < (int)wares.size() && index.column() < Ware::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
@@ -47,16 +47,16 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 	QString result;
 
 	switch(index.column()){
-		case WaresModel::Name :
+		case Ware::Name :
 			return QVariant(wares.queryAt(index.row()).name);
 			break;
-		case WaresModel::Unit :
+		case Ware::Unit :
 			return QVariant(wares.queryAt(index.row()).unit);
 			break;
-		case WaresModel::Categories :
+		case Ware::Categories :
 			return QVariant(categoriesToString(wares.queryAt(index.row()).categories));
 			break;
-		case WaresModel::Tags :
+		case Ware::Tags :
 			return QVariant(tagsToString(wares.queryAt(index.row()).tags));
 			break;
 		default :
@@ -76,16 +76,16 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant("---");
 
 	switch(section){
-		case WaresModel::Name :
+		case Ware::Name :
 			return QVariant("Name");
 			break;
-		case WaresModel::Unit :
+		case Ware::Unit :
 			return QVariant("Unit");
 			break;
-		case WaresModel::Categories :
+		case Ware::Categories :
 			return QVariant("Categories");
 			break;
-		case WaresModel::Tags :
+		case Ware::Tags :
 			return QVariant("Tags");
 			break;
 		default :
@@ -115,19 +115,19 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 	QString str;
 
 	switch(index.column()){
-		case WaresModel::Name :
+		case Ware::Name :
 			modified.name = value.toString();
 			update(row, modified);
 			break;
-		case WaresModel::Unit :
+		case Ware::Unit :
 			modified.unit = value.toString();
 			update(row, modified);
 			break;
-		case WaresModel::Categories :
+		case Ware::Categories :
 			stringToCategories(value.toString(), modified.categories);
 			update(row, modified);
 			break;
-		case WaresModel::Tags :
+		case Ware::Tags :
 			stringToTags(value.toString(), modified.tags);
 			update(row, modified);
 			break;
@@ -161,7 +161,7 @@ int WaresModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return NumOfColumns;
+	return Ware::NumOfFields;
 }
 
 bool WaresModel::removeRows(
@@ -240,7 +240,7 @@ void WaresModel::update(int row, Ware &modified)
 	Ware &orig = wares.queryAt(row);
 	db.ware.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, WaresModel::NumOfColumns-1));
+	dataChanged(index(row, 0), index(row, Ware::NumOfFields-1));
 }
 
 void WaresModel::query()

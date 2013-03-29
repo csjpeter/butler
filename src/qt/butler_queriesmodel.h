@@ -22,14 +22,6 @@ private:
 	Q_OBJECT;
 
 public:
-	enum Column {
-		Name = 0,
-		StartDate,
-		EndDate,
-		NumOfColumns
-	};
-
-public:
 	QueriesModel(Db & db);
 	~QueriesModel();
 

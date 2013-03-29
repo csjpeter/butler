@@ -41,7 +41,7 @@ private:
 	ItemsModel & model;
 	Item item;
 
-	QPushButton saveButton;
+	DoneButton doneButton;
 	ShopSelector shopSelector;
 	PurchaseDateTimeEditor purchaseDateTime;
 	WareEditor wareEditor;
@@ -49,11 +49,11 @@ private:
 	QuantityEditor quantityEditor;
 	UnitPriceEditor unitPriceEditor;
 	GrossPriceEditor grossPriceEditor;
-	QCheckBox onStockCheck;
+	OnStockCheckBox onStockCheck;
 	UploadDateTimeEditor uploadDateTime;
-	QCheckBox boughtCheck;
+	BoughtCheckBox boughtCheck;
 	CommentEditor commentEditor;
-	QPushButton saveBottomButton;
+	DoneButton doneBottomButton;
 };
 
 #endif

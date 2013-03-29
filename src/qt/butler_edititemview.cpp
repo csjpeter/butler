@@ -35,7 +35,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	nameBox->setEditable(true);
 	nameBox->setLineEdit(nameEditor);
 	nameBox->setModel(&waresModel(dbname));
-	nameBox->setModelColumn(WaresModel::Name);
+	nameBox->setModelColumn(Ware::Name);
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 2);
 
