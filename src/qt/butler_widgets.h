@@ -85,38 +85,126 @@ public:
 		QAbstractSpinBox::lineEdit()->setStyleSheet(
 				"QLineEdit { margin: 0px; padding: 0px; }");
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
-		setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred));
 	}
-
-	EDITOR_LAYOUTS
-
-	QLabel label;
 };
 
-class QuantityEditor : public DoubleEditor
+class LabelledDoubleEditor : public QWidget
+{
+private:
+	Q_OBJECT
+
+	enum class ViewState {
+		Narrow,
+		Wide
+	};
+public:
+	LabelledDoubleEditor(const QString & text, QWidget * parent = 0) :
+		QWidget(parent),
+		label(text),
+		state(ViewState::Narrow)
+	{
+		spin.setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum));
+	}
+
+	virtual QSize sizeHint() const
+	{
+		return prefSize;
+	}
+
+	virtual QSize minimumSizeHint() const
+	{
+		return minSize;
+	}
+
+	void updateGeometry()
+	{
+		QHBoxLayout layout;
+		layout.addWidget(&label);
+		layout.addWidget(&spin);
+		prefSize = layout.sizeHint();
+
+		QVBoxLayout vlayout;
+		vlayout.addWidget(&label);
+		vlayout.addWidget(&spin);
+		minSize = vlayout.sizeHint();
+
+		QWidget::updateGeometry();
+	LOG("UpdateGeom: "
+		"min hint width: %i, min hint height: %i, "
+		"hint width: %i, hint height: %i, "
+		"width: %i, height: %i",
+		minimumSizeHint().width(), minimumSizeHint().height(),
+		sizeHint().width(), sizeHint().height(),
+		width(), height());
+	}
+
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+	LOG(	"min hint width: %i, min hint height: %i, "
+		"hint width: %i, hint height: %i, "
+		"width: %i, height: %i",
+		minimumSizeHint().width(), minimumSizeHint().height(),
+		sizeHint().width(), sizeHint().height(),
+		width(), height());
+		if(layout() && (event->size() == event->oldSize() || !isVisible()))
+			return;
+		ViewState newState = ViewState::Narrow;
+		if(prefSize.width() <= event->size().width())
+			newState = ViewState::Wide;
+		if(state == newState)
+			return;
+		state = newState;
+		QLayout * oldLayout = layout();
+		if(oldLayout){
+			QLayoutItem * child;
+			while((child = oldLayout->takeAt(0)) != 0)
+				delete child;
+			delete oldLayout;
+		}
+		QBoxLayout * layout = 0;
+		if(state == ViewState::Narrow)
+			layout = new QHBoxLayout;
+		if(state == ViewState::Wide)
+			layout = new QHBoxLayout;
+
+		layout->addWidget(&label);
+		layout->addWidget(&spin);
+		setLayout(layout);
+	}
+
+	DoubleEditor spin;
+	QLabel label;
+private:
+	QSize prefSize;
+	QSize minSize;
+	ViewState state;
+};
+
+class QuantityEditor : public LabelledDoubleEditor
 {
 private:
 	Q_OBJECT
 public:
 	QuantityEditor(QWidget * parent = 0) :
-		DoubleEditor(parent)
+		LabelledDoubleEditor(tr("Quantity:"), parent)
 	{
-		label.setText(tr("Quantity:"));
-		setRange(0, INT_MAX);
-		setDecimals(3);
+		spin.setRange(0, INT_MAX);
+		spin.setDecimals(3);
+		updateGeometry();
 	}
 };
 
-class PriceEditor : public DoubleEditor
+class PriceEditor : public LabelledDoubleEditor
 {
 private:
 	Q_OBJECT
 public:
-	PriceEditor(QWidget * parent = 0) :
-		DoubleEditor(parent)
+	PriceEditor(const QString & text, QWidget * parent = 0) :
+		LabelledDoubleEditor(text, parent)
 	{
-		setRange(0, INT_MAX);
-		setDecimals(2);
+		spin.setRange(0, INT_MAX);
+		spin.setDecimals(2);
+		updateGeometry();
 	}
 };
 
@@ -126,9 +214,9 @@ private:
 	Q_OBJECT
 public:
 	UnitPriceEditor(QWidget * parent = 0) :
-		PriceEditor(parent)
+		PriceEditor(tr("Unit price:"), parent)
 	{
-		label.setText(tr("Unit price:"));
+		updateGeometry();
 	}
 };
 
@@ -138,9 +226,9 @@ private:
 	Q_OBJECT
 public:
 	GrossPriceEditor(QWidget * parent = 0) :
-		PriceEditor(parent)
+		PriceEditor(tr("Gross price:"), parent)
 	{
-		label.setText(tr("Gross price:"));
+		updateGeometry();
 	}
 };
 

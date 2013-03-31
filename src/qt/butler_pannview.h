@@ -11,12 +11,6 @@
 
 #include <config.h>
 
-enum class ScreenOrientation
-{
-	Landscape,
-	Portrait
-};
-
 class PannView : public QWidget
 {
 private:
@@ -25,7 +19,6 @@ private:
 public:
 	PannView(QWidget * parent = 0) :
 		QWidget(parent),
-		orientation(ScreenOrientation::Portrait),
 		landscapeMinWidth(0),
 		scrollArea(0),
 		scroll(0)
@@ -70,15 +63,6 @@ public:
 		QWidget::closeEvent(event);
 	}
 
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		QWidget::resizeEvent(event);
-		if(event->size() != event->oldSize())
-			QTimer::singleShot(0, this, SLOT(relayoutSlot()));
-	}
-
-	virtual void relayout() {}
-
 public slots:
 	void activate()
 	{
@@ -89,41 +73,10 @@ public slots:
 	void reject() { emit this->rejected(); emit this->finished(0); }
 	void done(int result) { emit this->finished(result); }
 
-private slots:
-	void relayoutSlot()
-	{
-		DBG(	"hint width: %i, hint height: %i, "
-			"scroll hint width: %i, scroll hint height: %i, "
-			"width: %i, height: %i\n",
-			main.sizeHint().width(), main.sizeHint().height(),
-			scrollArea.sizeHint().width(), scrollArea.sizeHint().height(),
-			width(), height());
-
-		if(orientation == ScreenOrientation::Landscape)
-			landscapeMinWidth = main.sizeHint().width();
-
-		ScreenOrientation newOrientation = ScreenOrientation::Landscape;
-		if(width() < landscapeMinWidth)
-			newOrientation = ScreenOrientation::Portrait;
-
-		if(newOrientation == orientation && main.layout()) /* nothing to do */
-			return;
-
-		relayout();
-/*
-		updateGeometry();
-		scrollArea.updateGeometry();
-		main.updateGeometry();
-*/
-	}
-
 signals:
 	void accepted();
 	void finished(int);
 	void rejected();
-
-public:
-	ScreenOrientation orientation;
 
 private:
 	int landscapeMinWidth;

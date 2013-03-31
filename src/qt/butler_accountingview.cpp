@@ -26,64 +26,61 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	
 	boughtCheck.setCheckState(Qt::Checked);
 
-	relayout();
+//	relayout();
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
 	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));
-	connect(&quantityEditor, SIGNAL(valueChanged(double)),
+	connect(&quantityEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(quantityValueChangedSlot(double)));
-	connect(&unitPriceEditor, SIGNAL(editingFinished()),
+	connect(&unitPriceEditor.spin, SIGNAL(editingFinished()),
 			this, SLOT(unitPriceEditingFinishedSlot()));
-	connect(&grossPriceEditor, SIGNAL(valueChanged(double)),
+	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
 
 	/* restore last state */
 	loadState();
 }
 
-void AccountingView::relayout()
+void AccountingView::resizeEvent(QResizeEvent * event)
 {
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+
+	DBG(	"hint width: %i, hint height: %i, "
+		"scroll hint width: %i, scroll hint height: %i, "
+		"width: %i, height: %i\n",
+		main.sizeHint().width(), main.sizeHint().height(),
+		scrollArea.sizeHint().width(), scrollArea.sizeHint().height(),
+		width(), height());
+
 	QHBoxLayout * toolLayout = new QHBoxLayout;
 	toolLayout->addStretch();
 	toolLayout->addWidget(&doneButton);
 
+	QVBoxLayout * layout = new QVBoxLayout;
+
+	layout->addLayout(toolLayout);
+	layout->addSpacing(3);
+	layout->addWidget(&shopSelector);
+	layout->addWidget(&wareEditor);
+	layout->addWidget(&categoryEditor);
+
 	QHBoxLayout * hlayout = new QHBoxLayout;
-	hlayout->addLayout(quantityEditor.portrait());
-	hlayout->addLayout(grossPriceEditor.portrait());
-	hlayout->addLayout(unitPriceEditor.portrait());
+	hlayout->addWidget(&quantityEditor);
+	hlayout->addWidget(&grossPriceEditor);
+	hlayout->addWidget(&unitPriceEditor);
+	layout->addLayout(hlayout);
 
 	QHBoxLayout * h2layout = new QHBoxLayout;
 	h2layout->addWidget(&onStockCheck);
 	h2layout->addWidget(&boughtCheck);
+	layout->addLayout(h2layout);
 
-	QVBoxLayout * layout = new QVBoxLayout;
-
-	if(orientation == ScreenOrientation::Portrait) {
-		layout->addLayout(toolLayout);
-		layout->addSpacing(3);
-		layout->addLayout(shopSelector.landscape());
-		layout->addLayout(wareEditor.landscape());
-		layout->addLayout(categoryEditor.landscape());
-		layout->addLayout(hlayout);
-		layout->addLayout(h2layout);
-		layout->addLayout(purchaseDateTime.landscape());
-		layout->addLayout(commentEditor.landscape());
-		layout->addLayout(uploadDateTime.landscape());
-		orientation = ScreenOrientation::Landscape;
-	} else {
-		layout->addLayout(toolLayout);
-		layout->addLayout(shopSelector.portrait());
-		layout->addLayout(wareEditor.portrait());
-		layout->addLayout(categoryEditor.portrait());
-		layout->addLayout(hlayout);
-		layout->addLayout(h2layout);
-		layout->addLayout(purchaseDateTime.portrait());
-		layout->addLayout(commentEditor.portrait());
-		layout->addLayout(uploadDateTime.portrait());
-		orientation = ScreenOrientation::Portrait;
-	}
+	layout->addWidget(&purchaseDateTime);
+	layout->addWidget(&commentEditor);
+	layout->addWidget(&uploadDateTime);
 
 	setLayout(layout);
 	shopSelector.tableView.enableKineticScroll();
@@ -135,18 +132,18 @@ void AccountingView::mapToGui()
 	categoryEditor.setText(item.category);
 
 	quantityEditor.blockSignals(true);
-	quantityEditor.setValue(item.quantity);
-	quantityEditor.blockSignals(false);
+	quantityEditor.spin.setValue(item.quantity);
+	quantityEditor.spin.blockSignals(false);
 
 	commentEditor.setText(item.comment);
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue((DBL_EPSILON <= item.quantity) ?
+	unitPriceEditor.spin.setValue((DBL_EPSILON <= item.quantity) ?
 			item.price / item.quantity : 0);
 	unitPriceEditor.blockSignals(false);
 
 	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.setValue(item.price);
+	grossPriceEditor.spin.setValue(item.price);
 	grossPriceEditor.blockSignals(false);
 
 	onStockCheck.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
@@ -158,11 +155,11 @@ void AccountingView::mapFromGui()
 
 	item.name = wareEditor.text();
 	item.category = categoryEditor.text();
-	item.quantity = quantityEditor.value();
+	item.quantity = quantityEditor.spin.value();
 	item.comment = commentEditor.toPlainText();
 
 	item.bought = (boughtCheck.checkState() == Qt::Checked);
-	item.price = grossPriceEditor.value();
+	item.price = grossPriceEditor.spin.value();
 	item.purchased = purchaseDateTime.dateTime();
 
 	int i = shopSelector.currentIndex();
@@ -207,7 +204,7 @@ void AccountingView::nameEditFinishedSlot()
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(wareEditor.text());
 	if(i == -1){
-		quantityEditor.setSuffix("");
+		quantityEditor.spin.setSuffix("");
 		return;
 	}
 
@@ -216,17 +213,17 @@ void AccountingView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryEditor.addItems(cats.split(", ", QString::SkipEmptyParts));
 
-	quantityEditor.setSuffix(" " + w.unit);
+	quantityEditor.spin.setSuffix(" " + w.unit);
 }
 
 void AccountingView::quantityValueChangedSlot(double q)
 {
-	double u = unitPriceEditor.value();
-	double g = grossPriceEditor.value();
+	double u = unitPriceEditor.spin.value();
+	double g = grossPriceEditor.spin.value();
 
 	if(-DBL_EPSILON < g && g < DBL_EPSILON){
 		grossPriceEditor.blockSignals(true);
-		grossPriceEditor.setValue(u * q);
+		grossPriceEditor.spin.setValue(u * q);
 		grossPriceEditor.blockSignals(false);
 		return;
 	}
@@ -238,19 +235,19 @@ void AccountingView::quantityValueChangedSlot(double q)
 	}
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue(u);
+	unitPriceEditor.spin.setValue(u);
 	unitPriceEditor.blockSignals(false);
 }
 
 void AccountingView::unitPriceEditingFinishedSlot()
 {
-	double u = unitPriceEditor.value();
-	double q = quantityEditor.value();
-	double g = grossPriceEditor.value();
+	double u = unitPriceEditor.spin.value();
+	double q = quantityEditor.spin.value();
+	double g = grossPriceEditor.spin.value();
 
 	if(-DBL_EPSILON < g && g < DBL_EPSILON){
 		grossPriceEditor.blockSignals(true);
-		grossPriceEditor.setValue(u * q);
+		grossPriceEditor.spin.setValue(u * q);
 		grossPriceEditor.blockSignals(false);
 		return;
 	}
@@ -261,7 +258,7 @@ void AccountingView::unitPriceEditingFinishedSlot()
 		q = g / u;
 
 	quantityEditor.blockSignals(true);
-	quantityEditor.setValue(q);
+	quantityEditor.spin.setValue(q);
 	quantityEditor.blockSignals(false);
 }
 
@@ -271,11 +268,11 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 
 	if(-DBL_EPSILON < g && g < DBL_EPSILON){
 		quantityEditor.blockSignals(true);
-		quantityEditor.setValue(0);
+		quantityEditor.spin.setValue(0);
 		quantityEditor.blockSignals(false);
 	}
 
-	double q = quantityEditor.value();
+	double q = quantityEditor.spin.value();
 	if(-DBL_EPSILON < q && q < DBL_EPSILON){
 		u = 0;
 	} else {
@@ -283,6 +280,6 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 	}
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue(u);
+	unitPriceEditor.spin.setValue(u);
 	unitPriceEditor.blockSignals(false);
 }

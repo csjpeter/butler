@@ -27,7 +27,7 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
-	virtual void relayout();
+	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
 	void saveSlot();

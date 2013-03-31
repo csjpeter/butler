@@ -104,24 +104,13 @@ void CustomView::relayout()
 
 	QHBoxLayout * toolLayout = new QHBoxLayout;
 
-	if(orientation == ScreenOrientation::Portrait) {
-		toolLayout->addWidget(addButton.landscape());
-		toolLayout->addWidget(editButton.landscape());
-		toolLayout->addWidget(delButton.landscape());
-		toolLayout->addWidget(dropButton.landscape());
-		toolLayout->addWidget(filterButton.landscape());
-		orientation = ScreenOrientation::Landscape;
-	} else {
-		toolLayout->addWidget(addButton.portrait());
-		toolLayout->addWidget(editButton.portrait());
-		toolLayout->addWidget(delButton.portrait());
-		toolLayout->addWidget(dropButton.portrait());
-		toolLayout->addWidget(filterButton.portrait());
-		orientation = ScreenOrientation::Portrait;
-	}
+	toolLayout->addWidget(&addButton);
+	toolLayout->addWidget(&editButton);
+	toolLayout->addWidget(&delButton);
+	toolLayout->addWidget(&dropButton);
+	toolLayout->addWidget(&filterButton);
 
 	toolLayout->addStretch();
-//	toolLayout->addWidget(&doneButton);
 
 	layout->addLayout(toolLayout);
 	layout->addWidget(&tableView);
@@ -164,20 +153,13 @@ void CustomView::closeEvent(QCloseEvent *event)
 void CustomView::loadState()
 {
 	QSettings settings;
-	QPoint pos = settings.value("customview/position", QPoint()).toPoint();
-	QSize size = settings.value("customview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
+	restoreGeometry(settings.value("customview/geometry").toByteArray());
 }
 
 void CustomView::saveState()
 {
 	QSettings settings;
-	settings.setValue("customview/position", pos());
-	settings.setValue("customview/size", size());
+	settings.setValue("customview/geometry", saveGeometry());
 
 	QString uploaded;
 	if(tableView.currentIndex().isValid()){
