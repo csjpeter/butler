@@ -6,6 +6,8 @@
 #ifndef BUTLER_CONFIG_H
 #define BUTLER_CONFIG_H
 
+extern QLocale locale;
+
 namespace Config {
 	void save();
 	void load();

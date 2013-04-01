@@ -13,6 +13,7 @@
 
 static QString _dateTimeFormat;
 static QString rootDir;
+QLocale locale;
 
 namespace Config {
 

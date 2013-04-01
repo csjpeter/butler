@@ -18,15 +18,14 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	PannView(parent),
 	dbname(dbname),
 	model(model),
-	shopSelector(dbname),
-	wareEditor(dbname)
+	shopSelector(&shopsModel(dbname), Shop::Name),
+	wareEditor(&waresModel(dbname), Ware::Name),
+	categoryEditor(&waresModel(dbname), Ware::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
-	setWindowTitle(tr("Add already bought new item"));
 	
 	boughtCheck.setCheckState(Qt::Checked);
-
-//	relayout();
+	uploadDateTime.setEnabled(false);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
@@ -39,8 +38,71 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
 
+	relayout();
+
 	/* restore last state */
 	loadState();
+}
+
+bool AccountingView::event(QEvent * event)
+{
+	if(event->type() == QEvent::LanguageChange){
+		setWindowTitle(qtTrId(TidAccountingWindowTitle));
+		doneButton.setText(qtTrId(TidDoneButtonLabel));
+		shopSelector.label.setText(qtTrId(TidShopEditorLabel));
+		wareEditor.label.setText(qtTrId(TidWareEditorLabel));
+		categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
+		quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
+		unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
+		grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
+		purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
+		uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
+		commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
+		onStockCheck.setText(qtTrId(TidOnStockCheckBoxLabel));
+		boughtCheck.setText(qtTrId(TidBoughtCheckBoxLabel));
+	}
+	return QWidget::event(event);
+}
+
+enum class ViewState {
+	Wide,
+	Narrow
+};
+
+void AccountingView::relayout()
+{
+	delete layout();
+
+	QHBoxLayout * toolLayout = new QHBoxLayout;
+	toolLayout->addStretch();
+	toolLayout->addWidget(&doneButton);
+
+	QHBoxLayout * hlayout = new QHBoxLayout;
+	hlayout->addWidget(&quantityEditor);
+	hlayout->addWidget(&grossPriceEditor);
+	hlayout->addWidget(&unitPriceEditor);
+
+	QHBoxLayout * h2layout = new QHBoxLayout;
+	h2layout->addWidget(&onStockCheck);
+	h2layout->addWidget(&boughtCheck);
+
+	QVBoxLayout * mainLayout = new QVBoxLayout;
+	mainLayout->addLayout(toolLayout);
+	//mainLayout->addSpacing(3);
+	mainLayout->addWidget(&shopSelector);
+	mainLayout->addWidget(&wareEditor);
+	mainLayout->addWidget(&categoryEditor);
+	mainLayout->addLayout(hlayout);
+	mainLayout->addLayout(h2layout);
+	mainLayout->addWidget(&purchaseDateTime);
+	mainLayout->addWidget(&uploadDateTime);
+	mainLayout->addWidget(&commentEditor);
+
+	setLayout(mainLayout);
+
+	shopSelector.tableView.enableKineticScroll();
+	wareEditor.enableKineticScroll();
+	categoryEditor.tableView.enableKineticScroll();
 }
 
 void AccountingView::resizeEvent(QResizeEvent * event)
@@ -55,42 +117,33 @@ void AccountingView::resizeEvent(QResizeEvent * event)
 		scrollArea.sizeHint().width(), scrollArea.sizeHint().height(),
 		width(), height());
 
-	QHBoxLayout * toolLayout = new QHBoxLayout;
-	toolLayout->addStretch();
-	toolLayout->addWidget(&doneButton);
+	ViewState newState = ViewState::Wide;
+	QSize newSize;
 
-	QVBoxLayout * layout = new QVBoxLayout;
-
-	layout->addLayout(toolLayout);
-	layout->addSpacing(3);
-	layout->addWidget(&shopSelector);
-	layout->addWidget(&wareEditor);
-	layout->addWidget(&categoryEditor);
-
-	QHBoxLayout * hlayout = new QHBoxLayout;
-	hlayout->addWidget(&quantityEditor);
-	hlayout->addWidget(&grossPriceEditor);
-	hlayout->addWidget(&unitPriceEditor);
-	layout->addLayout(hlayout);
-
-	QHBoxLayout * h2layout = new QHBoxLayout;
-	h2layout->addWidget(&onStockCheck);
-	h2layout->addWidget(&boughtCheck);
-	layout->addLayout(h2layout);
-
-	layout->addWidget(&purchaseDateTime);
-	layout->addWidget(&commentEditor);
-	layout->addWidget(&uploadDateTime);
-
-	setLayout(layout);
-	shopSelector.tableView.enableKineticScroll();
-	wareEditor.enableKineticScroll();
-	categoryEditor.tableView.enableKineticScroll();
+	switch(newState) {
+		case ViewState::Wide :
+			shopSelector.wideLayout();
+			wareEditor.wideLayout();
+			categoryEditor.wideLayout();
+			quantityEditor.wideLayout();
+			unitPriceEditor.wideLayout();
+			grossPriceEditor.wideLayout();
+			purchaseDateTime.wideLayout();
+			uploadDateTime.wideLayout();
+			commentEditor.wideLayout();
+			relayout();
+			newSize = sizeHint();
+			if(newSize.width() <= event->size().width())
+				break;
+			// falling back to a smaller size
+		case ViewState::Narrow :
+			break;
+	}
 }
 
 void AccountingView::showEvent(QShowEvent *event)
 {
-	uploadDateTime.setDateTime(QDateTime::currentDateTime());
+	uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
 
 	PannView::showEvent(event);
 
@@ -125,7 +178,7 @@ void AccountingView::saveState()
 
 void AccountingView::mapToGui()
 {
-	uploadDateTime.setDateTime(item.uploaded);
+	uploadDateTime.edit.setDateTime(item.uploaded);
 
 	wareEditor.setText(item.name);
 	nameEditFinishedSlot();
@@ -135,7 +188,7 @@ void AccountingView::mapToGui()
 	quantityEditor.spin.setValue(item.quantity);
 	quantityEditor.spin.blockSignals(false);
 
-	commentEditor.setText(item.comment);
+	commentEditor.edit.setText(item.comment);
 
 	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.spin.setValue((DBL_EPSILON <= item.quantity) ?
@@ -151,18 +204,18 @@ void AccountingView::mapToGui()
 
 void AccountingView::mapFromGui()
 {
-	item.uploaded = uploadDateTime.dateTime();
+	item.uploaded = uploadDateTime.edit.dateTime();
 
 	item.name = wareEditor.text();
 	item.category = categoryEditor.text();
 	item.quantity = quantityEditor.spin.value();
-	item.comment = commentEditor.toPlainText();
+	item.comment = commentEditor.edit.toPlainText();
 
 	item.bought = (boughtCheck.checkState() == Qt::Checked);
 	item.price = grossPriceEditor.spin.value();
-	item.purchased = purchaseDateTime.dateTime();
+	item.purchased = purchaseDateTime.edit.dateTime();
 
-	int i = shopSelector.currentIndex();
+	int i = shopSelector.box.currentIndex();
 	ShopsModel &sm = shopsModel(dbname);
 	if(0 <= i && i < sm.rowCount())
 		item.shop = sm.shop(i).name;
@@ -199,7 +252,7 @@ void AccountingView::saveSlot()
 
 void AccountingView::nameEditFinishedSlot()
 {
-	categoryEditor.clear();
+	categoryEditor.box.clear();
 
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(wareEditor.text());
@@ -211,7 +264,7 @@ void AccountingView::nameEditFinishedSlot()
 	const Ware &w = wm.ware(i);
 
 	QString cats = WaresModel::categoriesToString(w.categories);
-	categoryEditor.addItems(cats.split(", ", QString::SkipEmptyParts));
+	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
 
 	quantityEditor.spin.setSuffix(" " + w.unit);
 }

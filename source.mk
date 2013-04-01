@@ -141,6 +141,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_pannable.h \
 	$(DIST_DIR)/src/qt/butler_pannview.h \
 	$(DIST_DIR)/src/qt/butler_widgets.h \
+	$(DIST_DIR)/src/qt/butler_texts.cpp \
+	$(DIST_DIR)/src/qt/butler_texts.h \
 	$(DIST_DIR)/src/qt/main.cpp \
 	$(DIST_DIR)/share/icons/copyright \
 	$(DIST_DIR)/share/icons/accounting.png \

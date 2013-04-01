@@ -19,7 +19,6 @@ private:
 public:
 	PannView(QWidget * parent = 0) :
 		QWidget(parent),
-		landscapeMinWidth(0),
 		scrollArea(0),
 		scroll(0)
 	{
@@ -41,13 +40,7 @@ public:
 
 	virtual void setLayout(QLayout * layout)
 	{
-		QLayout * oldLayout = main.layout();
-		if(oldLayout){ /* Remove existing layout while keeping widgets. */
-			QLayoutItem * child;
-			while((child = oldLayout->takeAt(0)) != 0)
-				delete child;
-			delete oldLayout;
-		}
+		delete main.layout();
 		scroll.disableKineticScroll();
 		main.setLayout(layout);
 		scroll.enableKineticScrollFor(&scrollArea);
@@ -79,7 +72,6 @@ signals:
 	void rejected();
 
 private:
-	int landscapeMinWidth;
 	QScrollArea scrollArea;
 	QWidget main;
 

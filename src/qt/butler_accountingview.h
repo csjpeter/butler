@@ -27,9 +27,11 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
+	virtual bool event(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
+	void relayout();
 	void saveSlot();
 	void nameEditFinishedSlot();
 	void quantityValueChangedSlot(double q);
@@ -41,17 +43,17 @@ private:
 	ItemsModel & model;
 	Item item;
 
-	DoneButton doneButton;
-	ShopSelector shopSelector;
-	PurchaseDateTimeEditor purchaseDateTime;
-	WareEditor wareEditor;
-	CategoryEditor categoryEditor;
+	Button doneButton;
+	ComboSelector shopSelector;
+	ComboSelector wareEditor;
+	ComboSelector categoryEditor;
 	QuantityEditor quantityEditor;
-	UnitPriceEditor unitPriceEditor;
-	GrossPriceEditor grossPriceEditor;
-	OnStockCheckBox onStockCheck;
-	UploadDateTimeEditor uploadDateTime;
-	BoughtCheckBox boughtCheck;
+	PriceEditor unitPriceEditor;
+	PriceEditor grossPriceEditor;
+	QCheckBox onStockCheck;
+	QCheckBox boughtCheck;
+	DateTimeEditor purchaseDateTime;
+	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
 };
 

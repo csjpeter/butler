@@ -201,6 +201,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
 	tmp/src/qt/butler_waresview.opp \
+	tmp/src/qt/butler_texts.opp \
 	tmp/src/qt/moc/butler_config.opp \
 	tmp/src/qt/moc/butler_databases.opp \
 	tmp/src/qt/moc/butler_mainview.opp \

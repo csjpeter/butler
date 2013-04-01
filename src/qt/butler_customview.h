@@ -29,9 +29,11 @@ private:
 	void loadState();
 	void saveState();
 
-	virtual void relayout();
+	virtual bool event(QEvent * event);
+	void relayout();
+	virtual void resizeEvent(QResizeEvent * event);
 	
-	void updateStatistics();
+//	void updateStatistics();
 
 private slots:
 	void editItem();
@@ -57,14 +59,14 @@ private:
 	ToolButton filterButton;
 
 	TableView tableView;
-
+/*
 	QLabel *itemCountLabel;
 	QLabel *itemSumQuantityLabel;
 	QLabel *itemSumPriceLabel;
 	QLabel *avgUnitPriceLabel;
 	QLabel *minUnitPriceLabel;
 	QLabel *maxUnitPriceLabel;
-
+*/
 	AccountingView *accountingView;
 	EditItemView *editItemView;
 	QueryOptionsView *queryOptsView;

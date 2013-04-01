@@ -33,11 +33,11 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	dbname(dbname),
 	model(customModel(dbname)),
 	selfDestruct(selfDestruct),
-	addButton(tr("Add new item"), QIcon(Path::icon("add.png"))),
-	editButton(tr("Edit item"), QIcon(Path::icon("edit.png"))),
-	delButton(tr("Delete item"), QIcon(Path::icon("delete.png"))),
-	dropButton(tr("Drop from stock"), QIcon(Path::icon("trash.png"))),
-	filterButton(tr("Query settings"), QIcon(Path::icon("query.png"))),
+	addButton(QIcon(Path::icon("add.png"))),
+	editButton(QIcon(Path::icon("edit.png"))),
+	delButton(QIcon(Path::icon("delete.png"))),
+	dropButton(QIcon(Path::icon("trash.png"))),
+	filterButton(QIcon(Path::icon("query.png"))),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -55,7 +55,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
 	/* statistics in grid layout */
-	QGridLayout *statGrid = new QGridLayout;
+/*	QGridLayout *statGrid = new QGridLayout;
 	QLabel *label;
 
 	label = new QLabel(tr("Number of queried items : "));
@@ -87,7 +87,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	statGrid->addWidget(label, 5, 0, 1, 1);
 	maxUnitPriceLabel = new QLabel;
 	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
-
+*/
 	relayout();
 
 	/* restore last state */
@@ -98,25 +98,89 @@ CustomView::~CustomView()
 {
 }
 
+bool CustomView::event(QEvent * event)
+{
+	if(event->type() == QEvent::LanguageChange){
+		setWindowTitle(qtTrId(TidUserQueryWindowTitle));
+		addButton.setText(qtTrId(TidAddItemButtonLabel));
+		editButton.setText(qtTrId(TidEditItemButtonLabel));
+		delButton.setText(qtTrId(TidDeleteItemButtonLabel));
+		dropButton.setText(qtTrId(TidDropItemButtonLabel));
+		filterButton.setText(qtTrId(TidFilterItemButtonLabel));
+	}
+	return QWidget::event(event);
+}
+
+enum class ViewState {
+	Wide,
+	Medium,
+	Narrow
+};
+
 void CustomView::relayout()
 {
-	QVBoxLayout * layout = new QVBoxLayout;
+	delete layout();
 
 	QHBoxLayout * toolLayout = new QHBoxLayout;
-
 	toolLayout->addWidget(&addButton);
 	toolLayout->addWidget(&editButton);
 	toolLayout->addWidget(&delButton);
 	toolLayout->addWidget(&dropButton);
 	toolLayout->addWidget(&filterButton);
-
 	toolLayout->addStretch();
 
-	layout->addLayout(toolLayout);
-	layout->addWidget(&tableView);
+	QVBoxLayout * mainLayout = new QVBoxLayout;
+	mainLayout->addLayout(toolLayout);
+	mainLayout->addWidget(&tableView);
 
-	setLayout(layout);
+	setLayout(mainLayout);
+
 	tableView.enableKineticScroll();
+}
+
+void CustomView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+
+	ViewState newState = ViewState::Wide;
+	QSize newSize;
+
+	switch(newState) {
+		case ViewState::Wide :
+			addButton.wideLayout();
+			editButton.wideLayout();
+			delButton.wideLayout();
+			dropButton.wideLayout();
+			filterButton.wideLayout();
+			relayout();
+			newSize = sizeHint();
+			if(newSize.width() <= event->size().width())
+				break;
+			// falling back to a smaller size
+		case ViewState::Medium :
+			addButton.mediumLayout();
+			editButton.mediumLayout();
+			delButton.mediumLayout();
+			dropButton.mediumLayout();
+			filterButton.mediumLayout();
+			relayout();
+			newSize = sizeHint();
+			if(newSize.width() <= event->size().width())
+				break;
+			// falling back to a smaller size
+		case ViewState::Narrow :
+			addButton.narrowLayout();
+			editButton.narrowLayout();
+			delButton.narrowLayout();
+			dropButton.narrowLayout();
+			filterButton.narrowLayout();
+			relayout();
+			newSize = sizeHint();
+			if(newSize.width() <= event->size().width())
+				break;
+			// falling back to a smaller size
+	}
 }
 
 void CustomView::showEvent(QShowEvent *event)
@@ -129,7 +193,7 @@ void CustomView::showEvent(QShowEvent *event)
 	model->opts.name = "default";
 
 	model->query();
-	updateStatistics();
+//	updateStatistics();
 	
 	QSettings settings;
 
@@ -274,9 +338,9 @@ void CustomView::filterAcceptedSlot()
 	}
 
 	model->query();
-	updateStatistics();
+//	updateStatistics();
 }
-
+/*
 void CustomView::updateStatistics()
 {
 	itemCountLabel->setNum((int)model->stat.itemCount);
@@ -286,7 +350,7 @@ void CustomView::updateStatistics()
 	minUnitPriceLabel->setNum(model->stat.cheapestUnitPrice);
 	maxUnitPriceLabel->setNum(model->stat.mostExpUnitPrice);
 }
-
+*/
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model->sort(logicalIndex, order == Qt::AscendingOrder);
