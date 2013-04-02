@@ -28,6 +28,7 @@ void load()
 void loadTranslations()
 {
 	QTranslator translator;
+	LOG("Locales: %s", C_STR(locale.uiLanguages().join(", ")));
 	if(!translator.load(locale, "", "", Path::translation()))
 			throw csjp::ResourceError("Can not find proper language file at %s",
 					C_STR(Path::translation()));
