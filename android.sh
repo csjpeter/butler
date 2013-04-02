@@ -32,6 +32,7 @@ function config ()
 		--debug \
 		--target=arm-linux-androideabi \
 		--prefix= \
+		--translations-prefix=assets:/ \
 		--css-prefix=assets:/ \
 		--icons-prefix=assets:/ \
 		--tcroot=${TCROOT} \

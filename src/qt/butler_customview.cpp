@@ -88,27 +88,27 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	maxUnitPriceLabel = new QLabel;
 	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
 */
-	relayout();
 
 	/* restore last state */
 	loadState();
+
+	retranslate();
 }
 
 CustomView::~CustomView()
 {
 }
 
-bool CustomView::event(QEvent * event)
+void CustomView::retranslate()
 {
-	if(event->type() == QEvent::LanguageChange){
-		setWindowTitle(qtTrId(TidUserQueryWindowTitle));
-		addButton.setText(qtTrId(TidAddItemButtonLabel));
-		editButton.setText(qtTrId(TidEditItemButtonLabel));
-		delButton.setText(qtTrId(TidDeleteItemButtonLabel));
-		dropButton.setText(qtTrId(TidDropItemButtonLabel));
-		filterButton.setText(qtTrId(TidFilterItemButtonLabel));
-	}
-	return QWidget::event(event);
+	setWindowTitle(qtTrId(TidUserQueryWindowTitle));
+	addButton.setText(qtTrId(TidAddItemButtonLabel));
+	editButton.setText(qtTrId(TidEditItemButtonLabel));
+	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
+	dropButton.setText(qtTrId(TidDropItemButtonLabel));
+	filterButton.setText(qtTrId(TidFilterItemButtonLabel));
+
+	relayout();
 }
 
 enum class ViewState {
@@ -117,7 +117,7 @@ enum class ViewState {
 	Narrow
 };
 
-void CustomView::relayout()
+void CustomView::applyLayout()
 {
 	delete layout();
 
@@ -138,11 +138,8 @@ void CustomView::relayout()
 	tableView.enableKineticScroll();
 }
 
-void CustomView::resizeEvent(QResizeEvent * event)
+void CustomView::relayout()
 {
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
-		return;
-
 	ViewState newState = ViewState::Wide;
 	QSize newSize;
 
@@ -153,9 +150,9 @@ void CustomView::resizeEvent(QResizeEvent * event)
 			delButton.wideLayout();
 			dropButton.wideLayout();
 			filterButton.wideLayout();
-			relayout();
+			applyLayout();
 			newSize = sizeHint();
-			if(newSize.width() <= event->size().width())
+			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
@@ -164,9 +161,9 @@ void CustomView::resizeEvent(QResizeEvent * event)
 			delButton.mediumLayout();
 			dropButton.mediumLayout();
 			filterButton.mediumLayout();
-			relayout();
+			applyLayout();
 			newSize = sizeHint();
-			if(newSize.width() <= event->size().width())
+			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
@@ -175,12 +172,27 @@ void CustomView::resizeEvent(QResizeEvent * event)
 			delButton.narrowLayout();
 			dropButton.narrowLayout();
 			filterButton.narrowLayout();
-			relayout();
+			applyLayout();
 			newSize = sizeHint();
-			if(newSize.width() <= event->size().width())
+			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
 	}
+}
+
+bool CustomView::event(QEvent * event)
+{
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+	return QWidget::event(event);
+}
+
+void CustomView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+
+	relayout();
 }
 
 void CustomView::showEvent(QShowEvent *event)

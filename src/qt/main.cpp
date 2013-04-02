@@ -74,6 +74,8 @@ int main(int argc, char *args[])
 	try {
 		Path::initRootPath(args[0]);
 
+		Config::loadTranslations();
+
 		/* Init the local database */
 		if(dbFileName == ""){
 			QSettings settings;

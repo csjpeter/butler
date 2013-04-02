@@ -31,6 +31,8 @@ private:
 	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
+	void retranslate();
+	void applyLayout();
 	void relayout();
 	void saveSlot();
 	void nameEditFinishedSlot();

@@ -103,6 +103,9 @@ function generate ()
 		> $2 || exit $?
 }
 
+lupdate -verbose src/qt -ts share/translations/en.ts
+lupdate -verbose src/qt -ts share/translations/hu.ts
+
 function debian_packaging ()
 {
 	test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
@@ -161,6 +164,13 @@ function android_packaging ()
 	}
 	cp -pdr share/css/${PACKAGING}.css \
 		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css/application.css || exit $?
+	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || {
+		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || exit $?
+	}
+	lrelease share/translations/en.ts -qm \
+		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations/en.qm || exit $?
+	lrelease share/translations/hu.ts -qm \
+		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations/hu.qm || exit $?
 }
 
 #
@@ -186,6 +196,12 @@ test -d ${DIST_DIR}/share/css || { mkdir -p ${DIST_DIR}/share/css || exit $? ; }
 cp -pdr share/css/${PACKAGING}.css ${DIST_DIR}/share/css/application.css || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
+
+test -d ${DIST_DIR}/share/translations || {
+	mkdir -p ${DIST_DIR}/share/translations || exit $?
+}
+lrelease share/translations/en.ts -qm ${DIST_DIR}/share/translations/en.qm || exit $?
+lrelease share/translations/hu.ts -qm ${DIST_DIR}/share/translations/hu.qm || exit $?
 
 test "x${PACKAGING}" = "x" || {
 	${PACKAGING}_packaging || exit $?

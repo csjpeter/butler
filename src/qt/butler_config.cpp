@@ -25,6 +25,15 @@ void load()
 {
 }
 
+void loadTranslations()
+{
+	QTranslator translator;
+	if(!translator.load(locale, "", "", Path::translation()))
+			throw csjp::ResourceError("Can not find proper language file at %s",
+					C_STR(Path::translation()));
+	qApp->installTranslator(&translator);
+}
+
 const QString & dateTimeFormat()
 {
 	if (!_dateTimeFormat.size())
@@ -35,6 +44,17 @@ const QString & dateTimeFormat()
 }
 
 namespace Path {
+
+const QString translation()
+{
+	QString path;
+#ifdef RELATIVE_PATH
+	path += rootDir;
+#endif
+	path.append(TRANSLATIONS_PATH);
+	DBG("Translation path: %s", C_STR(path));
+	return path;
+}
 
 const QString icon(const char * fileName)
 {

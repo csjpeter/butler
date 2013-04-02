@@ -13,6 +13,7 @@
 
 #define ICONS_PATH "@ICONS_PREFIX@share/@PKGNAME_BASE@/icons/"
 #define CSS_PATH "@CSS_PREFIX@share/@PKGNAME_BASE@/css/"
+#define TRANSLATIONS_PATH "@TRANSLATIONS_PREFIX@share/@PKGNAME_BASE@/translations/"
 
 #define ENDUSER_LICENSE @ENDUSER_LICENSE@
 

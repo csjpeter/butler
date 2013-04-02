@@ -273,6 +273,8 @@ build: \
 	$(STATIC_LIBSQL) \
 	$(BUTLER_IMAGES) \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/application.css \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/en.qm \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/hu.qm \
 	@TCROOT@@APPS_DIR@/@PKGNAME_BASE@.desktop \
 	@TCROOT@@MAN_DIR@/man1/@PKGNAME_BASE@.1 \
 	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
@@ -412,6 +414,11 @@ tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
 
 @TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/%.css: \
 		share/css/%.css
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $< $@
+
+@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/%.qm: \
+		share/translations/%.qm
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 

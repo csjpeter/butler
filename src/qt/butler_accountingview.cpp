@@ -38,30 +38,29 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
 
-	relayout();
-
 	/* restore last state */
 	loadState();
+
+	retranslate();
 }
 
-bool AccountingView::event(QEvent * event)
+void AccountingView::retranslate()
 {
-	if(event->type() == QEvent::LanguageChange){
-		setWindowTitle(qtTrId(TidAccountingWindowTitle));
-		doneButton.setText(qtTrId(TidDoneButtonLabel));
-		shopSelector.label.setText(qtTrId(TidShopEditorLabel));
-		wareEditor.label.setText(qtTrId(TidWareEditorLabel));
-		categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
-		quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
-		unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
-		grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
-		purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
-		uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
-		commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
-		onStockCheck.setText(qtTrId(TidOnStockCheckBoxLabel));
-		boughtCheck.setText(qtTrId(TidBoughtCheckBoxLabel));
-	}
-	return QWidget::event(event);
+	setWindowTitle(qtTrId(TidAccountingWindowTitle));
+	doneButton.setText(qtTrId(TidDoneButtonLabel));
+	shopSelector.label.setText(qtTrId(TidShopEditorLabel));
+	wareEditor.label.setText(qtTrId(TidWareEditorLabel));
+	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
+	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
+	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
+	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
+	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
+	uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
+	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
+	onStockCheck.setText(qtTrId(TidOnStockCheckBoxLabel));
+	boughtCheck.setText(qtTrId(TidBoughtCheckBoxLabel));
+
+	relayout();
 }
 
 enum class ViewState {
@@ -69,7 +68,7 @@ enum class ViewState {
 	Narrow
 };
 
-void AccountingView::relayout()
+void AccountingView::applyLayout()
 {
 	delete layout();
 
@@ -105,18 +104,8 @@ void AccountingView::relayout()
 	categoryEditor.tableView.enableKineticScroll();
 }
 
-void AccountingView::resizeEvent(QResizeEvent * event)
+void AccountingView::relayout()
 {
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
-		return;
-
-	DBG(	"hint width: %i, hint height: %i, "
-		"scroll hint width: %i, scroll hint height: %i, "
-		"width: %i, height: %i\n",
-		main.sizeHint().width(), main.sizeHint().height(),
-		scrollArea.sizeHint().width(), scrollArea.sizeHint().height(),
-		width(), height());
-
 	ViewState newState = ViewState::Wide;
 	QSize newSize;
 
@@ -131,14 +120,28 @@ void AccountingView::resizeEvent(QResizeEvent * event)
 			purchaseDateTime.wideLayout();
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
-			relayout();
+			applyLayout();
 			newSize = sizeHint();
-			if(newSize.width() <= event->size().width())
+			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
 			break;
 	}
+}
+
+bool AccountingView::event(QEvent * event)
+{
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+	return QWidget::event(event);
+}
+
+void AccountingView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+	relayout();
 }
 
 void AccountingView::showEvent(QShowEvent *event)

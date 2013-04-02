@@ -12,6 +12,7 @@ namespace Config {
 	void save();
 	void load();
 
+	void loadTranslations();
 	const QString & dateTimeFormat();
 }
 
@@ -20,6 +21,7 @@ namespace Path {
 	 * ending as prefix/bin/binary_name. */
 	void initRootPath(const char * args0);
 
+	const QString translation();
 	const QString icon(const char * fileName);
 	const QString css(const char * fileName);
 }
