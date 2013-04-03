@@ -19,7 +19,6 @@
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 
-#include "butler_application.h"
 #include "butler_config.h"
 
 #include "butler_mainview.h"

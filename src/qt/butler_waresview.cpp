@@ -12,8 +12,6 @@
 #include "butler_editwareview.h"
 #include "butler_config.h"
 
-#include "butler_application.h"
-
 WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),

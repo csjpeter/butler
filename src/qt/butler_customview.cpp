@@ -15,8 +15,6 @@
 #include "butler_editwareview.h"
 #include "butler_config.h"
 
-#include "butler_application.h"
-
 /*
 QPixmap pixmap("image.jpg");
 QPalette palette;    
@@ -46,6 +44,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	setWindowTitle(tr("User query result"));
 
 	tableView.setModel(&model);
+	tableView.hideColumn(Item::Bought);
 
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
@@ -101,7 +100,8 @@ CustomView::~CustomView()
 
 void CustomView::retranslate()
 {
-	setWindowTitle(qtTrId(TidUserQueryWindowTitle));
+	setWindowTitle(qApp->translate(
+			  "", TidUserQueryWindowTitle, 0, QCoreApplication::UnicodeUTF8));
 	addButton.setText(qtTrId(TidAddItemButtonLabel));
 	editButton.setText(qtTrId(TidEditItemButtonLabel));
 	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
@@ -152,6 +152,7 @@ void CustomView::relayout()
 			filterButton.wideLayout();
 			applyLayout();
 			newSize = sizeHint();
+			DBG("Wide: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -163,6 +164,7 @@ void CustomView::relayout()
 			filterButton.mediumLayout();
 			applyLayout();
 			newSize = sizeHint();
+			DBG("Medium: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -174,17 +176,18 @@ void CustomView::relayout()
 			filterButton.narrowLayout();
 			applyLayout();
 			newSize = sizeHint();
+			DBG("Narrow: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
 	}
 }
 
-bool CustomView::event(QEvent * event)
+void CustomView::changeEvent(QEvent * event)
 {
+	QWidget::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
-	return QWidget::event(event);
 }
 
 void CustomView::resizeEvent(QResizeEvent * event)

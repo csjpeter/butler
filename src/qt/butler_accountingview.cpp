@@ -65,6 +65,7 @@ void AccountingView::retranslate()
 
 enum class ViewState {
 	Wide,
+	Medium,
 	Narrow
 };
 
@@ -78,10 +79,13 @@ void AccountingView::applyLayout()
 
 	QHBoxLayout * hlayout = new QHBoxLayout;
 	hlayout->addWidget(&quantityEditor);
+	hlayout->addStretch();
 	hlayout->addWidget(&grossPriceEditor);
+	hlayout->addStretch();
 	hlayout->addWidget(&unitPriceEditor);
 
 	QHBoxLayout * h2layout = new QHBoxLayout;
+	h2layout->addStretch();
 	h2layout->addWidget(&onStockCheck);
 	h2layout->addWidget(&boughtCheck);
 
@@ -125,16 +129,45 @@ void AccountingView::relayout()
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
+		case ViewState::Medium :
+			shopSelector.wideLayout();
+			wareEditor.wideLayout();
+			categoryEditor.wideLayout();
+			quantityEditor.narrowLayout();
+			unitPriceEditor.narrowLayout();
+			grossPriceEditor.narrowLayout();
+			purchaseDateTime.wideLayout();
+			uploadDateTime.wideLayout();
+			commentEditor.wideLayout();
+			applyLayout();
+			newSize = sizeHint();
+			if(newSize.width() <= width())
+				break;
+			// falling back to a smaller size
 		case ViewState::Narrow :
+			shopSelector.narrowLayout();
+			wareEditor.narrowLayout();
+			categoryEditor.narrowLayout();
+			quantityEditor.narrowLayout();
+			unitPriceEditor.narrowLayout();
+			grossPriceEditor.narrowLayout();
+			purchaseDateTime.narrowLayout();
+			uploadDateTime.narrowLayout();
+			commentEditor.narrowLayout();
+			applyLayout();
+			newSize = sizeHint();
+			if(newSize.width() <= width())
+				break;
+			// falling back to a smaller size
 			break;
 	}
 }
 
-bool AccountingView::event(QEvent * event)
+void AccountingView::changeEvent(QEvent * event)
 {
+	QWidget::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
-	return QWidget::event(event);
 }
 
 void AccountingView::resizeEvent(QResizeEvent * event)

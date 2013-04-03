@@ -46,6 +46,11 @@ public:
 		scroll.enableKineticScrollFor(&scrollArea);
 	}
 
+	virtual QSize sizeHint()
+	{
+		return main.sizeHint();
+	}
+
 	virtual void showEvent(QShowEvent *event)
 	{
 		QWidget::showEvent(event);

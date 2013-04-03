@@ -33,7 +33,7 @@ private:
 	void applyLayout();
 	void relayout();
 
-	virtual bool event(QEvent * event);
+	virtual void changeEvent(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
 	
 //	void updateStatistics();

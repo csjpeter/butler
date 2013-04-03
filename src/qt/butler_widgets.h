@@ -68,6 +68,7 @@ public:
 		QAbstractSpinBox::lineEdit()->setStyleSheet(
 				"QLineEdit { margin: 0px; padding: 0px; }");
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
+		setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred));
 	}
 };
 
@@ -332,7 +333,6 @@ public:
 		QToolButton(parent)
 	{
 		setIcon(icon);
-		wideLayout();
 	}
 
 	void narrowLayout()

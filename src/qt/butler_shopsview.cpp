@@ -12,8 +12,6 @@
 #include "butler_editshopview.h"
 #include "butler_config.h"
 
-#include "butler_application.h"
-
 ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),

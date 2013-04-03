@@ -74,7 +74,8 @@ int main(int argc, char *args[])
 	try {
 		Path::initRootPath(args[0]);
 
-		Config::loadTranslations();
+		Config::loadTranslation();
+		Config::loadTranslation("hu");
 
 		/* Init the local database */
 		if(dbFileName == ""){

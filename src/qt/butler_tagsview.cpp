@@ -11,8 +11,6 @@
 #include "butler_newtagview.h"
 #include "butler_edittagview.h"
 
-#include "butler_application.h"
-
 TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),

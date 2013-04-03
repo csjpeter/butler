@@ -73,6 +73,9 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		case Item::Uploaded :
 			return QVariant(items.queryAt(index.row()).uploaded);
 			break;
+		case Item::Bought :
+			return QVariant(true);
+			break;
 		case Item::Purchased :
 			return QVariant(items.queryAt(index.row()).purchased);
 			break;
@@ -131,6 +134,9 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 			break;
 		case Item::Uploaded :
 			return QVariant("Upload date");
+			break;
+		case Item::Bought :
+			return QVariant("Bought");
 			break;
 		case Item::Purchased :
 			return QVariant("Bought on");

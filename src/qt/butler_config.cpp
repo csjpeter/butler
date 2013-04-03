@@ -6,10 +6,13 @@
 #include <QtGui>
 
 #include <csjp_logger.h>
+#include <csjp_object.h>
 
 #include "config.h"
 #include "butler_config.h"
 #include "butler_macros.h"
+
+#include <butler_texts.h>
 
 static QString _dateTimeFormat;
 static QString rootDir;
@@ -25,14 +28,20 @@ void load()
 {
 }
 
-void loadTranslations()
+void loadTranslation(const char * langCode)
 {
-	QTranslator translator;
-	LOG("Locales: %s", C_STR(locale.uiLanguages().join(", ")));
-	if(!translator.load(locale, "", "", Path::translation()))
-			throw csjp::ResourceError("Can not find proper language file at %s",
-					C_STR(Path::translation()));
-	qApp->installTranslator(&translator);
+	QString lang(langCode);
+	if(!lang.length())
+		lang = "en" ; //locale.name();
+	lang.truncate(2);
+	QString trFile(Path::translation(C_STR(lang)));
+	DBG("Translation file to load: %s", C_STR(trFile));
+
+	csjp::Object<QTranslator> translator(new QTranslator);
+	if(!translator->load(trFile))
+		throw csjp::ResourceError("Can not load language file %s", C_STR(trFile));
+
+	qApp->installTranslator(translator.release());
 }
 
 const QString & dateTimeFormat()
@@ -46,7 +55,7 @@ const QString & dateTimeFormat()
 
 namespace Path {
 
-const QString translation()
+const QString translation(const char * lang)
 {
 	QString path;
 #ifdef RELATIVE_PATH
@@ -54,6 +63,8 @@ const QString translation()
 #endif
 	path.append(TRANSLATIONS_PATH);
 	DBG("Translation path: %s", C_STR(path));
+	path += lang;
+	path += ".qm";
 	return path;
 }
 
