@@ -19,13 +19,18 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	dbname(dbname),
 	model(model),
 	shopSelector(&shopsModel(dbname), Shop::Name),
-	wareEditor(&waresModel(dbname), Ware::Name),
-	categoryEditor(&waresModel(dbname), Ware::Name)
+	wareEditor(&waresModel(dbname), Ware::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 	
 	boughtCheck.setCheckState(Qt::Checked);
 	uploadDateTime.setEnabled(false);
+
+	infoLabel.setProperty("infoField", true);
+
+	shopSelector.setProperty("mandatoryField", true);
+	wareEditor.setProperty("mandatoryField", true);
+	grossPriceEditor.setProperty("mandatoryField", true);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
@@ -73,23 +78,24 @@ void AccountingView::applyLayout()
 {
 	delete layout();
 
-	QHBoxLayout * toolLayout = new QHBoxLayout;
-	toolLayout->addStretch();
+	HLayout * toolLayout = new HLayout;
+	toolLayout->addWidget(&infoLabel, 1, Qt::AlignHCenter);
+	toolLayout->addStretch(0);
 	toolLayout->addWidget(&doneButton);
 
-	QHBoxLayout * hlayout = new QHBoxLayout;
+	HLayout * hlayout = new HLayout;
 	hlayout->addWidget(&quantityEditor);
 	hlayout->addStretch();
 	hlayout->addWidget(&grossPriceEditor);
 	hlayout->addStretch();
 	hlayout->addWidget(&unitPriceEditor);
 
-	QHBoxLayout * h2layout = new QHBoxLayout;
+	HLayout * h2layout = new HLayout;
 	h2layout->addStretch();
 	h2layout->addWidget(&onStockCheck);
 	h2layout->addWidget(&boughtCheck);
 
-	QVBoxLayout * mainLayout = new QVBoxLayout;
+	VLayout * mainLayout = new VLayout;
 	mainLayout->addLayout(toolLayout);
 	//mainLayout->addSpacing(3);
 	mainLayout->addWidget(&shopSelector);
@@ -261,6 +267,8 @@ void AccountingView::mapFromGui()
 
 void AccountingView::saveSlot()
 {
+	infoLabel.setText("");
+
 	mapFromGui();
 
 	model.addNew(item);
@@ -280,6 +288,8 @@ void AccountingView::saveSlot()
 		wm.update(i, modified);
 	}
 
+	infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
+
 	item = Item();
 	item.uploaded = QDateTime::currentDateTime();
 	mapToGui();
@@ -288,6 +298,9 @@ void AccountingView::saveSlot()
 
 void AccountingView::nameEditFinishedSlot()
 {
+	if(wareEditor.text().size())
+		infoLabel.setText("");
+
 	categoryEditor.box.clear();
 
 	WaresModel &wm = waresModel(dbname);

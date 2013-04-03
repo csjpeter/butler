@@ -46,6 +46,7 @@ private:
 	Item item;
 
 	Button doneButton;
+	InfoLabel infoLabel;
 	ComboSelector shopSelector;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;

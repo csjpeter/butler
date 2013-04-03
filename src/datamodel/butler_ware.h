@@ -8,16 +8,26 @@
 
 #include <QString>
 
-#include <csjp_owner_container.h>
+#include <csjp_sorter_owner_container.h>
 
 #include <butler_tag_set.h>
 
-class CategoryNameSet : public csjp::OwnerContainer<QString>
+class CategoryNameSet : public csjp::SorterOwnerContainer<QString>
 {
 public:
-	CategoryNameSet() : csjp::OwnerContainer<QString>() {}
-	CategoryNameSet(CategoryNameSet &cns) : csjp::OwnerContainer<QString>(cns) {}
+	CategoryNameSet() : csjp::SorterOwnerContainer<QString>(), ascending(true){}
+	CategoryNameSet(CategoryNameSet &cns) :
+		csjp::SorterOwnerContainer<QString>(cns),
+		ascending(cns.ascending) {}
 	~CategoryNameSet() {}
+	int compare(const QString &a, const QString &b) const
+	{
+		bool ret = QString::localeAwareCompare(a, b) < 0;
+		if(!ascending)
+			ret = !ret;
+		return ret ? -1 : 1;
+	}
+	bool ascending;
 };
 
 class Ware

@@ -14,6 +14,9 @@ const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 
+//% "Item is saved, you may add another."
+const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_info_label");
+
 //% "Shop (place of buy):"
 const char* TidShopEditorLabel = QT_TRID_NOOP("tid_shop_editor_label");
 

@@ -104,6 +104,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
 	$(DIST_DIR)/src/qt/butler_waresmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_waresview.cpp \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_accountingview.h \
@@ -134,6 +135,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_tagsview.h \
 	$(DIST_DIR)/src/qt/butler_tagwidget.h \
 	$(DIST_DIR)/src/qt/butler_waresmodel.h \
+	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.h \
 	$(DIST_DIR)/src/qt/butler_waresview.h \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
 	$(DIST_DIR)/src/qt/QsKineticScroller.cpp \

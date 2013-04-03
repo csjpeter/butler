@@ -178,6 +178,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_tagsmodel.opp \
 	tmp/src/qt/butler_shopsmodel.opp \
 	tmp/src/qt/butler_waresmodel.opp \
+	tmp/src/qt/butler_warecategoriesmodel.opp \
 	tmp/src/qt/butler_itemsmodel.opp \
 	tmp/src/qt/butler_custommodel.opp \
 	tmp/src/qt/butler_shoppingmodel.opp \
@@ -209,6 +210,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_tagsmodel.opp \
 	tmp/src/qt/moc/butler_shopsmodel.opp \
 	tmp/src/qt/moc/butler_waresmodel.opp \
+	tmp/src/qt/moc/butler_warecategoriesmodel.opp \
 	tmp/src/qt/moc/butler_itemsmodel.opp \
 	tmp/src/qt/moc/butler_custommodel.opp \
 	tmp/src/qt/moc/butler_shoppingmodel.opp \

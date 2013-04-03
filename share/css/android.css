@@ -1,7 +1,7 @@
 
 * {
 /*	border-width: 0px;*/
-/*	font-family: "Times";*/
+	font-family: "Arial";
 /*	border-radius: 4px;*/
 	background-color: black;
 /*	font-size: 11pt;*/
@@ -48,6 +48,7 @@ QPushButton:hover, QLineEdit:hover, QCheckBox:hover, QRadioButton:hover, QComboB
 }
 
 QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
+	font-family: "Times";
 	padding: 5px;
 /*	font-size: 12pt;*/
 	font-size: 15px;
@@ -55,7 +56,7 @@ QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QText
 
 QPushButton, QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
 	border-width: 1px;
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 QPushButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QAbstractSpinBox:disabled {
@@ -64,10 +65,23 @@ QPushButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disa
 }
 
 QComboBox::drop-down, QDateTimeEdit::drop-down {
-	width: 24px;
+	width: 36px;
+/*	border-radius: 4px;*/
 }
 
 /* Some class specifics */
+
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
+/*	font-size: 9pt;*/
+	font-size: 11px;
+	font-weight: bold;
+}
+
+*[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
+	border-color: #663333;
+/*	background-color: #101400;*/
+}
 
 QLabel {
 	color: #888888;

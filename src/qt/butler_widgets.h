@@ -19,6 +19,19 @@
 #include "butler_config.h"
 #include "butler_texts.h"
 
+#define PRIMITIVE_PROPERTY(type, name, reader, writer) \
+	Q_PROPERTY(type name READ reader WRITE writer); \
+	type name; \
+	type reader() const { return name; } \
+	void writer(type newValue) \
+	{ \
+		name = newValue; \
+		/* Here to load dynamic stylesheet */ \
+		style()->unpolish(this); \
+		style()->polish(this); \
+		update(); \
+	}
+
 class TableView : public QTableView
 {
 private:
@@ -57,6 +70,44 @@ public:
 	QsKineticScroller scroll;
 };
 
+class HLayout : public QHBoxLayout
+{
+private:
+	Q_OBJECT
+public:
+	HLayout() : QHBoxLayout()
+	{
+		setContentsMargins(0,0,0,0);
+	}
+};
+
+class VLayout : public QVBoxLayout
+{
+private:
+	Q_OBJECT
+public:
+	VLayout() : QVBoxLayout()
+	{
+		setContentsMargins(0,0,0,0);
+	}
+};
+
+class InfoLabel : public QLabel
+{
+private:
+	Q_OBJECT
+public:
+	InfoLabel() : QLabel()
+	{
+		setWordWrap(true);
+	}
+	virtual void mousePressEvent(QMouseEvent * ev)
+	{
+		setText("");
+		QLabel::mousePressEvent(ev);
+	}
+};
+
 class DoubleEditor : public QDoubleSpinBox
 {
 private:
@@ -70,6 +121,8 @@ public:
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
 		setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred));
 	}
+
+	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
 };
 
 class LabelledDoubleEditor : public QWidget
@@ -81,12 +134,13 @@ public:
 		QWidget(parent)
 	{
 		wideLayout();
+		setContentsMargins(0,0,0,0);
 	}
 
 	void narrowLayout()
 	{
 		delete layout();
-		QVBoxLayout * newLayout = new QVBoxLayout;
+		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
 		newLayout->addWidget(&spin);
 		newLayout->setSpacing(1);
@@ -96,7 +150,7 @@ public:
 	void wideLayout()
 	{
 		delete layout();
-		QHBoxLayout * newLayout = new QHBoxLayout;
+		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
 		newLayout->addWidget(&spin);
 		newLayout->setStretch(1, 0);
@@ -151,6 +205,15 @@ public:
 		if(box.lineEdit())
 			box.lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		wideLayout();
+		setContentsMargins(0,0,0,0);
+	}
+
+	void paintEvent(QPaintEvent *)
+	{
+		QStyleOption opt;
+		opt.init(this);
+		QPainter p(this);
+		style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 	}
 
 	virtual void resizeEvent(QResizeEvent * event)
@@ -169,7 +232,7 @@ public:
 	void narrowLayout()
 	{
 		delete layout();
-		QVBoxLayout * newLayout = new QVBoxLayout;
+		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
 		newLayout->addWidget(&box);
 		newLayout->setSpacing(1);
@@ -179,12 +242,14 @@ public:
 	void wideLayout()
 	{
 		delete layout();
-		QHBoxLayout * newLayout = new QHBoxLayout;
+		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
 		newLayout->addWidget(&box);
 		newLayout->setStretch(1, 0);
 		setLayout(newLayout);
 	}
+
+	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
 
 	QLabel label;
 	QComboBox box;
@@ -204,6 +269,10 @@ public:
 		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
 		box.completer()->setPopup(&completerTableView);
+		if(!model){
+			tableView.horizontalHeader()->hide();
+			completerTableView.horizontalHeader()->hide();
+		}
 	}
 
 	QString text() const { return lineEdit.text(); }
@@ -253,12 +322,13 @@ public:
 		QWidget(parent)
 	{
 		wideLayout();
+		setContentsMargins(0,0,0,0);
 	}
 
 	void narrowLayout()
 	{
 		delete layout();
-		QVBoxLayout * newLayout = new QVBoxLayout;
+		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
 		newLayout->addWidget(&edit);
 		newLayout->setSpacing(1);
@@ -268,7 +338,7 @@ public:
 	void wideLayout()
 	{
 		delete layout();
-		QHBoxLayout * newLayout = new QHBoxLayout;
+		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
 		newLayout->addWidget(&edit);
 		newLayout->setStretch(1, 0);
@@ -287,12 +357,13 @@ public:
 	CommentEditor(QWidget * parent = 0) :
 		QWidget(parent)
 	{
+		setContentsMargins(0,0,0,0);
 	}
 
 	void narrowLayout()
 	{
 		delete layout();
-		QVBoxLayout * newLayout = new QVBoxLayout;
+		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
 		newLayout->addWidget(&edit);
 		newLayout->setSpacing(1);
@@ -302,7 +373,7 @@ public:
 	void wideLayout()
 	{
 		delete layout();
-		QHBoxLayout * newLayout = new QHBoxLayout;
+		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
 		newLayout->addWidget(&edit);
 		newLayout->setStretch(1, 0);

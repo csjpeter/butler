@@ -14,3 +14,22 @@ QToolButton {
 	font-size: 8pt;
 }
 
+InfoLabel {
+	color: #887700;
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+*[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
+	background-color: #ffffdd;
+/*	background-color: #bbbb44;*/
+}
+
+/*
+Selector[mandatory="false"] {
+	background-color: #cc4444;
+}
+Selector[mandatory="true"] {
+	background-color: #44cc44;
+}
+*/

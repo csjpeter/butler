@@ -121,7 +121,7 @@ void CustomView::applyLayout()
 {
 	delete layout();
 
-	QHBoxLayout * toolLayout = new QHBoxLayout;
+	HLayout * toolLayout = new HLayout;
 	toolLayout->addWidget(&addButton);
 	toolLayout->addWidget(&editButton);
 	toolLayout->addWidget(&delButton);
@@ -129,7 +129,7 @@ void CustomView::applyLayout()
 	toolLayout->addWidget(&filterButton);
 	toolLayout->addStretch();
 
-	QVBoxLayout * mainLayout = new QVBoxLayout;
+	VLayout * mainLayout = new VLayout;
 	mainLayout->addLayout(toolLayout);
 	mainLayout->addWidget(&tableView);
 
