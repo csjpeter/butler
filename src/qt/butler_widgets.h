@@ -102,6 +102,7 @@ public:
 	InfoLabel() : QLabel()
 	{
 		setWordWrap(true);
+//		setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	}
 };
 

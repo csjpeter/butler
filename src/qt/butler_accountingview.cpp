@@ -4,6 +4,7 @@
  */
 
 #include <float.h>
+#include <math.h>
 
 #include <QtGui>
 
@@ -19,7 +20,9 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	dbname(dbname),
 	model(model),
 	shopSelector(&shopsModel(dbname), Shop::Name),
-	wareEditor(&waresModel(dbname), Ware::Name)
+	wareEditor(&waresModel(dbname), Ware::Name),
+	lastSpinEdited(0),
+	lastLastSpinEdited(0)
 {
 	setWindowModality(Qt::ApplicationModal);
 	
@@ -27,6 +30,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	uploadDateTime.setEnabled(false);
 
 	infoLabel.setProperty("infoField", true);
+	infoLabel.setAlignment(Qt::AlignCenter);
 
 	shopSelector.setProperty("mandatoryField", true);
 	wareEditor.setProperty("mandatoryField", true);
@@ -43,153 +47,27 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&quantityEditor.spin, SIGNAL(valueChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 
-	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
-			this, SLOT(nameEditFinishedSlot()));
 	connect(&quantityEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(quantityValueChangedSlot(double)));
-	connect(&unitPriceEditor.spin, SIGNAL(editingFinished()),
-			this, SLOT(unitPriceEditingFinishedSlot()));
+	connect(&unitPriceEditor.spin, SIGNAL(valueChanged(double)),
+			this, SLOT(unitPriceValueChangedSlot(double)));
 	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
+
+	connect(&quantityEditor.spin, SIGNAL(editingFinished()),
+			this, SLOT(quantityEditingFinishedSlot()));
+	connect(&unitPriceEditor.spin, SIGNAL(editingFinished()),
+			this, SLOT(unitPriceEditingFinishedSlot()));
+	connect(&grossPriceEditor.spin, SIGNAL(editingFinished()),
+			this, SLOT(grossPriceEditingFinishedSlot()));
+
+	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
+			this, SLOT(nameEditFinishedSlot()));
 
 	/* restore last state */
 	loadState();
 
 	retranslate();
-}
-
-void AccountingView::retranslate()
-{
-	setWindowTitle(qtTrId(TidAccountingWindowTitle));
-	doneButton.setText(qtTrId(TidDoneButtonLabel));
-	shopSelector.label.setText(qtTrId(TidShopEditorLabel));
-	wareEditor.label.setText(qtTrId(TidWareEditorLabel));
-	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
-	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
-	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
-	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
-	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
-	uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
-	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
-	onStockCheck.setText(qtTrId(TidOnStockCheckBoxLabel));
-	boughtCheck.setText(qtTrId(TidBoughtCheckBoxLabel));
-
-	relayout();
-}
-
-enum class ViewState {
-	Wide,
-	Medium,
-	Narrow
-};
-
-void AccountingView::applyLayout()
-{
-	delete layout();
-
-	HLayout * toolLayout = new HLayout;
-	toolLayout->addWidget(&infoLabel, 1, Qt::AlignHCenter);
-	toolLayout->addStretch(0);
-	toolLayout->addWidget(&doneButton);
-
-	HLayout * hlayout = new HLayout;
-	hlayout->addWidget(&quantityEditor);
-	hlayout->addStretch();
-	hlayout->addWidget(&grossPriceEditor);
-	hlayout->addStretch();
-	hlayout->addWidget(&unitPriceEditor);
-
-	HLayout * h2layout = new HLayout;
-	h2layout->addStretch();
-	h2layout->addWidget(&onStockCheck);
-	h2layout->addWidget(&boughtCheck);
-
-	VLayout * mainLayout = new VLayout;
-	mainLayout->addLayout(toolLayout);
-	//mainLayout->addSpacing(3);
-	mainLayout->addWidget(&shopSelector);
-	mainLayout->addWidget(&wareEditor);
-	mainLayout->addWidget(&categoryEditor);
-	mainLayout->addLayout(hlayout);
-	mainLayout->addLayout(h2layout);
-	mainLayout->addWidget(&purchaseDateTime);
-	mainLayout->addWidget(&uploadDateTime);
-	mainLayout->addWidget(&commentEditor);
-
-	setLayout(mainLayout);
-
-	shopSelector.tableView.enableKineticScroll();
-	wareEditor.enableKineticScroll();
-	categoryEditor.tableView.enableKineticScroll();
-}
-
-void AccountingView::relayout()
-{
-	ViewState newState = ViewState::Wide;
-	QSize newSize;
-
-	switch(newState) {
-		case ViewState::Wide :
-			shopSelector.wideLayout();
-			wareEditor.wideLayout();
-			categoryEditor.wideLayout();
-			quantityEditor.wideLayout();
-			unitPriceEditor.wideLayout();
-			grossPriceEditor.wideLayout();
-			purchaseDateTime.wideLayout();
-			uploadDateTime.wideLayout();
-			commentEditor.wideLayout();
-			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
-				break;
-			// falling back to a smaller size
-		case ViewState::Medium :
-			shopSelector.wideLayout();
-			wareEditor.wideLayout();
-			categoryEditor.wideLayout();
-			quantityEditor.narrowLayout();
-			unitPriceEditor.narrowLayout();
-			grossPriceEditor.narrowLayout();
-			purchaseDateTime.wideLayout();
-			uploadDateTime.wideLayout();
-			commentEditor.wideLayout();
-			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
-				break;
-			// falling back to a smaller size
-		case ViewState::Narrow :
-			shopSelector.narrowLayout();
-			wareEditor.narrowLayout();
-			categoryEditor.narrowLayout();
-			quantityEditor.narrowLayout();
-			unitPriceEditor.narrowLayout();
-			grossPriceEditor.narrowLayout();
-			purchaseDateTime.narrowLayout();
-			uploadDateTime.narrowLayout();
-			commentEditor.narrowLayout();
-			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
-				break;
-			// falling back to a smaller size
-			break;
-	}
-}
-
-void AccountingView::changeEvent(QEvent * event)
-{
-	QWidget::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void AccountingView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
-		return;
-	relayout();
 }
 
 void AccountingView::showEvent(QShowEvent *event)
@@ -274,6 +152,140 @@ void AccountingView::mapFromGui()
 	item.onStock = (onStockCheck.checkState() == Qt::Checked);
 }
 
+void AccountingView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void AccountingView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+	relayout();
+}
+
+void AccountingView::retranslate()
+{
+	setWindowTitle(qtTrId(TidAccountingWindowTitle));
+	doneButton.setText(qtTrId(TidDoneButtonLabel));
+	shopSelector.label.setText(qtTrId(TidShopEditorLabel));
+	wareEditor.label.setText(qtTrId(TidWareEditorLabel));
+	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
+	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
+	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
+	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
+	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
+	uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
+	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
+	onStockCheck.setText(qtTrId(TidOnStockCheckBoxLabel));
+	boughtCheck.setText(qtTrId(TidBoughtCheckBoxLabel));
+
+	relayout();
+}
+
+enum class ViewState {
+	Wide,
+	Medium,
+	Narrow
+};
+
+void AccountingView::applyLayout()
+{
+	delete layout();
+
+	HLayout * toolLayout = new HLayout;
+	toolLayout->addWidget(&infoLabel, 1);
+	toolLayout->addStretch(0);
+	toolLayout->addWidget(&doneButton);
+
+	HLayout * hlayout = new HLayout;
+	hlayout->addWidget(&quantityEditor);
+	hlayout->addStretch();
+	hlayout->addWidget(&grossPriceEditor);
+	hlayout->addStretch();
+	hlayout->addWidget(&unitPriceEditor);
+
+	HLayout * h2layout = new HLayout;
+	h2layout->addStretch();
+	h2layout->addWidget(&onStockCheck);
+	h2layout->addWidget(&boughtCheck);
+
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addLayout(toolLayout);
+	mainLayout->addSpacing(3);
+	mainLayout->addWidget(&shopSelector);
+	mainLayout->addWidget(&wareEditor);
+	mainLayout->addWidget(&categoryEditor);
+	mainLayout->addLayout(hlayout);
+	mainLayout->addLayout(h2layout);
+	mainLayout->addWidget(&purchaseDateTime);
+	mainLayout->addWidget(&uploadDateTime);
+	mainLayout->addWidget(&commentEditor);
+
+	setLayout(mainLayout);
+
+	shopSelector.tableView.enableKineticScroll();
+	wareEditor.enableKineticScroll();
+	categoryEditor.tableView.enableKineticScroll();
+}
+
+void AccountingView::relayout()
+{
+	ViewState newState = ViewState::Wide;
+	QSize newSize;
+
+	switch(newState) {
+		case ViewState::Wide :
+			shopSelector.wideLayout();
+			wareEditor.wideLayout();
+			categoryEditor.wideLayout();
+			quantityEditor.wideLayout();
+			unitPriceEditor.wideLayout();
+			grossPriceEditor.wideLayout();
+			purchaseDateTime.wideLayout();
+			uploadDateTime.wideLayout();
+			commentEditor.wideLayout();
+			applyLayout();
+			newSize = sizeHint();
+			if(newSize.width() <= width())
+				break;
+			// falling back to a smaller size
+		case ViewState::Medium :
+			shopSelector.wideLayout();
+			wareEditor.wideLayout();
+			categoryEditor.wideLayout();
+			quantityEditor.narrowLayout();
+			unitPriceEditor.narrowLayout();
+			grossPriceEditor.narrowLayout();
+			purchaseDateTime.wideLayout();
+			uploadDateTime.wideLayout();
+			commentEditor.wideLayout();
+			applyLayout();
+			newSize = sizeHint();
+			if(newSize.width() <= width())
+				break;
+			// falling back to a smaller size
+		case ViewState::Narrow :
+			shopSelector.narrowLayout();
+			wareEditor.narrowLayout();
+			categoryEditor.narrowLayout();
+			quantityEditor.narrowLayout();
+			unitPriceEditor.narrowLayout();
+			grossPriceEditor.narrowLayout();
+			purchaseDateTime.narrowLayout();
+			uploadDateTime.narrowLayout();
+			commentEditor.narrowLayout();
+			applyLayout();
+			newSize = sizeHint();
+			if(newSize.width() <= width())
+				break;
+			// falling back to a smaller size
+			break;
+	}
+}
+
 void AccountingView::saveSlot()
 {
 	mapFromGui();
@@ -304,91 +316,83 @@ void AccountingView::saveSlot()
 	infoLabel.updateGeometry();
 }
 
-void AccountingView::nameEditFinishedSlot()
-{
-	categoryEditor.box.clear();
-
-	WaresModel &wm = waresModel(dbname);
-	int i = wm.index(wareEditor.text());
-	if(i == -1){
-		quantityEditor.spin.setSuffix("");
-		return;
-	}
-
-	const Ware &w = wm.ware(i);
-
-	QString cats = WaresModel::categoriesToString(w.categories);
-	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
-
-	quantityEditor.spin.setSuffix(" " + w.unit);
-}
-
 void AccountingView::quantityValueChangedSlot(double q)
 {
 	double u = unitPriceEditor.spin.value();
 	double g = grossPriceEditor.spin.value();
 
-	if(-DBL_EPSILON < g && g < DBL_EPSILON){
-		grossPriceEditor.blockSignals(true);
-		grossPriceEditor.spin.setValue(u * q);
-		grossPriceEditor.blockSignals(false);
+	if((lastSpinEdited == &quantityEditor && lastLastSpinEdited == &grossPriceEditor) ||
+			lastSpinEdited == &grossPriceEditor){
+		u = (q < 0.001) ? 0 : g / q;
+		unitPriceEditor.blockSignals(true);
+		unitPriceEditor.spin.setValue(u);
+		unitPriceEditor.blockSignals(false);
 		return;
 	}
 
-	if(-DBL_EPSILON < q && q < DBL_EPSILON){
-		u = 0;
-	} else {
-		u = g / q;
-	}
-
-	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.spin.setValue(u);
-	unitPriceEditor.blockSignals(false);
+	grossPriceEditor.blockSignals(true);
+	grossPriceEditor.spin.setValue(u * q);
+	grossPriceEditor.blockSignals(false);
 }
 
-void AccountingView::unitPriceEditingFinishedSlot()
+void AccountingView::unitPriceValueChangedSlot(double u)
 {
-	double u = unitPriceEditor.spin.value();
 	double q = quantityEditor.spin.value();
 	double g = grossPriceEditor.spin.value();
 
-	if(-DBL_EPSILON < g && g < DBL_EPSILON){
-		grossPriceEditor.blockSignals(true);
-		grossPriceEditor.spin.setValue(u * q);
-		grossPriceEditor.blockSignals(false);
+	if((lastSpinEdited == &unitPriceEditor && lastLastSpinEdited == &grossPriceEditor) ||
+			lastSpinEdited == &grossPriceEditor){
+		q = (u < 0.01) ? 0 : g / u;
+		quantityEditor.blockSignals(true);
+		quantityEditor.spin.setValue(q);
+		quantityEditor.blockSignals(false);
 		return;
 	}
 
-	if(-DBL_EPSILON < u && u < DBL_EPSILON)
-		q = 0;
-	else
-		q = g / u;
-
-	quantityEditor.blockSignals(true);
-	quantityEditor.spin.setValue(q);
-	quantityEditor.blockSignals(false);
+	grossPriceEditor.blockSignals(true);
+	grossPriceEditor.spin.setValue(u * q);
+	grossPriceEditor.blockSignals(false);
 }
 
 void AccountingView::grossPriceValueChangedSlot(double g)
 {
-	double u = 0;
-
-	if(-DBL_EPSILON < g && g < DBL_EPSILON){
-		quantityEditor.blockSignals(true);
-		quantityEditor.spin.setValue(0);
-		quantityEditor.blockSignals(false);
-	}
-
 	double q = quantityEditor.spin.value();
-	if(-DBL_EPSILON < q && q < DBL_EPSILON){
-		u = 0;
-	} else {
-		u = g / q;
+	double u = unitPriceEditor.spin.value();
+
+	if((lastSpinEdited == &grossPriceEditor && lastLastSpinEdited == &unitPriceEditor) ||
+			lastSpinEdited == &unitPriceEditor){
+		q = (u < 0.01) ? 0 : g / u;
+		quantityEditor.blockSignals(true);
+		quantityEditor.spin.setValue(q);
+		quantityEditor.blockSignals(false);
+		return;
 	}
 
+	u = (q < 0.001) ? 0 : g / q;
 	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.spin.setValue(u);
 	unitPriceEditor.blockSignals(false);
+}
+
+void AccountingView::quantityEditingFinishedSlot()
+{
+	if(lastSpinEdited != &quantityEditor)
+		lastLastSpinEdited = lastSpinEdited;
+	lastSpinEdited = &quantityEditor;
+}
+
+void AccountingView::unitPriceEditingFinishedSlot()
+{
+	if(lastSpinEdited != &unitPriceEditor)
+		lastLastSpinEdited = lastSpinEdited;
+	lastSpinEdited = &unitPriceEditor;
+}
+
+void AccountingView::grossPriceEditingFinishedSlot()
+{
+	if(lastSpinEdited != &grossPriceEditor)
+		lastLastSpinEdited = lastSpinEdited;
+	lastSpinEdited = &grossPriceEditor;
 }
 
 void AccountingView::mandatoryFieldChangedSlot(const QString &)
@@ -411,4 +415,23 @@ void AccountingView::mandatoryFieldChangedSlot(const QString &)
 			infoLabel.updateGeometry();
 		}
 	}
+}
+
+void AccountingView::nameEditFinishedSlot()
+{
+	categoryEditor.box.clear();
+
+	WaresModel &wm = waresModel(dbname);
+	int i = wm.index(wareEditor.text());
+	if(i == -1){
+		quantityEditor.spin.setSuffix("");
+		return;
+	}
+
+	const Ware &w = wm.ware(i);
+
+	QString cats = WaresModel::categoriesToString(w.categories);
+	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
+
+	quantityEditor.spin.setSuffix(" " + w.unit);
 }
