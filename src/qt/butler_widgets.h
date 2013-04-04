@@ -78,6 +78,7 @@ public:
 	HLayout() : QHBoxLayout()
 	{
 		setContentsMargins(0,0,0,0);
+		setSpacing(3);
 	}
 };
 
@@ -89,6 +90,7 @@ public:
 	VLayout() : QVBoxLayout()
 	{
 		setContentsMargins(0,0,0,0);
+		setSpacing(3);
 	}
 };
 
@@ -100,11 +102,6 @@ public:
 	InfoLabel() : QLabel()
 	{
 		setWordWrap(true);
-	}
-	virtual void mousePressEvent(QMouseEvent * ev)
-	{
-		setText("");
-		QLabel::mousePressEvent(ev);
 	}
 };
 

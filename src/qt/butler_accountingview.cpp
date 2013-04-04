@@ -30,10 +30,19 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	shopSelector.setProperty("mandatoryField", true);
 	wareEditor.setProperty("mandatoryField", true);
-	grossPriceEditor.setProperty("mandatoryField", true);
+	quantityEditor.setProperty("mandatoryField", true);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
+	connect(&shopSelector.box, SIGNAL(currentIndexChanged(const QString &)),
+			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+	connect(&wareEditor.lineEdit, SIGNAL(textChanged(const QString &)),
+			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(const QString &)),
+			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+	connect(&quantityEditor.spin, SIGNAL(valueChanged(const QString &)),
+			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+
 	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));
 	connect(&quantityEditor.spin, SIGNAL(valueChanged(double)),
@@ -267,8 +276,6 @@ void AccountingView::mapFromGui()
 
 void AccountingView::saveSlot()
 {
-	infoLabel.setText("");
-
 	mapFromGui();
 
 	model.addNew(item);
@@ -288,19 +295,17 @@ void AccountingView::saveSlot()
 		wm.update(i, modified);
 	}
 
-	infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
-
 	item = Item();
 	item.uploaded = QDateTime::currentDateTime();
 	mapToGui();
 	wareEditor.lineEdit.setFocus(Qt::OtherFocusReason);
+
+	infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
+	infoLabel.updateGeometry();
 }
 
 void AccountingView::nameEditFinishedSlot()
 {
-	if(wareEditor.text().size())
-		infoLabel.setText("");
-
 	categoryEditor.box.clear();
 
 	WaresModel &wm = waresModel(dbname);
@@ -384,4 +389,26 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.spin.setValue(u);
 	unitPriceEditor.blockSignals(false);
+}
+
+void AccountingView::mandatoryFieldChangedSlot(const QString &)
+{
+	if(	shopSelector.box.currentIndex() != -1 &&
+		wareEditor.box.currentText().size() &&
+		quantityEditor.spin.value() != 0
+	) {
+		if(!doneButton.isVisible())
+			doneButton.show();
+		if(infoLabel.text().size()){
+			infoLabel.setText("");
+			infoLabel.updateGeometry();
+		}
+	} else {
+		if(doneButton.isVisible())
+			doneButton.hide();
+		if(infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){
+			infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
+			infoLabel.updateGeometry();
+		}
+	}
 }

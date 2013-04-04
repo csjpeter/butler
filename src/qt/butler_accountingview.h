@@ -39,6 +39,7 @@ private slots:
 	void quantityValueChangedSlot(double q);
 	void unitPriceEditingFinishedSlot();
 	void grossPriceValueChangedSlot(double g);
+	void mandatoryFieldChangedSlot(const QString &);
 
 private:
 	const QString & dbname;

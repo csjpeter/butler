@@ -14,6 +14,9 @@ const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 
+//% "Please fill at least the mandatory (red) fields."
+const char* TidFillMandatoryFieldsInfoLabel = QT_TRID_NOOP("tid_fill_mandatory_fields_info_label");
+
 //% "Item is saved, you may add another."
 const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_info_label");
 

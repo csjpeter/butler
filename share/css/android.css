@@ -37,7 +37,7 @@
 QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
 	border-width: 0px;
 }
-QScrollBar::handle { background-color: gray; }
+QScrollBar::handle { background-color: gray;  border: 2px; border-color: black;}
 QScrollBar:vertical { width: 4px; min-height: 20px; }
 QScrollBar:horizontal { height: 4px; min-width: 20px; }
 
@@ -55,7 +55,7 @@ QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QText
 }
 
 QPushButton, QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
-	border-width: 1px;
+	border-width: 2px;
 	border-radius: 4px;
 }
 
@@ -85,8 +85,8 @@ QComboBox::drop-down, QDateTimeEdit::drop-down {
 
 QLabel {
 	color: #888888;
-/*	font-size: 10pt;*/
-	font-size: 13px;
+/*	font-size: 8pt;*/
+	font-size: 11px;
 }
 
 QPushButton:pressed {
@@ -112,7 +112,7 @@ QMessageBox {
 }
 
 QTextEdit {
-	border-width: 1px;
+	border-width: 2px;
 	min-height: 10ex;
 }
 
@@ -130,7 +130,7 @@ QAbstractSpinBox QAbstractSpinBox:no-frame {
 /* QTableView and QHeaderView */
 
 QTableView {
-	border-width: 1px;
+	border-width: 2px;
 	color: #cccccc;
 }
 
@@ -207,7 +207,7 @@ QComboBox QLineEdit:hover {
 
 QCalendarWidget * {
 	border-radius: 4px;
-	border-width: 1px;
+	border-width: 2px;
 /*	font-size: 12pt;*/
 	font-size: 16px;
 	icon-size: 24;
