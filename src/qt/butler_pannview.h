@@ -30,6 +30,8 @@ public:
 		vLayout->addWidget(&scrollArea);
 		vLayout->setContentsMargins(0,0,0,0);
 		QWidget::setLayout(vLayout);
+
+		installEventFilter(this);
 	}
 	virtual ~PannView() {}
 
@@ -61,15 +63,34 @@ public:
 		QWidget::closeEvent(event);
 	}
 
+	bool eventFilter(QObject *obj, QEvent *event)
+	{
+		if (event->type() != QEvent::KeyPress)
+			return QObject::eventFilter(obj, event);
+
+		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+		DBG("Received key press 0x%x", keyEvent->key());
+
+		if(keyEvent->key() != Qt::Key_Escape)
+			return QObject::eventFilter(obj, event);
+
+		QWidget * focused = focusWidget();
+		if(focused && focused != this && focused != &main && focused != &scrollArea)
+			focusWidget()->clearFocus();
+		else
+			reject();
+		return true;
+	}
+
 public slots:
 	void activate()
 	{
 		QWidget::show(); raise(); activateWindow();
 //		setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
 	}
-	void accept() { emit this->accepted(); emit this->finished(1); }
-	void reject() { emit this->rejected(); emit this->finished(0); }
-	void done(int result) { emit this->finished(result); }
+	void accept() { emit this->accepted(); emit this->finished(1); close(); }
+	void reject() { emit this->rejected(); emit this->finished(0); close(); }
+	void done(int result) { emit this->finished(result); close(); }
 
 signals:
 	void accepted();

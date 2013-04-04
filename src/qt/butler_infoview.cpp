@@ -30,7 +30,7 @@ InfoView::InfoView(QWidget *parent) :
 
 	QPushButton * button = new QPushButton(tr("Close"));
 	button->setDefault(true);
-	connect(button, SIGNAL(clicked()), this, SLOT(close()));
+	connect(button, SIGNAL(clicked()), this, SLOT(accept()));
 	hLayout->addWidget(button);
 
 	hLayout->addStretch(0);
