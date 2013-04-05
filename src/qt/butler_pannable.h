@@ -7,33 +7,31 @@
 #define BUTLER_PANNABLE_H
 
 #include <QtGui>
-#include <QsKineticScroller.h>
+#include <butler_kineticscroller.h>
 
+/* FIXME delete this class asap */
 /** Note: this class is not owner of the received ptr, we just referencing it. */
 template <typename Type>
 class Pannable
 {
 public:
-	Pannable(Type * ptr = 0) : ptr(ptr), scroll(0) {}
+	Pannable(Type * ptr = 0) : ptr(ptr), scroller(ptr) {}
 	~Pannable() { }
 
 	Type * operator->() const { return ptr; }
 	Type *& operator&() { return ptr; }
 	Pannable & operator=(Type * t)
 	{
-		if(ptr){
-			scroll.disableKineticScroll();
+		if(ptr)
 			delete ptr; /* This already migth have been assigned to a parent. */
-		}
 		ptr = t;
 		return *this;
 	}
-	void enablePanning() { scroll.enableKineticScrollFor(ptr); }
 
 private:
 	Type * ptr;
 
-	QsKineticScroller scroll;
+	KineticScroller scroller;
 };
 
 #endif

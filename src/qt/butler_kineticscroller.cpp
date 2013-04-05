@@ -1,91 +1,35 @@
-// Copyright (c) 2011, Razvan Petru
-// All rights reserved.
-
-// Redistribution and use in source and binary forms, with or without modification,
-// are permitted provided that the following conditions are met:
-
-// * Redistributions of source code must retain the above copyright notice, this
-//   list of conditions and the following disclaimer.
-// * Redistributions in binary form must reproduce the above copyright notice, this
-//   list of conditions and the following disclaimer in the documentation and/or other
-//   materials provided with the distribution.
-// * The name of the contributors may not be used to endorse or promote products
-//   derived from this software without specific prior written permission.
-
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-// OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-// OF THE POSSIBILITY OF SUCH DAMAGE.
-
-// The original code is improved much by Peter Csaszar <csjpeter@gmail.com>
-// All rights are reserved for the applicable improvements.
-// Copyright (C) 2013 Peter Csaszar
-// The license shall remain the original given by Razvan Petru.
+/** 
+ * Author: Csaszar, Peter <csjpeter@gmail.com>
+ * Copyright (C) 2013 Csaszar, Peter
+ */
 
 #include <math.h>
 
-#include "QsKineticScroller.h"
+#include "butler_kineticscroller.h"
 
-// http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
+csjp::OwnerContainer<ObjectScrollerPair> kineticScrollers;
 
 static const int gThresholdScrollDistance = 20; /* Distance from presspos, threshold for scroll. */
-
 static const int gTimerInterval = 40; // milisec periodic time to check move speed && set scroll pos
 static const double gDecceleration = 0.05;
 
-QsKineticScroller::QsKineticScroller(QObject *parent) :
+KineticScroller::KineticScroller(QAbstractScrollArea * scrollArea, QObject *parent) :
 	QObject(parent),
-	scrollArea(0),
+	scrollArea(scrollArea),
 	scrolled(0),
 	manualStop(false)
 {
+	kineticScrollers.add(new ObjectScrollerPair(scrollArea, this));
 	connect(&speedTimer, SIGNAL(timeout()), SLOT(onSpeedTimerElapsed()));
 	connect(&kineticTimer, SIGNAL(timeout()), SLOT(onKineticTimerElapsed()));
 }
 
-QsKineticScroller::~QsKineticScroller()
+KineticScroller::~KineticScroller()
 {
-	if(scrollArea)
-		disableKineticScroll();
+	kineticScrollers.remove<QObject*>(scrollArea);
 }
 
-void QsKineticScroller::disableKineticScroll()
-{
-	if(!scrollArea)
-		return;
-
-	QList<QWidget*> widgets = scrollArea->findChildren<QWidget*>();
-	Q_FOREACH(QWidget *widget, widgets)
-		widget->removeEventFilter(this);
-
-	scrollArea->removeEventFilter(this);
-	disconnect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
-	scrollArea = 0;
-}
-
-void QsKineticScroller::enableKineticScrollFor(QAbstractScrollArea* newScrollArea)
-{
-	ENSURE(newScrollArea != 0, csjp::LogicError);
-
-	if(scrollArea)
-		disableKineticScroll();
-	scrollArea = newScrollArea;
-	connect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
-
-	scrollArea->installEventFilter(this);
-
-	QList<QWidget*> widgets = scrollArea->findChildren<QWidget*>();
-	Q_FOREACH(QWidget *widget, widgets)
-		widget->installEventFilter(this);
-}
-
-double QsKineticScroller::computeSpeed(double currPos, double lastPos, double lastSpeed)
+double KineticScroller::computeSpeed(double currPos, double lastPos, double lastSpeed)
 {
 	double newSpeed = currPos - lastPos;
 
@@ -99,7 +43,7 @@ double QsKineticScroller::computeSpeed(double currPos, double lastPos, double la
 	return newSpeed;
 }
 
-void QsKineticScroller::onSpeedTimerElapsed()
+void KineticScroller::onSpeedTimerElapsed()
 {
 	const QPoint cursorPos = QCursor::pos();
 /*
@@ -120,7 +64,7 @@ void QsKineticScroller::onSpeedTimerElapsed()
 	lastMousePos = cursorPos;
 }
 
-double QsKineticScroller::doScroll(
+double KineticScroller::doScroll(
 		double origPixPos, double currPixPos, double contentSize,
 		double origScrollPos, QScrollBar * scroll)
 {
@@ -134,7 +78,7 @@ double QsKineticScroller::doScroll(
 	return newScrollPos;
 }
 
-void QsKineticScroller::stopIfAtEnd()
+void KineticScroller::stopIfAtEnd()
 {
 	int pos = scrollArea->verticalScrollBar()->value();
 	if(		scrollArea->verticalScrollBar()->minimum() == pos ||
@@ -146,10 +90,12 @@ void QsKineticScroller::stopIfAtEnd()
 		speed.setX(0);
 }
 
-//! intercepts mouse events to make the scrolling work
-bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
+bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 {
-	if(!scrollArea)
+	ENSURE(scrollArea != 0, csjp::LogicError);
+
+	QScrollBar * sbar = qobject_cast<QScrollBar*>(receiver);
+	if(sbar)
 		return false;
 
 	const QEvent::Type eventType = event->type();
@@ -161,9 +107,8 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 	QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 
 #ifdef DEBUG
-	//const QPoint pos = QCursor::pos();
 	QPoint pos = mouseEvent->globalPos();
-	DBG("QsKineticScroller::eventFilter mouse event at %d, %d", pos.x(), pos.y());
+	DBG("KineticScroller::eventHandler mouse event at %d, %d", pos.x(), pos.y());
 #endif
 
 	switch(eventType){
@@ -176,7 +121,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			lastMousePos = pressedMousePosition = mouseEvent->globalPos();
 			scrolled = 0;
 			speedTimer.start(gTimerInterval);
-			return false;
+			return manualStop;
 		case QEvent::MouseMove:
 			if(!speedTimer.isActive())
 				return false; /* We have nothing to do with move without press. */
@@ -191,8 +136,15 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			if(sqrt(pow(pressedMousePosition.x() - mouseEvent->globalPos().x(), 2) +
 				pow(pressedMousePosition.y() - mouseEvent->globalPos().y(), 2)) <
 					gThresholdScrollDistance){
-				QApplication::postEvent(obj, new QFocusEvent(QEvent::FocusOut),
-						Qt::HighEventPriority);
+				QApplication::postEvent(receiver,
+						new QFocusEvent(QEvent::FocusOut));
+				QWidget * wgt = qobject_cast<QWidget*>(receiver);
+				if(wgt){
+					while(wgt->parentWidget())
+						wgt = wgt->parentWidget();
+					if(wgt->focusWidget())
+						wgt->focusWidget()->clearFocus();
+				}
 				return true;
 			}
 
@@ -222,11 +174,11 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 
 			if(!speed.isNull()){
 				kineticTimer.start(gTimerInterval);
-//				return true;
+				return true;
 			}
 
-/*			if(scrolled || manualStop)
-				return true;*/
+			if(scrolled || manualStop)
+				return true;
 
 			return false;
 		default:
@@ -235,7 +187,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 	}
 }
 
-void QsKineticScroller::onKineticTimerElapsed()
+void KineticScroller::onKineticTimerElapsed()
 {
 	if(!scrollArea)
 		return;

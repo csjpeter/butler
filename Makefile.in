@@ -237,8 +237,8 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_pannable.opp \
 	tmp/src/qt/moc/butler_pannview.opp \
 	tmp/src/qt/moc/butler_widgets.opp \
-	tmp/src/qt/QsKineticScroller.opp \
-	tmp/src/qt/moc/QsKineticScroller.opp
+	tmp/src/qt/butler_kineticscroller.opp \
+	tmp/src/qt/moc/butler_kineticscroller.opp
 
 BUTLERQT_INCLUDES=-Isrc/qt
 

@@ -225,10 +225,6 @@ void AccountingView::applyLayout()
 	mainLayout->addWidget(&commentEditor);
 
 	setLayout(mainLayout);
-
-	shopSelector.tableView.enableKineticScroll();
-	wareEditor.enableKineticScroll();
-	categoryEditor.tableView.enableKineticScroll();
 }
 
 void AccountingView::relayout()

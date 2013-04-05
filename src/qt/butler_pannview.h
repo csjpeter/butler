@@ -7,7 +7,7 @@
 #define BUTLER_PANNVIEW_H
 
 #include <QWidget>
-#include <QsKineticScroller.h>
+#include <butler_kineticscroller.h>
 
 #include <config.h>
 
@@ -20,7 +20,7 @@ public:
 	PannView(QWidget * parent = 0) :
 		QWidget(parent),
 		scrollArea(0),
-		scroll(0)
+		scroller(&scrollArea)
 	{
 		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
@@ -43,9 +43,7 @@ public:
 	virtual void setLayout(QLayout * layout)
 	{
 		delete main.layout();
-		scroll.disableKineticScroll();
 		main.setLayout(layout);
-		scroll.enableKineticScrollFor(&scrollArea);
 	}
 
 	virtual QSize sizeHint()
@@ -101,7 +99,7 @@ private:
 	QScrollArea scrollArea;
 	QWidget main;
 
-	QsKineticScroller scroll;
+	KineticScroller scroller;
 };
 
 #endif

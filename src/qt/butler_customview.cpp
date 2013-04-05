@@ -134,8 +134,6 @@ void CustomView::applyLayout()
 	mainLayout->addWidget(&tableView);
 
 	setLayout(mainLayout);
-
-	tableView.enableKineticScroll();
 }
 
 void CustomView::relayout()

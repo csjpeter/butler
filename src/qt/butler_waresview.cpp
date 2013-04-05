@@ -63,7 +63,6 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
-	queryView.enablePanning();
 
 	/* restore last state */
 	loadState();

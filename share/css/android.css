@@ -7,7 +7,7 @@
 	font-size: 6pt;
 	font-style: normal;
 	font-weight: normal;
-	border-color: #444444;
+	border-color: #666666;
 	border-style: solid;
 	color: #cccccc;
 	margin: 0px;
@@ -42,8 +42,11 @@ QScrollBar:horizontal { height: 4px; min-width: 20px; }
 
 /* Some common interactive rule */
 
-QPushButton:hover, QLineEdit:hover, QCheckBox:hover, QRadioButton:hover, QComboBox:hover, QDateTimeEdit:hover, QTextEdit:hover, QAbstractSpinBox:hover {
-	border: 1px solid #3333bb;
+QPushButton:pressed, QToolButton:pressed, QCheckBox:pressed, QRadioButton:pressed {
+	background-color: #222288;
+	border-color: #222244;
+	border-width: 1px;
+	border-radius: 4px;
 }
 
 QPushButton, QLineEdit, QCheckBox, QRadioButton, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
@@ -62,11 +65,6 @@ QPushButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disa
 	border-color: #222222;
 }
 
-QComboBox::drop-down, QDateTimeEdit::drop-down {
-	width: 36px;
-/*	border-radius: 4px;*/
-}
-
 /* Some class specifics */
 
 *[infoField="true"], *[infoField="true"] QLabel {
@@ -76,16 +74,12 @@ QComboBox::drop-down, QDateTimeEdit::drop-down {
 }
 
 *[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
-	border-color: #663333;
+	border-color: #883333;
 /*	background-color: #101400;*/
 }
 
 QLabel {
 	color: #888888;
-}
-
-QPushButton:pressed {
-	background-color: #222288;
 }
 
 QPushButton {
@@ -111,7 +105,7 @@ QTextEdit {
 	min-height: 5ex;
 }
 
-QTextEdit QScrollBar, QTextEdit QScrollBar:hover, QTextEdit QScrollBar:disable {
+QTextEdit QScrollBar, QTextEdit QScrollBar:disable {
 	border-width: 0px;
 }
 
@@ -142,18 +136,27 @@ QTableView QHeaderView::section {
 
 /* QCheckBox and QRadioButton */
 
-QCheckBox::indicator, QCheckBox::indicator{
+QCheckBox::indicator, QRadioButton::indicator{
 	height: 20px;
 	width: 20px;
 }
 
 QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
+	border-color: #444444;
 	background-color: #222222;
 }
 
-QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+QCheckBox::indicator:checked {
+	border-color: #444444;
+	border-width: 1px;
+	background-color: #222222;
+	image: url(assets:/share/butler0.1/icons/tick.png);
+}
+
+QRadioButton::indicator:checked {
+	border-color: #222222;
+	border-width: 3px;
 	background-color: #226622;
-	image: url(assets:/share/butler0.1/icons/butler.png);
 }
 
 QCheckBox::indicator:unchecked, QCheckBox::indicator:checked {
@@ -174,12 +177,16 @@ QDateTimeEdit * {
 	padding-bottom: 0px;
 }
 
-QDateTimeEdit *:hover {
-	padding: 0px;
-	margin: 0px;
-	border: 0px;
-	padding-top: 0px;
-	padding-bottom: 0px;
+QDateTimeEdit::drop-down {
+	width: 36px;
+	image: url(assets:/share/butler0.1/icons/calendar.png);
+/*	border-radius: 4px;*/
+}
+
+QDateTimeEdit::drop-down:pressed {
+	width: 36px;
+	image: url(assets:/share/butler0.1/icons/comboarrowup.png);
+/*	border-radius: 4px;*/
 }
 
 /* QComboBox */
@@ -194,8 +201,16 @@ QComboBox QLineEdit {
 	border-width: 0px;
 }
 
-QComboBox QLineEdit:hover {
-	border-width: 0px;
+QComboBox::drop-down {
+	width: 36px;
+	image: url(assets:/share/butler0.1/icons/comboarrowdown.png);
+/*	border-radius: 4px;*/
+}
+
+QComboBox::drop-down:pressed {
+	width: 36px;
+	image: url(assets:/share/butler0.1/icons/comboarrowup.png);
+/*	border-radius: 4px;*/
 }
 
 /* QCalendarWidget */
@@ -230,9 +245,10 @@ MainView QPushButton {
 	icon-size: 40px;
 }
 
-MainView QPushButton:hover {
+MainView QPushButton:pressed {
 	background-color: #222288;
 	border-width: 0px;
+	border-radius: 0px;
 	border-bottom-width: 1px;
 	border-color: #444444;
 }

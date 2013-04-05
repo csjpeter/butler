@@ -11,8 +11,7 @@
 
 #include <config.h>
 
-#include "QsKineticScroller.h"
-#include "butler_pannable.h"
+#include <butler_kineticscroller.h>
 #include "butler_pannview.h"
 #include "butler_tagwidget.h"
 #include "butler_databases.h"
@@ -38,7 +37,8 @@ private:
 	Q_OBJECT
 public:
 	TableView(QWidget * parent = 0) :
-		QTableView(parent)
+		QTableView(parent),
+		scroller(this)
 	{
 		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 		setAlternatingRowColors(true);
@@ -65,9 +65,7 @@ public:
 			resizeColumnsToContents();
 	}
 
-	void enableKineticScroll() { scroll.enableKineticScrollFor(this); }
-
-	QsKineticScroller scroll;
+	KineticScroller scroller;
 };
 
 class HLayout : public QHBoxLayout
@@ -223,10 +221,6 @@ public:
 					box.modelColumn(), event->size().width());
 	}
 
-	void enableKineticScroll() {
-		tableView.enableKineticScroll();
-	}
-
 	void narrowLayout()
 	{
 		delete layout();
@@ -275,11 +269,6 @@ public:
 
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
-
-	void enableKineticScroll() {
-		tableView.enableKineticScroll();
-		completerTableView.enableKineticScroll();
-	}
 
 	virtual void resizeEvent(QResizeEvent * event)
 	{

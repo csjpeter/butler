@@ -46,7 +46,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	layout->addWidget(button);
 
-	button = new QPushButton(QIcon(Path::icon("shop.png")), tr("S&hops"));
+	button = new QPushButton(QIcon(Path::icon("partner.png")), tr("&Partners"));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
 	layout->addWidget(button);
 
@@ -58,7 +58,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	layout->addWidget(button);
 
-	button = new QPushButton(QIcon(Path::icon("custom.png")), tr("&Custom list"));
+	button = new QPushButton(QIcon(Path::icon("list.png")), tr("&List items"));
 	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	layout->addWidget(button);
 

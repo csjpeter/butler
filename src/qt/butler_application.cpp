@@ -9,6 +9,7 @@
 
 #include <butler_db.h>
 #include <butler_config.h>
+#include <butler_kineticscroller.h>
 
 #include "butler_application.h"
 
@@ -33,6 +34,10 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		case QEvent::KeyPress:
 			{
 				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+				/* Close VKB if return/done is pressed on it. */
+				if(keyEvent->key() == Qt::Key_Return)
+					postEvent(receiver, new QEvent(
+							  QEvent::CloseSoftwareInputPanel));
 				LOG("Key press 0x%x for %s:%p",
 						keyEvent->key(),
 						receiver->metaObject()->className(), receiver);
@@ -40,14 +45,26 @@ bool Application::notify(QObject * receiver, QEvent * event)
 			break;
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
-//		case QEvent::MouseMove:
+#ifdef DEBUG
 			{
 				QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 				const QPoint cpos = QCursor::pos();
 				QPoint pos = mouseEvent->globalPos();
-				LOG("Mouse event at %d, %d (cpos: %d, %d) for %s:%p",
+				DBG("Mouse event at %d, %d (cpos: %d, %d) for %s:%p",
 						pos.x(), pos.y(), cpos.x(), cpos.y(),
 						receiver->metaObject()->className(), receiver);
+			}
+#endif
+		case QEvent::MouseMove:
+			{
+				QObject * o = receiver;
+				while(o && !kineticScrollers.has(o))
+					o = o->parent();
+				if(!o)
+					break;
+				KineticScroller * scroller = kineticScrollers.query(o).scroller;
+				if(scroller->eventHandler(receiver, event))
+					return true;
 			}
 			break;
 		default:

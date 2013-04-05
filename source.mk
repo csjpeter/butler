@@ -138,8 +138,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.h \
 	$(DIST_DIR)/src/qt/butler_waresview.h \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
-	$(DIST_DIR)/src/qt/QsKineticScroller.cpp \
-	$(DIST_DIR)/src/qt/QsKineticScroller.h \
+	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
+	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
 	$(DIST_DIR)/src/qt/butler_pannable.h \
 	$(DIST_DIR)/src/qt/butler_pannview.h \
 	$(DIST_DIR)/src/qt/butler_widgets.h \
@@ -150,17 +150,26 @@ source: \
 	$(DIST_DIR)/share/icons/accounting.png \
 	$(DIST_DIR)/share/icons/add.png \
 	$(DIST_DIR)/share/icons/buy.png \
-	$(DIST_DIR)/share/icons/custom.png \
 	$(DIST_DIR)/share/icons/delete.png \
 	$(DIST_DIR)/share/icons/edit.png \
 	$(DIST_DIR)/share/icons/query.png \
 	$(DIST_DIR)/share/icons/shop.png \
 	$(DIST_DIR)/share/icons/shopping.png \
-	$(DIST_DIR)/share/icons/stock.png \
 	$(DIST_DIR)/share/icons/tag.png \
 	$(DIST_DIR)/share/icons/trash.png \
+	$(DIST_DIR)/share/icons/cancel.png \
+	$(DIST_DIR)/share/icons/ok.png \
 	$(DIST_DIR)/share/icons/ware.png \
 	$(DIST_DIR)/share/icons/info.png \
+	$(DIST_DIR)/share/icons/warning.png \
+	$(DIST_DIR)/share/icons/list.png \
+	$(DIST_DIR)/share/icons/left.png \
+	$(DIST_DIR)/share/icons/right.png \
+	$(DIST_DIR)/share/icons/tick.png \
+	$(DIST_DIR)/share/icons/partner.png \
+	$(DIST_DIR)/share/icons/comboarrowdown.png \
+	$(DIST_DIR)/share/icons/comboarrowup.png \
+	$(DIST_DIR)/share/icons/calendar.png \
 	$(DIST_DIR)/share/icons/butler.png
 
 $(DIST_DIR)/%: %

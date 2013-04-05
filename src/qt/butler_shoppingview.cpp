@@ -110,8 +110,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
-	queryView.enablePanning();
-	shopTableView.enablePanning();
 
 	/* restore last state */
 	loadState();
