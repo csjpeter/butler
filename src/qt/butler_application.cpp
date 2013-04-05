@@ -29,6 +29,30 @@ bool Application::notify(QObject * receiver, QEvent * event)
 	QString info;
 
 	try {
+		switch(event->type()){
+		case QEvent::KeyPress:
+			{
+				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+				LOG("Key press 0x%x for %s:%p",
+						keyEvent->key(),
+						receiver->metaObject()->className(), receiver);
+			}
+			break;
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonRelease:
+//		case QEvent::MouseMove:
+			{
+				QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
+				const QPoint cpos = QCursor::pos();
+				QPoint pos = mouseEvent->globalPos();
+				LOG("Mouse event at %d, %d (cpos: %d, %d) for %s:%p",
+						pos.x(), pos.y(), cpos.x(), cpos.y(),
+						receiver->metaObject()->className(), receiver);
+			}
+			break;
+		default:
+			break;
+		}
 		return QApplication::notify(receiver, event);
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);

@@ -34,7 +34,7 @@
 
 // http://blog.codeimproved.net/2010/12/kinetic-scrolling-with-qt-the-what-and-the-how/
 
-static const int gThresholdScrollDistance = 15; /* Distance from presspos, threshold for scroll. */
+static const int gThresholdScrollDistance = 20; /* Distance from presspos, threshold for scroll. */
 
 static const int gTimerInterval = 40; // milisec periodic time to check move speed && set scroll pos
 static const double gDecceleration = 0.05;
@@ -60,23 +60,10 @@ void QsKineticScroller::disableKineticScroll()
 	if(!scrollArea)
 		return;
 
-	QList<QAbstractButton*> buttons = scrollArea->findChildren<QAbstractButton*>();
-	Q_FOREACH(QAbstractButton *button, buttons)
-		button->removeEventFilter(this);
+	QList<QWidget*> widgets = scrollArea->findChildren<QWidget*>();
+	Q_FOREACH(QWidget *widget, widgets)
+		widget->removeEventFilter(this);
 
-	QList<QLineEdit*> edits = scrollArea->findChildren<QLineEdit*>();
-	Q_FOREACH(QLineEdit *edit, edits)
-		edit->removeEventFilter(this);
-
-	QList<QTextEdit*> textEdits = scrollArea->findChildren<QTextEdit*>();
-	Q_FOREACH(QTextEdit *textEdit, textEdits)
-		textEdit->viewport()->removeEventFilter(this);
-
-	QList<QComboBox*> combos = scrollArea->findChildren<QComboBox*>();
-	Q_FOREACH(QComboBox *combo, combos)
-		combo->removeEventFilter(this);
-
-	scrollArea->viewport()->removeEventFilter(this);
 	scrollArea->removeEventFilter(this);
 	disconnect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
 	scrollArea = 0;
@@ -92,23 +79,10 @@ void QsKineticScroller::enableKineticScrollFor(QAbstractScrollArea* newScrollAre
 	connect(scrollArea, SIGNAL(destroyed()), this, SLOT(disableKineticScroll()));
 
 	scrollArea->installEventFilter(this);
-	scrollArea->viewport()->installEventFilter(this);
 
-	QList<QAbstractButton*> buttons = scrollArea->findChildren<QAbstractButton*>();
-	Q_FOREACH(QAbstractButton *button, buttons)
-		button->installEventFilter(this);
-
-	QList<QLineEdit*> edits = scrollArea->findChildren<QLineEdit*>();
-	Q_FOREACH(QLineEdit *edit, edits)
-		edit->installEventFilter(this);
-
-	QList<QTextEdit*> textEdits = scrollArea->findChildren<QTextEdit*>();
-	Q_FOREACH(QTextEdit *textEdit, textEdits)
-		textEdit->viewport()->installEventFilter(this);
-
-	QList<QComboBox*> combos = scrollArea->viewport()->findChildren<QComboBox*>();
-	Q_FOREACH(QComboBox *combo, combos)
-		combo->installEventFilter(this);
+	QList<QWidget*> widgets = scrollArea->findChildren<QWidget*>();
+	Q_FOREACH(QWidget *widget, widgets)
+		widget->installEventFilter(this);
 }
 
 double QsKineticScroller::computeSpeed(double currPos, double lastPos, double lastSpeed)
@@ -175,9 +149,6 @@ void QsKineticScroller::stopIfAtEnd()
 //! intercepts mouse events to make the scrolling work
 bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 {
-	if(0 < ignoreList.removeAll(event))
-		return false;
-
 	if(!scrollArea)
 		return false;
 
@@ -189,6 +160,12 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 
 	QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 
+#ifdef DEBUG
+	//const QPoint pos = QCursor::pos();
+	QPoint pos = mouseEvent->globalPos();
+	DBG("QsKineticScroller::eventFilter mouse event at %d, %d", pos.x(), pos.y());
+#endif
+
 	switch(eventType){
 		case QEvent::MouseButtonPress:
 			manualStop = !speed.isNull();
@@ -199,7 +176,7 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 			lastMousePos = pressedMousePosition = mouseEvent->globalPos();
 			scrolled = 0;
 			speedTimer.start(gTimerInterval);
-			return true;
+			return false;
 		case QEvent::MouseMove:
 			if(!speedTimer.isActive())
 				return false; /* We have nothing to do with move without press. */
@@ -213,8 +190,11 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 
 			if(sqrt(pow(pressedMousePosition.x() - mouseEvent->globalPos().x(), 2) +
 				pow(pressedMousePosition.y() - mouseEvent->globalPos().y(), 2)) <
-					gThresholdScrollDistance)
+					gThresholdScrollDistance){
+				QApplication::postEvent(obj, new QFocusEvent(QEvent::FocusOut),
+						Qt::HighEventPriority);
 				return true;
+			}
 
 			scrolled = true;
 
@@ -245,45 +225,10 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 				return true;
 			}
 
-			if(scrolled)
+			if(scrolled || manualStop)
 				return true;
 
-			if(manualStop)
-				return true;
-
-			// Looks like the user wanted a single click. Simulate the click,
-			// as the events were already consumed
-			if(		obj != scrollArea->viewport() &&
-					!qobject_cast<QComboBox*>(obj) &&
-					!qobject_cast<QLineEdit*>(obj) &&
-					!qobject_cast<QAbstractButton*>(obj) &&
-					!qobject_cast<QTextEdit*>(obj->parent()) )
-				return true;
-
-			{
-				QMouseEvent* mousePress = new QMouseEvent(
-						QEvent::MouseButtonPress, mouseEvent->pos(),
-						Qt::LeftButton,	Qt::LeftButton, Qt::NoModifier);
-				QMouseEvent* mouseRelease = new QMouseEvent(
-						QEvent::MouseButtonRelease, mouseEvent->pos(),
-						Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-
-				// Ignore these two
-				ignoreList << mousePress;
-				ignoreList << mouseRelease;
-
-				QApplication::postEvent(obj, mousePress);
-				QApplication::postEvent(obj, mouseRelease);
-			}
-
-			if(		!qobject_cast<QLineEdit*>(obj) &&
-					!qobject_cast<QTextEdit*>(obj->parent()))
-				return true;
-
-			DBG("[scroll] trying to open keyboard");
-			QApplication::postEvent(obj, new QEvent(QEvent::RequestSoftwareInputPanel));
-
-			return true;
+			return false;
 		default:
 			DBG("DEFAULT EVENT");
 			return false;

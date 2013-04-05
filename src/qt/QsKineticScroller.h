@@ -74,8 +74,6 @@ private:
 
 	/* Copy of QScrollBar's value. This is redundancy but we need it to be real number. */
 	QVector2D computedScrollBarPosition;
-
-	QList<QEvent*> ignoreList;
 };
 
 #endif
