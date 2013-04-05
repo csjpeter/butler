@@ -35,6 +35,17 @@
 
 #include <csjp_logger.h>
 
+class ObjectScrollerPair
+{
+	QObject *o;
+
+}
+
+bool operator<(const ObjectScrollerPair & a, const ObjectScrollerPair & b)
+{
+	return a < b;
+}
+
 class QsKineticScroller: public QObject
 {
 Q_OBJECT

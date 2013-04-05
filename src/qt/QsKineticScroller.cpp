@@ -222,11 +222,11 @@ bool QsKineticScroller::eventFilter(QObject* obj, QEvent* event)
 
 			if(!speed.isNull()){
 				kineticTimer.start(gTimerInterval);
-				return true;
+//				return true;
 			}
 
-			if(scrolled || manualStop)
-				return true;
+/*			if(scrolled || manualStop)
+				return true;*/
 
 			return false;
 		default:
