@@ -36,11 +36,12 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	wareEditor.setProperty("mandatoryField", true);
 	quantityEditor.setProperty("mandatoryField", true);
 
+	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
 	connect(&shopSelector.box, SIGNAL(currentIndexChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
-	connect(&wareEditor.lineEdit, SIGNAL(textChanged(const QString &)),
+	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
@@ -169,6 +170,7 @@ void AccountingView::resizeEvent(QResizeEvent * event)
 void AccountingView::retranslate()
 {
 	setWindowTitle(qtTrId(TidAccountingWindowTitle));
+	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
 	shopSelector.label.setText(qtTrId(TidShopEditorLabel));
 	wareEditor.label.setText(qtTrId(TidWareEditorLabel));
@@ -198,6 +200,7 @@ void AccountingView::applyLayout()
 	HLayout * toolLayout = new HLayout;
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
+	toolLayout->addWidget(&backButton);
 	toolLayout->addWidget(&doneButton);
 
 	HLayout * hlayout = new HLayout;
@@ -215,13 +218,21 @@ void AccountingView::applyLayout()
 	VLayout * mainLayout = new VLayout;
 	mainLayout->addLayout(toolLayout);
 	mainLayout->addSpacing(3);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&shopSelector);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&categoryEditor);
+	mainLayout->addStretch(0);
 	mainLayout->addLayout(hlayout);
+	mainLayout->addStretch(0);
 	mainLayout->addLayout(h2layout);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&purchaseDateTime);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&uploadDateTime);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&commentEditor);
 
 	setLayout(mainLayout);
@@ -393,10 +404,12 @@ void AccountingView::grossPriceEditingFinishedSlot()
 
 void AccountingView::mandatoryFieldChangedSlot(const QString &)
 {
+	DBG("_");
 	if(	shopSelector.box.currentIndex() != -1 &&
 		wareEditor.box.currentText().size() &&
 		quantityEditor.spin.value() != 0
 	) {
+		DBG("Lets how button");
 		if(!doneButton.isVisible())
 			doneButton.show();
 		if(infoLabel.text().size()){

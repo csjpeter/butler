@@ -6,13 +6,19 @@
 #ifndef BUTLER_CONFIG_H
 #define BUTLER_CONFIG_H
 
-extern QLocale locale;
+#include <QLocale>
+#include <QString>
 
 namespace Config {
+	extern QString dbFileName;
+	extern const char * defaultDbName;
+	extern QLocale locale;
+	extern double pxPerMM;
+	extern int thresholdScrollDistance; /* Kinetic scroll, threshold for scroll. */
+
 	void save();
 	void load();
 
-	void loadTranslation(const char * langCode = NULL);
 	const QString & dateTimeFormat();
 }
 

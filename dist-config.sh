@@ -162,8 +162,8 @@ function android_packaging ()
 	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css || {
 		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css || exit $?
 	}
-	cp -pdr share/css/${PACKAGING}.css \
-		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css/application.css || exit $?
+	generate share/css/${PACKAGING}.css.in \
+		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/css/application.css.in || exit $?
 	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || {
 		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || exit $?
 	}
@@ -193,7 +193,8 @@ generate src/config.h.in ${DIST_DIR}/src/config.h.in || exit $?
 generate binlicense.in ${DIST_DIR}/enduser-license || exit $?
 
 test -d ${DIST_DIR}/share/css || { mkdir -p ${DIST_DIR}/share/css || exit $? ; }
-cp -pdr share/css/${PACKAGING}.css ${DIST_DIR}/share/css/application.css || exit $?
+#generate share/css/${PACKAGING}.css.in ${DIST_DIR}/share/css/application.css.in || exit $?
+generate share/css/android.css.in ${DIST_DIR}/share/css/application.css.in || exit $?
 
 make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 

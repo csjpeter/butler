@@ -17,6 +17,11 @@ public:
 	Application(int &argc, char *argv[]);
 	virtual ~Application();
 
+	void initLocalDb();
+	void loadTranslation(const char * langCode = NULL);
+	void pixelPerMM();
+	void loadCSS();
+
 	virtual bool notify(QObject * receiver, QEvent * event);
 };
 

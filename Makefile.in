@@ -249,17 +249,27 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/accounting.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/add.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/buy.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/custom.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/delete.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/edit.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/query.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shop.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shopping.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/stock.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tag.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/trash.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/cancel.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ok.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ware.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/info.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/warning.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/list.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/left.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/right.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tick.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/partner.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowdown.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowup.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/calendar.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/butler.png \
 	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png \
 	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico
 

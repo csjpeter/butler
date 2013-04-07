@@ -55,6 +55,7 @@ private:
 	csjp::Object<CustomModel> model;
 	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
+	ToolBar toolBar;
 	ToolButton addButton;
 	ToolButton editButton;
 	ToolButton delButton;

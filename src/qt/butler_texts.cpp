@@ -11,6 +11,9 @@ const char* TidUserQueryWindowTitle = QT_TRID_NOOP("tid_user_query_window_title"
 //% "Already bought new item"
 const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title");
 
+//% "Back"
+const char* TidBackButtonLabel = QT_TRID_NOOP("tid_back_button_label");
+
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 

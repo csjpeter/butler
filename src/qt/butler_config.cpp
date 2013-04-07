@@ -16,9 +16,14 @@
 
 static QString _dateTimeFormat;
 static QString rootDir;
-QLocale locale;
 
 namespace Config {
+
+QString dbFileName;
+const char * defaultDbName = "localdb";
+QLocale locale;
+double pxPerMM = 0;
+int thresholdScrollDistance = 0;
 
 void save()
 {
@@ -26,22 +31,6 @@ void save()
 
 void load()
 {
-}
-
-void loadTranslation(const char * langCode)
-{
-	QString lang(langCode);
-	if(!lang.length())
-		lang = "en" ; //locale.name();
-	lang.truncate(2);
-	QString trFile(Path::translation(C_STR(lang)));
-	DBG("Translation file to load: %s", C_STR(trFile));
-
-	csjp::Object<QTranslator> translator(new QTranslator);
-	if(!translator->load(trFile))
-		throw csjp::ResourceError("Can not load language file %s", C_STR(trFile));
-
-	qApp->installTranslator(translator.release());
 }
 
 const QString & dateTimeFormat()

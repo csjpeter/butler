@@ -1,22 +1,22 @@
 /* MainView specials */
 
 MainView QPushButton {
-	font-size: 12pt;
+	font-size: 3.6mm;
 	text-align: left;
-	padding: 1ex;
-	padding-right: 1em;
-	padding-left: 1em;
-	icon-size: 32px;
+	padding: 2mm;
+	padding-right: 5mm;
+	padding-left: 5mm;
+	icon-size: 10mm;
 }
 
 QToolButton {
-	icon-size: 32px;
-	font-size: 8pt;
+	icon-size: 10mm;
+	font-size: 2.5mm;
 }
 
 InfoLabel {
 	color: #887700;
-	font-size: 8pt;
+	font-size: 3mm;
 	font-weight: bold;
 }
 

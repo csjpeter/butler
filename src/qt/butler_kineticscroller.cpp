@@ -5,11 +5,11 @@
 
 #include <math.h>
 
+#include <butler_config.h>
 #include "butler_kineticscroller.h"
 
 csjp::OwnerContainer<ObjectScrollerPair> kineticScrollers;
 
-static const int gThresholdScrollDistance = 20; /* Distance from presspos, threshold for scroll. */
 static const int gTimerInterval = 40; // milisec periodic time to check move speed && set scroll pos
 static const double gDecceleration = 0.05;
 
@@ -59,9 +59,12 @@ void KineticScroller::onSpeedTimerElapsed()
 	speed.setX(computeSpeed(cursorPos.x(), lastMousePos.x(), speed.x()));
 	speed.setY(computeSpeed(cursorPos.y(), lastMousePos.y(), speed.y()));
 	
-//	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());
+/*	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());*/
 
 	lastMousePos = cursorPos;
+
+	if(speed.isNull())
+		speedTimer.stop();
 }
 
 double KineticScroller::doScroll(
@@ -106,48 +109,62 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 	QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 
-#ifdef DEBUG
-	QPoint pos = mouseEvent->globalPos();
-	DBG("KineticScroller::eventHandler mouse event at %d, %d", pos.x(), pos.y());
-#endif
-
 	switch(eventType){
 		case QEvent::MouseButtonPress:
+//			DBG("Press");
 			manualStop = !speed.isNull();
 			speed.setX(0);
 			speed.setY(0);
 			pressedScrollBarPosition.setX(scrollArea->horizontalScrollBar()->value());
 			pressedScrollBarPosition.setY(scrollArea->verticalScrollBar()->value());
 			lastMousePos = pressedMousePosition = mouseEvent->globalPos();
-			scrolled = 0;
+			scrolled = false;
 			speedTimer.start(gTimerInterval);
+//			DBG("return %s", manualStop ? "true" : "false" );
 			return manualStop;
 		case QEvent::MouseMove:
-			if(!speedTimer.isActive())
-				return false; /* We have nothing to do with move without press. */
+//			DBG("Move");
+			if(!speedTimer.isActive()){
+				if(mouseEvent->buttons() == Qt::NoButton){
+//					DBG("speedTimer is not active nor button is pressed");
+					return false; /* We have nothing to do without press. */
+				}
+//				DBG("restarting speedTimer");
+				speedTimer.start(gTimerInterval);
+			}
 
 			/* If for some reason we missed the release event, on next pressless move
 			 * lets not do any scrolling. */
 			if(mouseEvent->buttons() == Qt::NoButton){
+//				DBG("No button is pressed down");
 				speedTimer.stop();
 				return false;
 			}
 
 			if(sqrt(pow(pressedMousePosition.x() - mouseEvent->globalPos().x(), 2) +
 				pow(pressedMousePosition.y() - mouseEvent->globalPos().y(), 2)) <
-					gThresholdScrollDistance){
+					Config::thresholdScrollDistance){
+//				DBG("kinetic threshold not reached");
+				return false;
+			}
+
+			if(!scrolled){
+//				DBG("Not yet scrolled, so focus out");
 				QApplication::postEvent(receiver,
 						new QFocusEvent(QEvent::FocusOut));
 				QWidget * wgt = qobject_cast<QWidget*>(receiver);
 				if(wgt){
+					QApplication::postEvent(wgt,
+						new QFocusEvent(QEvent::FocusOut));
 					while(wgt->parentWidget())
 						wgt = wgt->parentWidget();
 					if(wgt->focusWidget())
 						wgt->focusWidget()->clearFocus();
 				}
-				return true;
+				/* FIXME notice drag and drop and abort kinetic scrolling */
 			}
 
+//			DBG("scrolled");
 			scrolled = true;
 
 			computedScrollBarPosition.setY(doScroll(
@@ -170,17 +187,19 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			return true;
 		case QEvent::MouseButtonRelease:
+//			DBG("Release");
 			speedTimer.stop();
 
-			if(!speed.isNull()){
-				kineticTimer.start(gTimerInterval);
-				return true;
+			if(!scrolled){
+//				DBG("not scrolled, manualStop: %d", manualStop);
+				speed.setX(0);
+				speed.setY(0);
+				return manualStop;
 			}
 
-			if(scrolled || manualStop)
-				return true;
-
-			return false;
+//			DBG("start kinetic timer");
+			kineticTimer.start(gTimerInterval);
+			return true;
 		default:
 			DBG("DEFAULT EVENT");
 			return false;
@@ -192,6 +211,7 @@ void KineticScroller::onKineticTimerElapsed()
 	if(!scrollArea)
 		return;
 	if(speed.isNull()){
+		DBG("stop kinetic timer");
 		kineticTimer.stop();
 		return;
 	}
@@ -232,5 +252,5 @@ void KineticScroller::onKineticTimerElapsed()
 
 	stopIfAtEnd();
 
-//	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());
+/*	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());*/
 }

@@ -16,9 +16,6 @@
 
 int main(int argc, char *args[])
 {
-	QString dbFileName;
-	QString defaultDbName("localdb");
-
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
@@ -43,7 +40,7 @@ int main(int argc, char *args[])
 		if(2 <= argc - argi && (
 				  !strcmp(args[argi], "--dbfile") ||
 				  !strcmp(args[argi], "-d"))){
-			dbFileName = QString(args[argi+1]);
+			Config::dbFileName = QString(args[argi+1]);
 			printf("Using %s as database file.\n", args[argi+1]);
 			argi += 2;
 			continue;
@@ -74,42 +71,16 @@ int main(int argc, char *args[])
 	try {
 		Path::initRootPath(args[0]);
 
-		Config::loadTranslation();
-		Config::loadTranslation("hu");
-
-		/* Init the local database */
-		if(dbFileName == ""){
-			QSettings settings;
-			dbFileName = settings.value("mainview/dbfile", QString()).toString();
-		}
-		if(dbFileName == ""){
-			QDir dir(QDir::homePath());
-
-			if(!dir.exists(".butler"))
-				dir.mkdir(".butler");
-			dbFileName = QDir::toNativeSeparators(
-				QDir::homePath() + QString("/.butler/db.sqlite")
-				);
-		}
-		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
-		sqlitedb->name = defaultDbName;
-		sqlitedb->driver = "QSQLITE";
-		sqlitedb->databaseName = QDir::toNativeSeparators(dbFileName);
-		DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
-		registerDatabase(sqlitedb);
-
-
-		/* Init the styleshhet */
-		QString cssFileName(Path::css("application.css"));
-		QFile cssFile(cssFileName);
-		if(!cssFile.open(QIODevice::ReadOnly))
-			throw csjp::FileError("Cant open css file: %s", C_STR(cssFileName));
-		QByteArray data = cssFile.readAll();
-		app.setStyleSheet(data);
-		//DBG("CSS content:\n%s", data.constData());
+		app.initLocalDb();
+		app.loadTranslation();
+		app.loadTranslation("hu");
+		app.pixelPerMM();
+		Config::thresholdScrollDistance = Config::pxPerMM * 2;
+		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
+		app.loadCSS();
 
 		/* Mainview */
-		MainView view(defaultDbName);
+		MainView view(Config::defaultDbName);
 		view.show();
 
 		/* Run the app */

@@ -1,0 +1,290 @@
+/** 
+ * Author: Csaszar, Peter <csjpeter@gmail.com>
+ * Copyright (C) 2013 Csaszar, Peter
+ */
+
+/* ideal relative font sizes:
+ * 1, 1.2, 1.4, 1.7, 2.1, 2.5, 3, 3.6, 4.3, 5.2, 6.2, 7.4, 8.9, 10.7 */
+
+* {
+/*	border-width: 0mm;*/
+/*	font-family: "Arial";*/
+/*	border-radius: 1mm;*/
+	background-color: black;
+	font-size: 2.5mm;
+	font-style: normal;
+	font-weight: normal;
+	border-color: #444444;
+	border-style: solid;
+	color: #cccccc;
+	margin: 0mm;
+	padding: 0mm;
+	selection-color: #cccccc;
+	selection-background-color: #222288;
+	alternate-background-color: #181818;
+	gridline-color: transparent;
+	icon-size: 8mm;
+}
+
+/* Temporary, experimenting */
+
+/* disables selection-color and selection-background-color */
+/*QAbstractItemView::item {
+	border-width: 0.25mm;
+	border-right-width: solid gray;
+}*/
+
+/* Scrollbar */
+
+QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
+	border-width: 0mm;
+}
+QScrollBar::handle { background-color: gray;  border: 0.5mm; border-color: black;}
+QScrollBar:vertical { width: 1mm; min-height: 10mm; }
+QScrollBar:horizontal { height: 1mm; min-width: 10mm; }
+
+/* Some common interactive rule */
+
+QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
+	font-size: 3mm;
+}
+
+QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
+	padding-right: 1mm;
+	padding-left: 1mm;
+	min-height: 8mm;
+	max-height: 8mm;
+}
+
+QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
+	border-width: 0.5mm;
+	border-radius: 1mm;
+	border-color: #666666;
+}
+/*
+QCheckBox:pressed, QRadioButton:pressed {
+	background-color: #222288;
+	border-color: #666666;
+	border-width: 0.25mm;
+	border-radius: 1mm;
+}
+*/
+QPushButton:disabled, QToolButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QAbstractSpinBox:disabled {
+	color: #444444;
+	border-color: #222222;
+}
+
+/* Some class specifics */
+
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
+	font-weight: bold;
+}
+
+*[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
+	border-color: #883333;
+/*	background-color: #101400;*/
+}
+
+QLabel {
+	color: #888888;
+}
+
+QPushButton {
+	font-size: 3mm;
+	font-weight: bold;
+	border-width: 0.25mm;
+	border-radius: 3mm;
+	padding-right: 3mm;
+	padding-left: 3mm;
+/*	min-width: 16mm;*/
+	min-height: 6mm;
+	max-height: 6mm;
+	margin: 1mm;
+	border-color: #444444;
+	background-color: #888888;
+	color: black;
+}
+
+QPushButton:default {
+	background-color: #4444aa;
+}
+
+QPushButton:pressed {
+	background-color: #444444;
+	border-color: #888888;
+	color: #888888;
+}
+
+QToolButton {
+	font-size: 2.1mm;
+	border-width: 0mm;
+	border-radius: 1mm;
+}
+
+QToolButton:pressed {
+	border-width: 0.25mm;
+	background-color: #444444;
+	border-color: #666666;
+}
+
+QMessageBox {
+	dialogbuttonbox-buttons-have-icons: true;
+	icon-size: 16mm;
+}
+
+QTextEdit {
+	padding: 0mm;
+	min-height: 8mm;
+}
+
+QTextEdit QScrollBar, QTextEdit QScrollBar:disable {
+	border-width: 0mm;
+}
+
+/* QSpinBox and QDoubleSpinBox */
+
+QAbstractSpinBox, QAbstractSpinBox:no-frame {
+}
+
+/* QTableView and QHeaderView */
+
+QTableView {
+	border-width: 0.5mm;
+	color: #cccccc;
+}
+
+QTableView QHeaderView::section {
+	border-width: 0mm;
+/*	border-color: #222222;*/
+	border-right-width: 0.25mm;
+	border-right-style: dotted;
+	border-left-width: 0.25mm;
+	border-left-style: dotted;
+	background-color: #666666;
+	color: #dddddd;
+}
+
+/* QCheckBox and QRadioButton */
+
+QCheckBox::indicator, QRadioButton::indicator{
+	height: 6mm;
+	width: 6mm;
+	margin: 1mm;
+}
+
+QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
+/*	border-color: #444444;*/
+	background-color: #222222;
+}
+
+QCheckBox::indicator:checked {
+/*	border-color: #444444;
+	border-width: 0.25mm;**/
+	background-color: #222222;
+	image: url(ICONS_DIR/tick.png);
+}
+
+QRadioButton::indicator:checked {
+/*	border-color: #222222;*/
+/*	border-width: 0.7mm;*/
+	background-color: #226622;
+}
+
+QCheckBox::indicator:unchecked, QCheckBox::indicator:checked {
+	border-radius: 1mm;
+}
+
+QRadioButton::indicator:unchecked, QRadioButton::indicator:checked {
+	border-radius: 4mm;
+}
+
+/* QDateTimeEdit */
+
+QDateTimeEdit {
+	min-height: 8mm;
+	max-height: 8mm;
+}
+
+QDateTimeEdit * {
+	padding: 0mm;
+	margin: 0mm;
+	border: 0mm;
+}
+
+QDateTimeEdit::drop-down {
+	width: 8mm;
+	height: 8mm;
+	image: url(ICONS_DIR/calendar.png);
+}
+
+QDateTimeEdit::drop-down:pressed {
+	width: 8mm;
+	height: 8mm;
+	image: url(ICONS_DIR/comboarrowup.png);
+}
+
+/* QComboBox */
+
+QComboBox QLabel {
+	border-width: 0mm;
+	padding: 0mm;
+	margin: 0mm;
+}
+
+QComboBox QLineEdit {
+	border-width: 0mm;
+}
+
+QComboBox::drop-down {
+	width: 8mm;
+	height: 8mm;
+	image: url(ICONS_DIR/comboarrowdown.png);
+}
+
+QComboBox::drop-down:pressed {
+	width: 8mm;
+	height: 8mm;
+	image: url(ICONS_DIR/comboarrowup.png);
+}
+
+/* QCalendarWidget */
+
+QCalendarWidget * {
+	border-radius: 1mm;
+	border-width: 0.5mm;
+	font-size: 3mm;
+}
+
+QCalendarWidget QAbstractButton {
+	padding-top: 2mm;
+	padding-bottom: 2mm;
+	padding-right: 3mm;
+	padding-left: 3mm;
+}
+
+/* MainView specials */
+
+MainView QPushButton {
+	font-size: 3mm;
+	font-weight: normal;
+	border-radius: 0mm;
+	border-width: 0mm;
+	border-bottom-width: 0.25mm;
+	text-align: left;
+	padding-right: 8mm;
+	padding-left: 8mm;
+	min-height: 12mm;
+	max-height: 12mm;
+	background-color: black;
+	color: #cccccc;
+	margin: 0mm;
+}
+
+MainView QPushButton:pressed {
+	color: #cccccc;
+	background-color: #222288;
+	border-width: 0mm;
+	border-radius: 0mm;
+	border-bottom-width: 0.25mm;
+}

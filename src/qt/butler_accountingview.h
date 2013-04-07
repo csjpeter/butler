@@ -49,9 +49,10 @@ private:
 	ItemsModel & model;
 	Item item;
 
+	Button backButton;
 	Button doneButton;
 	InfoLabel infoLabel;
-	ComboSelector shopSelector;
+	Selector shopSelector;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;
 	QuantityEditor quantityEditor;

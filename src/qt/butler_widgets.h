@@ -1,6 +1,6 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
 #ifndef BUTLER_WIDGETS_H
@@ -352,7 +352,7 @@ public:
 		delete layout();
 		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addWidget(&edit);
+		newLayout->addWidget(&edit, 1);
 		newLayout->setSpacing(1);
 		setLayout(newLayout);
 	}
@@ -362,8 +362,7 @@ public:
 		delete layout();
 		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&edit);
-		newLayout->setStretch(1, 0);
+		newLayout->addWidget(&edit, 1);
 		setLayout(newLayout);
 	}
 
@@ -407,6 +406,141 @@ public:
 	{
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	}
+};
+
+class ToolBar : public QWidget
+{
+private:
+	Q_OBJECT
+public:
+	ToolBar(QWidget * parent = 0) :
+		QWidget(parent),
+		scrollArea(0),
+		scroller(&scrollArea)
+	{
+		setContentsMargins(0,0,0,0);
+		prev.setText("<");
+		next.setText(">");
+		prev.hide();
+		next.hide();
+/*		backButton.scrollArea.setSizePolicy(QSizePolicy(
+				  QSizePolicy::Fixed, QSizePolicy::Fixed));*/
+
+		scrollArea.setFrameStyle(QFrame::NoFrame);
+		scrollArea.setWidget(&main);
+		scrollArea.setWidgetResizable(true);
+		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		scrollArea.setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+//		setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));
+
+		QHBoxLayout * hLayout = new QHBoxLayout;
+		hLayout->setContentsMargins(0,0,0,0);
+		hLayout->addWidget(&prev);
+		hLayout->addWidget(&scrollArea);
+		hLayout->addWidget(&next);
+		hLayout->addWidget(&backButton);
+		QWidget::setLayout(hLayout);
+
+		connect(&prev, SIGNAL(clicked()), this, SLOT(prevClicked()));
+		connect(&next, SIGNAL(clicked()), this, SLOT(nextClicked()));
+		connect(scrollArea.horizontalScrollBar(), SIGNAL(valueChanged(int)),
+				this, SLOT(scrollValueChanged(int)));
+
+		retranslate();
+	}
+	virtual ~ToolBar() {}
+
+	virtual QLayout * layout() const
+	{
+		return main.layout();
+	}
+
+	virtual void setLayout(QLayout * layout)
+	{
+		delete main.layout();
+		main.setLayout(layout);
+	}
+
+	virtual QSize sizeHint()
+	{
+		return main.sizeHint();
+	}
+
+	void retranslate()
+	{
+		backButton.setText(qtTrId(TidBackButtonLabel));
+
+		relayout();
+	}
+
+	void relayout()
+	{
+		prev.hide();
+		next.hide();
+
+		if(main.sizeHint().width() <= scrollArea.sizeHint().width())
+			return;
+
+		prev.show();
+		next.show();
+		scrollValueChanged(scrollArea.horizontalScrollBar()->value());
+	}
+
+	virtual void changeEvent(QEvent * event)
+	{
+		QWidget::changeEvent(event);
+		if(event->type() == QEvent::LanguageChange)
+			retranslate();
+	}
+
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		if(layout() && (event->size() == event->oldSize() || !isVisible()))
+			return;
+		relayout();
+	}
+
+private slots:
+	void prevClicked()
+	{
+		QScrollBar * bar = scrollArea.horizontalScrollBar();
+		bar->setValue(bar->value() - bar->singleStep());
+	}
+
+	void nextClicked()
+	{
+		QScrollBar * bar = scrollArea.horizontalScrollBar();
+		bar->setValue(bar->value() + bar->singleStep());
+	}
+
+	void scrollValueChanged(int newValue)
+	{
+		QScrollBar * bar = scrollArea.horizontalScrollBar();
+
+		DBG("min: %d, max: %d, value: %d, newValue: %d",
+				bar->minimum(), bar->maximum(), bar->value(), newValue);
+
+		if(bar->maximum() <= newValue)
+			next.setEnabled(false);
+		else
+			next.setEnabled(true);
+		if(newValue <= bar->minimum())
+			prev.setEnabled(false);
+		else
+			prev.setEnabled(true);
+	}
+
+public:
+	Button backButton;
+
+private:
+	QScrollArea scrollArea;
+	QWidget main;
+
+	KineticScroller scroller;
+	QToolButton prev;
+	QToolButton next;
 };
 
 #endif

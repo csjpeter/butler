@@ -46,6 +46,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
 
+	connect(&toolBar.backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
@@ -128,9 +129,10 @@ void CustomView::applyLayout()
 	toolLayout->addWidget(&dropButton);
 	toolLayout->addWidget(&filterButton);
 	toolLayout->addStretch();
+	toolBar.setLayout(toolLayout);
 
 	VLayout * mainLayout = new VLayout;
-	mainLayout->addLayout(toolLayout);
+	mainLayout->addWidget(&toolBar);
 	mainLayout->addWidget(&tableView);
 
 	setLayout(mainLayout);
