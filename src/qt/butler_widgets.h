@@ -460,6 +460,7 @@ public:
 	{
 		delete main.layout();
 		main.setLayout(layout);
+		relayout();
 	}
 
 	virtual QSize sizeHint()
@@ -479,7 +480,10 @@ public:
 		prev.hide();
 		next.hide();
 
-		if(main.sizeHint().width() <= scrollArea.sizeHint().width())
+		LOG("toolbar.main.sizeHint().width(): %d, scrollArea.width(): %d, width(): %d",
+				main.sizeHint().width(), scrollArea.width(), width());
+
+		if(main.sizeHint().width() <= scrollArea.width())
 			return;
 
 		prev.show();

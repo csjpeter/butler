@@ -152,7 +152,7 @@ void CustomView::relayout()
 			filterButton.wideLayout();
 			applyLayout();
 			newSize = sizeHint();
-			DBG("Wide: new width: %d, window width: %d", newSize.width(), width());
+			LOG("Wide: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -164,7 +164,7 @@ void CustomView::relayout()
 			filterButton.mediumLayout();
 			applyLayout();
 			newSize = sizeHint();
-			DBG("Medium: new width: %d, window width: %d", newSize.width(), width());
+			LOG("Medium: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -176,7 +176,7 @@ void CustomView::relayout()
 			filterButton.narrowLayout();
 			applyLayout();
 			newSize = sizeHint();
-			DBG("Narrow: new width: %d, window width: %d", newSize.width(), width());
+			LOG("Narrow: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
