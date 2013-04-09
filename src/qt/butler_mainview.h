@@ -51,13 +51,12 @@ private:
 	QString dbname;
 
 	QShortcut shortcut;
-	QShortcut listShortcut;
 
 	ShoppingView *shoppingView;
-	CustomView *customView;
 	ShopsView *shopsView;
 	TagsView *tagsView;
 	WaresView *waresView;
+	CustomView *customView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;
 };

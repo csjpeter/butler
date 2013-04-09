@@ -444,47 +444,47 @@
 <context>
     <name>MainView</name>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="49"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="48"/>
         <source>&amp;Shopping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="59"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="56"/>
         <source>&amp;Wares</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="64"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="60"/>
         <source>&amp;Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="54"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="52"/>
         <source>&amp;Partners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="69"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="64"/>
         <source>&amp;List items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="74"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="68"/>
         <source>&amp;Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="210"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="203"/>
         <source>User query result</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="247"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="240"/>
         <source>Butler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="248"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="241"/>
         <source>Butler is a helper for home keeping via maintaining shoping lists.</source>
         <translation type="unfinished"></translation>
     </message>

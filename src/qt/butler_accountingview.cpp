@@ -20,7 +20,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	dbname(dbname),
 	model(model),
 	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
-	doneButton(QKeySequence(Qt::Key_Return)),
+	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
 	shopSelector(&shopsModel(dbname), Shop::Name),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	lastSpinEdited(0),

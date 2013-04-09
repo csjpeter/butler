@@ -72,15 +72,23 @@ public:
 		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 		DBG("Received key press 0x%x", keyEvent->key());
 
-		if(keyEvent->key() != Qt::Key_Escape)
-			return QObject::eventFilter(obj, event);
-
-		QWidget * focused = focusWidget();
-		if(focused)
-			focusWidget()->clearFocus();
-		else
-			reject();
-		return true;
+		switch (keyEvent->key()){
+/*			case Qt::Key_Enter:
+			case Qt::Key_Return:
+				break;*/
+			case Qt::Key_Escape:
+				{
+					QWidget * focused = focusWidget();
+					if(focused)
+						focusWidget()->clearFocus();
+					else
+						reject();
+				}
+				return true;
+			default:
+				break;
+		}
+		return QObject::eventFilter(obj, event);
 	}
 
 public slots:
