@@ -31,11 +31,13 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	dbname(dbname),
 	model(customModel(dbname)),
 	selfDestruct(selfDestruct),
-	addButton(QIcon(Path::icon("add.png"))),
-	editButton(QIcon(Path::icon("edit.png"))),
-	delButton(QIcon(Path::icon("delete.png"))),
-	dropButton(QIcon(Path::icon("trash.png"))),
-	filterButton(QIcon(Path::icon("query.png"))),
+	toolBar(this),
+	addButton(QIcon(Path::icon("add.png")), QKeySequence(Qt::Key_F1)),
+	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F2)),
+	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F3)),
+	dropButton(QIcon(Path::icon("trash.png")), QKeySequence(Qt::Key_F4)),
+	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F5)),
+	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F6)),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -46,12 +48,12 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
 
-	connect(&toolBar.backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
 	connect(&dropButton, SIGNAL(clicked()), this, SLOT(dropItem()));
 	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
+	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
 	/* statistics in grid layout */
@@ -108,6 +110,7 @@ void CustomView::retranslate()
 	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
 	dropButton.setText(qtTrId(TidDropItemButtonLabel));
 	filterButton.setText(qtTrId(TidFilterItemButtonLabel));
+	statsButton.setText(qtTrId(TidStatsItemButtonLabel));
 
 	relayout();
 }
@@ -128,6 +131,7 @@ void CustomView::applyLayout()
 	toolLayout->addWidget(&delButton);
 	toolLayout->addWidget(&dropButton);
 	toolLayout->addWidget(&filterButton);
+	toolLayout->addWidget(&statsButton);
 	toolLayout->addStretch();
 	toolBar.setLayout(toolLayout);
 
@@ -150,6 +154,7 @@ void CustomView::relayout()
 			delButton.wideLayout();
 			dropButton.wideLayout();
 			filterButton.wideLayout();
+			statsButton.wideLayout();
 			applyLayout();
 			newSize = sizeHint();
 			LOG("Wide: new width: %d, window width: %d", newSize.width(), width());
@@ -162,6 +167,7 @@ void CustomView::relayout()
 			delButton.mediumLayout();
 			dropButton.mediumLayout();
 			filterButton.mediumLayout();
+			statsButton.mediumLayout();
 			applyLayout();
 			newSize = sizeHint();
 			LOG("Medium: new width: %d, window width: %d", newSize.width(), width());
@@ -174,6 +180,7 @@ void CustomView::relayout()
 			delButton.narrowLayout();
 			dropButton.narrowLayout();
 			filterButton.narrowLayout();
+			statsButton.narrowLayout();
 			applyLayout();
 			newSize = sizeHint();
 			LOG("Narrow: new width: %d, window width: %d", newSize.width(), width());

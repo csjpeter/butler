@@ -40,11 +40,12 @@ public:
 		QTableView(parent),
 		scroller(this)
 	{
-		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 		setAlternatingRowColors(true);
-		setAutoScroll(false);
+		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+//		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 		setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 		setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+		setAutoScroll(true);
 		setSelectionBehavior(QAbstractItemView::SelectRows);
 		setSelectionMode(QAbstractItemView::SingleSelection);
 		verticalHeader()->hide();
@@ -99,6 +100,7 @@ private:
 public:
 	InfoLabel() : QLabel()
 	{
+		setFocusPolicy(Qt::NoFocus);
 		setWordWrap(true);
 //		setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	}
@@ -109,11 +111,15 @@ class Button : public QPushButton
 private:
 	Q_OBJECT
 public:
-	Button(QWidget * parent = 0) :
-		QPushButton(parent)
+	Button(const QKeySequence & seq = QKeySequence(), QWidget * parent = 0) :
+		QPushButton(parent),
+		shortcut(seq, this)
 	{
 		setAutoDefault(false);
+		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
+
+	QShortcut shortcut;
 };
 
 class ToolButton : public QToolButton
@@ -121,10 +127,14 @@ class ToolButton : public QToolButton
 private:
 	Q_OBJECT
 public:
-	ToolButton(const QIcon & icon, QWidget * parent = 0) :
-		QToolButton(parent)
+	ToolButton(	const QIcon & icon,
+			const QKeySequence & seq = QKeySequence(),
+			QWidget * parent = 0) :
+		QToolButton(parent),
+		shortcut(seq, this)
 	{
 		setIcon(icon);
+		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
 
 	void narrowLayout()
@@ -141,6 +151,8 @@ public:
 	{
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	}
+
+	QShortcut shortcut;
 };
 
 class DoubleEditor : public QDoubleSpinBox
@@ -168,6 +180,7 @@ public:
 	LabelledDoubleEditor(QWidget * parent = 0) :
 		QWidget(parent)
 	{
+		label.setFocusPolicy(Qt::NoFocus);
 		wideLayout();
 		setContentsMargins(0,0,0,0);
 	}
@@ -230,6 +243,7 @@ public:
 	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
 		QWidget(parent)
 	{
+		label.setFocusPolicy(Qt::NoFocus);
 		if(model){
 			box.setModel(model);
 			box.setModelColumn(column);
@@ -275,8 +289,8 @@ public:
 		delete layout();
 		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&box);
-		newLayout->setStretch(1, 0);
+		newLayout->addStretch(0);
+		newLayout->addWidget(&box, 0);
 		setLayout(newLayout);
 	}
 
@@ -298,8 +312,8 @@ public:
 		box.setEditable(true);
 		box.setLineEdit(&lineEdit);
 		box.setInsertPolicy(QComboBox::NoInsert);
-		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
-//		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
+//		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
+		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
 		box.completer()->setPopup(&completerTableView);
 		if(!model){
 			tableView.horizontalHeader()->hide();
@@ -344,6 +358,7 @@ public:
 		button(QIcon(Path::icon("comboarrowdown.png")))
 	{
 		(void)column;
+		label.setFocusPolicy(Qt::NoFocus);
 		completerTableView.setWindowFlags(Qt::Popup);
 		lineEdit.completer()->setCompletionMode(QCompleter::PopupCompletion);
 		lineEdit.completer()->setPopup(&completerTableView);
@@ -445,6 +460,7 @@ public:
 	DateTimeEditor(QWidget * parent = 0) :
 		QWidget(parent)
 	{
+		label.setFocusPolicy(Qt::NoFocus);
 		wideLayout();
 		setContentsMargins(0,0,0,0);
 	}
@@ -481,6 +497,7 @@ public:
 	CommentEditor(QWidget * parent = 0) :
 		QWidget(parent)
 	{
+		label.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
 	}
 
@@ -512,18 +529,25 @@ class ToolBar : public QWidget
 private:
 	Q_OBJECT
 public:
-	ToolBar(QWidget * parent = 0) :
+	ToolBar(PannView * parent) :
 		QWidget(parent),
+		backShortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), &backButton),
 		scrollArea(0),
 		scroller(&scrollArea)
 	{
+		setFocusPolicy(Qt::NoFocus);
+		main.setFocusPolicy(Qt::NoFocus);
+		scrollArea.setFocusPolicy(Qt::NoFocus);
+		prev.setFocusPolicy(Qt::NoFocus);
+		next.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
 		prev.setText("<");
 		next.setText(">");
 		prev.hide();
 		next.hide();
-/*		backButton.scrollArea.setSizePolicy(QSizePolicy(
-				  QSizePolicy::Fixed, QSizePolicy::Fixed));*/
+
+		connect(&backShortcut, SIGNAL(activated()), &backButton, SLOT(click()));
+		connect(&backButton, SIGNAL(clicked()), parent, SLOT(reject()));
 
 		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
@@ -638,6 +662,7 @@ public:
 	Button backButton;
 
 private:
+	QShortcut backShortcut;
 	QScrollArea scrollArea;
 	QWidget main;
 

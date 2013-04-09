@@ -50,6 +50,9 @@ private slots:
 private:
 	QString dbname;
 
+	QShortcut shortcut;
+	QShortcut listShortcut;
+
 	ShoppingView *shoppingView;
 	CustomView *customView;
 	ShopsView *shopsView;

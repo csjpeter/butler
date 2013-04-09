@@ -17,23 +17,32 @@ const char* TidBackButtonLabel = QT_TRID_NOOP("tid_back_button_label");
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 
-//% "Please fill at least the mandatory (red) fields."
+//% "Please fill at least the mandatory fields."
 const char* TidFillMandatoryFieldsInfoLabel = QT_TRID_NOOP("tid_fill_mandatory_fields_info_label");
 
 //% "Item is saved, you may add another."
 const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_info_label");
 
 //% "Shop (place of buy):"
-const char* TidShopEditorLabel = QT_TRID_NOOP("tid_shop_editor_label");
+const char* TidShopSelectorLabel = QT_TRID_NOOP("tid_shop_selector_label");
+
+//% "It is mandatory to select a shop."
+const char* TidShopSelectorPlaceholder = QT_TRID_NOOP("tid_shop_selector_placeholder");
 
 //% "Common ware name:"
-const char* TidWareEditorLabel = QT_TRID_NOOP("tid_ware_editor_label");
+const char* TidWareSelectorLabel = QT_TRID_NOOP("tid_ware_selector_label");
+
+//% "It is mandatory to define the ware."
+const char* TidWareSelectorPlaceholder = QT_TRID_NOOP("tid_ware_selector_placeholder");
 
 //% "Special ware name"
 const char* TidCategoryEditorLabel = QT_TRID_NOOP("tid_category_editor_label");
 
 //% "Quantity"
 const char* TidQuantityEditorLabel = QT_TRID_NOOP("tid_quantity_editor_label");
+
+//% "Mandatory field."
+const char* TidQuantityEditorPlaceholder = QT_TRID_NOOP("tid_quantity_editor_placeholder");
 
 //% "Unit price:"
 const char* TidUnitPriceEditorLabel = QT_TRID_NOOP("tid_unit_price_editor_label");
@@ -70,3 +79,6 @@ const char* TidDropItemButtonLabel = QT_TRID_NOOP("tid_drop_item_button_label");
 
 //% "Filter items"
 const char* TidFilterItemButtonLabel = QT_TRID_NOOP("tid_filter_item_button_label");
+
+//% "Statistics"
+const char* TidStatsItemButtonLabel = QT_TRID_NOOP("tid_stats_item_button_label");

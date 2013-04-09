@@ -61,6 +61,7 @@ private:
 	ToolButton delButton;
 	ToolButton dropButton;
 	ToolButton filterButton;
+	ToolButton statsButton;
 
 	TableView tableView;
 /*

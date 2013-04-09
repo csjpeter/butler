@@ -26,6 +26,8 @@
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
+	shortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), this),
+	listShortcut(QKeySequence(Qt::Key_F5), this),
 	shoppingView(NULL),
 	customView(NULL),
 	shopsView(NULL),
@@ -34,6 +36,8 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	queryOptionsView(NULL),
 	infoView(NULL)
 {
+	connect(&shortcut, SIGNAL(activated()), this, SLOT(reject()));
+
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(0);
@@ -43,26 +47,32 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	layout->addStretch(0);
 
 	button = new QPushButton(QIcon(Path::icon("shopping.png")), tr("&Shopping"));
+	button->setShortcut(QKeySequence(Qt::Key_F1));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("partner.png")), tr("&Partners"));
+	button->setShortcut(QKeySequence(Qt::Key_F2));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
+	button->setShortcut(QKeySequence(Qt::Key_F3));
 	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Tags"));
+	button->setShortcut(QKeySequence(Qt::Key_F4));
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("list.png")), tr("&List items"));
+	connect(&listShortcut, SIGNAL(activated()), button, SLOT(click()));
 	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));
+	button->setShortcut(QKeySequence(Qt::Key_F6));
 	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	layout->addWidget(button);
 

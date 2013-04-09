@@ -22,9 +22,12 @@ public:
 		scrollArea(0),
 		scroller(&scrollArea)
 	{
+		setFocusPolicy(Qt::NoFocus);
 		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
 		scrollArea.setWidgetResizable(true);
+		scrollArea.setFocusPolicy(Qt::NoFocus);
+		main.setFocusPolicy(Qt::NoFocus);
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
 		vLayout->addWidget(&scrollArea);
@@ -73,7 +76,7 @@ public:
 			return QObject::eventFilter(obj, event);
 
 		QWidget * focused = focusWidget();
-		if(focused && focused != this && focused != &main && focused != &scrollArea)
+		if(focused)
 			focusWidget()->clearFocus();
 		else
 			reject();

@@ -19,6 +19,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	PannView(parent),
 	dbname(dbname),
 	model(model),
+	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
+	doneButton(QKeySequence(Qt::Key_Return)),
 	shopSelector(&shopsModel(dbname), Shop::Name),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	lastSpinEdited(0),
@@ -33,9 +35,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	infoLabel.setAlignment(Qt::AlignCenter);
 
 	doneButton.setDefault(true);
-	shopSelector.setProperty("mandatoryField", true);
-	wareEditor.setProperty("mandatoryField", true);
-	quantityEditor.setProperty("mandatoryField", true);
+	shopSelector.box.setCurrentIndex(-1);
 
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
@@ -173,10 +173,13 @@ void AccountingView::retranslate()
 	setWindowTitle(qtTrId(TidAccountingWindowTitle));
 	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
-	shopSelector.label.setText(qtTrId(TidShopEditorLabel));
-	wareEditor.label.setText(qtTrId(TidWareEditorLabel));
+	shopSelector.label.setText(qtTrId(TidShopSelectorLabel));
+//	shopSelector.box.lineEdit().setPlaceholderText(qtTrId(TidShopSelectorPlaceholder));
+	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
+	wareEditor.lineEdit.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
 	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
+	quantityEditor.spin.setSpecialValueText(qtTrId(TidQuantityEditorPlaceholder));
 	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
 	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
 	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));

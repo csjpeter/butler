@@ -13,10 +13,13 @@ extern const char* TidBackButtonLabel;
 extern const char* TidDoneButtonLabel;
 extern const char* TidFillMandatoryFieldsInfoLabel;
 extern const char* TidAccountingSavedInfoLabel;
-extern const char* TidShopEditorLabel;
-extern const char* TidWareEditorLabel;
+extern const char* TidShopSelectorLabel;
+extern const char* TidShopSelectorPlaceholder;
+extern const char* TidWareSelectorLabel;
+extern const char* TidWareSelectorPlaceholder;
 extern const char* TidCategoryEditorLabel;
 extern const char* TidQuantityEditorLabel;
+extern const char* TidQuantityEditorPlaceholder;
 extern const char* TidUnitPriceEditorLabel;
 extern const char* TidGrossPriceEditorLabel;
 extern const char* TidPurchaseDateTimeEditorLabel;
@@ -30,5 +33,6 @@ extern const char* TidEditItemButtonLabel;
 extern const char* TidDeleteItemButtonLabel;
 extern const char* TidDropItemButtonLabel;
 extern const char* TidFilterItemButtonLabel;
+extern const char* TidStatsItemButtonLabel;
 
 #endif

@@ -26,6 +26,12 @@
 	icon-size: 8mm;
 }
 
+*:focus {
+	border-color: #338833;
+	border-width: 0.5mm;
+	border-style: solid;
+}
+
 /* Temporary, experimenting */
 
 /* disables selection-color and selection-background-color */
@@ -79,11 +85,6 @@ QPushButton:disabled, QToolButton:disabled, QLineEdit:disabled, QComboBox:disabl
 *[infoField="true"], *[infoField="true"] QLabel {
 	color: #bbaa00;
 	font-weight: bold;
-}
-
-*[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
-	border-color: #883333;
-/*	background-color: #101400;*/
 }
 
 QLabel {
@@ -233,6 +234,10 @@ QComboBox QLabel {
 }
 
 QComboBox QLineEdit {
+	border-width: 0mm;
+}
+
+QComboBox QLineEdit:focus {
 	border-width: 0mm;
 }
 
