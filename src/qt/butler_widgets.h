@@ -297,8 +297,10 @@ public:
 	{
 		box.setEditable(true);
 		box.setLineEdit(&lineEdit);
-//		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
-//		box.completer()->setPopup(&completerTableView);
+		box.setInsertPolicy(QComboBox::NoInsert);
+		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
+//		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
+		box.completer()->setPopup(&completerTableView);
 		if(!model){
 			tableView.horizontalHeader()->hide();
 			completerTableView.horizontalHeader()->hide();
