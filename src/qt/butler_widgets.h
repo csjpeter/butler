@@ -104,6 +104,45 @@ public:
 	}
 };
 
+class Button : public QPushButton
+{
+private:
+	Q_OBJECT
+public:
+	Button(QWidget * parent = 0) :
+		QPushButton(parent)
+	{
+		setAutoDefault(false);
+	}
+};
+
+class ToolButton : public QToolButton
+{
+private:
+	Q_OBJECT
+public:
+	ToolButton(const QIcon & icon, QWidget * parent = 0) :
+		QToolButton(parent)
+	{
+		setIcon(icon);
+	}
+
+	void narrowLayout()
+	{
+		setToolButtonStyle(Qt::ToolButtonIconOnly);
+	}
+
+	void mediumLayout()
+	{
+		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	}
+
+	void wideLayout()
+	{
+		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	}
+};
+
 class DoubleEditor : public QDoubleSpinBox
 {
 private:
@@ -196,8 +235,8 @@ public:
 			box.setModelColumn(column);
 		}
 		box.setView(&tableView);
-		//box.setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		box.setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+		box.setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//box.setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
 		if(box.lineEdit())
 			box.lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		wideLayout();
@@ -258,17 +297,26 @@ public:
 	{
 		box.setEditable(true);
 		box.setLineEdit(&lineEdit);
-		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
-		box.completer()->setPopup(&completerTableView);
+//		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
+//		box.completer()->setPopup(&completerTableView);
 		if(!model){
 			tableView.horizontalHeader()->hide();
 			completerTableView.horizontalHeader()->hide();
 		}
+		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		lineEdit.setValidator(0);
 	}
 
 	QString text() const { return lineEdit.text(); }
 	void setText(const QString & str) { lineEdit.setText(str); }
+
+	virtual void keyPressEvent(QKeyEvent * event)
+	{
+		if(event->key() == Qt::Key_Return){
+			return;
+		}
+		Selector::keyPressEvent(event);
+	}
 
 	virtual void resizeEvent(QResizeEvent * event)
 	{
@@ -280,6 +328,93 @@ public:
 		Selector::resizeEvent(event);
 	}
 
+	QLineEdit lineEdit;
+	TableView completerTableView;
+};
+
+class EditorSelector : public QWidget
+{
+private:
+	Q_OBJECT
+public:
+	EditorSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
+		QWidget(parent),
+		button(QIcon(Path::icon("comboarrowdown.png")))
+	{
+		(void)column;
+		completerTableView.setWindowFlags(Qt::Popup);
+		lineEdit.completer()->setCompletionMode(QCompleter::PopupCompletion);
+		lineEdit.completer()->setPopup(&completerTableView);
+		if(!model){
+			completerTableView.setModel(model);
+			completerTableView.horizontalHeader()->hide();
+		}
+		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		lineEdit.setValidator(0);
+
+		connect(&button, SIGNAL(clicked()), this, SLOT(buttonClickedSlot()));
+	}
+
+	QString text() const { return lineEdit.text(); }
+	void setText(const QString & str) { lineEdit.setText(str); }
+
+	void buttonClickedSlot()
+	{
+		completerTableView.show();
+		completerTableView.raise();
+		completerTableView.activateWindow();
+	}
+
+/*	virtual void keyPressEvent(QKeyEvent * event)
+	{
+		if(event->key() == Qt::Key_Return){
+			return;
+		}
+		Selector::keyPressEvent(event);
+	}
+*/
+	virtual void resizeEvent(QResizeEvent * event)
+	{
+		if(event->size() == event->oldSize())
+			return;
+		if(completerTableView.isVisible())
+			completerTableView.horizontalHeader()->resizeSection(
+					0, event->size().width());
+		QWidget::resizeEvent(event);
+	}
+
+	void narrowLayout()
+	{
+		delete layout();
+
+		HLayout * hLayout = new HLayout;
+		hLayout->addWidget(&lineEdit);
+		hLayout->addWidget(&button);
+
+		VLayout * newLayout = new VLayout;
+		newLayout->addWidget(&label, 0, Qt::AlignBottom);
+		newLayout->addStretch(1);
+		newLayout->addLayout(hLayout);
+		newLayout->setSpacing(1);
+		setLayout(newLayout);
+	}
+
+	void wideLayout()
+	{
+		delete layout();
+		HLayout * newLayout = new HLayout;
+		newLayout->addWidget(&label, 0, Qt::AlignTop);
+		newLayout->addStretch(1);
+		newLayout->addWidget(&lineEdit);
+		newLayout->addWidget(&button);
+		newLayout->setStretch(1, 0);
+		setLayout(newLayout);
+	}
+
+	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
+
+	QLabel label;
+	ToolButton button;
 	QLineEdit lineEdit;
 	TableView completerTableView;
 };
@@ -368,44 +503,6 @@ public:
 
 	QTextEdit edit;
 	QLabel label;
-};
-
-class Button : public QPushButton
-{
-private:
-	Q_OBJECT
-public:
-	Button(QWidget * parent = 0) :
-		QPushButton(parent)
-	{
-	}
-};
-
-class ToolButton : public QToolButton
-{
-private:
-	Q_OBJECT
-public:
-	ToolButton(const QIcon & icon, QWidget * parent = 0) :
-		QToolButton(parent)
-	{
-		setIcon(icon);
-	}
-
-	void narrowLayout()
-	{
-		setToolButtonStyle(Qt::ToolButtonIconOnly);
-	}
-
-	void mediumLayout()
-	{
-		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-	}
-
-	void wideLayout()
-	{
-		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	}
 };
 
 class ToolBar : public QWidget

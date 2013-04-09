@@ -32,6 +32,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	infoLabel.setProperty("infoField", true);
 	infoLabel.setAlignment(Qt::AlignCenter);
 
+	doneButton.setDefault(true);
 	shopSelector.setProperty("mandatoryField", true);
 	wareEditor.setProperty("mandatoryField", true);
 	quantityEditor.setProperty("mandatoryField", true);
