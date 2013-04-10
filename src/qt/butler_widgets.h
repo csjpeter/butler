@@ -187,6 +187,7 @@ public slots:
 			LOG("Invalid text: %s", C_STR(str));
 			return;
 		}
+		LOG("Value: %f", value());
 
 		if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
 			valueChanged(value());
@@ -208,7 +209,7 @@ public slots:
 			suffix = " " + newSuffix;
 		else
 			suffix = "";
-		QString rx("[0-9]{1-3}(%1[0-9]{3})*%2?[0-9]{0-%3}(%4)?");
+		QString rx("[0-9]{0,3}(%1[0-9]{0,3})*(%2[0-9]{0,%3})?(%4)?");
 		QString regx(rx.arg(
 				QRegExp::escape(Config::locale.groupSeparator()),
 				QRegExp::escape(Config::locale.decimalPoint()),
