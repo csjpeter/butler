@@ -48,8 +48,8 @@ QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, 
 QScrollBar::handle { background-color: gray;  border: 0.5mm; border-color: black;}
 QScrollBar:vertical { width: 1mm; min-height: 10mm; }
 QScrollBar:horizontal { height: 1mm; min-width: 10mm; }
-QAbstractScrollArea#pannviewscrollarea > QScrollBar:vertical { padding-left: 0.5mm; }
-QAbstractScrollArea#pannviewscrollarea > QScrollBar:horizontal { padding-top: 0.5mm; }
+QAbstractScrollArea > QScrollBar#pannviewscrollbar:vertical { padding-left: 0.5mm; }
+QAbstractScrollArea > QScrollBar#pannviewscrollbar:horizontal { padding-top: 0.5mm; }
 /*PannView > QScrollArea { padding: 0.5mm; }*/
 
 /* Some common interactive rule */
