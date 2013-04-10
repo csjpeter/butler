@@ -21,8 +21,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	model(model),
 	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
 	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
-	shopEditor(&shopsModel(dbname), Shop::Name),
 	wareEditor(&waresModel(dbname), Ware::Name),
+	shopEditor(&shopsModel(dbname), Shop::Name),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
 {
@@ -125,12 +125,7 @@ void AccountingView::mapToGui()
 void AccountingView::mapFromGui()
 {
 	item.uploaded = uploadDateTime.edit.dateTime();
-/*
-	int i = shopEditor.box.currentIndex();
-	ShopsModel &sm = shopsModel(dbname);
-	if(0 <= i && i < sm.rowCount())
-		item.shop = sm.shop(i).name;
-*/
+
 	item.shop = shopEditor.text();
 	item.name = wareEditor.text();
 	item.category = categoryEditor.text();
@@ -163,7 +158,6 @@ void AccountingView::retranslate()
 	setWindowTitle(qtTrId(TidAccountingWindowTitle));
 	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
-	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
 	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
 	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
@@ -171,6 +165,7 @@ void AccountingView::retranslate()
 	quantityEditor.editor.setPlaceholderText(qtTrId(TidQuantityEditorPlaceholder));
 	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
 	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
+	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
 	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
 	uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
 	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
@@ -193,8 +188,8 @@ void AccountingView::applyLayout()
 	HLayout * toolLayout = new HLayout;
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
-	toolLayout->addWidget(&backButton);
 	toolLayout->addWidget(&doneButton);
+	toolLayout->addWidget(&backButton);
 
 	HLayout * hlayout = new HLayout;
 	hlayout->addWidget(&quantityEditor);
@@ -213,8 +208,6 @@ void AccountingView::applyLayout()
 	mainLayout->addLayout(toolLayout);
 	mainLayout->addSpacing(3);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&shopEditor);
-	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&categoryEditor);
@@ -222,6 +215,8 @@ void AccountingView::applyLayout()
 	mainLayout->addLayout(hlayout);
 	mainLayout->addStretch(0);
 	mainLayout->addLayout(h2layout);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&shopEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&purchaseDateTime);
 	mainLayout->addStretch(0);
@@ -240,12 +235,12 @@ void AccountingView::relayout()
 
 	switch(newState) {
 		case ViewState::Wide :
-			shopEditor.wideLayout();
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.wideLayout();
 			unitPriceEditor.wideLayout();
 			grossPriceEditor.wideLayout();
+			shopEditor.wideLayout();
 			purchaseDateTime.wideLayout();
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
@@ -255,12 +250,12 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
-			shopEditor.wideLayout();
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.narrowLayout();
 			unitPriceEditor.narrowLayout();
 			grossPriceEditor.narrowLayout();
+			shopEditor.wideLayout();
 			purchaseDateTime.wideLayout();
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
@@ -270,12 +265,12 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
-			shopEditor.narrowLayout();
 			wareEditor.narrowLayout();
 			categoryEditor.narrowLayout();
 			quantityEditor.narrowLayout();
 			unitPriceEditor.narrowLayout();
 			grossPriceEditor.narrowLayout();
+			shopEditor.narrowLayout();
 			purchaseDateTime.narrowLayout();
 			uploadDateTime.narrowLayout();
 			commentEditor.narrowLayout();

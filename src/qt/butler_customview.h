@@ -48,7 +48,7 @@ private slots:
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void editWare();
 	void finishedEditWare(int);
-	void dropItem();
+	void shoppingItem();
 
 private:
 	const QString & dbname;
@@ -59,7 +59,7 @@ private:
 	ToolButton addButton;
 	ToolButton editButton;
 	ToolButton delButton;
-	ToolButton dropButton;
+	ToolButton shoppigButton;
 	ToolButton filterButton;
 	ToolButton statsButton;
 

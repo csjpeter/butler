@@ -35,7 +35,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	addButton(QIcon(Path::icon("add.png")), QKeySequence(Qt::Key_F1)),
 	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F2)),
 	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F3)),
-	dropButton(QIcon(Path::icon("trash.png")), QKeySequence(Qt::Key_F4)),
+	shoppigButton(QIcon(Path::icon("trash.png")), QKeySequence(Qt::Key_F4)),
 	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F5)),
 	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F6)),
 	accountingView(NULL),
@@ -51,7 +51,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
-	connect(&dropButton, SIGNAL(clicked()), this, SLOT(dropItem()));
+	connect(&shoppigButton, SIGNAL(clicked()), this, SLOT(shoppingItem()));
 	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
 	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
@@ -108,7 +108,7 @@ void CustomView::retranslate()
 	addButton.setText(qtTrId(TidAddItemButtonLabel));
 	editButton.setText(qtTrId(TidEditItemButtonLabel));
 	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
-	dropButton.setText(qtTrId(TidDropItemButtonLabel));
+	shoppigButton.setText(qtTrId(TidShoppingItemButtonLabel));
 	filterButton.setText(qtTrId(TidFilterItemButtonLabel));
 	statsButton.setText(qtTrId(TidStatsItemButtonLabel));
 
@@ -129,7 +129,7 @@ void CustomView::applyLayout()
 	toolLayout->addWidget(&addButton);
 	toolLayout->addWidget(&editButton);
 	toolLayout->addWidget(&delButton);
-	toolLayout->addWidget(&dropButton);
+	toolLayout->addWidget(&shoppigButton);
 	toolLayout->addWidget(&filterButton);
 	toolLayout->addWidget(&statsButton);
 	toolLayout->addStretch();
@@ -152,7 +152,7 @@ void CustomView::relayout()
 			addButton.wideLayout();
 			editButton.wideLayout();
 			delButton.wideLayout();
-			dropButton.wideLayout();
+			shoppigButton.wideLayout();
 			filterButton.wideLayout();
 			statsButton.wideLayout();
 			applyLayout();
@@ -165,7 +165,7 @@ void CustomView::relayout()
 			addButton.mediumLayout();
 			editButton.mediumLayout();
 			delButton.mediumLayout();
-			dropButton.mediumLayout();
+			shoppigButton.mediumLayout();
 			filterButton.mediumLayout();
 			statsButton.mediumLayout();
 			applyLayout();
@@ -178,7 +178,7 @@ void CustomView::relayout()
 			addButton.narrowLayout();
 			editButton.narrowLayout();
 			delButton.narrowLayout();
-			dropButton.narrowLayout();
+			shoppigButton.narrowLayout();
 			filterButton.narrowLayout();
 			statsButton.narrowLayout();
 			applyLayout();
@@ -378,7 +378,7 @@ void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 	model->sort(logicalIndex, order == Qt::AscendingOrder);
 }
 
-void CustomView::dropItem()
+void CustomView::shoppingItem()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -393,11 +393,8 @@ void CustomView::dropItem()
 			tr("Deleting an item from stock"),
 			QString("Shall we add a corresponding item to the shopping list:\n") +
 			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
-			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-			0, Qt::Dialog));
+			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
 	int res = msg->exec();
 	if(res == QMessageBox::Yes)
 		model->addShoppingItem(row);
-	if(res == QMessageBox::Yes || res == QMessageBox::No)
-		model->drop(row);
 }

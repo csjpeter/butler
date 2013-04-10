@@ -114,18 +114,23 @@
         <source>Delete item</source>
         <translation type="unfinished"></translation>
     </message>
-    <message id="tid_drop_item_button_label">
+    <message id="tid_shopping_item_button_label">
         <location filename="../../src/qt/butler_texts.cpp" line="75"/>
+        <source>Add item to shopping list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_drop_item_button_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="78"/>
         <source>Drop item from stock</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_filter_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="78"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="81"/>
         <source>Filter items</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="81"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="84"/>
         <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>

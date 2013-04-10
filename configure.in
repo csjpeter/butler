@@ -86,7 +86,6 @@ function process_args ()
 			;;
 			(--debug)
 				CFLAGS="${CFLAGS} -fno-builtin -O0"
-				DEFINES="${DEFINES} -DDEBUG"
 				DEBUG=yes
 			;;
 			(--relative-path)

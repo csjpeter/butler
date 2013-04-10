@@ -51,7 +51,6 @@ private:
 	Button backButton;
 	Button doneButton;
 	InfoLabel infoLabel;
-	ComboSelector shopEditor;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;
 	QuantityEditor quantityEditor;
@@ -59,6 +58,7 @@ private:
 	PriceEditor grossPriceEditor;
 	FormCheckBox onStockCheck;
 	FormCheckBox boughtCheck;
+	ComboSelector shopEditor;
 	DateTimeEditor purchaseDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;

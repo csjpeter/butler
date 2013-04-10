@@ -30,6 +30,7 @@ extern const char* TidBoughtFormCheckBoxLabel;
 extern const char* TidAddItemButtonLabel;
 extern const char* TidEditItemButtonLabel;
 extern const char* TidDeleteItemButtonLabel;
+extern const char* TidShoppingItemButtonLabel;
 extern const char* TidDropItemButtonLabel;
 extern const char* TidFilterItemButtonLabel;
 extern const char* TidStatsItemButtonLabel;

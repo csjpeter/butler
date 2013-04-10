@@ -166,13 +166,33 @@ public:
 	{
 		setFocusPolicy(Qt::NoFocus);
 		label.setFocusPolicy(Qt::NoFocus);
-		setSuffix();
+		resetRegexp();
 		editor.setValidator(&validator);
 		connect(&editor, SIGNAL(textChanged(const QString &)),
 				this, SLOT(textChangedSlot(const QString &)));
 
 		setContentsMargins(0,0,0,0);
 		wideLayout();
+	}
+private:
+	void resetRegexp()
+	{
+		/*
+		QString rx("[0-9]{0,3}(%1[0-9]{0,3})*(%2[0-9]{0,%3})?(%4)?");
+		QString regx(rx.arg(
+				QRegExp::escape(Config::locale.groupSeparator()),
+				QRegExp::escape(Config::locale.decimalPoint()),
+				QRegExp::escape(QString::number(precision)),
+				QRegExp::escape(suffix)));
+				*/
+		QString rx("\\d*[%1%2]?\\d{0,%3}(%4)?");
+		QString regx(rx.arg(
+				QRegExp::escape(Config::locale.groupSeparator()),
+				QRegExp::escape(Config::locale.decimalPoint()),
+				QRegExp::escape(QString::number(precision)),
+				QRegExp::escape(suffix)));
+		DBG("Validator regx: %s", C_STR(regx));
+		validator.setRegExp(QRegExp(regx));
 	}
 
 signals:
@@ -184,10 +204,10 @@ public slots:
 		int pos = editor.cursorPosition();
 		QString str = newText;
 		if(validator.validate(str, pos) != QValidator::Acceptable){
-			LOG("Invalid text: %s", C_STR(str));
+			DBG("Invalid text: %s", C_STR(str));
 			return;
 		}
-		LOG("Value: %f", value());
+		DBG("Value: %f", value());
 
 		if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
 			valueChanged(value());
@@ -202,6 +222,14 @@ public slots:
 		valueChanged(value());
 	}
 
+	void setPrecision(unsigned prec = 0)
+	{
+		double val = value();
+		precision = prec;
+		resetRegexp();
+		setValue(val);
+	}
+
 	void setSuffix(const QString & newSuffix = "")
 	{
 		double val = value();
@@ -209,21 +237,14 @@ public slots:
 			suffix = " " + newSuffix;
 		else
 			suffix = "";
-		QString rx("[0-9]{0,3}(%1[0-9]{0,3})*(%2[0-9]{0,%3})?(%4)?");
-		QString regx(rx.arg(
-				QRegExp::escape(Config::locale.groupSeparator()),
-				QRegExp::escape(Config::locale.decimalPoint()),
-				QRegExp::escape(QString::number(precision)),
-				QRegExp::escape(suffix)));
-		LOG("Validator rx: %s", C_STR(rx));
-		LOG("Validator regx: %s", C_STR(regx));
-		validator.setRegExp(QRegExp(regx));
+		resetRegexp();
 		setValue(val);
 	}
 
 	void setValue(double v)
 	{
-		QString vStr(Config::locale.toString(v, 'f', precision));
+		//QString vStr(Config::locale.toString(v, 'f', precision));
+		QString vStr(QString::number(v, 'f', precision));
 		editor.blockSignals(true);
 		editor.setText(vStr + suffix);
 		editor.blockSignals(false);
@@ -236,7 +257,9 @@ public:
 		QString str = editor.text();
 		if(str.endsWith(suffix))
 			str.chop(suffix.length());
-		return Config::locale.toDouble(str);
+		//double v = Config::locale.toDouble(str);
+		double v = str.QString::toDouble();
+		return v;
 	}
 
 	void narrowLayout()
@@ -259,11 +282,11 @@ public:
 		setLayout(newLayout);
 	}
 public:
-	int precision;
 	QLabel label;
 	QLineEdit editor;
 private:
 	QString suffix;
+	int precision;
 	QRegExpValidator validator;
 };
 
@@ -275,7 +298,7 @@ public:
 	QuantityEditor(QWidget * parent = 0) :
 		DoubleEditor(parent)
 	{
-		precision = 3;
+		setPrecision(3);
 	}
 };
 
@@ -287,7 +310,7 @@ public:
 	PriceEditor(QWidget * parent = 0) :
 		DoubleEditor(parent)
 	{
-		precision = 2;
+		setPrecision(2);
 	}
 };
 

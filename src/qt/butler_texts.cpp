@@ -71,6 +71,9 @@ const char* TidEditItemButtonLabel = QT_TRID_NOOP("tid_edit_item_button_label");
 //% "Delete item"
 const char* TidDeleteItemButtonLabel = QT_TRID_NOOP("tid_delete_item_button_label");
 
+//% "Add item to shopping list"
+const char* TidShoppingItemButtonLabel = QT_TRID_NOOP("tid_shopping_item_button_label");
+
 //% "Drop item from stock"
 const char* TidDropItemButtonLabel = QT_TRID_NOOP("tid_drop_item_button_label");
 
