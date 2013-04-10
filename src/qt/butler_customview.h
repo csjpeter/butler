@@ -45,6 +45,7 @@ private slots:
 	void finishedEditItem(int);
 	void filterItems();
 	void filterAcceptedSlot();
+	void statsItems();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void editWare();
 	void finishedEditWare(int);

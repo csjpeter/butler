@@ -266,6 +266,7 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/right.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tick.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/partner.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/statistics.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowdown.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowup.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/calendar.png \

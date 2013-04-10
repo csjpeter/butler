@@ -202,37 +202,37 @@
         <translation type="unfinished">Egyedi nézet</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="264"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="287"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="315"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="384"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="268"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="291"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="319"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="401"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="265"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="288"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="385"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="269"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="292"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="402"/>
         <source>Please select item first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="296"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="300"/>
         <source>Deleting an item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="297"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="301"/>
         <source>Shall we delete this item: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="316"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="320"/>
         <source>Please select an item first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="393"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="410"/>
         <source>Deleting an item from stock</source>
         <translation type="unfinished"></translation>
     </message>
@@ -447,12 +447,12 @@
 <context>
     <name>InfoView</name>
     <message>
-        <location filename="../../src/qt/butler_infoview.cpp" line="16"/>
+        <location filename="../../src/qt/butler_infoview.cpp" line="17"/>
         <source>About this software</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_infoview.cpp" line="31"/>
+        <location filename="../../src/qt/butler_infoview.cpp" line="33"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -460,7 +460,7 @@
 <context>
     <name>MainView</name>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="48"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="49"/>
         <source>&amp;Shopping</source>
         <translation>&amp;Vásárlás</translation>
     </message>
@@ -469,42 +469,47 @@
         <translation type="obsolete">&amp;Üzletek</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="56"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="61"/>
         <source>&amp;Wares</source>
         <translation type="unfinished">&amp;Áruk</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="60"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="65"/>
         <source>&amp;Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="52"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="57"/>
         <source>&amp;Partners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="64"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="38"/>
+        <source>Main view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_mainview.cpp" line="53"/>
         <source>&amp;List items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="68"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="69"/>
         <source>&amp;Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="203"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="204"/>
         <source>User query result</source>
         <translation type="unfinished">Egyedi nézet</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="240"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="241"/>
         <source>Butler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="241"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="242"/>
         <source>Butler is a helper for home keeping via maintaining shoping lists.</source>
         <translation type="unfinished"></translation>
     </message>

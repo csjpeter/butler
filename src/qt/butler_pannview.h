@@ -23,8 +23,8 @@ public:
 		scroller(&scrollArea)
 	{
 		setFocusPolicy(Qt::NoFocus);
-		scrollArea.horizontalScrollBar()->setObjectName("pannviewscrollarea");
-		scrollArea.verticalScrollBar()->setObjectName("pannviewscrollarea");
+		scrollArea.horizontalScrollBar()->setObjectName("pannviewscrollbar");
+		scrollArea.verticalScrollBar()->setObjectName("pannviewscrollbar");
 		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
 		scrollArea.setWidgetResizable(true);

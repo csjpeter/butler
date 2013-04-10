@@ -6,6 +6,7 @@
 #include <QtGui>
 
 #include <config.h>
+#include "butler_config.h"
 
 #include "butler_infoview.h"
 
@@ -14,6 +15,7 @@ InfoView::InfoView(QWidget *parent) :
 	label(0)
 {
 	setWindowTitle(tr("About this software"));
+	setWindowIcon(QIcon(Path::icon("info.png")));
 	setWindowModality(Qt::ApplicationModal);
 
 	QString license = QString::fromUtf8(ENDUSER_LICENSE);

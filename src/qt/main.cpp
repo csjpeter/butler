@@ -70,6 +70,7 @@ int main(int argc, char *args[])
 
 	try {
 		Path::initRootPath(args[0]);
+		app.setWindowIcon(QIcon(Path::icon("butler.png")));
 
 		app.initLocalDb();
 		app.loadTranslation();

@@ -35,7 +35,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	addButton(QIcon(Path::icon("add.png")), QKeySequence(Qt::Key_F1)),
 	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F2)),
 	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F3)),
-	shoppigButton(QIcon(Path::icon("trash.png")), QKeySequence(Qt::Key_F4)),
+	shoppigButton(QIcon(Path::icon("shopping.png")), QKeySequence(Qt::Key_F4)),
 	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F5)),
 	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F6)),
 	accountingView(NULL),
@@ -44,6 +44,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	editWareView(NULL)
 {
 	setWindowTitle(tr("User query result"));
+	setWindowIcon(QIcon(Path::icon("list.png")));
 
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
@@ -147,6 +148,12 @@ void CustomView::relayout()
 	ViewState newState = ViewState::Wide;
 	QSize newSize;
 
+//	tableView.resizeColumnsToContents();
+/*	if(tableView.horizontalHeader().width() < width()){
+		tableView.setWordWrap(false);
+		tableView.horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+	}
+*/
 	switch(newState) {
 		case ViewState::Wide :
 			addButton.wideLayout();
@@ -157,7 +164,6 @@ void CustomView::relayout()
 			statsButton.wideLayout();
 			applyLayout();
 			newSize = sizeHint();
-			LOG("Wide: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -170,7 +176,6 @@ void CustomView::relayout()
 			statsButton.mediumLayout();
 			applyLayout();
 			newSize = sizeHint();
-			LOG("Medium: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -183,7 +188,6 @@ void CustomView::relayout()
 			statsButton.narrowLayout();
 			applyLayout();
 			newSize = sizeHint();
-			LOG("Narrow: new width: %d, window width: %d", newSize.width(), width());
 			if(newSize.width() <= width())
 				break;
 			// falling back to a smaller size
@@ -361,6 +365,19 @@ void CustomView::filterAcceptedSlot()
 
 	model->query();
 //	updateStatistics();
+}
+
+void CustomView::statsItems()
+{
+	if(!queryOptsView){
+		queryOptsView = new QueryOptionsView(dbname, model->opts);
+		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
+		QueriesModel & qm = queriesModel(dbname);
+		if(qm.rowCount())
+			model->opts = qm.query(0);
+		model->opts.name = "default";
+	}
+	queryOptsView->activate();
 }
 /*
 void CustomView::updateStatistics()

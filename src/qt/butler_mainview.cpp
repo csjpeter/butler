@@ -35,6 +35,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	queryOptionsView(NULL),
 	infoView(NULL)
 {
+	setWindowTitle(QString(PKGNAME) + " - " + tr("Main view"));
 	connect(&shortcut, SIGNAL(activated()), this, SLOT(reject()));
 
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -49,6 +50,10 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	layout->addWidget(button);
 
+	button = new QPushButton(QIcon(Path::icon("list.png")), tr("&List items"));
+	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
+	layout->addWidget(button);
+
 	button = new QPushButton(QIcon(Path::icon("partner.png")), tr("&Partners"));
 	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
 	layout->addWidget(button);
@@ -59,10 +64,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Tags"));
 	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("list.png")), tr("&List items"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	layout->addWidget(button);
 
 	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));

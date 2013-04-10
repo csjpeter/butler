@@ -50,22 +50,13 @@ public:
 		setSelectionMode(QAbstractItemView::SingleSelection);
 		verticalHeader()->hide();
 		setSortingEnabled(true);
-//		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 		horizontalHeader()->setMovable(true);
 		horizontalHeader()->setSortIndicatorShown(true);
-		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+//		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
 	}
-/*
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		QTableView::resizeEvent(event);
-		if(event->size() == event->oldSize())
-			return;
-		if(isVisible())
-			resizeColumnsToContents();
-	}
-*/
+
 	KineticScroller scroller;
 };
 
@@ -119,6 +110,16 @@ public:
 		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
 
+	virtual void focusInEvent(QFocusEvent * event)
+	{
+		if(event->reason() == Qt::ActiveWindowFocusReason){
+			if(focusWidget())
+				focusWidget()->clearFocus();
+			return;
+		}
+		QPushButton::focusInEvent(event);
+	}
+public:
 	QShortcut shortcut;
 };
 
@@ -137,6 +138,16 @@ public:
 		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
 
+	virtual void focusInEvent(QFocusEvent * event)
+	{
+		if(event->reason() == Qt::ActiveWindowFocusReason){
+			if(focusWidget())
+				focusWidget()->clearFocus();
+			return;
+		}
+		QToolButton::focusInEvent(event);
+	}
+public:
 	void narrowLayout()
 	{
 		setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -197,6 +208,7 @@ private:
 
 signals:
 	void valueChanged(double);
+	void valueChanged(const QString &);
 
 public slots:
 	void textChangedSlot(const QString & newText)
@@ -211,6 +223,7 @@ public slots:
 
 		if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
 			valueChanged(value());
+			valueChanged(editor.text());
 			return;
 		}
 
@@ -220,6 +233,7 @@ public slots:
 		editor.blockSignals(false);
 		editor.setCursorPosition(pos);
 		valueChanged(value());
+		valueChanged(editor.text());
 	}
 
 	void setPrecision(unsigned prec = 0)
@@ -355,7 +369,7 @@ public:
 	virtual QSize minimumSizeHint() const
 	{
 		QSize hint = QComboBox::minimumSizeHint();
-		hint.setWidth(250);
+		hint.setWidth(220);
 		return hint;
 	}
 };
@@ -566,8 +580,6 @@ public:
 		setContentsMargins(0,0,0,0);
 		prev.setText("<");
 		next.setText(">");
-		prev.hide();
-		next.hide();
 
 		connect(&backShortcut, SIGNAL(activated()), &backButton, SLOT(click()));
 		connect(&backButton, SIGNAL(clicked()), parent, SLOT(reject()));
@@ -609,9 +621,11 @@ public:
 		relayout();
 	}
 
-	virtual QSize sizeHint()
+	virtual QSize sizeHint() const
 	{
-		return main.sizeHint();
+		QSize hint = main.sizeHint();
+		hint.setWidth(hint.width() + backButton.sizeHint().width());
+		return hint;
 	}
 
 	void retranslate()
@@ -626,10 +640,7 @@ public:
 		prev.hide();
 		next.hide();
 
-		LOG("toolbar.main.sizeHint().width(): %d, scrollArea.width(): %d, width(): %d",
-				main.sizeHint().width(), scrollArea.width(), width());
-
-		if(main.sizeHint().width() <= scrollArea.width())
+		if(main.sizeHint().width() + backButton.sizeHint().width() <= width())
 			return;
 
 		prev.show();
@@ -643,14 +654,14 @@ public:
 		if(event->type() == QEvent::LanguageChange)
 			retranslate();
 	}
-
+/*
 	virtual void resizeEvent(QResizeEvent * event)
 	{
 		if(layout() && (event->size() == event->oldSize() || !isVisible()))
 			return;
 		relayout();
 	}
-
+*/
 private slots:
 	void prevClicked()
 	{
