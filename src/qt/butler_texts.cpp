@@ -59,11 +59,11 @@ const char* TidUploadDateTimeEditorLabel = QT_TRID_NOOP("tid_upload_date_time_ed
 //% "Comments:"
 const char* TidCommentEditorLabel = QT_TRID_NOOP("tid_comment_editor_label");
 
-//% "on stock"
-const char* TidOnStockCheckBoxLabel = QT_TRID_NOOP("tid_on_stock_check_box_label");
+//% "On stock:"
+const char* TidOnStockFormCheckBoxLabel = QT_TRID_NOOP("tid_on_stock_form_check_box_label");
 
-//% "bought"
-const char* TidBoughtCheckBoxLabel = QT_TRID_NOOP("tid_bought_check_box_label");
+//% "Bought:"
+const char* TidBoughtFormCheckBoxLabel = QT_TRID_NOOP("tid_bought_form_check_box_label");
 
 //% "Add new item"
 const char* TidAddItemButtonLabel = QT_TRID_NOOP("tid_add_item_button_label");

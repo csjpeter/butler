@@ -42,7 +42,9 @@ private slots:
 	void unitPriceEditingFinishedSlot();
 	void grossPriceEditingFinishedSlot();
 	void mandatoryFieldChangedSlot(const QString &);
-	void nameEditFinishedSlot();
+	void wareNameEditFinishedSlot();
+	void wareNameEditFinishedSlot(int);
+	void quantityEditFinishedSlot();
 
 private:
 	const QString & dbname;
@@ -55,17 +57,18 @@ private:
 	ComboSelector shopEditor;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;
-	DoubleEditor quantityEditor;
-	DoubleEditor unitPriceEditor;
-	DoubleEditor grossPriceEditor;
-	QCheckBox onStockCheck;
-	QCheckBox boughtCheck;
+	QuantityEditor quantityEditor;
+	PriceEditor unitPriceEditor;
+	PriceEditor grossPriceEditor;
+	FormCheckBox onStockCheck;
+	FormCheckBox boughtCheck;
 	DateTimeEditor purchaseDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
 
 	QWidget * lastSpinEdited;
 	QWidget * lastLastSpinEdited;
+	QString lastWareName;
 };
 
 #endif

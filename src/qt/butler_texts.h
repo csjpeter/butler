@@ -25,8 +25,8 @@ extern const char* TidGrossPriceEditorLabel;
 extern const char* TidPurchaseDateTimeEditorLabel;
 extern const char* TidUploadDateTimeEditorLabel;
 extern const char* TidCommentEditorLabel;
-extern const char* TidOnStockCheckBoxLabel;
-extern const char* TidBoughtCheckBoxLabel;
+extern const char* TidOnStockFormCheckBoxLabel;
+extern const char* TidBoughtFormCheckBoxLabel;
 
 extern const char* TidAddItemButtonLabel;
 extern const char* TidEditItemButtonLabel;

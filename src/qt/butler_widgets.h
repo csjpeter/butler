@@ -50,13 +50,13 @@ public:
 		setSelectionMode(QAbstractItemView::SingleSelection);
 		verticalHeader()->hide();
 		setSortingEnabled(true);
-		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+//		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 		horizontalHeader()->setMovable(true);
 		horizontalHeader()->setSortIndicatorShown(true);
 		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
 	}
-
+/*
 	virtual void resizeEvent(QResizeEvent * event)
 	{
 		QTableView::resizeEvent(event);
@@ -65,7 +65,7 @@ public:
 		if(isVisible())
 			resizeColumnsToContents();
 	}
-
+*/
 	KineticScroller scroller;
 };
 
@@ -154,22 +154,7 @@ public:
 
 	QShortcut shortcut;
 };
-/*
-class DoubleEditor : public QDoubleSpinBox
-{
-private:
-	Q_OBJECT
-public:
-	DoubleEditor(QWidget * parent = 0) :
-		QDoubleSpinBox(parent)
-	{
-		QAbstractSpinBox::lineEdit()->setStyleSheet(
-				"QLineEdit { margin: 0px; padding: 0px; }");
-		setButtonSymbols(QAbstractSpinBox::NoButtons);
-		setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred));
-	}
-};
-*/
+
 class DoubleEditor : public QWidget
 {
 private:
@@ -182,7 +167,7 @@ public:
 		setFocusPolicy(Qt::NoFocus);
 		label.setFocusPolicy(Qt::NoFocus);
 		setSuffix();
-		editor.setValidator(&validator);
+//		editor.setValidator(&validator);
 		connect(&editor, SIGNAL(textChanged(const QString &)),
 				this, SLOT(textChangedSlot(const QString &)));
 
@@ -190,14 +175,26 @@ public:
 		wideLayout();
 	}
 
+signals:
+	void valueChanged(double);
+
 public slots:
 	void textChangedSlot(const QString & newText)
 	{
-		(void)newText;
-/*		int i = cursorPosition();
-		str = newText;
-		validator.validate();
-		editor.setText();*/
+		int pos = editor.cursorPosition();
+		QString str = newText;
+		if(validator.validate(str, pos) != QValidator::Acceptable)
+			return;
+		if(suffix.size() && str.endsWith(suffix)){
+			valueChanged(value());
+			return;
+		}
+		pos = editor.cursorPosition();
+//		editor.blockSignals(true);
+		editor.setText(str + suffix);
+//		editor.blockSignals(false);
+		editor.setCursorPosition(pos);
+		valueChanged(value());
 	}
 
 	void setSuffix(const QString & newSuffix = "")
@@ -207,7 +204,7 @@ public slots:
 		else
 			suffix = "";
 		validator.setRegExp(QRegExp(
-				  "[0-9]*[\\.,]?[0-9]*(" + QRegExp::escape(suffix) + ")?"
+				  "[0-9]+[\\.,]?[0-9]*(" + QRegExp::escape(suffix) + ")?"
 				  ));
 	}
 
@@ -255,6 +252,76 @@ private:
 	QRegExpValidator validator;
 };
 
+class QuantityEditor : public DoubleEditor
+{
+private:
+	Q_OBJECT
+public:
+	QuantityEditor(QWidget * parent = 0) :
+		DoubleEditor(parent)
+	{
+		precision = 3;
+	}
+};
+
+class PriceEditor : public DoubleEditor
+{
+private:
+	Q_OBJECT
+public:
+	PriceEditor(QWidget * parent = 0) :
+		DoubleEditor(parent)
+	{
+		precision = 2;
+	}
+};
+
+class FormCheckBox : public QWidget
+{
+private:
+	Q_OBJECT
+public:
+	FormCheckBox(QWidget * parent = 0) :
+		QWidget(parent)
+	{
+		label.setFocusPolicy(Qt::NoFocus);
+		setContentsMargins(0,0,0,0);
+
+		HLayout * newLayout = new HLayout;
+		newLayout->addWidget(&label, 0, Qt::AlignVCenter);
+		newLayout->addWidget(&box, 0, Qt::AlignLeft);
+		setLayout(newLayout);
+	}
+
+	QLabel label;
+	QCheckBox box;
+};
+
+class ComboBox : public QComboBox
+{
+private:
+	Q_OBJECT
+public:
+	ComboBox(QWidget * parent = 0) :
+		QComboBox(parent)
+	{
+	}
+
+	virtual QSize sizeHint() const
+	{
+		QSize hint = QComboBox::sizeHint();
+		hint.setWidth(220);
+		return hint;
+	}
+
+	virtual QSize minimumSizeHint() const
+	{
+		QSize hint = QComboBox::minimumSizeHint();
+		hint.setWidth(250);
+		return hint;
+	}
+};
+
 class Selector : public QWidget
 {
 private:
@@ -277,21 +344,11 @@ public:
 		setContentsMargins(0,0,0,0);
 	}
 
-	void paintEvent(QPaintEvent *)
-	{
-		QStyleOption opt;
-		opt.init(this);
-		QPainter p(this);
-		style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-	}
-
 	virtual void resizeEvent(QResizeEvent * event)
 	{
 		if(event->size() == event->oldSize())
 			return;
-		if(tableView.isVisible())
-			tableView.horizontalHeader()->resizeSection(
-					box.modelColumn(), event->size().width());
+		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 	}
 
 	void narrowLayout()
@@ -309,13 +366,12 @@ public:
 		delete layout();
 		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addStretch(0);
 		newLayout->addWidget(&box, 0);
 		setLayout(newLayout);
 	}
 
 	QLabel label;
-	QComboBox box;
+	ComboBox box;
 	TableView tableView;
 };
 
@@ -357,98 +413,10 @@ public:
 	{
 		if(event->size() == event->oldSize())
 			return;
-		if(completerTableView.isVisible())
-			completerTableView.horizontalHeader()->resizeSection(
-					box.modelColumn(), event->size().width());
+		completerTableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 		Selector::resizeEvent(event);
 	}
 
-	QLineEdit editor;
-	TableView completerTableView;
-};
-
-class EditorSelector : public QWidget
-{
-private:
-	Q_OBJECT
-public:
-	EditorSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
-		QWidget(parent),
-		button(QIcon(Path::icon("comboarrowdown.png")))
-	{
-		(void)column;
-		label.setFocusPolicy(Qt::NoFocus);
-		completerTableView.setWindowFlags(Qt::Popup);
-		editor.completer()->setCompletionMode(QCompleter::PopupCompletion);
-		editor.completer()->setPopup(&completerTableView);
-		if(!model){
-			completerTableView.setModel(model);
-			completerTableView.horizontalHeader()->hide();
-		}
-		editor.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		editor.setValidator(0);
-
-		connect(&button, SIGNAL(clicked()), this, SLOT(buttonClickedSlot()));
-	}
-
-	QString text() const { return editor.text(); }
-	void setText(const QString & str) { editor.setText(str); }
-
-	void buttonClickedSlot()
-	{
-		completerTableView.show();
-		completerTableView.raise();
-		completerTableView.activateWindow();
-	}
-
-/*	virtual void keyPressEvent(QKeyEvent * event)
-	{
-		if(event->key() == Qt::Key_Return){
-			return;
-		}
-		Selector::keyPressEvent(event);
-	}
-*/
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		if(event->size() == event->oldSize())
-			return;
-		if(completerTableView.isVisible())
-			completerTableView.horizontalHeader()->resizeSection(
-					0, event->size().width());
-		QWidget::resizeEvent(event);
-	}
-
-	void narrowLayout()
-	{
-		delete layout();
-
-		HLayout * hLayout = new HLayout;
-		hLayout->addWidget(&editor);
-		hLayout->addWidget(&button);
-
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addStretch(1);
-		newLayout->addLayout(hLayout);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addStretch(1);
-		newLayout->addWidget(&editor);
-		newLayout->addWidget(&button);
-		newLayout->setStretch(1, 0);
-		setLayout(newLayout);
-	}
-
-	QLabel label;
-	ToolButton button;
 	QLineEdit editor;
 	TableView completerTableView;
 };

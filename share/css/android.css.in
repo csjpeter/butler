@@ -26,7 +26,7 @@
 	icon-size: 8mm;
 }
 
-*:focus {
+*:focus, *::indicator:focus {
 	border-color: #338833;
 	border-width: 0.5mm;
 	border-style: solid;
@@ -62,22 +62,15 @@ QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
 	max-height: 8mm;
 }
 
-QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox {
+QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox, QCheckBox::indicator, QRadioButton::indicator {
+	border: solid;
 	border-width: 0.5mm;
 	border-radius: 1mm;
 	border-color: #666666;
 }
-/*
-QCheckBox:pressed, QRadioButton:pressed {
-	background-color: #222288;
-	border-color: #666666;
-	border-width: 0.25mm;
-	border-radius: 1mm;
-}
-*/
+
 QPushButton:disabled, QToolButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QAbstractSpinBox:disabled {
-	color: #444444;
-	border-color: #222222;
+	border-width: 0mm;
 }
 
 /* Some class specifics */
@@ -168,36 +161,33 @@ QTableView QHeaderView::section {
 
 /* QCheckBox and QRadioButton */
 
-QCheckBox::indicator, QRadioButton::indicator{
+QCheckBox::indicator {
 	height: 6mm;
 	width: 6mm;
 	margin: 1mm;
 }
 
-QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
-/*	border-color: #444444;*/
-	background-color: #222222;
-}
-
 QCheckBox::indicator:checked {
-/*	border-color: #444444;
-	border-width: 0.25mm;**/
-	background-color: #222222;
 	image: url(ICONS_DIR/tick.png);
 }
 
+QCheckBox:focus {
+	border-width: 0mm;
+}
+
+QRadioButton::indicator{
+	height: 6mm;
+	width: 6mm;
+	margin: 1mm;
+	border-radius: 3mm;
+}
+
 QRadioButton::indicator:checked {
-/*	border-color: #222222;*/
-/*	border-width: 0.7mm;*/
 	background-color: #226622;
 }
 
-QCheckBox::indicator:unchecked, QCheckBox::indicator:checked {
-	border-radius: 1mm;
-}
-
-QRadioButton::indicator:unchecked, QRadioButton::indicator:checked {
-	border-radius: 4mm;
+QRadioButton:focus {
+	border-width: 0mm;
 }
 
 /* QDateTimeEdit */
@@ -211,6 +201,11 @@ QDateTimeEdit * {
 	padding: 0mm;
 	margin: 0mm;
 	border: 0mm;
+}
+
+QDateTimeEdit::drop-down:disabled {
+	border-width: 0mm;
+	image: url();
 }
 
 QDateTimeEdit::drop-down {
@@ -255,9 +250,14 @@ QComboBox::drop-down:pressed {
 
 /* QCalendarWidget */
 
+* QCalendarWidget {
+	border: solid;
+	border-width: 0.25mm;
+	border-color: red;
+}
+
 QCalendarWidget * {
-	border-radius: 1mm;
-	border-width: 0.5mm;
+	border-width: 0mm;
 	font-size: 3mm;
 }
 

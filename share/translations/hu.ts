@@ -102,15 +102,23 @@
         <source>Comments:</source>
         <translation type="unfinished">Megjegyzések:</translation>
     </message>
-    <message id="tid_on_stock_check_box_label">
+    <message id="tid_on_stock_form_check_box_label">
         <location filename="../../src/qt/butler_texts.cpp" line="63"/>
+        <source>On stock:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_bought_form_check_box_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="66"/>
+        <source>Bought:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_on_stock_check_box_label">
         <source>on stock</source>
-        <translation type="unfinished">készleten</translation>
+        <translation type="obsolete">készleten</translation>
     </message>
     <message id="tid_bought_check_box_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="66"/>
         <source>bought</source>
-        <translation type="unfinished">megvásárolva</translation>
+        <translation type="obsolete">megvásárolva</translation>
     </message>
     <message id="tid_add_item_button_label">
         <location filename="../../src/qt/butler_texts.cpp" line="69"/>
