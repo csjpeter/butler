@@ -154,7 +154,7 @@ public:
 
 	QShortcut shortcut;
 };
-
+/*
 class DoubleEditor : public QDoubleSpinBox
 {
 private:
@@ -168,21 +168,63 @@ public:
 		setButtonSymbols(QAbstractSpinBox::NoButtons);
 		setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred));
 	}
-
-	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
 };
-
-class LabelledDoubleEditor : public QWidget
+*/
+class DoubleEditor : public QWidget
 {
 private:
 	Q_OBJECT
 public:
-	LabelledDoubleEditor(QWidget * parent = 0) :
-		QWidget(parent)
+	DoubleEditor(QWidget * parent = 0) :
+		QWidget(parent),
+		precision(0)
 	{
+		setFocusPolicy(Qt::NoFocus);
 		label.setFocusPolicy(Qt::NoFocus);
-		wideLayout();
+		setSuffix();
+		editor.setValidator(&validator);
+		connect(&editor, SIGNAL(textChanged(const QString &)),
+				this, SLOT(textChangedSlot(const QString &)));
+
 		setContentsMargins(0,0,0,0);
+		wideLayout();
+	}
+
+public slots:
+	void textChangedSlot(const QString & newText)
+	{
+		(void)newText;
+/*		int i = cursorPosition();
+		str = newText;
+		validator.validate();
+		editor.setText();*/
+	}
+
+	void setSuffix(const QString & newSuffix = "")
+	{
+		if(newSuffix.length())
+			suffix = " " + newSuffix;
+		else
+			suffix = "";
+		validator.setRegExp(QRegExp(
+				  "[0-9]*[\\.,]?[0-9]*(" + QRegExp::escape(suffix) + ")?"
+				  ));
+	}
+
+	void setValue(double v)
+	{
+		QString vStr(Config::locale.toString(v, 'f', precision));
+		editor.setText(vStr + suffix);
+		editor.setCursorPosition(vStr.length());
+	}
+
+public:
+	double value()
+	{
+		QString str = editor.text();
+		if(str.endsWith(suffix))
+			str.chop(suffix.length());
+		return str.toDouble();
 	}
 
 	void narrowLayout()
@@ -190,7 +232,7 @@ public:
 		delete layout();
 		VLayout * newLayout = new VLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addWidget(&spin);
+		newLayout->addWidget(&editor);
 		newLayout->setSpacing(1);
 		setLayout(newLayout);
 	}
@@ -200,39 +242,17 @@ public:
 		delete layout();
 		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&spin);
+		newLayout->addWidget(&editor);
 		newLayout->setStretch(1, 0);
 		setLayout(newLayout);
 	}
-
-	DoubleEditor spin;
+public:
+	int precision;
 	QLabel label;
-};
-
-class QuantityEditor : public LabelledDoubleEditor
-{
+	QLineEdit editor;
 private:
-	Q_OBJECT
-public:
-	QuantityEditor(QWidget * parent = 0) :
-		LabelledDoubleEditor(parent)
-	{
-		spin.setRange(0, INT_MAX);
-		spin.setDecimals(3);
-	}
-};
-
-class PriceEditor : public LabelledDoubleEditor
-{
-private:
-	Q_OBJECT
-public:
-	PriceEditor(QWidget * parent = 0) :
-		LabelledDoubleEditor(parent)
-	{
-		spin.setRange(0, INT_MAX);
-		spin.setDecimals(2);
-	}
+	QString suffix;
+	QRegExpValidator validator;
 };
 
 class Selector : public QWidget
@@ -294,8 +314,6 @@ public:
 		setLayout(newLayout);
 	}
 
-	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
-
 	QLabel label;
 	QComboBox box;
 	TableView tableView;
@@ -310,21 +328,22 @@ public:
 		Selector(model, column, parent)
 	{
 		box.setEditable(true);
-		box.setLineEdit(&lineEdit);
+		box.setLineEdit(&editor);
 		box.setInsertPolicy(QComboBox::NoInsert);
-//		box.completer()->setCompletionMode(QCompleter::PopupCompletion);
-		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
+		box.completer()->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+//		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
 		box.completer()->setPopup(&completerTableView);
+		box.setCurrentIndex(-1);
 		if(!model){
 			tableView.horizontalHeader()->hide();
 			completerTableView.horizontalHeader()->hide();
 		}
-		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		lineEdit.setValidator(0);
+		editor.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		editor.setValidator(0);
 	}
 
-	QString text() const { return lineEdit.text(); }
-	void setText(const QString & str) { lineEdit.setText(str); }
+	QString text() const { return editor.text(); }
+	void setText(const QString & str) { editor.setText(str); }
 
 	virtual void keyPressEvent(QKeyEvent * event)
 	{
@@ -344,7 +363,7 @@ public:
 		Selector::resizeEvent(event);
 	}
 
-	QLineEdit lineEdit;
+	QLineEdit editor;
 	TableView completerTableView;
 };
 
@@ -360,20 +379,20 @@ public:
 		(void)column;
 		label.setFocusPolicy(Qt::NoFocus);
 		completerTableView.setWindowFlags(Qt::Popup);
-		lineEdit.completer()->setCompletionMode(QCompleter::PopupCompletion);
-		lineEdit.completer()->setPopup(&completerTableView);
+		editor.completer()->setCompletionMode(QCompleter::PopupCompletion);
+		editor.completer()->setPopup(&completerTableView);
 		if(!model){
 			completerTableView.setModel(model);
 			completerTableView.horizontalHeader()->hide();
 		}
-		lineEdit.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		lineEdit.setValidator(0);
+		editor.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
+		editor.setValidator(0);
 
 		connect(&button, SIGNAL(clicked()), this, SLOT(buttonClickedSlot()));
 	}
 
-	QString text() const { return lineEdit.text(); }
-	void setText(const QString & str) { lineEdit.setText(str); }
+	QString text() const { return editor.text(); }
+	void setText(const QString & str) { editor.setText(str); }
 
 	void buttonClickedSlot()
 	{
@@ -405,7 +424,7 @@ public:
 		delete layout();
 
 		HLayout * hLayout = new HLayout;
-		hLayout->addWidget(&lineEdit);
+		hLayout->addWidget(&editor);
 		hLayout->addWidget(&button);
 
 		VLayout * newLayout = new VLayout;
@@ -422,17 +441,15 @@ public:
 		HLayout * newLayout = new HLayout;
 		newLayout->addWidget(&label, 0, Qt::AlignTop);
 		newLayout->addStretch(1);
-		newLayout->addWidget(&lineEdit);
+		newLayout->addWidget(&editor);
 		newLayout->addWidget(&button);
 		newLayout->setStretch(1, 0);
 		setLayout(newLayout);
 	}
 
-	PRIMITIVE_PROPERTY(bool, mandatory, isMandatory, setMandatory);
-
 	QLabel label;
 	ToolButton button;
-	QLineEdit lineEdit;
+	QLineEdit editor;
 	TableView completerTableView;
 };
 

@@ -52,12 +52,12 @@ private:
 	Button backButton;
 	Button doneButton;
 	InfoLabel infoLabel;
-	Selector shopSelector;
+	ComboSelector shopEditor;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;
-	QuantityEditor quantityEditor;
-	PriceEditor unitPriceEditor;
-	PriceEditor grossPriceEditor;
+	DoubleEditor quantityEditor;
+	DoubleEditor unitPriceEditor;
+	DoubleEditor grossPriceEditor;
 	QCheckBox onStockCheck;
 	QCheckBox boughtCheck;
 	DateTimeEditor purchaseDateTime;

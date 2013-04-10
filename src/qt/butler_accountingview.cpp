@@ -21,7 +21,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	model(model),
 	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
 	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
-	shopSelector(&shopsModel(dbname), Shop::Name),
+	shopEditor(&shopsModel(dbname), Shop::Name),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	lastSpinEdited(0),
 	lastLastSpinEdited(0)
@@ -35,35 +35,34 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	infoLabel.setAlignment(Qt::AlignCenter);
 
 	doneButton.setDefault(true);
-	shopSelector.box.setCurrentIndex(-1);
 
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
-	connect(&shopSelector.box, SIGNAL(currentIndexChanged(const QString &)),
+	connect(&shopEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
-	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(const QString &)),
+	connect(&grossPriceEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
-	connect(&quantityEditor.spin, SIGNAL(valueChanged(const QString &)),
+	connect(&quantityEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 
-	connect(&quantityEditor.spin, SIGNAL(valueChanged(double)),
+	connect(&quantityEditor.editor, SIGNAL(valueChanged(double)),
 			this, SLOT(quantityValueChangedSlot(double)));
-	connect(&unitPriceEditor.spin, SIGNAL(valueChanged(double)),
+	connect(&unitPriceEditor.editor, SIGNAL(valueChanged(double)),
 			this, SLOT(unitPriceValueChangedSlot(double)));
-	connect(&grossPriceEditor.spin, SIGNAL(valueChanged(double)),
+	connect(&grossPriceEditor.editor, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
 
-	connect(&quantityEditor.spin, SIGNAL(editingFinished()),
+	connect(&quantityEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(quantityEditingFinishedSlot()));
-	connect(&unitPriceEditor.spin, SIGNAL(editingFinished()),
+	connect(&unitPriceEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(unitPriceEditingFinishedSlot()));
-	connect(&grossPriceEditor.spin, SIGNAL(editingFinished()),
+	connect(&grossPriceEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(grossPriceEditingFinishedSlot()));
 
-	connect(&wareEditor.lineEdit, SIGNAL(editingFinished()),
+	connect(&wareEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));
 
 	/* restore last state */
@@ -116,18 +115,17 @@ void AccountingView::mapToGui()
 	categoryEditor.setText(item.category);
 
 	quantityEditor.blockSignals(true);
-	quantityEditor.spin.setValue(item.quantity);
-	quantityEditor.spin.blockSignals(false);
+	quantityEditor.setValue(item.quantity);
+	quantityEditor.editor.blockSignals(false);
 
 	commentEditor.edit.setText(item.comment);
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.spin.setValue((DBL_EPSILON <= item.quantity) ?
-			item.price / item.quantity : 0);
+	unitPriceEditor.setValue((0.001 <= item.quantity) ? item.price / item.quantity : 0);
 	unitPriceEditor.blockSignals(false);
 
 	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.spin.setValue(item.price);
+	grossPriceEditor.setValue(item.price);
 	grossPriceEditor.blockSignals(false);
 
 	onStockCheck.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
@@ -136,20 +134,21 @@ void AccountingView::mapToGui()
 void AccountingView::mapFromGui()
 {
 	item.uploaded = uploadDateTime.edit.dateTime();
-
-	item.name = wareEditor.text();
-	item.category = categoryEditor.text();
-	item.quantity = quantityEditor.spin.value();
-	item.comment = commentEditor.edit.toPlainText();
-
-	item.bought = (boughtCheck.checkState() == Qt::Checked);
-	item.price = grossPriceEditor.spin.value();
-	item.purchased = purchaseDateTime.edit.dateTime();
-
-	int i = shopSelector.box.currentIndex();
+/*
+	int i = shopEditor.box.currentIndex();
 	ShopsModel &sm = shopsModel(dbname);
 	if(0 <= i && i < sm.rowCount())
 		item.shop = sm.shop(i).name;
+*/
+	item.shop = shopEditor.text();
+	item.name = wareEditor.text();
+	item.category = categoryEditor.text();
+	item.quantity = quantityEditor.value();
+	item.comment = commentEditor.edit.toPlainText();
+
+	item.bought = (boughtCheck.checkState() == Qt::Checked);
+	item.price = grossPriceEditor.value();
+	item.purchased = purchaseDateTime.edit.dateTime();
 
 	item.onStock = (onStockCheck.checkState() == Qt::Checked);
 }
@@ -173,13 +172,13 @@ void AccountingView::retranslate()
 	setWindowTitle(qtTrId(TidAccountingWindowTitle));
 	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
-	shopSelector.label.setText(qtTrId(TidShopSelectorLabel));
-//	shopSelector.box.lineEdit().setPlaceholderText(qtTrId(TidShopSelectorPlaceholder));
+	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
+	shopEditor.editor.setPlaceholderText(qtTrId(TidShopSelectorPlaceholder));
 	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
-	wareEditor.lineEdit.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
+	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
 	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
-	quantityEditor.spin.setSpecialValueText(qtTrId(TidQuantityEditorPlaceholder));
+	quantityEditor.editor.setPlaceholderText(qtTrId(TidQuantityEditorPlaceholder));
 	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
 	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
 	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
@@ -223,7 +222,7 @@ void AccountingView::applyLayout()
 	mainLayout->addLayout(toolLayout);
 	mainLayout->addSpacing(3);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&shopSelector);
+	mainLayout->addWidget(&shopEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
 	mainLayout->addStretch(0);
@@ -249,7 +248,7 @@ void AccountingView::relayout()
 
 	switch(newState) {
 		case ViewState::Wide :
-			shopSelector.wideLayout();
+			shopEditor.wideLayout();
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.wideLayout();
@@ -264,7 +263,7 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
-			shopSelector.wideLayout();
+			shopEditor.wideLayout();
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.narrowLayout();
@@ -279,7 +278,7 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
-			shopSelector.narrowLayout();
+			shopEditor.narrowLayout();
 			wareEditor.narrowLayout();
 			categoryEditor.narrowLayout();
 			quantityEditor.narrowLayout();
@@ -301,11 +300,18 @@ void AccountingView::saveSlot()
 {
 	mapFromGui();
 
-	model.addNew(item);
+	/* Add shop if not yet known. */
+	ShopsModel &sm = shopsModel(dbname);
+	int i = sm.index(shopEditor.text());
+	if(i == -1){
+		Shop shop;
+		shop.name = shopEditor.text();
+		sm.addNew(shop);
+	}
 
-	/* We want to save any new ware and category before closing dialog. */
+	/* Add ware if not yet known. */
 	WaresModel &wm = waresModel(dbname);
-	int i = wm.index(wareEditor.text());
+	i = wm.index(wareEditor.text());
 	if(i == -1){
 		Ware ware;
 		ware.name = wareEditor.text();
@@ -318,10 +324,12 @@ void AccountingView::saveSlot()
 		wm.update(i, modified);
 	}
 
+	model.addNew(item);
+
 	item = Item();
 	item.uploaded = QDateTime::currentDateTime();
 	mapToGui();
-	wareEditor.lineEdit.setFocus(Qt::OtherFocusReason);
+	wareEditor.editor.setFocus(Qt::OtherFocusReason);
 
 	infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
 	infoLabel.updateGeometry();
@@ -329,59 +337,59 @@ void AccountingView::saveSlot()
 
 void AccountingView::quantityValueChangedSlot(double q)
 {
-	double u = unitPriceEditor.spin.value();
-	double g = grossPriceEditor.spin.value();
+	double u = unitPriceEditor.value();
+	double g = grossPriceEditor.value();
 
 	if((lastSpinEdited == &quantityEditor && lastLastSpinEdited == &grossPriceEditor) ||
 			lastSpinEdited == &grossPriceEditor){
 		u = (q < 0.001) ? 0 : g / q;
 		unitPriceEditor.blockSignals(true);
-		unitPriceEditor.spin.setValue(u);
+		unitPriceEditor.setValue(u);
 		unitPriceEditor.blockSignals(false);
 		return;
 	}
 
 	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.spin.setValue(u * q);
+	grossPriceEditor.setValue(u * q);
 	grossPriceEditor.blockSignals(false);
 }
 
 void AccountingView::unitPriceValueChangedSlot(double u)
 {
-	double q = quantityEditor.spin.value();
-	double g = grossPriceEditor.spin.value();
+	double q = quantityEditor.value();
+	double g = grossPriceEditor.value();
 
 	if((lastSpinEdited == &unitPriceEditor && lastLastSpinEdited == &grossPriceEditor) ||
 			lastSpinEdited == &grossPriceEditor){
 		q = (u < 0.01) ? 0 : g / u;
 		quantityEditor.blockSignals(true);
-		quantityEditor.spin.setValue(q);
+		quantityEditor.setValue(q);
 		quantityEditor.blockSignals(false);
 		return;
 	}
 
 	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.spin.setValue(u * q);
+	grossPriceEditor.setValue(u * q);
 	grossPriceEditor.blockSignals(false);
 }
 
 void AccountingView::grossPriceValueChangedSlot(double g)
 {
-	double q = quantityEditor.spin.value();
-	double u = unitPriceEditor.spin.value();
+	double q = quantityEditor.value();
+	double u = unitPriceEditor.value();
 
 	if((lastSpinEdited == &grossPriceEditor && lastLastSpinEdited == &unitPriceEditor) ||
 			lastSpinEdited == &unitPriceEditor){
 		q = (u < 0.01) ? 0 : g / u;
 		quantityEditor.blockSignals(true);
-		quantityEditor.spin.setValue(q);
+		quantityEditor.setValue(q);
 		quantityEditor.blockSignals(false);
 		return;
 	}
 
 	u = (q < 0.001) ? 0 : g / q;
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.spin.setValue(u);
+	unitPriceEditor.setValue(u);
 	unitPriceEditor.blockSignals(false);
 }
 
@@ -408,12 +416,12 @@ void AccountingView::grossPriceEditingFinishedSlot()
 
 void AccountingView::mandatoryFieldChangedSlot(const QString &)
 {
-	DBG("_");
-	if(	shopSelector.box.currentIndex() != -1 &&
-		wareEditor.box.currentText().size() &&
-		quantityEditor.spin.value() != 0
+	LOG("_");
+	if(	shopEditor.editor.text().size() &&
+		wareEditor.editor.text().size() &&
+		quantityEditor.value() != 0
 	) {
-		DBG("Lets how button");
+		DBG("Lets show button");
 		if(!doneButton.isVisible())
 			doneButton.show();
 		if(infoLabel.text().size()){
@@ -437,7 +445,7 @@ void AccountingView::nameEditFinishedSlot()
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(wareEditor.text());
 	if(i == -1){
-		quantityEditor.spin.setSuffix("");
+		quantityEditor.setSuffix("");
 		return;
 	}
 
@@ -446,5 +454,5 @@ void AccountingView::nameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
 
-	quantityEditor.spin.setSuffix(" " + w.unit);
+	quantityEditor.setSuffix(" " + w.unit);
 }
