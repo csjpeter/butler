@@ -68,7 +68,6 @@ EditShopView::EditShopView(const QString & dbname, QWidget * parent) :
 	saveButton = new QPushButton;
 	saveButton->setText(tr("Save"));
 	saveButton->setAutoDefault(false);
-	saveButton->setDefault(true);
 	hbox->addWidget(saveButton);
 
 	nextButton = new QPushButton;

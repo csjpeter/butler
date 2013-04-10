@@ -26,9 +26,6 @@ const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_inf
 //% "Shop (place of buy):"
 const char* TidShopSelectorLabel = QT_TRID_NOOP("tid_shop_selector_label");
 
-//% "It is mandatory to select a shop."
-const char* TidShopSelectorPlaceholder = QT_TRID_NOOP("tid_shop_selector_placeholder");
-
 //% "Common ware name:"
 const char* TidWareSelectorLabel = QT_TRID_NOOP("tid_ware_selector_label");
 

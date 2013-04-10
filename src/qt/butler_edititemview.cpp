@@ -116,7 +116,6 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	saveButton = new QPushButton;
 	saveButton->setText(tr("Save"));
 	saveButton->setAutoDefault(false);
-	saveButton->setDefault(true);
 	hbox->addWidget(saveButton);
 
 	nextButton = new QPushButton;

@@ -167,7 +167,7 @@ public:
 		setFocusPolicy(Qt::NoFocus);
 		label.setFocusPolicy(Qt::NoFocus);
 		setSuffix();
-//		editor.setValidator(&validator);
+		editor.setValidator(&validator);
 		connect(&editor, SIGNAL(textChanged(const QString &)),
 				this, SLOT(textChangedSlot(const QString &)));
 
@@ -183,35 +183,49 @@ public slots:
 	{
 		int pos = editor.cursorPosition();
 		QString str = newText;
-		if(validator.validate(str, pos) != QValidator::Acceptable)
+		if(validator.validate(str, pos) != QValidator::Acceptable){
+			LOG("Invalid text: %s", C_STR(str));
 			return;
-		if(suffix.size() && str.endsWith(suffix)){
+		}
+
+		if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
 			valueChanged(value());
 			return;
 		}
+
 		pos = editor.cursorPosition();
-//		editor.blockSignals(true);
+		editor.blockSignals(true);
 		editor.setText(str + suffix);
-//		editor.blockSignals(false);
+		editor.blockSignals(false);
 		editor.setCursorPosition(pos);
 		valueChanged(value());
 	}
 
 	void setSuffix(const QString & newSuffix = "")
 	{
+		double val = value();
 		if(newSuffix.length())
 			suffix = " " + newSuffix;
 		else
 			suffix = "";
-		validator.setRegExp(QRegExp(
-				  "[0-9]+[\\.,]?[0-9]*(" + QRegExp::escape(suffix) + ")?"
-				  ));
+		QString rx("[0-9]{1-3}(%1[0-9]{3})*%2?[0-9]{0-%3}(%4)?");
+		QString regx(rx.arg(
+				QRegExp::escape(Config::locale.groupSeparator()),
+				QRegExp::escape(Config::locale.decimalPoint()),
+				QRegExp::escape(QString::number(precision)),
+				QRegExp::escape(suffix)));
+		LOG("Validator rx: %s", C_STR(rx));
+		LOG("Validator regx: %s", C_STR(regx));
+		validator.setRegExp(QRegExp(regx));
+		setValue(val);
 	}
 
 	void setValue(double v)
 	{
 		QString vStr(Config::locale.toString(v, 'f', precision));
+		editor.blockSignals(true);
 		editor.setText(vStr + suffix);
+		editor.blockSignals(false);
 		editor.setCursorPosition(vStr.length());
 	}
 
@@ -221,7 +235,7 @@ public:
 		QString str = editor.text();
 		if(str.endsWith(suffix))
 			str.chop(suffix.length());
-		return str.toDouble();
+		return Config::locale.toDouble(str);
 	}
 
 	void narrowLayout()

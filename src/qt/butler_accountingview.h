@@ -38,9 +38,6 @@ private slots:
 	void quantityValueChangedSlot(double q);
 	void unitPriceValueChangedSlot(double q);
 	void grossPriceValueChangedSlot(double q);
-	void quantityEditingFinishedSlot();
-	void unitPriceEditingFinishedSlot();
-	void grossPriceEditingFinishedSlot();
 	void mandatoryFieldChangedSlot(const QString &);
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
@@ -66,8 +63,8 @@ private:
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
 
-	QWidget * lastSpinEdited;
-	QWidget * lastLastSpinEdited;
+	QWidget * lastNumEdited;
+	QWidget * lastLastNumEdited;
 	QString lastWareName;
 };
 

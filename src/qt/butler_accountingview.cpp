@@ -23,8 +23,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
 	shopEditor(&shopsModel(dbname), Shop::Name),
 	wareEditor(&waresModel(dbname), Ware::Name),
-	lastSpinEdited(0),
-	lastLastSpinEdited(0)
+	lastNumEdited(0),
+	lastLastNumEdited(0)
 {
 	setWindowModality(Qt::ApplicationModal);
 	
@@ -34,18 +34,12 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	infoLabel.setProperty("infoField", true);
 	infoLabel.setAlignment(Qt::AlignCenter);
 
-	doneButton.setDefault(true);
-
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
-	connect(&shopEditor.box, SIGNAL(editTextChanged(const QString &)),
-			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
-	connect(&grossPriceEditor.editor, SIGNAL(textChanged(const QString &)),
-			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
-	connect(&quantityEditor.editor, SIGNAL(textChanged(const QString &)),
+	connect(&quantityEditor, SIGNAL(valueChanged(const QString &)),
 			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
 
 	connect(&quantityEditor, SIGNAL(valueChanged(double)),
@@ -54,13 +48,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 			this, SLOT(unitPriceValueChangedSlot(double)));
 	connect(&grossPriceEditor, SIGNAL(valueChanged(double)),
 			this, SLOT(grossPriceValueChangedSlot(double)));
-
-	connect(&quantityEditor.editor, SIGNAL(editingFinished()),
-			this, SLOT(quantityEditingFinishedSlot()));
-	connect(&unitPriceEditor.editor, SIGNAL(editingFinished()),
-			this, SLOT(unitPriceEditingFinishedSlot()));
-	connect(&grossPriceEditor.editor, SIGNAL(editingFinished()),
-			this, SLOT(grossPriceEditingFinishedSlot()));
 
 	connect(&wareEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(wareNameEditFinishedSlot()));
@@ -118,19 +105,19 @@ void AccountingView::mapToGui()
 	wareNameEditFinishedSlot();
 	categoryEditor.setText(item.category);
 
-	quantityEditor.editor.blockSignals(true);
+	quantityEditor.blockSignals(true);
 	quantityEditor.setValue(item.quantity);
-	quantityEditor.editor.blockSignals(false);
+	quantityEditor.blockSignals(false);
 
 	commentEditor.edit.setText(item.comment);
 
-	unitPriceEditor.editor.blockSignals(true);
+	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.setValue((0.001 <= item.quantity) ? item.price / item.quantity : 0);
-	unitPriceEditor.editor.blockSignals(false);
+	unitPriceEditor.blockSignals(false);
 
-	grossPriceEditor.editor.blockSignals(true);
+	grossPriceEditor.blockSignals(true);
 	grossPriceEditor.setValue(item.price);
-	grossPriceEditor.editor.blockSignals(false);
+	grossPriceEditor.blockSignals(false);
 
 	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
 }
@@ -177,7 +164,6 @@ void AccountingView::retranslate()
 	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
 	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
-	shopEditor.editor.setPlaceholderText(qtTrId(TidShopSelectorPlaceholder));
 	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
 	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
@@ -343,88 +329,81 @@ void AccountingView::saveSlot()
 
 void AccountingView::quantityValueChangedSlot(double q)
 {
+	if(lastNumEdited != &quantityEditor){
+		lastLastNumEdited = lastNumEdited;
+		lastNumEdited = &quantityEditor;
+	}
+
 	double u = unitPriceEditor.value();
 	double g = grossPriceEditor.value();
 
-	if((lastSpinEdited == &quantityEditor && lastLastSpinEdited == &grossPriceEditor) ||
-			lastSpinEdited == &grossPriceEditor){
+	if((lastNumEdited == &quantityEditor && lastLastNumEdited == &grossPriceEditor) ||
+			lastNumEdited == &grossPriceEditor){
 		u = (q < 0.001) ? 0 : g / q;
-		unitPriceEditor.editor.blockSignals(true);
+		unitPriceEditor.blockSignals(true);
 		unitPriceEditor.setValue(u);
-		unitPriceEditor.editor.blockSignals(false);
+		unitPriceEditor.blockSignals(false);
 		return;
 	}
 
-	grossPriceEditor.editor.blockSignals(true);
+	grossPriceEditor.blockSignals(true);
 	grossPriceEditor.setValue(u * q);
-	grossPriceEditor.editor.blockSignals(false);
+	grossPriceEditor.blockSignals(false);
 }
 
 void AccountingView::unitPriceValueChangedSlot(double u)
 {
+	if(lastNumEdited != &unitPriceEditor){
+		lastLastNumEdited = lastNumEdited;
+		lastNumEdited = &unitPriceEditor;
+	}
+
 	double q = quantityEditor.value();
 	double g = grossPriceEditor.value();
 
-	if((lastSpinEdited == &unitPriceEditor && lastLastSpinEdited == &grossPriceEditor) ||
-			lastSpinEdited == &grossPriceEditor){
+	if((lastNumEdited == &unitPriceEditor && lastLastNumEdited == &grossPriceEditor) ||
+			lastNumEdited == &grossPriceEditor){
 		q = (u < 0.01) ? 0 : g / u;
-		quantityEditor.editor.blockSignals(true);
+		quantityEditor.blockSignals(true);
 		quantityEditor.setValue(q);
-		quantityEditor.editor.blockSignals(false);
+		quantityEditor.blockSignals(false);
 		return;
 	}
 
-	grossPriceEditor.editor.blockSignals(true);
+	grossPriceEditor.blockSignals(true);
 	grossPriceEditor.setValue(u * q);
-	grossPriceEditor.editor.blockSignals(false);
+	grossPriceEditor.blockSignals(false);
 }
 
 void AccountingView::grossPriceValueChangedSlot(double g)
 {
+	if(lastNumEdited != &grossPriceEditor){
+		lastLastNumEdited = lastNumEdited;
+		lastNumEdited = &grossPriceEditor;
+	}
+
 	double q = quantityEditor.value();
 	double u = unitPriceEditor.value();
 
-	if((lastSpinEdited == &grossPriceEditor && lastLastSpinEdited == &unitPriceEditor) ||
-			lastSpinEdited == &unitPriceEditor){
+	if((lastNumEdited == &grossPriceEditor && lastLastNumEdited == &unitPriceEditor) ||
+			lastNumEdited == &unitPriceEditor){
 		q = (u < 0.01) ? 0 : g / u;
-		quantityEditor.editor.blockSignals(true);
+		quantityEditor.blockSignals(true);
 		quantityEditor.setValue(q);
-		quantityEditor.editor.blockSignals(false);
+		quantityEditor.blockSignals(false);
 		return;
 	}
 
 	u = (q < 0.001) ? 0 : g / q;
-	unitPriceEditor.editor.blockSignals(true);
+	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.setValue(u);
-	unitPriceEditor.editor.blockSignals(false);
-}
-
-void AccountingView::quantityEditingFinishedSlot()
-{
-	if(lastSpinEdited != &quantityEditor)
-		lastLastSpinEdited = lastSpinEdited;
-	lastSpinEdited = &quantityEditor;
-}
-
-void AccountingView::unitPriceEditingFinishedSlot()
-{
-	if(lastSpinEdited != &unitPriceEditor)
-		lastLastSpinEdited = lastSpinEdited;
-	lastSpinEdited = &unitPriceEditor;
-}
-
-void AccountingView::grossPriceEditingFinishedSlot()
-{
-	if(lastSpinEdited != &grossPriceEditor)
-		lastLastSpinEdited = lastSpinEdited;
-	lastSpinEdited = &grossPriceEditor;
+	unitPriceEditor.blockSignals(false);
 }
 
 void AccountingView::mandatoryFieldChangedSlot(const QString &)
 {
-	if(	shopEditor.editor.text().size() &&
-		wareEditor.editor.text().size() &&
-		quantityEditor.value() != 0
+	if(	wareEditor.editor.text().size() &&
+		0.001 <= quantityEditor.value()
 	) {
 		DBG("Lets show button");
 		if(!doneButton.isVisible())

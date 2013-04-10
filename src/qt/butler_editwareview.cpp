@@ -64,7 +64,6 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	saveButton = new QPushButton;
 	saveButton->setText(tr("Save"));
 	saveButton->setAutoDefault(false);
-	saveButton->setDefault(true);
 	hbox->addWidget(saveButton);
 
 	nextButton = new QPushButton;
@@ -75,7 +74,6 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	closeButton = new QPushButton;
 	closeButton->setText(tr("&Close"));
 	closeButton->setAutoDefault(true);
-	closeButton->setDefault(true);
 	layout->addWidget(closeButton);
 
 	/* restore last state */

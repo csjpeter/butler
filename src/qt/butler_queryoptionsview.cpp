@@ -129,7 +129,6 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 
 	okButton = new QPushButton;
 	okButton->setAutoDefault(false);
-	okButton->setDefault(true);
 	connect(okButton, SIGNAL(clicked(bool)), this, SLOT(okClickedSlot(bool)));
 	okButton->setText(tr("Ok"));
 	gridLayout->addWidget(okButton, 15, 3, 1, 1);

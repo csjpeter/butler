@@ -14,7 +14,6 @@ extern const char* TidDoneButtonLabel;
 extern const char* TidFillMandatoryFieldsInfoLabel;
 extern const char* TidAccountingSavedInfoLabel;
 extern const char* TidShopSelectorLabel;
-extern const char* TidShopSelectorPlaceholder;
 extern const char* TidWareSelectorLabel;
 extern const char* TidWareSelectorPlaceholder;
 extern const char* TidCategoryEditorLabel;
