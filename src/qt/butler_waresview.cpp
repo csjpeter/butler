@@ -87,13 +87,11 @@ void WaresView::showEvent(QShowEvent *event)
 void WaresView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	PannView::closeEvent(event);
 }
 
 void WaresView::saveState()
 {
-	PannView::saveState();
 	QString className = metaObject()->className();
 
 	QSettings settings;

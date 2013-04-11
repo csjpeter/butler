@@ -133,13 +133,11 @@ void ShoppingView::showEvent(QShowEvent *event)
 void ShoppingView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	PannView::closeEvent(event);
 }
 
 void ShoppingView::saveState()
 {
-	PannView::saveState();
 	QString className = metaObject()->className();
 
 	QSettings settings;

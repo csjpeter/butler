@@ -7,6 +7,7 @@
 #define BUTLER_PANNVIEW_H
 
 #include <QWidget>
+#include <butler_macros.h>
 #include <butler_kineticscroller.h>
 
 #include <config.h>
@@ -63,6 +64,7 @@ public:
 
 	virtual void closeEvent(QCloseEvent *event)
 	{
+		saveState();
 		QWidget::closeEvent(event);
 	}
 

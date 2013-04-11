@@ -12,6 +12,7 @@ class AccountingView;
 class EditItemView;
 class QueryOptionsView;
 class EditWareView;
+class StatsView;
 
 class CustomView : public PannView
 {
@@ -23,8 +24,8 @@ public:
 	~CustomView();
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
 	void saveState();
 
@@ -64,18 +65,12 @@ private:
 	ToolButton statsButton;
 
 	TableView tableView;
-/*
-	QLabel *itemCountLabel;
-	QLabel *itemSumQuantityLabel;
-	QLabel *itemSumPriceLabel;
-	QLabel *avgUnitPriceLabel;
-	QLabel *minUnitPriceLabel;
-	QLabel *maxUnitPriceLabel;
-*/
+
 	AccountingView *accountingView;
 	EditItemView *editItemView;
 	QueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
+	StatsView *statsView;
 };
 
 #endif

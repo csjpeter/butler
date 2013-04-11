@@ -84,13 +84,11 @@ void TagsView::showEvent(QShowEvent *event)
 void TagsView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	PannView::closeEvent(event);
 }
 
 void TagsView::saveState()
 {
-	PannView::saveState();
 	QString className = metaObject()->className();
 
 	QSettings settings;

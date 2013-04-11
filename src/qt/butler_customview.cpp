@@ -13,18 +13,8 @@
 #include "butler_queryoptionsview.h"
 #include "butler_accountingview.h"
 #include "butler_editwareview.h"
+#include "butler_statsview.h"
 #include "butler_config.h"
-
-/*
-QPixmap pixmap("image.jpg");
-QPalette palette;    
-QPushButton *button= new QPushButton(this);
-palette.setBrush(button->backgroundRole(), QBrush(pixmap));
-
-button->setFlat(true);
-button->setAutoFillBackground(true);    
-button->setPalette(palette);
-*/
 
 CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * parent) :
 	PannView(parent),
@@ -41,7 +31,8 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
-	editWareView(NULL)
+	editWareView(NULL),
+	statsView(NULL)
 {
 	setWindowTitle(tr("User query result"));
 	setWindowIcon(QIcon(Path::icon("list.png")));
@@ -56,41 +47,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
 	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
-
-	/* statistics in grid layout */
-/*	QGridLayout *statGrid = new QGridLayout;
-	QLabel *label;
-
-	label = new QLabel(tr("Number of queried items : "));
-	statGrid->addWidget(label, 0, 0, 1, 1);
-	itemCountLabel = new QLabel;
-	statGrid->addWidget(itemCountLabel, 0, 1, 1, 1);
-
-	label = new QLabel(tr("Summary of queried quantites : "));
-	statGrid->addWidget(label, 1, 0, 1, 1);
-	itemSumQuantityLabel = new QLabel;
-	statGrid->addWidget(itemSumQuantityLabel, 1, 1, 1, 1);
-
-	label = new QLabel(tr("Summary of paid prices : "));
-	statGrid->addWidget(label, 2, 0, 1, 1);
-	itemSumPriceLabel = new QLabel;
-	statGrid->addWidget(itemSumPriceLabel, 2, 1, 1, 1);
-
-	label = new QLabel(tr("Avergae unit price : "));
-	statGrid->addWidget(label, 3, 0, 1, 1);
-	avgUnitPriceLabel = new QLabel;
-	statGrid->addWidget(avgUnitPriceLabel, 3, 1, 1, 1);
-
-	label = new QLabel(tr("Minimal unit price : "));
-	statGrid->addWidget(label, 4, 0, 1, 1);
-	minUnitPriceLabel = new QLabel;
-	statGrid->addWidget(minUnitPriceLabel, 4, 1, 1, 1);
-
-	label = new QLabel(tr("Maximal unit price : "));
-	statGrid->addWidget(label, 5, 0, 1, 1);
-	maxUnitPriceLabel = new QLabel;
-	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
-*/
 
 	loadState();
 	retranslate();
@@ -232,17 +188,14 @@ void CustomView::showEvent(QShowEvent *event)
 
 void CustomView::closeEvent(QCloseEvent *event)
 {
-	if(!selfDestruct)
-		saveState();
-	else
-		deleteLater();
-
+	saveState();
 	PannView::closeEvent(event);
+	if(selfDestruct)
+		deleteLater();
 }
 
 void CustomView::saveState()
 {
-	PannView::saveState();
 	QString className = metaObject()->className();
 
 	QSettings settings;
@@ -364,27 +317,11 @@ void CustomView::filterAcceptedSlot()
 
 void CustomView::statsItems()
 {
-	if(!queryOptsView){
-		queryOptsView = new QueryOptionsView(dbname, model->opts);
-		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
-		QueriesModel & qm = queriesModel(dbname);
-		if(qm.rowCount())
-			model->opts = qm.query(0);
-		model->opts.name = "default";
-	}
-	queryOptsView->activate();
+	if(!statsView)
+		statsView = new StatsView(model->stat);
+	statsView->activate();
 }
-/*
-void CustomView::updateStatistics()
-{
-	itemCountLabel->setNum((int)model->stat.itemCount);
-	itemSumQuantityLabel->setNum(model->stat.sumQuantity);
-	itemSumPriceLabel->setNum((int)model->stat.sumPrice);
-	avgUnitPriceLabel->setNum(model->stat.avgPrice);
-	minUnitPriceLabel->setNum(model->stat.cheapestUnitPrice);
-	maxUnitPriceLabel->setNum(model->stat.mostExpUnitPrice);
-}
-*/
+
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model->sort(logicalIndex, order == Qt::AscendingOrder);

@@ -18,8 +18,8 @@ public:
 	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();

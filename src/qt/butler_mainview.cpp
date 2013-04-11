@@ -136,14 +136,13 @@ void MainView::closeEvent(QCloseEvent *event)
 		queryOptionsView->close();
 	}
 
-	QTimer::singleShot(0, this, SLOT(quit()));
+	PannView::closeEvent(event);
 
-	QWidget::closeEvent(event);
+	QTimer::singleShot(0, this, SLOT(quit()));
 }
 
 void MainView::saveState()
 {
-	PannView::saveState();
 	QString className = metaObject()->className();
 
 	QSettings settings;

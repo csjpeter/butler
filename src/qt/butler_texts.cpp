@@ -5,6 +5,9 @@
 
 #include <QtGlobal>
 
+//% "Statistics"
+const char* TidStatsWindowTitle = QT_TRID_NOOP("tid_stats_window_title");
+
 //% "User query result"
 const char* TidUserQueryWindowTitle = QT_TRID_NOOP("tid_user_query_window_title");
 
@@ -82,3 +85,24 @@ const char* TidFilterItemButtonLabel = QT_TRID_NOOP("tid_filter_item_button_labe
 
 //% "Statistics"
 const char* TidStatsItemButtonLabel = QT_TRID_NOOP("tid_stats_item_button_label");
+
+//% "Number of queried items : "
+const char* TidStatsItemCountLabel = QT_TRID_NOOP("tid_stats_item_count_label");
+
+//% "Summary of queried quantites : "
+const char* TidStatsItemSumQuantityLabel = QT_TRID_NOOP("tid_stats_item_sum_quantity_label");
+
+//% "Summary of paid prices : "
+const char* TidStatsItemSumPriceLabel = QT_TRID_NOOP("tid_stats_item_sum_price_label");
+
+//% "Avergae unit price : "
+const char* TidStatsAvgUnitPriceLabel = QT_TRID_NOOP("tid_stats_avg_unit_price_label");
+
+//% "Minimal unit price : "
+const char* TidStatsMinUnitPriceLabel = QT_TRID_NOOP("tid_stats_min_unit_price_label");
+
+//% "Maximal unit price : "
+const char* TidStatsMaxUnitPriceLabel = QT_TRID_NOOP("tid_stats_max_unit_price_label");
+
+//% "Time taken by the SQL query : "
+const char* TidStatsTimeTakenBySqlQueryLabel = QT_TRID_NOOP("tid_stats_time_taken_by_sql_query_label");

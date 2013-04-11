@@ -37,8 +37,8 @@ public:
 	void setCursor(const QModelIndex& index);
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();

@@ -37,9 +37,9 @@ public:
 protected:
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
-	void resizeEvent(QResizeEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+	virtual void resizeEvent(QResizeEvent *event);
 
 	void loadState();
 	void saveState();

@@ -84,16 +84,25 @@ public:
 	}
 };
 
-class InfoLabel : public QLabel
+class Label : public QLabel
 {
 private:
 	Q_OBJECT
 public:
-	InfoLabel() : QLabel()
+	Label() : QLabel()
 	{
 		setFocusPolicy(Qt::NoFocus);
+	}
+};
+
+class InfoLabel : public Label
+{
+private:
+	Q_OBJECT
+public:
+	InfoLabel() : Label()
+	{
 		setWordWrap(true);
-//		setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	}
 };
 
