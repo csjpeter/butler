@@ -57,13 +57,13 @@ public:
 		Name,
 		Category,
 		Quantity,
-		Comment,
 		Bought,
 		Purchased,
 		Shop,
 		Price,
 		OnStock,
 		UnitPrice, /* virtual field (computed) */
+		Comment,
 		NumOfFields
 	};
 private:

@@ -148,12 +148,13 @@ void CustomView::relayout()
 	ViewState newState = ViewState::Wide;
 	QSize newSize;
 
-//	tableView.resizeColumnsToContents();
-/*	if(tableView.horizontalHeader().width() < width()){
-		tableView.setWordWrap(false);
-		tableView.horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	}
-*/
+	if(tableView.horizontalHeader()->width() < width())
+		tableView.horizontalHeader()->setResizeMode(
+				Item::Comment, QHeaderView::Stretch);
+	else
+		tableView.horizontalHeader()->setResizeMode(
+				Item::Comment, QHeaderView::ResizeToContents);
+
 	switch(newState) {
 		case ViewState::Wide :
 			addButton.wideLayout();
@@ -203,7 +204,7 @@ void CustomView::changeEvent(QEvent * event)
 
 void CustomView::resizeEvent(QResizeEvent * event)
 {
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+	if(layout() && (event->size() == event->oldSize()))
 		return;
 
 	relayout();

@@ -617,8 +617,12 @@ public:
 	virtual void setLayout(QLayout * layout)
 	{
 		delete main.layout();
+		DBG("ToolBar::setLayout() 1 scrollarea.sizeHint(): %d",
+				scrollArea.sizeHint().width());
 		main.setLayout(layout);
 		relayout();
+		DBG("ToolBar::setLayout() 2 scrollarea.sizeHint(): %d",
+				scrollArea.sizeHint().width());
 	}
 
 	virtual QSize sizeHint() const
@@ -632,7 +636,8 @@ public:
 	{
 		backButton.setText(qtTrId(TidBackButtonLabel));
 
-		relayout();
+		if(main.layout())
+			relayout();
 	}
 
 	void relayout()
@@ -640,6 +645,8 @@ public:
 		prev.hide();
 		next.hide();
 
+		DBG("ToolBar::relayout() main-hint-width: %d, backbutton-hint-width: %d, width: %d"
+				, main.sizeHint().width(), backButton.sizeHint().width(), width());
 		if(main.sizeHint().width() + backButton.sizeHint().width() <= width())
 			return;
 
@@ -654,14 +661,15 @@ public:
 		if(event->type() == QEvent::LanguageChange)
 			retranslate();
 	}
-/*
+
 	virtual void resizeEvent(QResizeEvent * event)
 	{
-		if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		if(layout() && (event->size() == event->oldSize()))
 			return;
+		DBG("ToolBar::resizeEvent event->size(): %d", event->size().width());
 		relayout();
 	}
-*/
+
 private slots:
 	void prevClicked()
 	{
