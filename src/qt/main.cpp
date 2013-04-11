@@ -19,6 +19,7 @@ int main(int argc, char *args[])
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins/sqldrivers"); 
 
 #ifdef DEBUG
 	csjp::verboseMode = true;

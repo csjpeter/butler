@@ -243,15 +243,14 @@ void CustomView::closeEvent(QCloseEvent *event)
 
 void CustomView::loadState()
 {
-	QSettings settings;
-	restoreGeometry(settings.value("customview/geometry").toByteArray());
+	restoreGeometry("customview");
 }
 
 void CustomView::saveState()
 {
-	QSettings settings;
-	settings.setValue("customview/geometry", saveGeometry());
+	saveGeometry("customview");
 
+	QSettings settings;
 	QString uploaded;
 	if(tableView.currentIndex().isValid()){
 		const Item &item = model->item(tableView.currentIndex().row());
@@ -408,7 +407,7 @@ void CustomView::shoppingItem()
 	const Item &item = model->item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Deleting an item from stock"),
+			tr("Adding to shopping list"),
 			QString("Shall we add a corresponding item to the shopping list:\n") +
 			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));

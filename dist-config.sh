@@ -110,7 +110,8 @@ function debian_packaging ()
 {
 	test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
 
-	generate binlicense.in ${DIST_DIR}/debian/copyright || exit $?
+	generate binlicense.in ${DIST_DIR}/debian/copyright.in || exit $?
+	cat ${DIST_DIR}/debian/copyright.in | groff -T utf8 > ${DIST_DIR}/debian/copyright || exit $?
 	generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
 	generate debian/control.in ${DIST_DIR}/debian/control || exit $?
 	test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {

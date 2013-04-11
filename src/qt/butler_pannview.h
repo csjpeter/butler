@@ -93,6 +93,25 @@ public:
 		return QObject::eventFilter(obj, event);
 	}
 
+	void restoreGeometry(QString viewName)
+	{
+		QSettings settings;
+		QPoint pos = settings.value(viewName + "/position", QPoint()).toPoint();
+		QSize size = settings.value(viewName + "/size", QSize()).toSize();
+		if(size.isValid())
+			resize(size);
+		else
+			adjustSize();
+		move(pos);
+	}
+
+	void saveGeometry(QString viewName)
+	{
+		QSettings settings;
+		settings.setValue(viewName + "/position", pos());
+		settings.setValue(viewName + "/size", size());
+	}
+
 public slots:
 	void activate()
 	{
