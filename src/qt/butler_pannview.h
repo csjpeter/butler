@@ -93,11 +93,12 @@ public:
 		return QObject::eventFilter(obj, event);
 	}
 
-	void restoreGeometry(QString viewName)
+	void loadState()
 	{
+		QString className = metaObject()->className();
 		QSettings settings;
-		QPoint pos = settings.value(viewName + "/position", QPoint()).toPoint();
-		QSize size = settings.value(viewName + "/size", QSize()).toSize();
+		QPoint pos = settings.value(className + "/position", QPoint()).toPoint();
+		QSize size = settings.value(className + "/size", QSize()).toSize();
 		if(size.isValid())
 			resize(size);
 		else
@@ -105,11 +106,12 @@ public:
 		move(pos);
 	}
 
-	void saveGeometry(QString viewName)
+	void saveState()
 	{
+		QString className = metaObject()->className();
 		QSettings settings;
-		settings.setValue(viewName + "/position", pos());
-		settings.setValue(viewName + "/size", size());
+		settings.setValue(className + "/position", pos());
+		settings.setValue(className + "/size", size());
 	}
 
 public slots:

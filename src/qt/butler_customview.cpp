@@ -92,9 +92,7 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	statGrid->addWidget(maxUnitPriceLabel, 5, 1, 1, 1);
 */
 
-	/* restore last state */
 	loadState();
-
 	retranslate();
 }
 
@@ -223,11 +221,12 @@ void CustomView::showEvent(QShowEvent *event)
 //	updateStatistics();
 	
 	QSettings settings;
+	QString className = metaObject()->className();
 
-	QDateTime uploaded = settings.value("customview/currentitem", "").toDateTime();
+	QDateTime uploaded = settings.value(className + "/currentitem", "").toDateTime();
 	tableView.selectRow(model->index(uploaded));
 
-	if(settings.value("customview/edititemview", false).toBool())
+	if(settings.value(className + "/edititemview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
@@ -241,14 +240,10 @@ void CustomView::closeEvent(QCloseEvent *event)
 	PannView::closeEvent(event);
 }
 
-void CustomView::loadState()
-{
-	restoreGeometry("customview");
-}
-
 void CustomView::saveState()
 {
-	saveGeometry("customview");
+	PannView::saveState();
+	QString className = metaObject()->className();
 
 	QSettings settings;
 	QString uploaded;
@@ -256,9 +251,9 @@ void CustomView::saveState()
 		const Item &item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
-	settings.setValue("customview/currentitem", uploaded);
+	settings.setValue(className + "/currentitem", uploaded);
 
-	settings.setValue("customview/edititemview",
+	settings.setValue(className + "/edititemview",
 			editItemView != NULL && editItemView->isVisible());
 }
 

@@ -34,7 +34,6 @@ private:
 	void showEvent(QShowEvent *event);
 	void closeEvent(QCloseEvent *event);
 
-	void loadState();
 	void saveState();
 
 private slots:

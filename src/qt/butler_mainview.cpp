@@ -72,25 +72,24 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 	layout->addStretch(0);
 
+	loadState();
 	setLayout(layout);
 
-	/* restore last state */
-	loadState();
-
 	QSettings settings;
-	if(settings.value("mainview/shoppingview", false).toBool())
+	QString className = metaObject()->className();
+	if(settings.value(className + "/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
-	if(settings.value("mainview/customview", false).toBool())
+	if(settings.value(className + "/customview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openCustomView()));
-	if(settings.value("mainview/shopsview", false).toBool())
+	if(settings.value(className + "/shopsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShopsView()));
-	if(settings.value("mainview/tagsview", false).toBool())
+	if(settings.value(className + "/tagsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openTagsView()));
-	if(settings.value("mainview/waresview", false).toBool())
+	if(settings.value(className + "/waresview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openWaresView()));
-	if(settings.value("mainview/queryoptionsview", false).toBool())
+	if(settings.value(className + "/queryoptionsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
-	if(settings.value("mainview/infoview", false).toBool())
+	if(settings.value(className + "/infoview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openInfoView()));
 }
 
@@ -142,39 +141,28 @@ void MainView::closeEvent(QCloseEvent *event)
 	QWidget::closeEvent(event);
 }
 
-void MainView::loadState()
-{
-	QSettings settings;
-	QPoint pos = settings.value("mainview/position", QPoint()).toPoint();
-	QSize size = settings.value("mainview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
-}
-
 void MainView::saveState()
 {
+	PannView::saveState();
+	QString className = metaObject()->className();
+
 	QSettings settings;
-	settings.setValue("mainview/position", pos());
-	settings.setValue("mainview/size", size());
-	settings.setValue("mainview/shoppingview",
+	settings.setValue(className + "/shoppingview",
 			shoppingView != NULL && shoppingView->isVisible());
-	settings.setValue("mainview/customview",
+	settings.setValue(className + "/customview",
 			customView != NULL && customView->isVisible());
-	settings.setValue("mainview/shopsview",
+	settings.setValue(className + "/shopsview",
 			shopsView != NULL && shopsView->isVisible());
-	settings.setValue("mainview/tagsview",
+	settings.setValue(className + "/tagsview",
 			tagsView != NULL && tagsView->isVisible());
-	settings.setValue("mainview/waresview",
+	settings.setValue(className + "/waresview",
 			waresView != NULL && waresView->isVisible());
-	settings.setValue("mainview/queryoptionsview",
+	settings.setValue(className + "/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
-	settings.setValue("mainview/infoview",
+	settings.setValue(className + "/infoview",
 			infoView != NULL && infoView->isVisible());
 
-	settings.setValue("mainview/dbfile", databaseDescriptor(dbname).databaseName);
+	settings.setValue(className + "/dbfile", databaseDescriptor(dbname).databaseName);
 }
 
 void MainView::openShoppingView()

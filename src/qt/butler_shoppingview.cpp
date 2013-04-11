@@ -109,10 +109,8 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	layout->addLayout(shopLayout);
 	layout->addWidget(&queryView);
 
-	setLayout(layout);
-
-	/* restore last state */
 	loadState();
+	setLayout(layout);
 }
 
 ShoppingView::~ShoppingView()
@@ -123,11 +121,12 @@ void ShoppingView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
 	QSettings settings;
+	QString className = metaObject()->className();
 
-	QDateTime uploaded = settings.value("shoppingview/currentitem", "").toDateTime();
+	QDateTime uploaded = settings.value(className + "/currentitem", "").toDateTime();
 	queryView->selectRow(model.index(uploaded));
 
-	if(settings.value("shoppingview/edititemview", false).toBool())
+	if(settings.value(className + "/edititemview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
@@ -138,32 +137,20 @@ void ShoppingView::closeEvent(QCloseEvent *event)
 	PannView::closeEvent(event);
 }
 
-void ShoppingView::loadState()
-{
-	QSettings settings;
-	QPoint pos = settings.value("shoppingview/position", QPoint()).toPoint();
-	QSize size = settings.value("shoppingview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
-}
-
 void ShoppingView::saveState()
 {
-	QSettings settings;
-	settings.setValue("shoppingview/position", pos());
-	settings.setValue("shoppingview/size", size());
+	PannView::saveState();
+	QString className = metaObject()->className();
 
+	QSettings settings;
 	QString uploaded;
 	if(queryView->currentIndex().isValid()){
 		const Item &item = model.item(queryView->currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
-	settings.setValue("shoppingview/currentitem", uploaded);
+	settings.setValue(className + "/currentitem", uploaded);
 
-	settings.setValue("shoppingview/edititemview",
+	settings.setValue(className + "/edititemview",
 			editItemView != NULL && editItemView->isVisible());
 }
 

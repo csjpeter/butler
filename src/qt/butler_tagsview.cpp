@@ -59,10 +59,8 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	layout->addLayout(cLayout);
 	layout->addWidget(&queryView);
 
-	setLayout(layout);
-
-	/* restore last state */
 	loadState();
+	setLayout(layout);
 }
 
 TagsView::~TagsView()
@@ -74,11 +72,12 @@ void TagsView::showEvent(QShowEvent *event)
 	PannView::showEvent(event);
 
 	QSettings settings;
+	QString className = metaObject()->className();
 
-	QString name = settings.value("tagsview/currentitem", "").toString();
+	QString name = settings.value(className + "/currentitem", "").toString();
 	queryView->selectRow(model.index(name));
 
-	if(settings.value("tagsview/edittagview", false).toBool())
+	if(settings.value(className + "/edittagview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
@@ -89,30 +88,18 @@ void TagsView::closeEvent(QCloseEvent *event)
 	PannView::closeEvent(event);
 }
 
-void TagsView::loadState()
-{
-	QSettings settings;
-	QPoint pos = settings.value("tagsview/position", QPoint()).toPoint();
-	QSize size = settings.value("tagsview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
-}
-
 void TagsView::saveState()
 {
-	QSettings settings;
-	settings.setValue("tagsview/position", pos());
-	settings.setValue("tagsview/size", size());
+	PannView::saveState();
+	QString className = metaObject()->className();
 
+	QSettings settings;
 	QString tagName;
 	if(queryView->currentIndex().isValid())
 		tagName = model.tag(queryView->currentIndex().row()).name;
-	settings.setValue("tagsview/currentitem", tagName);
+	settings.setValue(className + "/currentitem", tagName);
 
-	settings.setValue("tagsview/edittagview",
+	settings.setValue(className + "/edittagview",
 			editTagView != NULL && editTagView->isVisible());
 }
 

@@ -38,42 +38,10 @@ InfoView::InfoView(QWidget *parent) :
 
 	layout->addLayout(hLayout);
 
-	/* restore last state */
 	loadState();
-
 	setLayout(layout);
 }
 
 InfoView::~InfoView()
 {
-}
-
-void InfoView::showEvent(QShowEvent *event)
-{
-	QWidget::showEvent(event);
-}
-
-void InfoView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-	QWidget::closeEvent(event);
-}
-
-void InfoView::loadState()
-{
-	QSettings settings;
-	QPoint pos = settings.value("infoview/position", QPoint()).toPoint();
-	QSize size = settings.value("infoview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
-}
-
-void InfoView::saveState()
-{
-	QSettings settings;
-	settings.setValue("infoview/position", pos());
-	settings.setValue("infoview/size", size());
 }
