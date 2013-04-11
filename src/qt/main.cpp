@@ -19,7 +19,7 @@ int main(int argc, char *args[])
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins/sqldrivers"); 
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
 
 #ifdef DEBUG
 	csjp::verboseMode = true;
@@ -65,11 +65,14 @@ int main(int argc, char *args[])
 			break;
 
 		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
-		DBG("Bad argument given: '%s'", args[argi]);
+		LOG("Bad argument given: '%s'", args[argi]);
 		return 1;
 	}
 
 	try {
+		LOG("Environment variables:\n%s",
+			C_STR(QProcessEnvironment::systemEnvironment().toStringList().join("\n")));
+
 		Path::initRootPath(args[0]);
 		app.setWindowIcon(QIcon(Path::icon("butler.png")));
 

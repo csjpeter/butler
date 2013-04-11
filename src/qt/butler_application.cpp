@@ -46,7 +46,7 @@ void Application::initLocalDb()
 	sqlitedb->name = Config::defaultDbName;
 	sqlitedb->driver = "QSQLITE";
 	sqlitedb->databaseName = QDir::toNativeSeparators(Config::dbFileName);
-	DBG("Db file path: %s", C_STR(sqlitedb->databaseName));
+	LOG("Db file path: %s", C_STR(sqlitedb->databaseName));
 	registerDatabase(sqlitedb);
 }
 
@@ -57,7 +57,7 @@ void Application::loadTranslation(const char * langCode)
 		lang = "en" ; //locale.name();
 	lang.truncate(2);
 	QString trFile(Path::translation(C_STR(lang)));
-	DBG("Translation file to load: %s", C_STR(trFile));
+	LOG("Translation file to load: %s", C_STR(trFile));
 
 	csjp::Object<QTranslator> translator(new QTranslator);
 	if(!translator->load(trFile))
@@ -71,22 +71,29 @@ void Application::pixelPerMM()
 {
 	double dpix = qApp->desktop()->physicalDpiX();
 	double dpiy = qApp->desktop()->physicalDpiY();
-	DBG("DpiX: %.2f, DpiY: %.2f", dpix, dpiy);
+	LOG("Physical DpiX: %.2f, DpiY: %.2f", dpix, dpiy);
 
-	double xpxPerMM = dpix/25.4 * 0.94; /* 0.94 correction based on experience */
-	double ypxPerMM = dpiy/25.4 * 0.94; /* 0.94 correction based on experience */
+	dpix = qApp->desktop()->logicalDpiX();
+	dpiy = qApp->desktop()->logicalDpiY();
+	LOG("Logical DpiX: %.2f, DpiY: %.2f", dpix, dpiy);
+
+	double xpxPerMM = dpix/25.4 * 1.07; /* correction based on experience */
+	double ypxPerMM = dpiy/25.4 * 1.07; /* correction based on experience */
 	Config::pxPerMM = (xpxPerMM + ypxPerMM) / 2;
-	DBG("Horiz pixel per mm: %.2f, Vertic pixel per mm: %.2f, Avg pixel per mm: %.2f",
+	LOG("Horiz pixel per mm: %.2f, Vertic pixel per mm: %.2f, Avg pixel per mm: %.2f",
 			xpxPerMM, ypxPerMM, Config::pxPerMM);
-#ifdef DEBUG
+
 	double width = qApp->desktop()->width();
 	double height = qApp->desktop()->height();
-	DBG("Width: %.2f, Height: %.2f", width, height);
+	LOG("Width: %.2f, Height: %.2f", width, height);
 
 	double widthMM = width/xpxPerMM;
 	double heightMM = height/ypxPerMM;
-	DBG("Horiz length in mm: %.2f, Vertic length in mm: %.2f", widthMM, heightMM);
-#endif
+	LOG("Computed Horiz length in mm: %.2f, Vertic length in mm: %.2f", widthMM, heightMM);
+
+	double qtWidthMM = qApp->desktop()->widthMM();
+	double qtHeightMM = qApp->desktop()->heightMM();
+	LOG("Qt given Horiz length in mm: %.2f, Vertic length in mm: %.2f", qtWidthMM, qtHeightMM);
 }
 
 /* Init the styleshhet */

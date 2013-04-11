@@ -650,8 +650,6 @@ public:
 		if(main.sizeHint().width() + backButton.sizeHint().width() <= width())
 			return;
 
-		prev.show();
-		next.show();
 		scrollValueChanged(scrollArea.horizontalScrollBar()->value());
 	}
 
@@ -691,13 +689,13 @@ private slots:
 				bar->minimum(), bar->maximum(), bar->value(), newValue);
 
 		if(bar->maximum() <= newValue)
-			next.setEnabled(false);
+			next.hide();
 		else
-			next.setEnabled(true);
+			next.show();
 		if(newValue <= bar->minimum())
-			prev.setEnabled(false);
+			prev.hide();
 		else
-			prev.setEnabled(true);
+			prev.show();
 	}
 
 public:

@@ -43,7 +43,18 @@ const QString & dateTimeFormat()
 }
 
 namespace Path {
+/*
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files");
+void initLibPath(QString path)
+{
+	QDir dir(path);
+	QDir::entryList(QDir::AllDirs);
+	LOG();
+	LOG("QT_PLUGIN_PATH=%s",
+			C_STR(QProcessEnvironment::systemEnvironment().value("QT_PLUGIN_PATH")));
 
+}
+*/
 const QString translation(const char * lang)
 {
 	QString path;
@@ -51,7 +62,7 @@ const QString translation(const char * lang)
 	path += rootDir;
 #endif
 	path.append(TRANSLATIONS_PATH);
-	DBG("Translation path: %s", C_STR(path));
+	LOG("Translation path: %s", C_STR(path));
 	path += lang;
 	path += ".qm";
 	return path;
@@ -65,7 +76,7 @@ const QString icon(const char * fileName)
 #endif
 	iconPath.append(ICONS_PATH);
 	iconPath.append(fileName);
-	DBG("Icon path: %s", C_STR(iconPath));
+	LOG("Icon path: %s", C_STR(iconPath));
 	return iconPath;
 }
 
@@ -77,7 +88,7 @@ const QString css(const char * fileName)
 #endif
 	cssPath.append(CSS_PATH);
 	cssPath.append(fileName);
-	DBG("CSS path: %s", C_STR(cssPath));
+	LOG("CSS path: %s", C_STR(cssPath));
 	return cssPath;
 }
 
@@ -87,7 +98,7 @@ void initRootPath(const char * args0)
 	int rootDepth = prefix.count("/") + 1; /* +1 for bin */
 
 	QString root(QDir::fromNativeSeparators(args0));
-	DBG("args0: %s", C_STR(root));
+	LOG("args0: %s", C_STR(root));
 
 	int pos = root.lastIndexOf("/");
 	root.chop(root.size() - pos - 1);
@@ -97,8 +108,8 @@ void initRootPath(const char * args0)
 
 	rootDir = QDir::cleanPath(root) + "/";
 
-	DBG("root: %s", C_STR(rootDir));
-	DBG("QDir::homePath(): %s", C_STR(QDir::homePath()));
+	LOG("root: %s", C_STR(rootDir));
+	LOG("QDir::homePath(): %s", C_STR(QDir::homePath()));
 }
 
 }
