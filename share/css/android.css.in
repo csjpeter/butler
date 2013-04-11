@@ -26,11 +26,11 @@
 	icon-size: 8mm;
 }
 
-*:focus, *::pressed:focus, QLabel::pressed:focus, QCheckBox::indicator:focus, QCheckBox:focus {
+QLabel::pressed:focus {
 	border-width: 0mm;
 }
 
-*:focus, *::indicator:focus, QCheckBox::indicator:focus {
+*:focus, *::pressed:focus, *::indicator:focus, QCheckBox::indicator:focus, QCheckBox::pressed:focus, QCheckBox:focus {
 	border-color: #338833;
 	border-width: 0.5mm;
 	border-style: solid;
@@ -178,7 +178,7 @@ QCheckBox::indicator:checked {
 	image: url(ICONS_DIR/tick.png);
 }
 
-QCheckBox:focus, QCheckBox::indicator:focus {
+QCheckBox:focus, QCheckBox::pressed::indicator:focus {
 	border-width: 0mm;
 }
 
@@ -194,7 +194,7 @@ QRadioButton::indicator:checked {
 	image: url(ICONS_DIR/tick.png);
 }
 
-QRadioButton:focus, QRadioButton::indicator:focus {
+QRadioButton:focus, QRadioButton::pressed::indicator:focus {
 	border-width: 0mm;
 }
 
