@@ -17,6 +17,8 @@ private:
 public:
 	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
 
+	void setCursor(const QModelIndex& index);
+
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
@@ -34,6 +36,8 @@ private slots:
 	void retranslate();
 	void applyLayout();
 	void relayout();
+	void prevClickedSlot();
+	void nextClickedSlot();
 	void saveSlot();
 	void quantityValueChangedSlot(double q);
 	void unitPriceValueChangedSlot(double q);
@@ -46,6 +50,7 @@ private slots:
 private:
 	const QString & dbname;
 	ItemsModel & model;
+	QModelIndex cursor;
 	Item item;
 
 	Button backButton;

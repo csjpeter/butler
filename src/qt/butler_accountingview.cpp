@@ -27,6 +27,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	lastLastNumEdited(0)
 {
 	setWindowModality(Qt::ApplicationModal);
+
+	ENSURE(!cursor.isValid(), csjp::LogicError);
 	
 	boughtCheck.box.setCheckState(Qt::Checked);
 	uploadDateTime.setEnabled(false);
@@ -101,6 +103,11 @@ void AccountingView::saveState()
 
 void AccountingView::mapToGui()
 {
+	if(cursor.isValid()){
+		item = Item(model.item(cursor.row()));
+		purchaseDateTime.setDateTime(item.purchased);
+	}
+
 	uploadDateTime.edit.setDateTime(item.uploaded);
 
 	wareEditor.setText(item.name);
@@ -122,6 +129,7 @@ void AccountingView::mapToGui()
 	grossPriceEditor.blockSignals(false);
 
 	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
+	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
 }
 
 void AccountingView::mapFromGui()
@@ -285,6 +293,31 @@ void AccountingView::relayout()
 	}
 }
 
+void AccountingView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	mapToGui();
+	prevButton->setEnabled(cursor.row() > 0);
+	nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
+}
+
+void AccountingView::prevClickedSlot()
+{
+	int col = cursor.column();
+	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void AccountingView::nextClickedSlot()
+{
+	int col = cursor.column();
+	int row = (cursor.row() < model.rowCount() - 1) ?
+		(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
 void AccountingView::saveSlot()
 {
 	mapFromGui();
@@ -313,15 +346,19 @@ void AccountingView::saveSlot()
 		wm.update(i, modified);
 	}
 
-	model.addNew(item);
+	if(cursor.isValid()){
+		model.update(cursor.row(), item);
+	} else {
+		model.addNew(item);
 
-	item = Item();
-	item.uploaded = QDateTime::currentDateTime();
-	mapToGui();
-	wareEditor.editor.setFocus(Qt::OtherFocusReason);
+		item = Item();
+		item.uploaded = QDateTime::currentDateTime();
+		mapToGui();
+		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 
-	infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
-	infoLabel.updateGeometry();
+		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
+		infoLabel.updateGeometry();
+	}
 }
 
 void AccountingView::quantityValueChangedSlot(double q)
