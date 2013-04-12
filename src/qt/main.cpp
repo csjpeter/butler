@@ -24,7 +24,6 @@ int main(int argc, char *args[])
 #ifdef DEBUG
 	csjp::verboseMode = true;
 #endif
-	csjp::verboseMode = true;
 
 	int argi = 1;
 

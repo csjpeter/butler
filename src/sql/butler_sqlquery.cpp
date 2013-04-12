@@ -35,7 +35,7 @@ void SqlQuery::exec(const QString &query)
 
 	prepared = false;
 
-	DBG("%s", C_STR(query));
+	LOG("%s", C_STR(query));
 	if(!qQuery->exec(query))
 		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
 				C_STR(query),
@@ -71,7 +71,7 @@ void SqlQuery::exec()
 {
 	ENSURE(qQuery, csjp::LogicError);
 
-	DBG("%s", C_STR(queryString()));
+	LOG("%s", C_STR(queryString()));
 	if(!qQuery->exec())
 		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
 			C_STR(queryString()), C_STR(sql.dbErrorString()));
@@ -123,16 +123,19 @@ QString SqlQuery::queryString()
 	ENSURE(qQuery, csjp::LogicError);
 
 	QString str;
-	str += qQuery->executedQuery();
-	str += "\n";
-	str += qQuery->lastQuery();
-	str += "\n";
+	if(qQuery->executedQuery().size())
+		str += qQuery->executedQuery();
+	else
+		str += qQuery->lastQuery();
+
 	QList<QVariant> list = qQuery->boundValues().values();
 	for (int i = 0; i < list.size(); ++i){
-		str += i;
-		str += " : ";
-		str += list.at(i).toString().toAscii().data();
-		str += "\n";
+		int pos = str.indexOf("?");
+		ENSURE(0 <= pos, csjp::LogicError);
+		QString param = "'";
+		param += list.at(i).toString();
+		param += "'";
+		str.replace(pos, 1, param);
 	}
 
 	return str;

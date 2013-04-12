@@ -223,6 +223,9 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	/* evaluate query result */
 	int uploadedNo = sqlQuery.colIndex("uploaded");
 	int purchasedNo = sqlQuery.colIndex("purchased");
+	int nameNo = sqlQuery.colIndex("name");
+	int categoryNo = sqlQuery.colIndex("category");
+	int commentNo = sqlQuery.colIndex("comment");
 	int quantityNo = sqlQuery.colIndex("quantity");
 	int priceNo = sqlQuery.colIndex("price");
 	int shopNo = sqlQuery.colIndex("shop");
@@ -250,6 +253,10 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		dt = sqlQuery.value(purchasedNo).toDateTime();
 		dt.setTimeSpec(Qt::UTC);
 		item->purchased = dt.toLocalTime();
+
+		item->name = sqlQuery.value(nameNo).toString();
+		item->category = sqlQuery.value(categoryNo).toString();
+		item->comment = sqlQuery.value(commentNo).toString();
 
 		item->quantity = sqlQuery.value(quantityNo).toDouble();
 		item->price = sqlQuery.value(priceNo).toDouble();

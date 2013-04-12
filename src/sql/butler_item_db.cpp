@@ -85,11 +85,6 @@ void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 	sql.transaction();
 	try {
 		itemBoughtTable.query(q, stat, is);
-		unsigned s = is.size();
-		for(unsigned i=0; i<s; i++){
-			Item &item = is.queryAt(i);
-			itemTable.query(item);
-		}
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
