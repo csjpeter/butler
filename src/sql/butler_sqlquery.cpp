@@ -73,7 +73,7 @@ void SqlQuery::exec()
 
 	DBG("%s", C_STR(queryString()));
 	if(!qQuery->exec())
-		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
+		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
 			C_STR(queryString()), C_STR(sql.dbErrorString()));
 }
 

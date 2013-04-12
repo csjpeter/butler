@@ -14,11 +14,25 @@ const char* TidUserQueryWindowTitle = QT_TRID_NOOP("tid_user_query_window_title"
 //% "Already bought new item"
 const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title");
 
+//% "Editing an existing item"
+const char* TidEditItemWindowTitle = QT_TRID_NOOP("tid_edit_item_window_title");
+
+
+
+
 //% "Back"
 const char* TidBackButtonLabel = QT_TRID_NOOP("tid_back_button_label");
 
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
+
+//% "Previous item"
+const char* TidPrevItemButtonLabel = QT_TRID_NOOP("tid_prev_item_button_label");
+
+//% "Next item"
+const char* TidNextItemButtonLabel = QT_TRID_NOOP("tid_next_item_button_label");
+
+
 
 //% "Please fill at least the mandatory fields."
 const char* TidFillMandatoryFieldsInfoLabel = QT_TRID_NOOP("tid_fill_mandatory_fields_info_label");
@@ -65,6 +79,8 @@ const char* TidOnStockFormCheckBoxLabel = QT_TRID_NOOP("tid_on_stock_form_check_
 //% "Bought:"
 const char* TidBoughtFormCheckBoxLabel = QT_TRID_NOOP("tid_bought_form_check_box_label");
 
+
+
 //% "Add new item"
 const char* TidAddItemButtonLabel = QT_TRID_NOOP("tid_add_item_button_label");
 
@@ -82,6 +98,8 @@ const char* TidDropItemButtonLabel = QT_TRID_NOOP("tid_drop_item_button_label");
 
 //% "Filter items"
 const char* TidFilterItemButtonLabel = QT_TRID_NOOP("tid_filter_item_button_label");
+
+
 
 //% "Statistics"
 const char* TidStatsItemButtonLabel = QT_TRID_NOOP("tid_stats_item_button_label");

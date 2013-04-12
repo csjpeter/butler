@@ -35,14 +35,12 @@ private:
 
 	virtual void changeEvent(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
-	
-//	void updateStatistics();
+	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
 	void editItem();
 	void delItem();
 	void openAccountingView();
-	void finishedEditItem(int);
 	void filterItems();
 	void filterAcceptedSlot();
 	void statsItems();
@@ -67,7 +65,7 @@ private:
 	TableView tableView;
 
 	AccountingView *accountingView;
-	EditItemView *editItemView;
+	AccountingView *editItemView;
 	QueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
 	StatsView *statsView;

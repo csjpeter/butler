@@ -29,6 +29,9 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	setWindowModality(Qt::ApplicationModal);
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
+
+	prevButton.hide();
+	nextButton.hide();
 	
 	boughtCheck.box.setCheckState(Qt::Checked);
 	uploadDateTime.setEnabled(false);
@@ -38,11 +41,25 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
 	
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
-			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+			this, SLOT(updateToolButtonStates()));
+	connect(&categoryEditor.box, SIGNAL(editTextChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
 	connect(&quantityEditor, SIGNAL(valueChanged(const QString &)),
-			this, SLOT(mandatoryFieldChangedSlot(const QString &)));
+			this, SLOT(updateToolButtonStates()));
+	connect(&onStockCheck.box, SIGNAL(stateChanged(int)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&boughtCheck.box, SIGNAL(stateChanged(int)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&shopEditor.box, SIGNAL(editTextChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&purchaseDateTime.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&commentEditor.edit, SIGNAL(textChanged()),
+			this, SLOT(updateToolButtonStates()));
 
 	connect(&quantityEditor, SIGNAL(valueChanged(double)),
 			this, SLOT(quantityValueChangedSlot(double)));
@@ -105,7 +122,8 @@ void AccountingView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.item(cursor.row()));
-		purchaseDateTime.setDateTime(item.purchased);
+		purchaseDateTime.edit.setDateTime(item.purchased);
+		shopEditor.setText(item.shop);
 	}
 
 	uploadDateTime.edit.setDateTime(item.uploaded);
@@ -130,6 +148,8 @@ void AccountingView::mapToGui()
 
 	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
 	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
+
+	updateToolButtonStates();
 }
 
 void AccountingView::mapFromGui()
@@ -165,9 +185,15 @@ void AccountingView::resizeEvent(QResizeEvent * event)
 
 void AccountingView::retranslate()
 {
-	setWindowTitle(qtTrId(TidAccountingWindowTitle));
+	if(cursor.isValid())
+		setWindowTitle(qtTrId(TidEditItemWindowTitle));
+	else
+		setWindowTitle(qtTrId(TidAccountingWindowTitle));
+
 	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
+	prevButton.setText(qtTrId(TidPrevItemButtonLabel));
+	nextButton.setText(qtTrId(TidNextItemButtonLabel));
 	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
 	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
@@ -198,7 +224,9 @@ void AccountingView::applyLayout()
 	HLayout * toolLayout = new HLayout;
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
+	toolLayout->addWidget(&prevButton);
 	toolLayout->addWidget(&doneButton);
+	toolLayout->addWidget(&nextButton);
 	toolLayout->addWidget(&backButton);
 
 	HLayout * hlayout = new HLayout;
@@ -235,7 +263,7 @@ void AccountingView::applyLayout()
 	mainLayout->addWidget(&commentEditor);
 
 	setLayout(mainLayout);
-	mandatoryFieldChangedSlot("");
+	updateToolButtonStates();
 }
 
 void AccountingView::relayout()
@@ -295,12 +323,12 @@ void AccountingView::relayout()
 
 void AccountingView::setCursor(const QModelIndex& index)
 {
+	ENSURE(index.isValid(), csjp::LogicError);
 	ENSURE(index.model() == &model, csjp::LogicError);
 
 	cursor = index;
+	setWindowTitle(qtTrId(TidEditItemWindowTitle));
 	mapToGui();
-	prevButton->setEnabled(cursor.row() > 0);
-	nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
 }
 
 void AccountingView::prevClickedSlot()
@@ -359,6 +387,8 @@ void AccountingView::saveSlot()
 		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
 		infoLabel.updateGeometry();
 	}
+
+	updateToolButtonStates();
 }
 
 void AccountingView::quantityValueChangedSlot(double q)
@@ -377,12 +407,13 @@ void AccountingView::quantityValueChangedSlot(double q)
 		unitPriceEditor.blockSignals(true);
 		unitPriceEditor.setValue(u);
 		unitPriceEditor.blockSignals(false);
-		return;
+	} else {
+		grossPriceEditor.blockSignals(true);
+		grossPriceEditor.setValue(u * q);
+		grossPriceEditor.blockSignals(false);
 	}
 
-	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.setValue(u * q);
-	grossPriceEditor.blockSignals(false);
+	updateToolButtonStates();
 }
 
 void AccountingView::unitPriceValueChangedSlot(double u)
@@ -401,12 +432,13 @@ void AccountingView::unitPriceValueChangedSlot(double u)
 		quantityEditor.blockSignals(true);
 		quantityEditor.setValue(q);
 		quantityEditor.blockSignals(false);
-		return;
+	} else {
+		grossPriceEditor.blockSignals(true);
+		grossPriceEditor.setValue(u * q);
+		grossPriceEditor.blockSignals(false);
 	}
 
-	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.setValue(u * q);
-	grossPriceEditor.blockSignals(false);
+	updateToolButtonStates();
 }
 
 void AccountingView::grossPriceValueChangedSlot(double g)
@@ -425,33 +457,44 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 		quantityEditor.blockSignals(true);
 		quantityEditor.setValue(q);
 		quantityEditor.blockSignals(false);
-		return;
+	} else {
+		u = (q < 0.001) ? 0 : g / q;
+		unitPriceEditor.blockSignals(true);
+		unitPriceEditor.setValue(u);
+		unitPriceEditor.blockSignals(false);
 	}
 
-	u = (q < 0.001) ? 0 : g / q;
-	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue(u);
-	unitPriceEditor.blockSignals(false);
+	updateToolButtonStates();
 }
 
-void AccountingView::mandatoryFieldChangedSlot(const QString &)
+void AccountingView::updateToolButtonStates()
 {
-	if(	wareEditor.editor.text().size() &&
-		0.001 <= quantityEditor.value()
-	) {
-		DBG("Lets show button");
-		if(!doneButton.isVisible())
-			doneButton.show();
-		if(infoLabel.text().size()){
-			infoLabel.setText("");
-			infoLabel.updateGeometry();
-		}
-		return;
-	}
+	bool modified = !(
+			item.shop == shopEditor.text() &&
+			item.name == wareEditor.text() &&
+			item.category == categoryEditor.text() &&
+			item.quantity == quantityEditor.value() &&
+			item.comment == commentEditor.edit.toPlainText() &&
+			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
+			item.price == grossPriceEditor.value() &&
+			item.purchased == purchaseDateTime.edit.dateTime() &&
+			item.onStock == (onStockCheck.box.checkState() == Qt::Checked) &&
+			item == Item(model.item(cursor.row()))
+			);
 
-	doneButton.hide();
-	if(infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){
+	bool mandatoriesGiven =
+		wareEditor.editor.text().size() &&
+		0.001 <= quantityEditor.value();
+
+	prevButton.setVisible(!modified && !cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && !cursor.isValid() && cursor.row() < model.rowCount()-1);
+	doneButton.setVisible(mandatoriesGiven && modified);
+
+	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){
 		infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
+		infoLabel.updateGeometry();
+	} else if(infoLabel.text().size()){
+		infoLabel.setText("");
 		infoLabel.updateGeometry();
 	}
 }

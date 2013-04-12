@@ -164,6 +164,11 @@ void CustomView::resizeEvent(QResizeEvent * event)
 	relayout();
 }
 
+void CustomView::keyPressEvent(QKeyEvent * event)
+{
+	qApp->postEvent(&tableView, new QKeyEvent(*event));
+}
+
 void CustomView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
@@ -174,7 +179,6 @@ void CustomView::showEvent(QShowEvent *event)
 	model->opts.name = "default";
 
 	model->query();
-//	updateStatistics();
 	
 	QSettings settings;
 	QString className = metaObject()->className();
@@ -219,18 +223,10 @@ void CustomView::editItem()
 	}
 
 	if(!editItemView)
-		editItemView = new EditItemView(dbname, *model);
+		editItemView = new AccountingView(dbname, *model);
 
-	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(tableView.currentIndex());
 	editItemView->activate();
-}
-
-void CustomView::finishedEditItem(int res)
-{
-	Q_UNUSED(res);
-
-	editItemView->disconnect(this, SLOT(finishedEditItem(int)));
 }
 
 void CustomView::delItem()
@@ -312,7 +308,6 @@ void CustomView::filterAcceptedSlot()
 	}
 
 	model->query();
-//	updateStatistics();
 }
 
 void CustomView::statsItems()

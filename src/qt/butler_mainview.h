@@ -49,8 +49,6 @@ private slots:
 private:
 	QString dbname;
 
-	QShortcut shortcut;
-
 	ShoppingView *shoppingView;
 	ShopsView *shopsView;
 	TagsView *tagsView;

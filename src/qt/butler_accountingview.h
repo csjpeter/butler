@@ -42,7 +42,7 @@ private slots:
 	void quantityValueChangedSlot(double q);
 	void unitPriceValueChangedSlot(double q);
 	void grossPriceValueChangedSlot(double q);
-	void mandatoryFieldChangedSlot(const QString &);
+	void updateToolButtonStates();
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
 	void quantityEditFinishedSlot();
@@ -55,6 +55,8 @@ private:
 
 	Button backButton;
 	Button doneButton;
+	Button prevButton;
+	Button nextButton;
 	InfoLabel infoLabel;
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;

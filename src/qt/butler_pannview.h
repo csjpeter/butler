@@ -21,6 +21,7 @@ public:
 	PannView(QWidget * parent = 0) :
 		QWidget(parent),
 		scrollArea(0),
+		quitShortcut(QKeySequence(QKeySequence::Quit), this),
 		scroller(&scrollArea)
 	{
 		setFocusPolicy(Qt::NoFocus);
@@ -38,6 +39,8 @@ public:
 		QWidget::setLayout(vLayout);
 
 		installEventFilter(this);
+
+		connect(&quitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
 	}
 	virtual ~PannView() {}
 
@@ -134,6 +137,7 @@ signals:
 private:
 	QScrollArea scrollArea;
 	QWidget main;
+	QShortcut quitShortcut;
 
 	KineticScroller scroller;
 };

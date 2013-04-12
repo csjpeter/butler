@@ -26,7 +26,6 @@
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
-	shortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), this),
 	shoppingView(NULL),
 	shopsView(NULL),
 	tagsView(NULL),
@@ -36,7 +35,6 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	infoView(NULL)
 {
 	setWindowTitle(QString(PKGNAME) + " - " + tr("Main view"));
-	connect(&shortcut, SIGNAL(activated()), this, SLOT(reject()));
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setContentsMargins(0,0,0,0);

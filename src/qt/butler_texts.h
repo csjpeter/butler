@@ -9,9 +9,13 @@
 extern const char* TidStatsWindowTitle;
 extern const char* TidUserQueryWindowTitle;
 extern const char* TidAccountingWindowTitle;
+extern const char* TidEditItemWindowTitle;
 
 extern const char* TidBackButtonLabel;
 extern const char* TidDoneButtonLabel;
+extern const char* TidPrevItemButtonLabel;
+extern const char* TidNextItemButtonLabel;
+
 extern const char* TidFillMandatoryFieldsInfoLabel;
 extern const char* TidAccountingSavedInfoLabel;
 extern const char* TidShopSelectorLabel;

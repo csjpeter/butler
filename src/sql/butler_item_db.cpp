@@ -28,9 +28,9 @@ void ItemDb::insert(const Item &i)
 	sql.transaction();
 	try{
 		itemTable.insert(i);
-		sql.commit();
 		if(i.bought)
 			itemBoughtTable.insert(i);
+		sql.commit();
 	} catch (...) {
 		sql.rollback();
 		throw;
