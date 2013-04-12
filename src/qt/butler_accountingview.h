@@ -8,6 +8,7 @@
 
 #include <butler_item.h>
 #include <butler_widgets.h>
+#include "butler_tagwidget.h"
 
 class AccountingView : public PannView
 {
@@ -52,6 +53,7 @@ private:
 	ItemsModel & model;
 	QModelIndex cursor;
 	Item item;
+	Ware ware;
 
 	Button backButton;
 	Button doneButton;
@@ -69,6 +71,7 @@ private:
 	DateTimeEditor purchaseDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
+	TagWidget tagsWidget;
 
 	QWidget * lastNumEdited;
 	QWidget * lastLastNumEdited;

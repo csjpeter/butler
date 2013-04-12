@@ -13,7 +13,6 @@
 
 #include <butler_kineticscroller.h>
 #include "butler_pannview.h"
-#include "butler_tagwidget.h"
 #include "butler_databases.h"
 #include "butler_config.h"
 #include "butler_texts.h"
@@ -583,7 +582,9 @@ public:
 	{
 		setFocusPolicy(Qt::NoFocus);
 		main.setFocusPolicy(Qt::NoFocus);
+		main.setContentsMargins(0,0,0,0);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
+		scrollArea.setContentsMargins(0,0,0,0);
 		prev.setFocusPolicy(Qt::NoFocus);
 		next.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
@@ -598,7 +599,8 @@ public:
 		scrollArea.setWidgetResizable(true);
 		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		scrollArea.setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+		scrollArea.setSizePolicy(QSizePolicy(
+				  QSizePolicy::Expanding, QSizePolicy::Preferred));
 //		setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));
 
 		QHBoxLayout * hLayout = new QHBoxLayout;

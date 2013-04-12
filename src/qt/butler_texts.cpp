@@ -124,3 +124,8 @@ const char* TidStatsMaxUnitPriceLabel = QT_TRID_NOOP("tid_stats_max_unit_price_l
 
 //% "Time taken by the SQL query : "
 const char* TidStatsTimeTakenBySqlQueryLabel = QT_TRID_NOOP("tid_stats_time_taken_by_sql_query_label");
+
+
+
+//% "Tags for every ware named %1"
+const char* TidItemViewTagsWidgetLabel = QT_TRID_NOOP("tid_item_view_tags_widget_label");

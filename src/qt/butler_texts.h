@@ -49,4 +49,6 @@ extern const char* TidStatsMinUnitPriceLabel;
 extern const char* TidStatsMaxUnitPriceLabel;
 extern const char* TidStatsTimeTakenBySqlQueryLabel;
 
+extern const char* TidItemViewTagsWidgetLabel;
+
 #endif

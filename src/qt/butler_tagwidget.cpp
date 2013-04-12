@@ -13,77 +13,98 @@ TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
 	QWidget(parent),
 	dbname(dbname),
 	tagSet(tagsModel(dbname).tagSet()),
-	gridLayout(0),
-	maxTagCheckboxWidth(50)
+	columns(1)
 {
 	relayout();
 }
 
-void TagWidget::relayout()
+void TagWidget::applyLayout()
 {
-	/* Guessing practical number of columns. */
-	int columns = 1;
-	if(parentWidget())
-		columns = parentWidget()->width() / maxTagCheckboxWidth;
-	if(!columns)
-		columns = 1;
+	delete layout();
 
-	if(gridLayout){
-		if(gridLayout->columnCount() == columns)
-			return; /* No sense to relayout. */
-		QLayoutItem * child;
-		while((child = gridLayout->takeAt(0)) != 0) {
-//			child->widget()->deleteLater();
-			delete child;
-		}
-		delete layout();
-		gridLayout = 0;
-	}
-//	btnContainer.clear();
+	VLayout *mainLayout = new VLayout;
+
+	QGridLayout * gridLayout = new QGridLayout;
+	gridLayout->setContentsMargins(0,0,0,0);
 
 	unsigned i, s = tagSet.size();
-
-	/* Trick:
-	 * Add new buttons to a ReferenceContainer in which later we can
-	 * access the button belonging to a particular tag. */
-	if(btnContainer.empty()){
-		for(i = 0; i < s; i++){
-			QCheckBox * tagBox(new QCheckBox());
-			tagBox->setTristate(false);
-
-			const Tag &tag = tagSet.queryAt(i);
-			tagBox->setText(tag.name);
-			int w = tagBox->minimumSizeHint().width();
-			if(maxTagCheckboxWidth < w)
-				maxTagCheckboxWidth = w;
-
-			btnContainer.add(*tagBox);
-		}
-	}
-
-	gridLayout = new QGridLayout;
-	setLayout(gridLayout);
-
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;
 
 	/* With this the nth tag in tagset will be represented by the nth
 	 * button in the btnContainer. */
 	for(i = 0; i < s; i++){
-		QCheckBox &tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer.queryAt(i);
 
 		int col = i / rows;
 		int row = i % rows;
 		gridLayout->addWidget(&tagBox, row, col);
 	}
 
-	updateGeometry();
+	mainLayout->addWidget(&label);
+	mainLayout->addLayout(gridLayout);
+
+	setLayout(mainLayout);
+}
+
+void TagWidget::selectionChangedSlot()
+{
+	selectionChanged();
+}
+
+void TagWidget::relayout()
+{
+	bool changed = false;
+	unsigned i, s = tagSet.size();
+
+	/* Trick:
+	 * Add new buttons to btnContainer in which later we can
+	 * access the button belonging to a particular tag. */
+	for(i = btnContainer.size(); i < s; i++){
+		QCheckBox * tagBox(new QCheckBox());
+		tagBox->setContentsMargins(0,0,0,0);
+		tagBox->setTristate(false);
+		connect(tagBox, SIGNAL(stateChanged(int)), this, SLOT(selectionChangedSlot()));
+		btnContainer.add(tagBox);
+		changed = true;
+	}
+
+	int maxTagCheckboxWidth = 1;
+	for(i = 0; i < s; i++){
+		QCheckBox & tagBox = btnContainer.queryAt(i);
+		const Tag &tag = tagSet.queryAt(i);
+
+		if(tagBox.text() != tag.name){
+			tagBox.setText(tag.name);
+			changed = true;
+		}
+
+		/* For guessing practical number of columns. */
+		int w = tagBox.sizeHint().width();
+		if(maxTagCheckboxWidth < w)
+			maxTagCheckboxWidth = w;
+	}
+
+	int newColumns = width() / maxTagCheckboxWidth;
+	if(!newColumns)
+		newColumns = 1;
+
+	if(newColumns != columns || changed)
+		applyLayout();
+}
+
+void TagWidget::showEvent(QShowEvent *event)
+{
+	QWidget::showEvent(event);
+	if(tagSet.size() == btnContainer.size())
+		return;
+	relayout();
 }
 
 void TagWidget::resizeEvent(QResizeEvent *event)
 {
-	QWidget::resizeEvent(event);
-	if(event->size() != event->oldSize())
-		QTimer::singleShot(0, this, SLOT(relayout()));
+	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+		return;
+	relayout();
 }
 
 void TagWidget::setTags(const TagNameSet &tags)
@@ -102,7 +123,7 @@ void TagWidget::setTags(const TagNameSet &tags)
 	}
 }
 
-void TagWidget::getTags(TagNameSet &tags)
+TagNameSet && TagWidget::selectedTags()
 {
 	if(tagSet.size() != btnContainer.size())
 		throw csjp::InvariantFailure("Number of tags in TagSet since "
@@ -110,23 +131,20 @@ void TagWidget::getTags(TagNameSet &tags)
 				"You should use this widget only in "
 				"top-level dialogs!");
 
-	unsigned i, s = tagSet.size();
+	TagNameSet tags;
+	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
-		const Tag &tag = tagSet.queryAt(i);
-		QCheckBox &tagBox = btnContainer.queryAt(i);
-		if(tagBox.isChecked()){
-			if(!tags.has(tag.name))
-				tags.add(new QString(tag.name));
-		} else {
-			if(tags.has(tag.name))
-				tags.remove(tag.name);
-		}
+		QCheckBox & tagBox = btnContainer.queryAt(i);
+		if(tagBox.isChecked())
+			if(tagSet.has(tagBox.text())) // a tag might had been removed
+				tags.add(new QString(tagBox.text()));
 	}
+	return csjp::move_cast(tags);
 }
 
 void TagWidget::selectAll()
 {
-	unsigned i, s = tagSet.size();
+	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
 		QCheckBox &tagBox = btnContainer.queryAt(i);
 		tagBox.setChecked(true);
@@ -135,7 +153,7 @@ void TagWidget::selectAll()
 
 void TagWidget::deselectAll()
 {
-	unsigned i, s = tagSet.size();
+	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
 		QCheckBox &tagBox = btnContainer.queryAt(i);
 		tagBox.setChecked(false);

@@ -162,6 +162,11 @@
         <source>Time taken by the SQL query : </source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_item_view_tags_widget_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="131"/>
+        <source>Tags for every ware named %1</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_on_stock_check_box_label">
         <source>on stock</source>
         <translation type="obsolete">készleten</translation>

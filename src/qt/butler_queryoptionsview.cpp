@@ -230,8 +230,8 @@ void QueryOptionsView::mapFromGui()
 			query.shops.add(new QString(sm.shop(i).name.trimmed()));
 	}
 
-	tagsSelector->getTags(query.withTags);
-	withoutTagsSelector->getTags(query.withoutTags);
+	query.withTags = tagsSelector->selectedTags();
+	query.withoutTags = withoutTagsSelector->selectedTags();
 
 	if(stockOptions->checkedButton() == stockOptAll)
 		query.stockOption = Query::ALL_BOUGHT_ITEM;

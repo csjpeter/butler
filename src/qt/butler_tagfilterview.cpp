@@ -99,7 +99,7 @@ void TagFilterView::mapToGui()
 
 void TagFilterView::mapFromGui()
 {
-	tagsSelector->getTags(tags);
+	tags = tagsSelector->selectedTags();
 }
 
 void TagFilterView::okClickedSlot(bool)

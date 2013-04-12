@@ -104,7 +104,7 @@ void NewWareView::mapFromGui()
 	ware.name = nameEditor->text();
 	ware.unit = unitEditor->text();
 	WaresModel::stringToCategories(categoriesEditor->text(), ware.categories);
-	tagsSelector->getTags(ware.tags);
+	ware.tags = tagsSelector->selectedTags();
 }
 
 void NewWareView::doneClickedSlot(bool toggled)

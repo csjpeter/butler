@@ -23,6 +23,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	shopEditor(&shopsModel(dbname), Shop::Name),
+	tagsWidget(dbname),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
 {
@@ -59,6 +60,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&purchaseDateTime.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&commentEditor.edit, SIGNAL(textChanged()),
+			this, SLOT(updateToolButtonStates()));
+	connect(&tagsWidget, SIGNAL(selectionChanged()),
 			this, SLOT(updateToolButtonStates()));
 
 	connect(&quantityEditor, SIGNAL(valueChanged(double)),
@@ -167,6 +170,10 @@ void AccountingView::mapFromGui()
 	item.purchased = purchaseDateTime.edit.dateTime();
 
 	item.onStock = (onStockCheck.box.checkState() == Qt::Checked);
+
+	ware.tags = tagsWidget.selectedTags();
+	if(categoryEditor.text().size() && !ware.categories.has(item.category))
+		ware.categories.add(new QString(categoryEditor.text()));
 }
 
 void AccountingView::changeEvent(QEvent * event)
@@ -207,6 +214,7 @@ void AccountingView::retranslate()
 	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
 	onStockCheck.label.setText(qtTrId(TidOnStockFormCheckBoxLabel));
 	boughtCheck.label.setText(qtTrId(TidBoughtFormCheckBoxLabel));
+	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel));
 
 	relayout();
 }
@@ -261,6 +269,8 @@ void AccountingView::applyLayout()
 	mainLayout->addWidget(&uploadDateTime);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&commentEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&tagsWidget);
 
 	setLayout(mainLayout);
 	updateToolButtonStates();
@@ -359,23 +369,17 @@ void AccountingView::saveSlot()
 		sm.addNew(shop);
 	}
 
-	/* Add ware if not yet known. */
+	/* Add/update ware if neccessary. */
 	WaresModel &wm = waresModel(dbname);
-	i = wm.index(wareEditor.text());
-	if(i == -1){
-		Ware ware;
-		ware.name = wareEditor.text();
-		if(categoryEditor.text().size())
-			ware.categories.add(new QString(categoryEditor.text()));
+	i = wm.index(ware.name);
+	if(i == -1)
 		wm.addNew(ware);
-	} else if(!wm.ware(i).categories.has(categoryEditor.text())) {
-		Ware modified(wm.ware(i));
-		modified.categories.add(new QString(categoryEditor.text()));
-		wm.update(i, modified);
-	}
+	else if(wm.ware(i) != ware)
+		wm.update(i, ware);
 
 	if(cursor.isValid()){
-		model.update(cursor.row(), item);
+		if(model.item(cursor.row()) != item)
+			model.update(cursor.row(), item);
 	} else {
 		model.addNew(item);
 
@@ -482,6 +486,12 @@ void AccountingView::updateToolButtonStates()
 			item == Item(model.item(cursor.row()))
 			);
 
+	/* tag states might have changed for ware */
+	WaresModel &wm = waresModel(dbname);
+	int i = wm.index(ware.name);
+	if(i != -1 && wm.ware(i).tags != ware.tags)
+		modified = true;
+
 	bool mandatoriesGiven =
 		wareEditor.editor.text().size() &&
 		0.001 <= quantityEditor.value();
@@ -511,18 +521,17 @@ void AccountingView::wareNameEditFinishedSlot()
 
 	WaresModel &wm = waresModel(dbname);
 	int i = wm.index(lastWareName);
-	if(i == -1){
-		quantityEditor.setSuffix();
-		return;
-	}
+	if(i == -1)
+		ware = Ware();
+	else
+		ware = wm.ware(i);
 
-	const Ware &w = wm.ware(i);
+	quantityEditor.setSuffix(ware.unit);
+	tagsWidget.setTags(ware.tags);
 
-	QString cats = WaresModel::categoriesToString(w.categories);
+	QString cats = WaresModel::categoriesToString(ware.categories);
 	categoryEditor.box.addItem(lastCat);
 	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
-
-	quantityEditor.setSuffix(w.unit);
 }
 
 /* We need this for cases when keybaord focus was not used,
