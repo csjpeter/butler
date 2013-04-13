@@ -136,7 +136,7 @@ QMessageBox {
 
 QTextEdit {
 	padding: 0mm;
-	min-height: 8mm;
+	min-height: 32mm;
 }
 
 QTextEdit QScrollBar, QTextEdit QScrollBar:disable {

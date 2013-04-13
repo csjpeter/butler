@@ -127,5 +127,5 @@ const char* TidStatsTimeTakenBySqlQueryLabel = QT_TRID_NOOP("tid_stats_time_take
 
 
 
-//% "Tags for every ware named %1"
+//% "Tags for every ware named '<i>%1</i>' :"
 const char* TidItemViewTagsWidgetLabel = QT_TRID_NOOP("tid_item_view_tags_widget_label");

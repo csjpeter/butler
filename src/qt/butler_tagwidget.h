@@ -28,6 +28,8 @@ public:
 	TagNameSet && selectedTags();
 	void selectAll();
 	void deselectAll();
+	virtual QSize sizeHint() const;
+	virtual int heightForWidth(int w) const;
 
 	Label label;
 
@@ -39,6 +41,8 @@ private:
 	virtual void resizeEvent(QResizeEvent *event);
 
 private slots:
+	void populate();
+	void retranslate();
 	void applyLayout();
 	void relayout();
 	void selectionChangedSlot();
@@ -49,6 +53,7 @@ private:
 	csjp::SorterOwnerContainer<QCheckBox> btnContainer;
 
 	int columns;
+	int maxTagCheckboxWidth;
 };
 
 bool operator<(const QCheckBox &a, const QCheckBox &b);

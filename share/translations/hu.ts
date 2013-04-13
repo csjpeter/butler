@@ -164,7 +164,8 @@
     </message>
     <message id="tid_item_view_tags_widget_label">
         <location filename="../../src/qt/butler_texts.cpp" line="131"/>
-        <source>Tags for every ware named %1</source>
+        <source>Tags for every ware named &apos;&lt;i&gt;%1&lt;/i&gt;&apos; :</source>
+        <oldsource>Tags for every ware named &lt;i&gt;%1&lt;/i&gt; :</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_on_stock_check_box_label">

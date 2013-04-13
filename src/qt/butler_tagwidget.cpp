@@ -13,9 +13,14 @@ TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
 	QWidget(parent),
 	dbname(dbname),
 	tagSet(tagsModel(dbname).tagSet()),
-	columns(1)
+	columns(1),
+	maxTagCheckboxWidth(1)
 {
-	relayout();
+	populate();
+}
+
+void TagWidget::retranslate()
+{
 }
 
 void TagWidget::applyLayout()
@@ -46,71 +51,127 @@ void TagWidget::applyLayout()
 	setLayout(mainLayout);
 }
 
+void TagWidget::relayout()
+{
+	DBG("Width: %d TagLabelWidth: %d", width(), maxTagCheckboxWidth);
+	int newColumns = width() / maxTagCheckboxWidth;
+	if(!newColumns)
+		newColumns = 1;
+
+	if(newColumns != columns){
+		columns = newColumns;
+		applyLayout();
+	}
+}
+
+QSize TagWidget::sizeHint() const
+{
+	int w = maxTagCheckboxWidth;
+	int lw = label.sizeHint().width();
+	if(w < lw)
+		w = lw;
+	int h = label.sizeHint().height();
+	if(btnContainer.size()){
+		QCheckBox & tagBox = btnContainer.queryAt(0);
+		h += tagBox.sizeHint().height() * btnContainer.size();
+	}
+	DBG("width() in SizeHint: %d", width());
+	if(w < width())
+		h = heightForWidth(width());
+	DBG("SizeHint: %d, %d", w, h);
+	return QSize(w, h);
+}
+
+int TagWidget::heightForWidth(int w) const
+{
+	int h = label.sizeHint().height();
+	int cols = w / maxTagCheckboxWidth;
+	if(!cols)
+		cols = 1;
+	int rows = btnContainer.size() / cols;
+	if((unsigned)(rows * cols) < btnContainer.size())
+		rows++;
+	if(rows){
+		QCheckBox & tagBox = btnContainer.queryAt(0);
+		h += rows * tagBox.sizeHint().height();
+	}
+	DBG("Height: %d For width: %d", h, w);
+	return h;
+}
+
 void TagWidget::selectionChangedSlot()
 {
 	selectionChanged();
 }
 
-void TagWidget::relayout()
+void TagWidget::populate()
 {
 	bool changed = false;
-	unsigned i, s = tagSet.size();
 
 	/* Trick:
-	 * Add new buttons to btnContainer in which later we can
+	 * Manage buttons to btnContainer in which later we can
 	 * access the button belonging to a particular tag. */
-	for(i = btnContainer.size(); i < s; i++){
+
+	/* Removing buttons if tags were removed. */
+	for(unsigned i = tagSet.size(); i < btnContainer.size(); i++){
+		btnContainer.removeAt(i);
+		changed = true;
+	}
+
+	/* Adding buttons if there are new tags. */
+	for(unsigned i = btnContainer.size(); i < tagSet.size(); i++){
 		QCheckBox * tagBox(new QCheckBox());
 		tagBox->setContentsMargins(0,0,0,0);
 		tagBox->setTristate(false);
-		connect(tagBox, SIGNAL(stateChanged(int)), this, SLOT(selectionChangedSlot()));
+		connect(tagBox, SIGNAL(stateChanged(int)),
+				this, SLOT(selectionChangedSlot()));
 		btnContainer.add(tagBox);
 		changed = true;
 	}
 
-	int maxTagCheckboxWidth = 1;
-	for(i = 0; i < s; i++){
+	/* Update texts */
+	for(unsigned i = 0; i < tagSet.size(); i++){
 		QCheckBox & tagBox = btnContainer.queryAt(i);
 		const Tag &tag = tagSet.queryAt(i);
-
 		if(tagBox.text() != tag.name){
 			tagBox.setText(tag.name);
 			changed = true;
 		}
-
-		/* For guessing practical number of columns. */
-		int w = tagBox.sizeHint().width();
-		if(maxTagCheckboxWidth < w)
-			maxTagCheckboxWidth = w;
 	}
+	DBG("Populate");
 
-	int newColumns = width() / maxTagCheckboxWidth;
-	if(!newColumns)
-		newColumns = 1;
+	if(changed){
+		DBG("Population changed");
+		/* Speculating appropriate column width */
+		maxTagCheckboxWidth = 1;
+		for(unsigned i = 0; i < tagSet.size(); i++){
+			QCheckBox & tagBox = btnContainer.queryAt(i);
+			/* For guessing practical number of columns. */
+			int w = tagBox.sizeHint().width();
+			if(maxTagCheckboxWidth < w)
+				maxTagCheckboxWidth = w;
+		}
 
-	if(newColumns != columns || changed)
-		applyLayout();
+		relayout();
+	}
 }
 
 void TagWidget::showEvent(QShowEvent *event)
 {
+	populate();
 	QWidget::showEvent(event);
-	if(tagSet.size() == btnContainer.size())
-		return;
-	relayout();
 }
 
 void TagWidget::resizeEvent(QResizeEvent *event)
 {
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+	if(layout() && (event->size() == event->oldSize()))
 		return;
 	relayout();
 }
 
 void TagWidget::setTags(const TagNameSet &tags)
 {
-	if(tagSet.size() != btnContainer.size())
-		relayout();
+	populate();
 	
 	unsigned i, s = tagSet.size();
 	for(i = 0; i < s; i++){

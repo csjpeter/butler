@@ -214,7 +214,8 @@ void AccountingView::retranslate()
 	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
 	onStockCheck.label.setText(qtTrId(TidOnStockFormCheckBoxLabel));
 	boughtCheck.label.setText(qtTrId(TidBoughtFormCheckBoxLabel));
-	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel));
+
+	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel).arg(ware.name));
 
 	relayout();
 }
@@ -532,6 +533,7 @@ void AccountingView::wareNameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(ware.categories);
 	categoryEditor.box.addItem(lastCat);
 	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
+	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel).arg(ware.name));
 }
 
 /* We need this for cases when keybaord focus was not used,
