@@ -31,7 +31,7 @@ void TagWidget::applyLayout()
 
 	QGridLayout * gridLayout = new QGridLayout;
 	gridLayout->setContentsMargins(0,0,0,0);
-
+#if 0
 	unsigned i, s = tagSet.size();
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;
 
@@ -44,7 +44,7 @@ void TagWidget::applyLayout()
 		int row = i % rows;
 		gridLayout->addWidget(&tagBox, row, col);
 	}
-
+#endif
 	mainLayout->addWidget(&label);
 	mainLayout->addLayout(gridLayout);
 

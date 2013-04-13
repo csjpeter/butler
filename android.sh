@@ -41,10 +41,10 @@ function config ()
 		--cflags=-Wno-psabi \
 		--cflags=\"-D__STDC_INT64__ -DSTDC_INT64 -DSTDC_VERSION -DSTRICT_ANSI\" \
 		--cflags=\"-I${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}/usr/include\" \
-		--cflags=\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.4.3/include\" \
-		--cflags=\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.4.3/include/i686-linux-android\" \
+		--cflags=\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include\" \
+		--cflags=\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include/i686-linux-android\" \
 		--ldflags=\"--sysroot ${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}\" \
-		--libs=\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.4.3/libs/armeabi/libsupc++.a\" \
+		--libs=\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/libsupc++.a\" \
 		--libs=\"-llog\" \
 		--libs=\"/${TCROOT}/lib/libcsjp0.1.a\" \
 		|| exit $?
