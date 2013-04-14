@@ -498,8 +498,8 @@ void AccountingView::updateToolButtonStates()
 		wareEditor.editor.text().size() &&
 		0.001 <= quantityEditor.value();
 
-	prevButton.setVisible(!modified && !cursor.isValid() && 0 < cursor.row());
-	nextButton.setVisible(!modified && !cursor.isValid() && cursor.row() < model.rowCount()-1);
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
 	doneButton.setVisible(mandatoriesGiven && modified);
 
 	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){

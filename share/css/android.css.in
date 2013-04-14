@@ -156,7 +156,28 @@ QTableView {
 	border-width: 0.5mm;
 	color: #cccccc;
 }
-
+/*
+QTableView QHeaderView::section, \
+QTableView QHeaderView::section:first, \
+QTableView QHeaderView::section:last, \
+QTableView QHeaderView::section:middle, \
+QTableView QHeaderView::section:next-selected, \
+QTableView QHeaderView::section:previous-selected, \
+QTableView QHeaderView::section:selected, \
+QTableView QHeaderView::section:checked {
+	border-style: solid;
+	border-color: #444444;
+	border-top-style: none;
+	border-bottom-style: ridge;
+	border-bottom-width: 1mm;
+	border-left-style: ridge;
+	border-left-width: 5mm;
+	border-right-style: ridge;
+	border-right-width: 5mm;
+	background-color: #000000;
+	color: #888888;
+}
+*/
 QTableView QHeaderView::section:only-one {
 	border: none;
 	max-height: 0mm;

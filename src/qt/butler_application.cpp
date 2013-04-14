@@ -109,7 +109,7 @@ void Application::loadCSS()
 	/* creating new css code with calculated sizes in px for the current device */
 	QString newCSS;
 	int lastPos = 0;
-	QRegExp regExp(" ([0-9]+\\.?[0-9]*)mm;");
+	QRegExp regExp(" ([0-9]+\\.?[0-9]*)mm");
 	QStringList cssList = data.split(regExp);
 	for(int i = 0; i < cssList.size(); i++){
 		//LOG("%s", C_STR(cssList[i]));
@@ -123,7 +123,7 @@ void Application::loadCSS()
 				px = 1;
 			newCSS += " ";
 			newCSS += QString::number(px);
-			newCSS += "px;";
+			newCSS += "px";
 		} else
 			ENSURE(i == cssList.size() - 1, csjp::LogicError);
 	}
@@ -131,8 +131,11 @@ void Application::loadCSS()
 	/* Finalizing icon paths */
 	newCSS.replace("ICONS_DIR/", Path::icon(""));
 
+	/* joining breaked long lines */
+	newCSS.replace("\\\n", "");
+
 	qApp->setStyleSheet(newCSS);
-	DBG("CSS content:\n%s", C_STR(newCSS));
+	LOG("CSS content:\n%s", C_STR(newCSS));
 }
 
 bool Application::notify(QObject * receiver, QEvent * event)
