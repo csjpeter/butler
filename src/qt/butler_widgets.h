@@ -53,6 +53,7 @@ public:
 		horizontalHeader()->setSortIndicatorShown(true);
 //		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
+		horizontalHeader()->setFocusPolicy(Qt::StrongFocus);
 	}
 
 	KineticScroller scroller;
@@ -178,7 +179,8 @@ class LineEditor : public QLineEdit
 private:
 	Q_OBJECT
 public:
-	LineEditor() : QLineEdit()
+	LineEditor() : QLineEdit(),
+		justFocusedIn(true)
 	{
 	}
 
@@ -186,13 +188,30 @@ public:
 	{
 		QLineEdit::focusInEvent(e);
 		selectAll();
+		justFocusedIn = true;
+	}
+
+	virtual void focusOutEvent(QFocusEvent * e)
+	{
+		QLineEdit::focusOutEvent(e);
+		justFocusedIn = false;
+	}
+
+	virtual void keyPressEvent(QKeyEvent * e)
+	{
+		QLineEdit::keyPressEvent(e);
+		justFocusedIn = false;
 	}
 
 	virtual void mousePressEvent(QMouseEvent * event)
 	{
 		QLineEdit::mousePressEvent(event);
-		selectAll();
+		if(justFocusedIn && !hasSelectedText())
+			selectAll();
+		justFocusedIn = false;
 	}
+private:
+	bool justFocusedIn;
 };
 
 class DoubleEditor : public QWidget

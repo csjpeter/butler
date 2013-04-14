@@ -17,7 +17,8 @@ KineticScroller::KineticScroller(QAbstractScrollArea * scrollArea, QObject *pare
 	QObject(parent),
 	scrollArea(scrollArea),
 	scrolled(0),
-	manualStop(false)
+	manualStop(false),
+	alreadyFocused(false)
 {
 	kineticScrollers.add(new ObjectScrollerPair(scrollArea, this));
 	connect(&speedTimer, SIGNAL(timeout()), SLOT(onSpeedTimerElapsed()));
@@ -108,9 +109,15 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 		return false;
 
 	QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
+	QWidget * wgt = qobject_cast<QWidget*>(receiver);
 
 	switch(eventType){
 		case QEvent::MouseButtonPress:
+			if(wgt && wgt->hasFocus()){
+				alreadyFocused = true;
+				return false;
+			} else
+				alreadyFocused = false;
 //			DBG("Press");
 			manualStop = !speed.isNull();
 			speed.setX(0);
@@ -123,6 +130,9 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 //			DBG("return %s", manualStop ? "true" : "false" );
 			return manualStop;
 		case QEvent::MouseMove:
+			if(alreadyFocused)
+				return false;
+
 //			DBG("Move");
 			if(!speedTimer.isActive()){
 				if(mouseEvent->buttons() == Qt::NoButton){
@@ -152,7 +162,6 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 //				DBG("Not yet scrolled, so focus out");
 				QApplication::postEvent(receiver,
 						new QFocusEvent(QEvent::FocusOut));
-				QWidget * wgt = qobject_cast<QWidget*>(receiver);
 				if(wgt){
 					QApplication::postEvent(wgt,
 						new QFocusEvent(QEvent::FocusOut));
@@ -187,6 +196,9 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			return true;
 		case QEvent::MouseButtonRelease:
+			if(alreadyFocused)
+				return false;
+
 //			DBG("Release");
 			speedTimer.stop();
 

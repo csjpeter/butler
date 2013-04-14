@@ -38,6 +38,7 @@ private:
 	QAbstractScrollArea* scrollArea;
 	bool scrolled;
 	bool manualStop;
+	bool alreadyFocused; /* For widget had focus before press disable kinetic scroll. */
 
 	QPoint pressedScrollBarPosition;
 	QPoint pressedMousePosition;
