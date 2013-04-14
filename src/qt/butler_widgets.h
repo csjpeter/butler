@@ -51,9 +51,9 @@ public:
 		setSortingEnabled(true);
 		horizontalHeader()->setMovable(true);
 		horizontalHeader()->setSortIndicatorShown(true);
-//		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
-		horizontalHeader()->setFocusPolicy(Qt::StrongFocus);
+		scroller.stealEventFromFocusedWidgets = true;
 	}
 
 	KineticScroller scroller;
@@ -511,20 +511,6 @@ public:
 			return;
 		}
 		Selector::keyPressEvent(event);
-	}
-
-	virtual void showEvent(QShowEvent * event)
-	{
-		completerTableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
-		Selector::showEvent(event);
-	}
-
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		if((event->size() == event->oldSize()) || !isVisible())
-			return;
-		completerTableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
-		Selector::resizeEvent(event);
 	}
 
 	LineEditor editor;

@@ -3,6 +3,8 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+/* dashed | dot-dash | dot-dot-dash | dotted | double | groove | inset | outset | ridge | solid */
+
 /* ideal relative font sizes:
  * 1, 1.2, 1.4, 1.7, 2.1, 2.5, 3, 3.6, 4.3, 5.2, 6.2, 7.4, 8.9, 10.7 */
 
@@ -155,15 +157,10 @@ QTableView {
 	color: #cccccc;
 }
 
-QTableView QHeaderView::section {
-	border-width: 0mm;
-/*	border-color: #222222;*/
-	border-right-width: 0.25mm;
-	border-right-style: dotted;
-	border-left-width: 0.25mm;
-	border-left-style: dotted;
-	background-color: #666666;
-	color: #dddddd;
+QTableView QHeaderView::section:only-one {
+	border: none;
+	max-height: 0mm;
+	max-width: 0mm;
 }
 
 /* QCheckBox and QRadioButton */

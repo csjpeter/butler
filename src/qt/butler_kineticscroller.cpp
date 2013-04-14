@@ -3,8 +3,6 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
-#define DEBUG
-
 #include <math.h>
 
 #include <butler_config.h>
@@ -20,7 +18,8 @@ KineticScroller::KineticScroller(QAbstractScrollArea * scrollArea, QObject *pare
 	scrollArea(scrollArea),
 	scrolled(0),
 	manualStop(false),
-	alreadyFocused(false)
+	alreadyFocused(false),
+	stealEventFromFocusedWidgets(false)
 {
 	kineticScrollers.add(new ObjectScrollerPair(scrollArea, this));
 	connect(&speedTimer, SIGNAL(timeout()), SLOT(onSpeedTimerElapsed()));
@@ -100,9 +99,19 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 {
 	ENSURE(scrollArea != 0, csjp::LogicError);
 
-	QScrollBar * sbar = qobject_cast<QScrollBar*>(receiver);
-	if(sbar)
+	if(qobject_cast<QScrollBar*>(receiver))
+		return false; /* We dont want kinetic scrolling on scrollbars. */
+	{
+		QObject * o = receiver;
+		while(o && !qobject_cast<QHeaderView*>(o))
+			o = o->parent();
+		if(o) /* QHeaderView parent is found. */
+			return false; /* We dont want kinetic scrolling on this widget. */
+	}
+/*	if(qobject_cast<QHeaderView*>(receiver))
 		return false;
+	if(qobject_cast<QTableView*>(receiver))
+		return false;*/
 
 	const QEvent::Type eventType = event->type();
 	if(		eventType != QEvent::MouseButtonPress &&
@@ -115,13 +124,13 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 	switch(eventType){
 		case QEvent::MouseButtonPress:
-			DBG("Press");
-			if(wgt && wgt->hasFocus()){
+//			DBG("Press");
+			if(wgt && wgt->hasFocus() && !stealEventFromFocusedWidgets){
 				alreadyFocused = true;
-				DBG("Already focused");
+//				DBG("Already focused %s", receiver->metaObject()->className());
 				return false;
 			} else {
-				DBG("Not yet focused");
+//				DBG("Not yet focused %s", receiver->metaObject()->className());
 				alreadyFocused = false;
 			}
 			manualStop = !speed.isNull();
@@ -135,9 +144,10 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 //			DBG("return %s", manualStop ? "true" : "false" );
 			return manualStop;
 		case QEvent::MouseMove:
-			DBG("Move");
+//			DBG("Move");
 			if(alreadyFocused){
-				DBG("Already focused");
+//				DBG("Move");
+//				DBG("Already focused");
 				return false;
 			}
 
@@ -167,15 +177,21 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			if(!scrolled){
 //				DBG("Not yet scrolled, so focus out");
-				QApplication::postEvent(receiver,
-						new QFocusEvent(QEvent::FocusOut));
 				if(wgt){
-					QApplication::postEvent(wgt,
+					QApplication::sendEvent(wgt,
 						new QFocusEvent(QEvent::FocusOut));
-					while(wgt->parentWidget())
-						wgt = wgt->parentWidget();
-					if(wgt->focusWidget())
-						wgt->focusWidget()->clearFocus();
+					/* Lets send release so buttons will forget press state. */
+					QApplication::sendEvent(wgt, new QMouseEvent(
+							QEvent::MouseButtonRelease,
+							mouseEvent->pos(),
+							mouseEvent->button(),
+							mouseEvent->buttons(),
+							mouseEvent->modifiers() ));
+					QWidget * parent = wgt;
+					while(parent->parentWidget())
+						parent = parent->parentWidget();
+					if(parent->focusWidget())
+						parent->focusWidget()->clearFocus();
 				}
 				/* FIXME notice drag and drop and abort kinetic scrolling */
 			}
@@ -203,9 +219,9 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			return true;
 		case QEvent::MouseButtonRelease:
-			DBG("Release");
+//			DBG("Release");
 			if(alreadyFocused){
-				DBG("Already focused");
+//				DBG("Already focused");
 				return false;
 			}
 
