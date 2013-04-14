@@ -108,10 +108,6 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 		if(o) /* QHeaderView parent is found. */
 			return false; /* We dont want kinetic scrolling on this widget. */
 	}
-/*	if(qobject_cast<QHeaderView*>(receiver))
-		return false;
-	if(qobject_cast<QTableView*>(receiver))
-		return false;*/
 
 	const QEvent::Type eventType = event->type();
 	if(		eventType != QEvent::MouseButtonPress &&
@@ -177,7 +173,7 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			if(!scrolled){
 //				DBG("Not yet scrolled, so focus out");
-				if(wgt){
+				if(wgt && !stealEventFromFocusedWidgets){
 					QApplication::sendEvent(wgt,
 						new QFocusEvent(QEvent::FocusOut));
 					/* Lets send release so buttons will forget press state. */

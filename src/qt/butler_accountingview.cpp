@@ -90,6 +90,7 @@ void AccountingView::showEvent(QShowEvent *event)
 
 	PannView::showEvent(event);
 
+	lastWareName.clear();
 	mapToGui();
 
 	wareEditor.editor.setFocus(Qt::OtherFocusReason);
@@ -490,9 +491,7 @@ void AccountingView::updateToolButtonStates()
 			);
 
 	/* tag states might have changed for ware */
-	WaresModel &wm = waresModel(dbname);
-	int i = wm.index(ware.name);
-	if(i != -1 && wm.ware(i).tags != ware.tags)
+	if(tagsWidget.selectedTags() != ware.tags)
 		modified = true;
 
 	bool mandatoriesGiven =

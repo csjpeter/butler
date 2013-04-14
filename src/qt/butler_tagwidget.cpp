@@ -123,8 +123,7 @@ void TagWidget::populate()
 		QCheckBox * tagBox(new QCheckBox());
 		tagBox->setContentsMargins(0,0,0,0);
 		tagBox->setTristate(false);
-		connect(tagBox, SIGNAL(stateChanged(int)),
-				this, SLOT(selectionChangedSlot()));
+		connect(tagBox, SIGNAL(stateChanged(int)), this, SLOT(selectionChangedSlot()));
 		btnContainer.add(tagBox);
 		changed = true;
 	}

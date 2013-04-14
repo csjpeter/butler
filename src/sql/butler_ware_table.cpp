@@ -54,6 +54,10 @@ void WareTable::insert(const Ware &w)
 
 void WareTable::update(const Ware &orig, const Ware &modified)
 {
+	/* FIXME check if orig and modified are really different. Note: we need this check here
+	 * because a ware object is saved into multiple tables and some tables might require
+	 * update some might not. We also need it because it is important to avoid unneccessary
+	 * network traffic. */
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
 		updateQuery.prepare("UPDATE Wares SET "
