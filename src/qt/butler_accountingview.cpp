@@ -504,7 +504,7 @@ void AccountingView::updateToolButtonStates()
 	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){
 		infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
 		infoLabel.updateGeometry();
-	} else if(infoLabel.text().size()){
+	} else if(mandatoriesGiven && infoLabel.text().size()){
 		infoLabel.setText("");
 		infoLabel.updateGeometry();
 	}

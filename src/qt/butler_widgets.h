@@ -49,7 +49,6 @@ public:
 		setSelectionMode(QAbstractItemView::SingleSelection);
 		verticalHeader()->hide();
 		setSortingEnabled(true);
-		horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 		horizontalHeader()->setMovable(true);
 		horizontalHeader()->setSortIndicatorShown(true);
 //		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -172,6 +171,28 @@ public:
 	}
 
 	QShortcut shortcut;
+};
+
+class LineEditor : public QLineEdit
+{
+private:
+	Q_OBJECT
+public:
+	LineEditor() : QLineEdit()
+	{
+	}
+
+	virtual void focusInEvent(QFocusEvent * e)
+	{
+		QLineEdit::focusInEvent(e);
+		selectAll();
+	}
+
+	virtual void mousePressEvent(QMouseEvent * event)
+	{
+		QLineEdit::mousePressEvent(event);
+		selectAll();
+	}
 };
 
 class DoubleEditor : public QWidget
@@ -305,7 +326,7 @@ public:
 	}
 public:
 	QLabel label;
-	QLineEdit editor;
+	LineEditor editor;
 private:
 	QString suffix;
 	int precision;
@@ -396,17 +417,21 @@ public:
 			box.setModelColumn(column);
 		}
 		box.setView(&tableView);
-		box.setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//box.setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
 		if(box.lineEdit())
 			box.lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		wideLayout();
 		setContentsMargins(0,0,0,0);
 	}
 
+	virtual void showEvent(QShowEvent * event)
+	{
+		(void)event;
+		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
+	}
+
 	virtual void resizeEvent(QResizeEvent * event)
 	{
-		if(event->size() == event->oldSize())
+		if((event->size() == event->oldSize()) || !isVisible())
 			return;
 		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 	}
@@ -469,15 +494,21 @@ public:
 		Selector::keyPressEvent(event);
 	}
 
+	virtual void showEvent(QShowEvent * event)
+	{
+		completerTableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
+		Selector::showEvent(event);
+	}
+
 	virtual void resizeEvent(QResizeEvent * event)
 	{
-		if(event->size() == event->oldSize())
+		if((event->size() == event->oldSize()) || !isVisible())
 			return;
 		completerTableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 		Selector::resizeEvent(event);
 	}
 
-	QLineEdit editor;
+	LineEditor editor;
 	TableView completerTableView;
 };
 
@@ -494,6 +525,20 @@ public:
 		setCalendarPopup(true);
 		setDisplayFormat(Config::dateTimeFormat());
 		setDateTime(QDateTime::currentDateTime());
+	}
+
+	virtual QSize sizeHint() const
+	{
+		QSize hint = QDateTimeEdit::sizeHint();
+		hint.setWidth(220);
+		return hint;
+	}
+
+	virtual QSize minimumSizeHint() const
+	{
+		QSize hint = QDateTimeEdit::minimumSizeHint();
+		hint.setWidth(220);
+		return hint;
 	}
 };
 

@@ -39,6 +39,7 @@ public:
 		QWidget::setLayout(vLayout);
 
 		installEventFilter(this);
+		setSizeIncrement(5, 1);
 
 		connect(&quitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
 	}
