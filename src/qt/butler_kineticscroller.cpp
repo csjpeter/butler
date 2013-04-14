@@ -3,6 +3,8 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#define DEBUG
+
 #include <math.h>
 
 #include <butler_config.h>
@@ -113,12 +115,15 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 	switch(eventType){
 		case QEvent::MouseButtonPress:
+			DBG("Press");
 			if(wgt && wgt->hasFocus()){
 				alreadyFocused = true;
+				DBG("Already focused");
 				return false;
-			} else
+			} else {
+				DBG("Not yet focused");
 				alreadyFocused = false;
-//			DBG("Press");
+			}
 			manualStop = !speed.isNull();
 			speed.setX(0);
 			speed.setY(0);
@@ -130,10 +135,12 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 //			DBG("return %s", manualStop ? "true" : "false" );
 			return manualStop;
 		case QEvent::MouseMove:
-			if(alreadyFocused)
+			DBG("Move");
+			if(alreadyFocused){
+				DBG("Already focused");
 				return false;
+			}
 
-//			DBG("Move");
 			if(!speedTimer.isActive()){
 				if(mouseEvent->buttons() == Qt::NoButton){
 //					DBG("speedTimer is not active nor button is pressed");
@@ -196,10 +203,12 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 
 			return true;
 		case QEvent::MouseButtonRelease:
-			if(alreadyFocused)
+			DBG("Release");
+			if(alreadyFocused){
+				DBG("Already focused");
 				return false;
+			}
 
-//			DBG("Release");
 			speedTimer.stop();
 
 			if(!scrolled){
