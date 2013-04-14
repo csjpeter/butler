@@ -24,6 +24,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 ./dist-config.sh \
 	--target=mxe \
 	--exec-postfix=.exe \
+	--packaging=windows \
 	-- \
 	--relative-path \
 	--target=i686-pc-mingw32 \
@@ -40,5 +41,5 @@ exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe make $@ || exit $?
 
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe unix2dos nsis/license.txt || exit $?
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe makensis nsis/@PKGNAME@.nsi
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe makensis nsis/$(basename $(ls -1 ${DISTRIB_CODENAME}-x-mxe/nsis/*.nsi))
 

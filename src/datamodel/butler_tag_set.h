@@ -63,6 +63,8 @@ public:
 	TagNameSet() : csjp::OwnerContainer<QString>() {}
 	TagNameSet(TagNameSet &tns) : csjp::OwnerContainer<QString>(tns) {}
 	~TagNameSet() {}
+	const TagNameSet & operator=(TagNameSet && temp) {
+		csjp::OwnerContainer<QString>::operator=(csjp::move_cast(temp)); return *this; }
 };
 
 #endif
