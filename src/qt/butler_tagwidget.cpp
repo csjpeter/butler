@@ -184,7 +184,7 @@ void TagWidget::setTags(const TagNameSet &tags)
 	}
 }
 
-TagNameSet && TagWidget::selectedTags()
+TagNameSet TagWidget::selectedTags()
 {
 	if(tagSet.size() != btnContainer.size())
 		throw csjp::InvariantFailure("Number of tags in TagSet since "
@@ -200,7 +200,7 @@ TagNameSet && TagWidget::selectedTags()
 			if(tagSet.has(tagBox.text())) // a tag might had been removed
 				tags.add(new QString(tagBox.text()));
 	}
-	return csjp::move_cast(tags);
+	return tags;
 }
 
 void TagWidget::selectAll()

@@ -76,25 +76,31 @@ void StatsView::applyLayout()
 {
 	delete layout();
 
-	QGridLayout * mainLayout = new QGridLayout;
+	VLayout * mainLayout = new VLayout;
 
-	mainLayout->addWidget(&itemCountLabel, 0, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&itemCountValueLabel, 0, 1, Qt::AlignRight);
-	mainLayout->addWidget(&itemSumQuantityLabel, 1, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&itemSumQuantityValueLabel, 1, 1, Qt::AlignRight);
-	mainLayout->addWidget(&itemSumPriceLabel, 2, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&itemSumPriceValueLabel, 2, 1, Qt::AlignRight);
-	mainLayout->addWidget(&avgUnitPriceLabel, 3, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&avgUnitPriceValueLabel, 3, 1, Qt::AlignRight);
-	mainLayout->addWidget(&minUnitPriceLabel, 4, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&minUnitPriceValueLabel, 4, 1, Qt::AlignRight);
-	mainLayout->addWidget(&maxUnitPriceLabel, 5, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&maxUnitPriceValueLabel, 5, 1, Qt::AlignRight);
-/*	mainLayout->addWidget(&timeTakenBySqlQueryLabel, 6, 0, Qt::AlignLeft);
-	mainLayout->addWidget(&timeTakenBySqlQueryValueLabel, 6, 1, Qt::AlignRight);*/
+	QGridLayout * gridLayout = new QGridLayout;
 
-	mainLayout->setColumnStretch(0, 1);
-	mainLayout->setColumnStretch(1, -1);
+	gridLayout->addWidget(&itemCountLabel, 0, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&itemCountValueLabel, 0, 1, Qt::AlignRight);
+	gridLayout->addWidget(&itemSumQuantityLabel, 1, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&itemSumQuantityValueLabel, 1, 1, Qt::AlignRight);
+	gridLayout->addWidget(&itemSumPriceLabel, 2, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&itemSumPriceValueLabel, 2, 1, Qt::AlignRight);
+	gridLayout->addWidget(&avgUnitPriceLabel, 3, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&avgUnitPriceValueLabel, 3, 1, Qt::AlignRight);
+	gridLayout->addWidget(&minUnitPriceLabel, 4, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&minUnitPriceValueLabel, 4, 1, Qt::AlignRight);
+	gridLayout->addWidget(&maxUnitPriceLabel, 5, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&maxUnitPriceValueLabel, 5, 1, Qt::AlignRight);
+/*	gridLayout->addWidget(&timeTakenBySqlQueryLabel, 6, 0, Qt::AlignLeft);
+	gridLayout->addWidget(&timeTakenBySqlQueryValueLabel, 6, 1, Qt::AlignRight);*/
+
+	gridLayout->setColumnStretch(0, 3);
+	gridLayout->setColumnStretch(1, -1);
+
+	mainLayout->addLayout(gridLayout);
+	mainLayout->addStretch(1);
+
 	setLayout(mainLayout);
 }
 

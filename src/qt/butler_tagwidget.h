@@ -25,7 +25,7 @@ public:
 
 public:
 	void setTags(const TagNameSet &tags);
-	TagNameSet && selectedTags();
+	TagNameSet selectedTags();
 	void selectAll();
 	void deselectAll();
 	virtual QSize sizeHint() const;

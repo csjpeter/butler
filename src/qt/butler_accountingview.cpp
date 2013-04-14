@@ -34,7 +34,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	prevButton.hide();
 	nextButton.hide();
 	
-	boughtCheck.box.setCheckState(Qt::Checked);
+	item.bought = true;
 	uploadDateTime.setEnabled(false);
 
 	infoLabel.setProperty("infoField", true);
@@ -171,6 +171,7 @@ void AccountingView::mapFromGui()
 
 	item.onStock = (onStockCheck.box.checkState() == Qt::Checked);
 
+	ware.name = item.name;
 	ware.tags = tagsWidget.selectedTags();
 	if(categoryEditor.text().size() && !ware.categories.has(item.category))
 		ware.categories.add(new QString(categoryEditor.text()));
@@ -386,6 +387,7 @@ void AccountingView::saveSlot()
 
 		item = Item();
 		item.uploaded = QDateTime::currentDateTime();
+		ware = Ware();
 		mapToGui();
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 
