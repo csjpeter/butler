@@ -45,3 +45,27 @@ InfoView::InfoView(QWidget *parent) :
 InfoView::~InfoView()
 {
 }
+
+void InfoView::showEvent(QShowEvent *event)
+{
+	PannView::showEvent(event);
+	loadState();
+}
+
+void InfoView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void InfoView::loadState()
+{
+	QString prefix("InfoView");
+	PannView::loadState(prefix);
+}
+
+void InfoView::saveState()
+{
+	QString prefix("InfoView");
+	PannView::saveState(prefix);
+}

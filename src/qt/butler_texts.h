@@ -6,10 +6,22 @@
 #ifndef BUTLER_TEXTS_H
 #define BUTLER_TEXTS_H
 
+extern const char* TidMainWindowTitle;
 extern const char* TidStatsWindowTitle;
 extern const char* TidUserQueryWindowTitle;
+extern const char* TidAnaliticsWindowTitle;
 extern const char* TidAccountingWindowTitle;
 extern const char* TidEditItemWindowTitle;
+
+extern const char* TidTodoButtonLabel;
+extern const char* TidShoppingButtonLabel;
+extern const char* TidAccountingButtonLabel;
+extern const char* TidAnaliticsButtonLabel;
+extern const char* TidPartnersButtonLabel;
+extern const char* TidWareButtonLabel;
+extern const char* TidTagButtonLabel;
+extern const char* TidInfoButtonLabel;
+extern const char* TidQuitButtonLabel;
 
 extern const char* TidBackButtonLabel;
 extern const char* TidDoneButtonLabel;

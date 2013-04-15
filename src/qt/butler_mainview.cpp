@@ -12,6 +12,7 @@
 #include "butler_databases.h"
 
 #include "butler_shoppingview.h"
+#include "butler_accountingview.h"
 #include "butler_shopsview.h"
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
@@ -26,140 +27,182 @@
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
+	model(customModel(dbname)),
+	todoButton(QIcon(Path::icon("list.png")), QKeySequence(Qt::ALT + Qt::Key_F1)),
+	shoppingButton(QIcon(Path::icon("shop.png")), QKeySequence(Qt::ALT + Qt::Key_F2)),
+	accountingButton(QIcon(Path::icon("accounting.png")), QKeySequence(Qt::ALT + Qt::Key_F3)),
+	analiticsButton(QIcon(Path::icon("analitics.png")), QKeySequence(Qt::ALT + Qt::Key_F4)),
+	partnersButton(QIcon(Path::icon("partner.png")), QKeySequence(Qt::ALT + Qt::Key_F5)),
+	wareButton(QIcon(Path::icon("ware.png")), QKeySequence(Qt::ALT + Qt::Key_F6)),
+	tagButton(QIcon(Path::icon("tag.png")), QKeySequence(Qt::ALT + Qt::Key_F7)),
+	infoButton(QIcon(Path::icon("info.png")), QKeySequence(Qt::ALT + Qt::Key_F8)),
+	quitButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::ALT + Qt::Key_F9)),
 	shoppingView(NULL),
-	shopsView(NULL),
-	tagsView(NULL),
-	waresView(NULL),
+	accountingView(NULL),
 	customView(NULL),
+	shopsView(NULL),
+	waresView(NULL),
+	tagsView(NULL),
 	queryOptionsView(NULL),
 	infoView(NULL)
 {
-	setWindowTitle(QString(PKGNAME) + " - " + tr("Main view"));
+	setWindowIcon(QIcon(Path::icon("list.png")));
 
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->setContentsMargins(0,0,0,0);
-	layout->setSpacing(0);
+//	connect(&todoButton, SIGNAL(clicked()), this, SLOT(openTodoView()));
+	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
+	connect(&accountingButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
+	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
+	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openShopsView()));
+	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
+	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
+	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
+	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-	QPushButton * button;
-
-	layout->addStretch(0);
-
-	button = new QPushButton(QIcon(Path::icon("shopping.png")), tr("&Shopping"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openShoppingView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("list.png")), tr("&List items"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openCustomView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("partner.png")), tr("&Partners"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openShopsView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("ware.png")), tr("&Wares"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openWaresView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Tags"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openTagsView()));
-	layout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("info.png")), tr("&Info"));
-	connect(button, SIGNAL(clicked()), this, SLOT(openInfoView()));
-	layout->addWidget(button);
-
-	layout->addStretch(0);
-
-	loadState();
-	setLayout(layout);
-
-	QSettings settings;
-	QString className = metaObject()->className();
-	if(settings.value(className + "/shoppingview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openShoppingView()));
-	if(settings.value(className + "/customview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openCustomView()));
-	if(settings.value(className + "/shopsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openShopsView()));
-	if(settings.value(className + "/tagsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openTagsView()));
-	if(settings.value(className + "/waresview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openWaresView()));
-	if(settings.value(className + "/queryoptionsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
-	if(settings.value(className + "/infoview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openInfoView()));
+	retranslate();
 }
 
 MainView::~MainView()
 {
+//	delete todoView;
+	delete shoppingView;
+	delete accountingView;
+	delete customView;
+	delete shopsView;
+	delete tagsView;
+	delete waresView;
+	delete queryOptionsView;
+	delete infoView;
+}
+
+void MainView::retranslate()
+{
+	setWindowTitle(qtTrId(TidMainWindowTitle).arg(PKGNAME));
+	todoButton.setText(qtTrId(TidTodoButtonLabel));
+	shoppingButton.setText(qtTrId(TidShoppingButtonLabel));
+	accountingButton.setText(qtTrId(TidAccountingButtonLabel));
+	analiticsButton.setText(qtTrId(TidAnaliticsButtonLabel));
+	partnersButton.setText(qtTrId(TidPartnersButtonLabel));
+	wareButton.setText(qtTrId(TidWareButtonLabel));
+	tagButton.setText(qtTrId(TidTagButtonLabel));
+	infoButton.setText(qtTrId(TidInfoButtonLabel));
+	quitButton.setText(qtTrId(TidQuitButtonLabel));
+
+	relayout();
+}
+
+void MainView::applyLayout()
+{
+	HLayout * mainLayout = new HLayout;
+
+	VLayout * layout = new VLayout;
+
+	layout->addStretch(0);
+
+//	layout->addWidget(&todoButton);
+	layout->addWidget(&shoppingButton);
+	layout->addWidget(&accountingButton);
+	layout->addWidget(&analiticsButton);
+	layout->addWidget(&partnersButton);
+	layout->addWidget(&wareButton);
+	layout->addWidget(&tagButton);
+	layout->addWidget(&infoButton);
+	layout->addWidget(&quitButton);
+
+	layout->addStretch(0);
+
+	mainLayout->addStretch(0);
+	mainLayout->addLayout(layout);
+	mainLayout->addStretch(0);
+
+	setLayout(mainLayout);
+}
+
+void MainView::relayout()
+{
+	todoButton.expandingLayout();
+	shoppingButton.expandingLayout();
+	accountingButton.expandingLayout();
+	analiticsButton.expandingLayout();
+	partnersButton.expandingLayout();
+	wareButton.expandingLayout();
+	tagButton.expandingLayout();
+	infoButton.expandingLayout();
+	quitButton.expandingLayout();
+
+	applyLayout();
+}
+
+void MainView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void MainView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+
+	relayout();
 }
 
 void MainView::showEvent(QShowEvent *event)
 {
-	QWidget::showEvent(event);
+	PannView::showEvent(event);
 }
 
 void MainView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
-	if(shoppingView){
-		shoppingView->deleteLater();
-		shoppingView->close();
-	}
-
-	if(customView){
-		customView->deleteLater();
-		customView->close();
-	}
-
-	if(shopsView){
-		shopsView->deleteLater();
-		shopsView->close();
-	}
-
-	if(tagsView){
-		tagsView->deleteLater();
-		tagsView->close();
-	}
-
-	if(waresView){
-		waresView->deleteLater();
-		waresView->close();
-	}
-
-	if(queryOptionsView){
-		queryOptionsView->deleteLater();
-		queryOptionsView->close();
-	}
-
 	PannView::closeEvent(event);
+	QTimer::singleShot(0, qApp, SLOT(quit()));
+}
 
-	QTimer::singleShot(0, this, SLOT(quit()));
+void MainView::loadState()
+{
+	QString prefix("MainView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	if(settings.value(prefix + "/shoppingview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openShoppingView()));
+	if(settings.value(prefix + "/customview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openCustomView()));
+	if(settings.value(prefix + "/shopsview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openShopsView()));
+	if(settings.value(prefix + "/tagsview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openTagsView()));
+	if(settings.value(prefix + "/waresview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openWaresView()));
+	if(settings.value(prefix + "/queryoptionsview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
+	if(settings.value(prefix + "/infoview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openInfoView()));
 }
 
 void MainView::saveState()
 {
-	QString className = metaObject()->className();
-
+	QString prefix("MainView");
+	PannView::saveState(prefix);
 	QSettings settings;
-	settings.setValue(className + "/shoppingview",
+
+	settings.setValue(prefix + "/shoppingview",
 			shoppingView != NULL && shoppingView->isVisible());
-	settings.setValue(className + "/customview",
+	settings.setValue(prefix + "/customview",
 			customView != NULL && customView->isVisible());
-	settings.setValue(className + "/shopsview",
+	settings.setValue(prefix + "/shopsview",
 			shopsView != NULL && shopsView->isVisible());
-	settings.setValue(className + "/tagsview",
+	settings.setValue(prefix + "/tagsview",
 			tagsView != NULL && tagsView->isVisible());
-	settings.setValue(className + "/waresview",
+	settings.setValue(prefix + "/waresview",
 			waresView != NULL && waresView->isVisible());
-	settings.setValue(className + "/queryoptionsview",
+	settings.setValue(prefix + "/queryoptionsview",
 			queryOptionsView != NULL && queryOptionsView->isVisible());
-	settings.setValue(className + "/infoview",
+	settings.setValue(prefix + "/infoview",
 			infoView != NULL && infoView->isVisible());
 
-	settings.setValue(className + "/dbfile", databaseDescriptor(dbname).databaseName);
+	settings.setValue(prefix + "/dbfile", databaseDescriptor(dbname).databaseName);
 }
 
 void MainView::openShoppingView()
@@ -169,11 +212,11 @@ void MainView::openShoppingView()
 	shoppingView->activate();
 }
 
-void MainView::openShopsView()
+void MainView::openAccountingView()
 {
-	if(!shopsView)
-		shopsView = new ShopsView(dbname);
-	shopsView->activate();
+	if(!accountingView)
+		accountingView = new AccountingView(dbname, *model);
+	accountingView->activate();
 }
 
 void MainView::openCustomView()
@@ -191,11 +234,11 @@ void MainView::openCustomView()
 	}
 }
 
-void MainView::openTagsView()
+void MainView::openShopsView()
 {
-	if(!tagsView)
-		tagsView = new TagsView(dbname);
-	tagsView->activate();
+	if(!shopsView)
+		shopsView = new ShopsView(dbname);
+	shopsView->activate();
 }
 
 void MainView::openWaresView()
@@ -203,6 +246,13 @@ void MainView::openWaresView()
 	if(!waresView)
 		waresView = new WaresView(dbname);
 	waresView->activate();
+}
+
+void MainView::openTagsView()
+{
+	if(!tagsView)
+		tagsView = new TagsView(dbname);
+	tagsView->activate();
 }
 
 void MainView::openQueryOptionsView()
@@ -219,15 +269,4 @@ void MainView::openInfoView()
 	if(!infoView)
 		infoView = new InfoView;
 	infoView->activate();
-}
-
-void MainView::about()
-{
-	QMessageBox::about(this, tr("Butler"),
-			tr("Butler is a helper for home keeping via maintaining shoping lists."));
-}
-
-void MainView::quit()
-{
-	QCoreApplication::quit();
 }

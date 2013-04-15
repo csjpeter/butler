@@ -21,6 +21,12 @@ public:
 	~InfoView();
 
 private:
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+	virtual void loadState();
+	virtual void saveState();
+
+private:
 	QLabel * label;
 };
 

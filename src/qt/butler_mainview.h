@@ -7,11 +7,13 @@
 #define BUTLER_MAINVIEW_H
 
 #include <butler_pannview.h>
+#include <butler_widgets.h>
 #include <butler_query.h>
 #include <butler_databases.h>
 
 /*forwards*/
 class ShoppingView;
+class AccountingView;
 class CustomView;
 class ShopsView;
 class TagsView;
@@ -32,10 +34,19 @@ private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 
-	void saveState();
+	virtual void loadState();
+	virtual void saveState();
+
+	void retranslate();
+	void applyLayout();
+	void relayout();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
 	void openShoppingView();
+	void openAccountingView();
 	void openCustomView();
 	void openShopsView();
 	void openTagsView();
@@ -43,17 +54,27 @@ private slots:
 	void openQueryOptionsView();
 	void openInfoView();
 
-	void about();
-	void quit();
-
 private:
 	QString dbname;
+	csjp::Object<CustomModel> model;
 
+	ToolButton todoButton;
+	ToolButton shoppingButton;
+	ToolButton accountingButton;
+	ToolButton analiticsButton;
+	ToolButton partnersButton;
+	ToolButton wareButton;
+	ToolButton tagButton;
+	ToolButton infoButton;
+	ToolButton quitButton;
+
+//	TodoView *todoView;
 	ShoppingView *shoppingView;
-	ShopsView *shopsView;
-	TagsView *tagsView;
-	WaresView *waresView;
+	AccountingView *accountingView;
 	CustomView *customView;
+	ShopsView *shopsView;
+	WaresView *waresView;
+	TagsView *tagsView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;
 };

@@ -21,7 +21,6 @@ StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 	
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	loadState();
 	retranslate();
 }
 

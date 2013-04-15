@@ -27,7 +27,8 @@ private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 
-	void saveState();
+	virtual void loadState();
+	virtual void saveState();
 
 	void retranslate();
 	void applyLayout();

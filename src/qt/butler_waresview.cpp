@@ -62,7 +62,6 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	layout->addLayout(cLayout);
 	layout->addWidget(&queryView);
 
-	loadState();
 	setLayout(layout);
 }
 
@@ -73,15 +72,7 @@ WaresView::~WaresView()
 void WaresView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-
-	QSettings settings;
-	QString className = metaObject()->className();
-
-	QString name = settings.value(className + "/currentitem", "").toString();
-	queryView->selectRow(model.index(name));
-
-	if(settings.value(className + "/editwareview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
+	loadState();
 }
 
 void WaresView::closeEvent(QCloseEvent *event)
@@ -90,17 +81,31 @@ void WaresView::closeEvent(QCloseEvent *event)
 	PannView::closeEvent(event);
 }
 
+void WaresView::loadState()
+{
+	QString prefix("WaresView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	QString name = settings.value(prefix + "/currentitem", "").toString();
+	queryView->selectRow(model.index(name));
+
+	if(settings.value(prefix + "/editwareview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editItem()));
+}
+
 void WaresView::saveState()
 {
-	QString className = metaObject()->className();
-
+	QString prefix("WaresView");
+	PannView::saveState(prefix);
 	QSettings settings;
+
 	QString wareName;
 	if(queryView->currentIndex().isValid())
 		wareName = model.ware(queryView->currentIndex().row()).name;
-	settings.setValue(className + "/currentitem", wareName);
+	settings.setValue(prefix + "/currentitem", wareName);
 
-	settings.setValue(className + "/editwareview",
+	settings.setValue(prefix + "/editwareview",
 			editWareView != NULL && editWareView->isVisible());
 }
 

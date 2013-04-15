@@ -5,11 +5,18 @@
 
 #include <QtGlobal>
 
+
+//% "%1 - main view"
+const char* TidMainWindowTitle = QT_TRID_NOOP("tid_main_window_title");
+
 //% "Statistics"
 const char* TidStatsWindowTitle = QT_TRID_NOOP("tid_stats_window_title");
 
 //% "User query result"
 const char* TidUserQueryWindowTitle = QT_TRID_NOOP("tid_user_query_window_title");
+
+//% "Analitics"
+const char* TidAnaliticsWindowTitle = QT_TRID_NOOP("tid_analitics_window_title");
 
 //% "Already bought new item"
 const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title");
@@ -17,6 +24,34 @@ const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title
 //% "Editing an existing item"
 const char* TidEditItemWindowTitle = QT_TRID_NOOP("tid_edit_item_window_title");
 
+
+
+//% "Todo notes"
+const char* TidTodoButtonLabel = QT_TRID_NOOP("tid_todo_button_label");
+
+//% "Shopping list"
+const char* TidShoppingButtonLabel = QT_TRID_NOOP("tid_shopping_button_label");
+
+//% "Accounting"
+const char* TidAccountingButtonLabel = QT_TRID_NOOP("tid_accounting_button_label");
+
+//% "Analitics / History"
+const char* TidAnaliticsButtonLabel = QT_TRID_NOOP("tid_analitics_button_label");
+
+//% "Business partners"
+const char* TidPartnersButtonLabel = QT_TRID_NOOP("tid_partners_button_label");
+
+//% "Wares"
+const char* TidWareButtonLabel = QT_TRID_NOOP("tid_ware_button_label");
+
+//% "Tags"
+const char* TidTagButtonLabel = QT_TRID_NOOP("tid_tag_button_label");
+
+//% "License"
+const char* TidInfoButtonLabel = QT_TRID_NOOP("tid_info_button_label");
+
+//% "Quit"
+const char* TidQuitButtonLabel = QT_TRID_NOOP("tid_quit_button_label");
 
 
 

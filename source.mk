@@ -150,6 +150,7 @@ source: \
 	$(DIST_DIR)/src/qt/main.cpp \
 	$(DIST_DIR)/share/icons/copyright \
 	$(DIST_DIR)/share/icons/accounting.png \
+	$(DIST_DIR)/share/icons/analitics.png \
 	$(DIST_DIR)/share/icons/add.png \
 	$(DIST_DIR)/share/icons/buy.png \
 	$(DIST_DIR)/share/icons/delete.png \

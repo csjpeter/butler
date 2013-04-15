@@ -59,7 +59,6 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 	layout->addLayout(cLayout);
 	layout->addWidget(&queryView);
 
-	loadState();
 	setLayout(layout);
 }
 
@@ -70,15 +69,7 @@ ShopsView::~ShopsView()
 void ShopsView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-
-	QSettings settings;
-	QString className = metaObject()->className();
-
-	QString name = settings.value(className + "/currentitem", "").toString();
-	queryView->selectRow(model.index(name));
-
-	if(settings.value(className + "/editshopview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
+	loadState();
 }
 
 void ShopsView::closeEvent(QCloseEvent *event)
@@ -87,17 +78,31 @@ void ShopsView::closeEvent(QCloseEvent *event)
 	PannView::closeEvent(event);
 }
 
+void ShopsView::loadState()
+{
+	QString prefix("ShopsView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	QString name = settings.value(prefix + "/currentitem", "").toString();
+	queryView->selectRow(model.index(name));
+
+	if(settings.value(prefix + "/editshopview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editItem()));
+}
+
 void ShopsView::saveState()
 {
-	QString className = metaObject()->className();
-
+	QString prefix("ShopsView");
+	PannView::saveState(prefix);
 	QSettings settings;
+
 	QString shopName;
 	if(queryView->currentIndex().isValid())
 		shopName = model.shop(queryView->currentIndex().row()).name;
-	settings.setValue(className + "/currentitem", shopName);
+	settings.setValue(prefix + "/currentitem", shopName);
 
-	settings.setValue(className + "/editshopview",
+	settings.setValue(prefix + "/editshopview",
 			editShopView != NULL && editShopView->isVisible());
 }
 

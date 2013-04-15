@@ -249,6 +249,7 @@ BUTLERQT_INCLUDES=-Isrc/qt
 BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/copyright \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/accounting.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/analitics.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/add.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/buy.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/delete.png \

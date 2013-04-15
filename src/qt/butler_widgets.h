@@ -159,16 +159,25 @@ public:
 	void narrowLayout()
 	{
 		setToolButtonStyle(Qt::ToolButtonIconOnly);
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 	}
 
 	void mediumLayout()
 	{
 		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 	}
 
 	void wideLayout()
 	{
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+	}
+
+	void expandingLayout()
+	{
+		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 	}
 
 	QShortcut shortcut;

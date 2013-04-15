@@ -68,7 +68,6 @@ public:
 
 	virtual void closeEvent(QCloseEvent *event)
 	{
-		saveState();
 		QWidget::closeEvent(event);
 	}
 
@@ -99,12 +98,11 @@ public:
 		return QObject::eventFilter(obj, event);
 	}
 
-	void loadState()
+	virtual void loadState(QString prefix)
 	{
-		QString className = metaObject()->className();
 		QSettings settings;
-		QPoint pos = settings.value(className + "/position", QPoint()).toPoint();
-		QSize size = settings.value(className + "/size", QSize()).toSize();
+		QPoint pos = settings.value(prefix + "/position", QPoint()).toPoint();
+		QSize size = settings.value(prefix + "/size", QSize()).toSize();
 		if(size.isValid())
 			resize(size);
 		else
@@ -112,12 +110,11 @@ public:
 		move(pos);
 	}
 
-	void saveState()
+	virtual void saveState(QString prefix)
 	{
-		QString className = metaObject()->className();
 		QSettings settings;
-		settings.setValue(className + "/position", pos());
-		settings.setValue(className + "/size", size());
+		settings.setValue(prefix + "/position", pos());
+		settings.setValue(prefix + "/size", size());
 	}
 
 public slots:

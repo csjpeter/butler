@@ -34,7 +34,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	editWareView(NULL),
 	statsView(NULL)
 {
-	setWindowTitle(tr("User query result"));
 	setWindowIcon(QIcon(Path::icon("list.png")));
 
 	tableView.setModel(&model);
@@ -48,7 +47,6 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
-	loadState();
 	retranslate();
 }
 
@@ -58,8 +56,7 @@ CustomView::~CustomView()
 
 void CustomView::retranslate()
 {
-	setWindowTitle(qApp->translate(
-			  "", TidUserQueryWindowTitle, 0, QCoreApplication::UnicodeUTF8));
+	setWindowTitle(qtTrId(TidAnaliticsWindowTitle));
 	addButton.setText(qtTrId(TidAddItemButtonLabel));
 	editButton.setText(qtTrId(TidEditItemButtonLabel));
 	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
@@ -179,38 +176,43 @@ void CustomView::showEvent(QShowEvent *event)
 	model->opts.name = "default";
 
 	model->query();
-	
-	QSettings settings;
-	QString className = metaObject()->className();
-
-	QDateTime uploaded = settings.value(className + "/currentitem", "").toDateTime();
-	tableView.selectRow(model->index(uploaded));
-
-	if(settings.value(className + "/edititemview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
 void CustomView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-	PannView::closeEvent(event);
 	if(selfDestruct)
 		deleteLater();
+	PannView::closeEvent(event);
+}
+
+void CustomView::loadState()
+{
+	QString prefix("CustomView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
+	tableView.selectRow(model->index(uploaded));
+
+	if(settings.value(prefix + "/edititemview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
 void CustomView::saveState()
 {
-	QString className = metaObject()->className();
-
+	QString prefix("CustomView");
+	PannView::saveState(prefix);
 	QSettings settings;
+
 	QString uploaded;
 	if(tableView.currentIndex().isValid()){
 		const Item &item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
-	settings.setValue(className + "/currentitem", uploaded);
+	settings.setValue(prefix + "/currentitem", uploaded);
 
-	settings.setValue(className + "/edititemview",
+	settings.setValue(prefix + "/edititemview",
 			editItemView != NULL && editItemView->isVisible());
 }
 

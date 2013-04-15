@@ -296,12 +296,10 @@ QCalendarWidget QAbstractButton {
 
 /* MainView specials */
 
-MainView QPushButton {
+MainView QToolButton {
 	font-size: 3mm;
 	font-weight: normal;
-	border-radius: 0mm;
-	border-width: 0mm;
-	border-bottom-width: 0.25mm;
+	border: none;
 	text-align: left;
 	padding-right: 8mm;
 	padding-left: 8mm;
@@ -312,10 +310,7 @@ MainView QPushButton {
 	margin: 0mm;
 }
 
-MainView QPushButton:pressed {
+MainView QToolButton:pressed {
 	color: #cccccc;
 	background-color: #222288;
-	border-width: 0mm;
-	border-radius: 0mm;
-	border-bottom-width: 0.25mm;
 }
