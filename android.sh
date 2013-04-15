@@ -85,7 +85,7 @@ case "${CMD}" in
 			--host=${API}-${ARCH} \
 			--target=${API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} android/build-apk.sh ${SDK_API} ${ARCH} || exit $?
+		exec_in_dir ${DIST} android/build-apk.sh ${SDK_API} ${ARCH} $@ || exit $?
 	;;
 	(*)
 		shift
