@@ -301,10 +301,10 @@ MainView QToolButton {
 	font-weight: normal;
 	border: none;
 	text-align: left;
-	padding-right: 8mm;
-	padding-left: 8mm;
-	min-height: 12mm;
-	max-height: 12mm;
+	padding-right: 3mm;
+	padding-left: 3mm;
+	min-height: 10mm;
+	max-height: 10mm;
 	background-color: black;
 	color: #cccccc;
 	margin: 0mm;
