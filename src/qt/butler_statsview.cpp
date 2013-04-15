@@ -26,10 +26,28 @@ StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 
 void StatsView::showEvent(QShowEvent *event)
 {
-	mapToGui();
 	PannView::showEvent(event);
+	mapToGui();
+	loadState();
 }
 
+void StatsView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void StatsView::loadState()
+{
+	QString prefix("StatsView");
+	PannView::loadState(prefix);
+}
+
+void StatsView::saveState()
+{
+	QString prefix("StatsView");
+	PannView::saveState(prefix);
+}
 void StatsView::mapToGui()
 {
 	itemCountValueLabel.setText(Config::locale.toString(stat.itemCount));

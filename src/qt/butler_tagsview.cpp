@@ -64,6 +64,8 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 
 TagsView::~TagsView()
 {
+	delete newTagView;
+	delete editTagView;
 }
 
 void TagsView::showEvent(QShowEvent *event)

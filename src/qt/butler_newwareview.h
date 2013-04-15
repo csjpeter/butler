@@ -32,6 +32,7 @@ private:
 
 public:
 	NewWareView(const QString & dbname, QWidget * parent = 0);
+	virtual ~NewWareView() {};
 
 private:
 	virtual void showEvent(QShowEvent *event);

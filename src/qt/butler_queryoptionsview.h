@@ -34,15 +34,15 @@ public:
 	QueryOptionsView(const QString & dbname, Query &query, QWidget * parent = 0);
 	virtual ~QueryOptionsView();
 
+	void loadState();
+	void saveState();
+
 protected:
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 	virtual void resizeEvent(QResizeEvent *event);
-
-	void loadState();
-	void saveState();
 	
 	void mapToGui();
 	void mapFromGui();

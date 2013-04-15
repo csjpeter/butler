@@ -17,15 +17,16 @@ private:
 
 public:
 	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
+	virtual ~AccountingView();
 
 	void setCursor(const QModelIndex& index);
+
+	void loadState();
+	void saveState();
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	void loadState();
-	void saveState();
 
 	void mapToGui();
 	void mapFromGui();

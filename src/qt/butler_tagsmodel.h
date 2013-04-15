@@ -30,7 +30,7 @@ private:
 
 public:
 	TagsModel(Db & db);
-	~TagsModel();
+	virtual ~TagsModel();
 
 	virtual QModelIndex index(
 			int row,

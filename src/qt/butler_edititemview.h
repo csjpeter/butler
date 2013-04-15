@@ -34,6 +34,7 @@ private:
 
 public:
 	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
+	virtual ~EditItemView() {}
 
 	void setCursor(const QModelIndex& index);
 

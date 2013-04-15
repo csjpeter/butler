@@ -28,14 +28,14 @@ private:
 
 public:
 	ShopsView(const QString & dbname, QWidget * parent = 0);
-	~ShopsView();
+	virtual ~ShopsView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	virtual void loadState();
-	virtual void saveState();
 
 private slots:
 	void newShop();

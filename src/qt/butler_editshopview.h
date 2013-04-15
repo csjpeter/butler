@@ -31,6 +31,7 @@ private:
 
 public:
 	EditShopView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditShopView() {}
 
 	void setCursor(const QModelIndex& index);
 

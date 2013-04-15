@@ -64,6 +64,8 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 
 ShopsView::~ShopsView()
 {
+	delete newShopView;
+	delete editShopView;
 }
 
 void ShopsView::showEvent(QShowEvent *event)

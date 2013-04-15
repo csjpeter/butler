@@ -30,6 +30,7 @@ private:
 
 public:
 	NewShopView(const QString & dbname, QWidget * parent = 0);
+	virtual ~NewShopView() {}
 
 private:
 	virtual void showEvent(QShowEvent *event);

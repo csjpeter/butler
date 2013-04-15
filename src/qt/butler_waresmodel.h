@@ -24,7 +24,7 @@ private:
 
 public:
 	WaresModel(Db & db);
-	~WaresModel();
+	virtual ~WaresModel();
 
 	virtual QModelIndex index(
 			int row,

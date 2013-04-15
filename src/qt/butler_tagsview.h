@@ -28,14 +28,14 @@ private:
 
 public:
 	TagsView(const QString & dbname, QWidget * parent = 0);
-	~TagsView();
+	virtual ~TagsView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	virtual void loadState();
-	virtual void saveState();
 
 private slots:
 	void newTag();

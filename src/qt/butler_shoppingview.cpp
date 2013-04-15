@@ -114,6 +114,10 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 
 ShoppingView::~ShoppingView()
 {
+	delete newItemView;
+	delete editItemView;
+	delete buyItemView;
+	delete tagFilterView;
 }
 
 void ShoppingView::showEvent(QShowEvent *event)

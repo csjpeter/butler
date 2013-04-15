@@ -26,7 +26,7 @@ private:
 
 public:
 	CustomModel(Db & db, const WaresModel & wmodel);
-	~CustomModel();
+	virtual ~CustomModel();
 
 	void query();
 	virtual void update(int row, Item &modified);

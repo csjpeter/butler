@@ -30,6 +30,7 @@ private:
 
 public:
 	NewTagView(const QString & dbname, QWidget * parent = 0);
+	virtual ~NewTagView() {}
 
 private:
 	virtual void showEvent(QShowEvent *event);

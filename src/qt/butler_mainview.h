@@ -28,14 +28,14 @@ private:
 
 public:
 	MainView(const QString & dbname, QWidget *parent = 0);
-	~MainView();
+	virtual ~MainView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	virtual void loadState();
-	virtual void saveState();
 
 	void retranslate();
 	void applyLayout();
@@ -45,12 +45,13 @@ private:
 	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
+	void openTodoView();
 	void openShoppingView();
 	void openAccountingView();
 	void openCustomView();
 	void openShopsView();
-	void openTagsView();
 	void openWaresView();
+	void openTagsView();
 	void openQueryOptionsView();
 	void openInfoView();
 

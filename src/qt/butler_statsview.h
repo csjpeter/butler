@@ -17,9 +17,15 @@ private:
 
 public:
 	StatsView(const QueryStat & stat, QWidget * parent = 0);
+	virtual ~StatsView() {}
 
 private:
-	void showEvent(QShowEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+
+	void loadState();
+	void saveState();
+
 	void mapToGui();
 
 	virtual void changeEvent(QEvent * event);

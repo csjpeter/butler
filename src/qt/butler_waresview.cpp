@@ -67,6 +67,8 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 
 WaresView::~WaresView()
 {
+	delete newWareView;
+	delete editWareView;
 }
 
 void WaresView::showEvent(QShowEvent *event)

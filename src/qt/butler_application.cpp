@@ -135,7 +135,7 @@ void Application::loadCSS()
 	newCSS.replace("\\\n", "");
 
 	qApp->setStyleSheet(newCSS);
-	LOG("CSS content:\n%s", C_STR(newCSS));
+	DBG("CSS content:\n%s", C_STR(newCSS));
 }
 
 bool Application::notify(QObject * receiver, QEvent * event)

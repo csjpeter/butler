@@ -134,9 +134,6 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	gridLayout->addWidget(okButton, 15, 3, 1, 1);
 
 	setLayout(gridLayout);
-
-	/* restore last state */
-	loadState();
 }
 
 QueryOptionsView::~QueryOptionsView()
@@ -146,14 +143,13 @@ QueryOptionsView::~QueryOptionsView()
 void QueryOptionsView::showEvent(QShowEvent *event)
 {
 	mapToGui();
-
 	QWidget::showEvent(event);
+	loadState();
 }
 
 void QueryOptionsView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	QWidget::closeEvent(event);
 }
 
@@ -166,21 +162,14 @@ void QueryOptionsView::resizeEvent(QResizeEvent *event)
 
 void QueryOptionsView::loadState()
 {
-	QSettings settings;
-	QPoint pos = settings.value("queryoptionsview/position", QPoint()).toPoint();
-	QSize size = settings.value("queryoptionsview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
+	QString prefix("QueryOptionsView");
+	PannView::loadState(prefix);
 }
 
 void QueryOptionsView::saveState()
 {
-	QSettings settings;
-	settings.setValue("queryoptionsview/position", pos());
-	settings.setValue("queryoptionsview/size", size());
+	QString prefix("QueryOptionsView");
+	PannView::saveState(prefix);
 }
 
 void QueryOptionsView::mapToGui()

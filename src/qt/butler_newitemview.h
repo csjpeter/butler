@@ -33,6 +33,7 @@ private:
 
 public:
 	NewItemView(const QString & dbname, QWidget *parent = 0);
+	virtual ~NewItemView() {}
 
 private:
 	virtual void showEvent(QShowEvent *event);

@@ -23,7 +23,7 @@ private:
 
 public:
 	QueriesModel(Db & db);
-	~QueriesModel();
+	virtual ~QueriesModel();
 
 	virtual QModelIndex index(
 			int row,

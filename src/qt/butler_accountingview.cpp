@@ -3,6 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#define DEBUG
+
 #include <float.h>
 #include <math.h>
 
@@ -78,19 +80,21 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&quantityEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(quantityEditFinishedSlot()));
 
-	/* restore last state */
-	loadState();
-
 	retranslate();
+}
+
+AccountingView::~AccountingView()
+{
 }
 
 void AccountingView::showEvent(QShowEvent *event)
 {
-	uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
-
 	PannView::showEvent(event);
+	loadState();
 
 	lastWareName.clear();
+	uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
+
 	mapToGui();
 
 	wareEditor.editor.setFocus(Qt::OtherFocusReason);
@@ -99,27 +103,19 @@ void AccountingView::showEvent(QShowEvent *event)
 void AccountingView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	PannView::closeEvent(event);
 }
 
 void AccountingView::loadState()
 {
-	QSettings settings;
-	QPoint pos = settings.value("accountingview/position", QPoint()).toPoint();
-	QSize size = settings.value("accountingview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
+	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
+	PannView::loadState(prefix);
 }
 
 void AccountingView::saveState()
 {
-	QSettings settings;
-	settings.setValue("accountingview/position", pos());
-	settings.setValue("accountingview/size", size());
+	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
+	PannView::saveState(prefix);
 }
 
 void AccountingView::mapToGui()

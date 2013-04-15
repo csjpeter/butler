@@ -24,7 +24,7 @@ private:
 	Q_OBJECT;
 public:
 	ShoppingModel(Db & db, const WaresModel & wmodel);
-	~ShoppingModel();
+	virtual ~ShoppingModel();
 
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const
 		__attribute__ ((no_instrument_function));

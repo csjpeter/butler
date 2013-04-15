@@ -16,11 +16,10 @@
 #include "butler_statsview.h"
 #include "butler_config.h"
 
-CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * parent) :
+CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
-	selfDestruct(selfDestruct),
 	toolBar(this),
 	addButton(QIcon(Path::icon("add.png")), QKeySequence(Qt::Key_F1)),
 	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F2)),
@@ -52,6 +51,11 @@ CustomView::CustomView(const QString & dbname, bool selfDestruct, QWidget * pare
 
 CustomView::~CustomView()
 {
+	delete accountingView;
+	delete editItemView;
+	delete queryOptsView;
+	delete editWareView;
+	delete statsView;
 }
 
 void CustomView::retranslate()
@@ -169,6 +173,7 @@ void CustomView::keyPressEvent(QKeyEvent * event)
 void CustomView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
+	loadState();
 
 	QueriesModel & qm = queriesModel(dbname);
 	if(qm.rowCount())
@@ -181,8 +186,6 @@ void CustomView::showEvent(QShowEvent *event)
 void CustomView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-	if(selfDestruct)
-		deleteLater();
 	PannView::closeEvent(event);
 }
 
@@ -195,7 +198,10 @@ void CustomView::loadState()
 	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
 	tableView.selectRow(model->index(uploaded));
 
-	if(settings.value(prefix + "/edititemview", false).toBool())
+	if(settings.value(prefix + "/accountingView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openAccountingView()));
+
+	if(settings.value(prefix + "/editItemView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
@@ -212,8 +218,8 @@ void CustomView::saveState()
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
 
-	settings.setValue(prefix + "/edititemview",
-			editItemView != NULL && editItemView->isVisible());
+	SAVE_VIEW_STATE(accountingView);
+	SAVE_VIEW_STATE(editItemView);
 }
 
 void CustomView::editItem()

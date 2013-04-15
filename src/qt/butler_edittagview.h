@@ -31,6 +31,7 @@ private:
 
 public:
 	EditTagView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditTagView() {}
 
 	void setCursor(const QModelIndex& index);
 

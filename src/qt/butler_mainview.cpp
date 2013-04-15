@@ -28,15 +28,15 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
-	todoButton(QIcon(Path::icon("list.png")), QKeySequence(Qt::ALT + Qt::Key_F1)),
-	shoppingButton(QIcon(Path::icon("shop.png")), QKeySequence(Qt::ALT + Qt::Key_F2)),
-	accountingButton(QIcon(Path::icon("accounting.png")), QKeySequence(Qt::ALT + Qt::Key_F3)),
-	analiticsButton(QIcon(Path::icon("analitics.png")), QKeySequence(Qt::ALT + Qt::Key_F4)),
-	partnersButton(QIcon(Path::icon("partner.png")), QKeySequence(Qt::ALT + Qt::Key_F5)),
-	wareButton(QIcon(Path::icon("ware.png")), QKeySequence(Qt::ALT + Qt::Key_F6)),
-	tagButton(QIcon(Path::icon("tag.png")), QKeySequence(Qt::ALT + Qt::Key_F7)),
-	infoButton(QIcon(Path::icon("info.png")), QKeySequence(Qt::ALT + Qt::Key_F8)),
-	quitButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::ALT + Qt::Key_F9)),
+	todoButton(QIcon(Path::icon("list.png")), QKeySequence(Qt::Key_F1)),
+	shoppingButton(QIcon(Path::icon("shop.png")), QKeySequence(Qt::Key_F2)),
+	accountingButton(QIcon(Path::icon("accounting.png")), QKeySequence(Qt::Key_F3)),
+	analiticsButton(QIcon(Path::icon("analitics.png")), QKeySequence(Qt::Key_F4)),
+	partnersButton(QIcon(Path::icon("partner.png")), QKeySequence(Qt::Key_F5)),
+	wareButton(QIcon(Path::icon("ware.png")), QKeySequence(Qt::Key_F6)),
+	tagButton(QIcon(Path::icon("tag.png")), QKeySequence(Qt::Key_F7)),
+	infoButton(QIcon(Path::icon("info.png")), QKeySequence(Qt::Key_F8)),
+	quitButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F9)),
 	shoppingView(NULL),
 	accountingView(NULL),
 	customView(NULL),
@@ -46,7 +46,10 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	queryOptionsView(NULL),
 	infoView(NULL)
 {
-	setWindowIcon(QIcon(Path::icon("list.png")));
+	setWindowIcon(QIcon(Path::icon("butler.png")));
+	setAttribute(Qt::WA_QuitOnClose, true);
+
+	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(accept()));
 
 //	connect(&todoButton, SIGNAL(clicked()), this, SLOT(openTodoView()));
 	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
@@ -150,6 +153,7 @@ void MainView::resizeEvent(QResizeEvent * event)
 void MainView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
+	loadState();
 }
 
 void MainView::closeEvent(QCloseEvent *event)
@@ -165,44 +169,57 @@ void MainView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
+//	if(settings.value(prefix + "/todoview", false).toBool())
+//		QTimer::singleShot(0, this, SLOT(openTodoView()));
 	if(settings.value(prefix + "/shoppingview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShoppingView()));
+	if(settings.value(prefix + "/accountingview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openAccountingView()));
 	if(settings.value(prefix + "/customview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openCustomView()));
 	if(settings.value(prefix + "/shopsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openShopsView()));
-	if(settings.value(prefix + "/tagsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openTagsView()));
 	if(settings.value(prefix + "/waresview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openWaresView()));
+	if(settings.value(prefix + "/tagsview", false).toBool())
+		QTimer::singleShot(0, this, SLOT(openTagsView()));
 	if(settings.value(prefix + "/queryoptionsview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
 	if(settings.value(prefix + "/infoview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(openInfoView()));
 }
 
+#define SAVE_VIEW_STATE(view) \
+	if(view && view->isVisible()){ \
+		view->saveState(); \
+		settings.setValue(prefix + "/" #view, true); \
+	} else \
+		settings.setValue(prefix + "/" #view, false)
 void MainView::saveState()
 {
 	QString prefix("MainView");
 	PannView::saveState(prefix);
 	QSettings settings;
 
-	settings.setValue(prefix + "/shoppingview",
-			shoppingView != NULL && shoppingView->isVisible());
-	settings.setValue(prefix + "/customview",
-			customView != NULL && customView->isVisible());
-	settings.setValue(prefix + "/shopsview",
-			shopsView != NULL && shopsView->isVisible());
-	settings.setValue(prefix + "/tagsview",
-			tagsView != NULL && tagsView->isVisible());
-	settings.setValue(prefix + "/waresview",
-			waresView != NULL && waresView->isVisible());
-	settings.setValue(prefix + "/queryoptionsview",
-			queryOptionsView != NULL && queryOptionsView->isVisible());
-	settings.setValue(prefix + "/infoview",
-			infoView != NULL && infoView->isVisible());
+//	SAVE_VIEW_STATE(todoView);
+	SAVE_VIEW_STATE(shoppingView);
+	SAVE_VIEW_STATE(accountingView);
+	SAVE_VIEW_STATE(customView);
+	SAVE_VIEW_STATE(shopsView);
+	SAVE_VIEW_STATE(tagsView);
+	SAVE_VIEW_STATE(waresView);
+	SAVE_VIEW_STATE(tagsView);
+	SAVE_VIEW_STATE(queryOptionsView);
+	SAVE_VIEW_STATE(infoView);
 
 	settings.setValue(prefix + "/dbfile", databaseDescriptor(dbname).databaseName);
+}
+
+void MainView::openTodoView()
+{
+/*	if(!todoView)
+		todoView = new TodoView(dbname);
+	todoView->activate();*/
 }
 
 void MainView::openShoppingView()
@@ -228,8 +245,8 @@ void MainView::openCustomView()
 		customView->activate();
 	} else {
 		CustomView *anotherCustomView;
-		anotherCustomView = new CustomView(dbname, true); /* Deletes itself on close. */
-		anotherCustomView->setWindowTitle(tr("User query result"));
+		anotherCustomView = new CustomView(dbname);
+		anotherCustomView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherCustomView->activate();
 	}
 }

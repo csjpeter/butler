@@ -23,7 +23,7 @@ private:
 
 public:
 	ShopsModel(Db & db);
-	~ShopsModel();
+	virtual ~ShopsModel();
 
 	virtual QModelIndex index(
 			int row,

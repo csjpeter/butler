@@ -437,8 +437,11 @@ private:
 	Q_OBJECT
 public:
 	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
-		QWidget(parent)
+		QWidget(parent),
+		tableView(*(new TableView))
 	{
+		(void)column;
+		(void)model;
 		label.setFocusPolicy(Qt::NoFocus);
 		if(model){
 			box.setModel(model);
@@ -485,7 +488,9 @@ public:
 
 	QLabel label;
 	ComboBox box;
-	TableView tableView;
+
+public:
+	TableView & tableView; /* Ownership held by QComboBox */
 };
 
 class ComboSelector : public Selector
@@ -494,7 +499,9 @@ private:
 	Q_OBJECT
 public:
 	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
-		Selector(model, column, parent)
+		Selector(model, column, parent),
+		editor(*(new LineEditor)), /* hack, I know */
+		completerTableView(*(new TableView))
 	{
 		box.setEditable(true);
 		box.setLineEdit(&editor);
@@ -522,8 +529,9 @@ public:
 		Selector::keyPressEvent(event);
 	}
 
-	LineEditor editor;
-	TableView completerTableView;
+public:
+	LineEditor & editor; /* Ownership held by QComboBox */
+	TableView & completerTableView; /* Ownership held by QComboBox's QCompleter */
 };
 
 class DateTimeEdit : public QDateTimeEdit

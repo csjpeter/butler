@@ -20,15 +20,15 @@ private:
 	Q_OBJECT
 
 public:
-	CustomView(const QString & dbname, bool selfDestruct = false, QWidget *parent = 0);
-	~CustomView();
+	CustomView(const QString & dbname, QWidget *parent = 0);
+	virtual ~CustomView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	virtual void loadState();
-	virtual void saveState();
 
 	void retranslate();
 	void applyLayout();
@@ -53,7 +53,6 @@ private slots:
 private:
 	const QString & dbname;
 	csjp::Object<CustomModel> model;
-	bool selfDestruct; /* For additionally opened (non-first) custom view. */
 
 	ToolBar toolBar;
 	ToolButton addButton;

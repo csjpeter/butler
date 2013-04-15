@@ -22,7 +22,7 @@ private:
 
 public:
 	WareCategoriesModel(CategoryNameSet &);
-	~WareCategoriesModel();
+	virtual ~WareCategoriesModel();
 
 	virtual QModelIndex index(
 			int row,

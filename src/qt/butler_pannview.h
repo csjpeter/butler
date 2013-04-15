@@ -24,6 +24,7 @@ public:
 		quitShortcut(QKeySequence(QKeySequence::Quit), this),
 		scroller(&scrollArea)
 	{
+		setAttribute(Qt::WA_QuitOnClose, false);
 		setFocusPolicy(Qt::NoFocus);
 		scrollArea.horizontalScrollBar()->setObjectName("pannviewscrollbar");
 		scrollArea.verticalScrollBar()->setObjectName("pannviewscrollbar");

@@ -33,6 +33,7 @@ private:
 
 public:
 	EditWareView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditWareView() {}
 
 	void setCursor(const QModelIndex& index);
 
