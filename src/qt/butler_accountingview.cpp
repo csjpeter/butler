@@ -81,6 +81,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 			this, SLOT(quantityEditFinishedSlot()));
 
 	retranslate();
+	loadState();
 }
 
 AccountingView::~AccountingView()
@@ -89,14 +90,11 @@ AccountingView::~AccountingView()
 
 void AccountingView::showEvent(QShowEvent *event)
 {
-	PannView::showEvent(event);
-	loadState();
-
 	lastWareName.clear();
 	uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
-
 	mapToGui();
 
+	PannView::showEvent(event);
 	wareEditor.editor.setFocus(Qt::OtherFocusReason);
 }
 

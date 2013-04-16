@@ -63,6 +63,7 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
+	loadState();
 }
 
 WaresView::~WaresView()
@@ -74,7 +75,6 @@ WaresView::~WaresView()
 void WaresView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void WaresView::closeEvent(QCloseEvent *event)

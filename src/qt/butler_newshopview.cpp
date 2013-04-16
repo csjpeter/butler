@@ -58,8 +58,6 @@ NewShopView::NewShopView(const QString & dbname, QWidget * parent) :
 	gridLayout->addWidget(doneButton, 5, 3, 1, 1);
 
 	setLayout(gridLayout);
-
-	/* restore last state */
 	loadState();
 }
 

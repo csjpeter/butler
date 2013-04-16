@@ -62,6 +62,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
 	retranslate();
+	loadState();
 }
 
 MainView::~MainView()
@@ -153,7 +154,6 @@ void MainView::resizeEvent(QResizeEvent * event)
 void MainView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void MainView::closeEvent(QCloseEvent *event)
@@ -170,31 +170,59 @@ void MainView::loadState()
 	QSettings settings;
 
 //	if(settings.value(prefix + "/todoview", false).toBool())
-//		QTimer::singleShot(0, this, SLOT(openTodoView()));
+//		openTodoView();
 	if(settings.value(prefix + "/shoppingview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openShoppingView()));
+		openShoppingView();
 	if(settings.value(prefix + "/accountingview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openAccountingView()));
+		openAccountingView();
 	if(settings.value(prefix + "/customview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openCustomView()));
+		openCustomView();
 	if(settings.value(prefix + "/shopsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openShopsView()));
+		openShopsView();
 	if(settings.value(prefix + "/waresview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openWaresView()));
+		openWaresView();
 	if(settings.value(prefix + "/tagsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openTagsView()));
+		openTagsView();
 	if(settings.value(prefix + "/queryoptionsview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
+		openQueryOptionsView();
 	if(settings.value(prefix + "/infoview", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openInfoView()));
+		openInfoView();
+
+	QTimer::singleShot(0, this, SLOT(activateSavedActiveWindow()));
 }
 
-#define SAVE_VIEW_STATE(view) \
-	if(view && view->isVisible()){ \
-		view->saveState(); \
-		settings.setValue(prefix + "/" #view, true); \
-	} else \
-		settings.setValue(prefix + "/" #view, false)
+void MainView::activateSavedActiveWindow()
+{
+	QString prefix("MainView");
+	QSettings settings;
+	PannView * activeWindow = 0;
+	QString activeWindowName = settings.value(
+			prefix + "/activeWindow", false).toString();
+	LOG("Loaded last activate window name: %s", C_STR(activeWindowName));
+	if(activeWindowName == "mainView")
+		activeWindow = this;
+	else if(activeWindowName == "shoppingView")
+		activeWindow = shoppingView;
+	else if(activeWindowName == "accountingView")
+		activeWindow = accountingView;
+	else if(activeWindowName == "customView")
+		activeWindow = customView;
+	else if(activeWindowName == "shopsView")
+		activeWindow = shopsView;
+	else if(activeWindowName == "waresView")
+		activeWindow = waresView;
+	else if(activeWindowName == "tagsView")
+		activeWindow = tagsView;
+	else if(activeWindowName == "queryOptionsView")
+		activeWindow = queryOptionsView;
+	else if(activeWindowName == "infoView")
+		activeWindow = infoView;
+	if(activeWindow){
+		LOG("Activating window: %p", activeWindow);
+		activeWindow->activate();
+	}
+}
+
 void MainView::saveState()
 {
 	QString prefix("MainView");
@@ -211,6 +239,28 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(tagsView);
 	SAVE_VIEW_STATE(queryOptionsView);
 	SAVE_VIEW_STATE(infoView);
+
+	QWidget * activeWindow = QApplication::activeWindow();
+	const char * activeWindowName = 0;
+	if(activeWindow == this)
+		activeWindowName = "mainView";
+	else if(activeWindow == shoppingView)
+		activeWindowName = "shoppingView";
+	else if(activeWindow == accountingView)
+		activeWindowName = "accountingView";
+	else if(activeWindow == customView)
+		activeWindowName = "customView";
+	else if(activeWindow == shopsView)
+		activeWindowName = "shopsView";
+	else if(activeWindow == waresView)
+		activeWindowName = "waresView";
+	else if(activeWindow == tagsView)
+		activeWindowName = "tagsView";
+	else if(activeWindow == queryOptionsView)
+		activeWindowName = "queryOptionsView";
+	else if(activeWindow == infoView)
+		activeWindowName = "infoView";
+	settings.setValue(prefix + "/activeWindow", activeWindowName);
 
 	settings.setValue(prefix + "/dbfile", databaseDescriptor(dbname).databaseName);
 }

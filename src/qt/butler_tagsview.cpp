@@ -60,6 +60,7 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
+	loadState();
 }
 
 TagsView::~TagsView()
@@ -71,7 +72,6 @@ TagsView::~TagsView()
 void TagsView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void TagsView::closeEvent(QCloseEvent *event)

@@ -297,37 +297,37 @@
 <context>
     <name>CustomView</name>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="228"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="243"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="271"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="336"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="229"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="244"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="272"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="337"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="229"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="244"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="337"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="230"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="245"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="338"/>
         <source>Please select item first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="252"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="253"/>
         <source>Deleting an item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="253"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="254"/>
         <source>Shall we delete this item: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="272"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="273"/>
         <source>Please select an item first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="345"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="346"/>
         <source>Adding to shopping list</source>
         <translation type="unfinished"></translation>
     </message>

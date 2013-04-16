@@ -102,13 +102,14 @@ public:
 	virtual void loadState(QString prefix)
 	{
 		QSettings settings;
-		QPoint pos = settings.value(prefix + "/position", QPoint()).toPoint();
+		QPoint pos = settings.value(prefix + "/position", QPoint(-1, -1)).toPoint();
 		QSize size = settings.value(prefix + "/size", QSize()).toSize();
 		if(size.isValid())
 			resize(size);
 		else
 			adjustSize();
-		move(pos);
+		if(pos.x() != -1)
+			move(pos);
 	}
 
 	virtual void saveState(QString prefix)

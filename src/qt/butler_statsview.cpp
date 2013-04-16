@@ -22,13 +22,13 @@ StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 
 	retranslate();
+	loadState();
 }
 
 void StatsView::showEvent(QShowEvent *event)
 {
-	PannView::showEvent(event);
 	mapToGui();
-	loadState();
+	PannView::showEvent(event);
 }
 
 void StatsView::closeEvent(QCloseEvent *event)

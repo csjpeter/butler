@@ -45,6 +45,7 @@ private:
 	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
+	void activateSavedActiveWindow();
 	void openTodoView();
 	void openShoppingView();
 	void openAccountingView();

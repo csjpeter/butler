@@ -44,8 +44,6 @@ TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget *
 	gridLayout->addWidget(okButton, 3, 3, 1, 1);
 	
 	setLayout(gridLayout);
-
-	/* restore last state */
 	loadState();
 }
 
@@ -56,14 +54,12 @@ TagFilterView::~TagFilterView()
 void TagFilterView::showEvent(QShowEvent *event)
 {
 	mapToGui();
-
 	PannView::showEvent(event);
 }
 
 void TagFilterView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-
 	PannView::closeEvent(event);
 }
 
@@ -75,21 +71,14 @@ void TagFilterView::resizeEvent(QResizeEvent *event)
 
 void TagFilterView::loadState()
 {
-	QSettings settings;
-	QPoint pos = settings.value("tagsfilterview/position", QPoint()).toPoint();
-	QSize size = settings.value("tagsfilterview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
+	QString prefix("TagFilterView");
+	PannView::loadState(prefix);
 }
 
 void TagFilterView::saveState()
 {
-	QSettings settings;
-	settings.setValue("tagsfilterview/position", pos());
-	settings.setValue("tagsfilterview/size", size());
+	QString prefix("TagFilterView");
+	PannView::saveState(prefix);
 }
 
 void TagFilterView::mapToGui()

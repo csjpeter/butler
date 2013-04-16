@@ -38,8 +38,8 @@ InfoView::InfoView(QWidget *parent) :
 
 	layout->addLayout(hLayout);
 
-	loadState();
 	setLayout(layout);
+	loadState();
 }
 
 InfoView::~InfoView()
@@ -49,7 +49,6 @@ InfoView::~InfoView()
 void InfoView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void InfoView::closeEvent(QCloseEvent *event)

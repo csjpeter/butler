@@ -110,6 +110,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
+	loadState();
 }
 
 ShoppingView::~ShoppingView()
@@ -123,7 +124,6 @@ ShoppingView::~ShoppingView()
 void ShoppingView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void ShoppingView::closeEvent(QCloseEvent *event)

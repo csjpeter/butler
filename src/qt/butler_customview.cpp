@@ -47,6 +47,8 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
 	retranslate();
+	loadState();
+	LOG("CustomView window: %p", this);
 }
 
 CustomView::~CustomView()
@@ -173,7 +175,6 @@ void CustomView::keyPressEvent(QKeyEvent * event)
 void CustomView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 
 	QueriesModel & qm = queriesModel(dbname);
 	if(qm.rowCount())

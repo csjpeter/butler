@@ -134,6 +134,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, Query &query, QWidget
 	gridLayout->addWidget(okButton, 15, 3, 1, 1);
 
 	setLayout(gridLayout);
+	loadState();
 }
 
 QueryOptionsView::~QueryOptionsView()
@@ -144,7 +145,6 @@ void QueryOptionsView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 	QWidget::showEvent(event);
-	loadState();
 }
 
 void QueryOptionsView::closeEvent(QCloseEvent *event)

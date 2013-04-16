@@ -60,6 +60,7 @@ ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
+	loadState();
 }
 
 ShopsView::~ShopsView()
@@ -71,7 +72,6 @@ ShopsView::~ShopsView()
 void ShopsView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-	loadState();
 }
 
 void ShopsView::closeEvent(QCloseEvent *event)
