@@ -37,6 +37,7 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
+	updateToolButtonStates();
 
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
@@ -46,9 +47,11 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
+	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
+
 	retranslate();
 	loadState();
-	LOG("CustomView window: %p", this);
 }
 
 CustomView::~CustomView()
@@ -182,6 +185,7 @@ void CustomView::showEvent(QShowEvent *event)
 	model->opts.name = "default";
 
 	model->query();
+	updateToolButtonStates();
 }
 
 void CustomView::closeEvent(QCloseEvent *event)
@@ -223,6 +227,13 @@ void CustomView::saveState()
 	SAVE_VIEW_STATE(editItemView);
 }
 
+void CustomView::openAccountingView()
+{
+	if(!accountingView)
+		accountingView = new AccountingView(dbname, *model);
+	accountingView->activate();
+}
+
 void CustomView::editItem()
 {
 	if(!tableView.currentIndex().isValid()){
@@ -259,11 +270,25 @@ void CustomView::delItem()
 		model->del(row);
 }
 
-void CustomView::openAccountingView()
+void CustomView::shoppingItem()
 {
-	if(!accountingView)
-		accountingView = new AccountingView(dbname, *model);
-	accountingView->activate();
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select item first!"));
+		return;
+	}
+
+	int row = tableView.currentIndex().row();
+	const Item &item = model->item(row);
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Adding to shopping list"),
+			QString("Shall we add a corresponding item to the shopping list:\n") +
+			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
+			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
+	int res = msg->exec();
+	if(res == QMessageBox::Yes)
+		model->addShoppingItem(row);
 }
 
 void CustomView::editWare()
@@ -280,16 +305,8 @@ void CustomView::editWare()
 
 	const Item &item = model->item(tableView.currentIndex().row());
 
-	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
 	editWareView->activate();
-}
-
-void CustomView::finishedEditWare(int res)
-{
-	Q_UNUSED(res);
-
-	editWareView->disconnect(this, SLOT(finishedEditWare(int)));
 }
 
 void CustomView::filterItems()
@@ -317,6 +334,7 @@ void CustomView::filterAcceptedSlot()
 	}
 
 	model->query();
+	updateToolButtonStates();
 }
 
 void CustomView::statsItems()
@@ -331,23 +349,21 @@ void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 	model->sort(logicalIndex, order == Qt::AscendingOrder);
 }
 
-void CustomView::shoppingItem()
+void CustomView::updateToolButtonStates()
 {
-	if(!tableView.currentIndex().isValid()){
-		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
-		return;
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+		shoppigButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+		shoppigButton.hide();
 	}
+}
 
-	int row = tableView.currentIndex().row();
-	const Item &item = model->item(row);
-	csjp::Object<QMessageBox> msg(new QMessageBox(
-			QMessageBox::Question,
-			tr("Adding to shopping list"),
-			QString("Shall we add a corresponding item to the shopping list:\n") +
-			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
-			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
-	int res = msg->exec();
-	if(res == QMessageBox::Yes)
-		model->addShoppingItem(row);
+void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() != previous.isValid())
+		updateToolButtonStates();
 }

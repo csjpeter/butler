@@ -39,6 +39,7 @@ public:
 		QTableView(parent),
 		scroller(this)
 	{
+		setTabKeyNavigation(false);
 		setAlternatingRowColors(true);
 		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 		setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -55,6 +56,17 @@ public:
 		scroller.stealEventFromFocusedWidgets = true;
 	}
 
+signals:
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
+
+protected slots:
+	virtual void currentChanged(const QModelIndex & current, const QModelIndex & previous)
+	{
+		QTableView::currentChanged(current, previous);
+		currentIndexChanged(current, previous);
+	}
+
+private:
 	KineticScroller scroller;
 };
 

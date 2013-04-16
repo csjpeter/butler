@@ -250,7 +250,6 @@ void AccountingView::applyLayout()
 
 	VLayout * mainLayout = new VLayout;
 	mainLayout->addLayout(toolLayout);
-	mainLayout->addSpacing(3);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
 	mainLayout->addStretch(0);
@@ -396,10 +395,8 @@ void AccountingView::saveSlot()
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();
-		wareEditor.editor.setFocus(Qt::OtherFocusReason);
-
-		updateToolButtonStates();
 		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
+		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 	}
 }
 

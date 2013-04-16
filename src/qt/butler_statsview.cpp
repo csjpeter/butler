@@ -95,6 +95,10 @@ void StatsView::applyLayout()
 
 	VLayout * mainLayout = new VLayout;
 
+	HLayout * toolLayout = new HLayout;
+	toolLayout->addStretch(0);
+	toolLayout->addWidget(&backButton);
+
 	QGridLayout * gridLayout = new QGridLayout;
 
 	gridLayout->addWidget(&itemCountLabel, 0, 0, Qt::AlignLeft);
@@ -115,6 +119,7 @@ void StatsView::applyLayout()
 	gridLayout->setColumnStretch(0, 3);
 	gridLayout->setColumnStretch(1, -1);
 
+	mainLayout->addLayout(toolLayout);
 	mainLayout->addLayout(gridLayout);
 	mainLayout->addStretch(1);
 

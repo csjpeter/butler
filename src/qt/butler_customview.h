@@ -39,16 +39,17 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
+	void openAccountingView();
 	void editItem();
 	void delItem();
-	void openAccountingView();
+	void shoppingItem();
+	void editWare();
 	void filterItems();
 	void filterAcceptedSlot();
 	void statsItems();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
-	void editWare();
-	void finishedEditWare(int);
-	void shoppingItem();
+	void updateToolButtonStates();
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	const QString & dbname;
