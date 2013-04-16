@@ -117,108 +117,113 @@
         <source>Next item</source>
         <translation type="unfinished"></translation>
     </message>
-    <message id="tid_shop_selector_label">
+    <message id="tid_item_editing_saved_info_label">
         <location filename="../../src/qt/butler_texts.cpp" line="79"/>
+        <source>Item is updated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_shop_selector_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="82"/>
         <source>Shop (place of buy):</source>
         <translation type="unfinished">Üzlet (vásárlás helye):</translation>
     </message>
     <message id="tid_ware_selector_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="82"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="85"/>
         <source>Common ware name:</source>
         <translation type="unfinished">Áru név:</translation>
     </message>
     <message id="tid_ware_selector_placeholder">
-        <location filename="../../src/qt/butler_texts.cpp" line="85"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="88"/>
         <source>It is mandatory to define the ware.</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_category_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="88"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="91"/>
         <source>Special ware name</source>
         <translation type="unfinished">Áru típusa/márkája</translation>
     </message>
     <message id="tid_quantity_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="91"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="94"/>
         <source>Quantity</source>
         <translation type="unfinished">Mennyiség</translation>
     </message>
     <message id="tid_quantity_editor_placeholder">
-        <location filename="../../src/qt/butler_texts.cpp" line="94"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="97"/>
         <source>Mandatory field.</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_unit_price_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="97"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="100"/>
         <source>Unit price:</source>
         <translation type="unfinished">Egységár:</translation>
     </message>
     <message id="tid_gross_price_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="100"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="103"/>
         <source>Gross price:</source>
         <translation type="unfinished">Összár:</translation>
     </message>
     <message id="tid_purchase_date_time_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="103"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="106"/>
         <source>Date of purchase:</source>
         <translation type="unfinished">Kifizetés ideje:</translation>
     </message>
     <message id="tid_upload_date_time_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="106"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="109"/>
         <source>Date of upload:</source>
         <translation type="unfinished">Rögzítés ideje:</translation>
     </message>
     <message id="tid_comment_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="109"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="112"/>
         <source>Comments:</source>
         <translation type="unfinished">Megjegyzések:</translation>
     </message>
     <message id="tid_on_stock_form_check_box_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="112"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="115"/>
         <source>On stock:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_bought_form_check_box_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="115"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="118"/>
         <source>Bought:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_count_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="143"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="146"/>
         <source>Number of queried items : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_sum_quantity_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="146"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="149"/>
         <source>Summary of queried quantites : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_sum_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="149"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="152"/>
         <source>Summary of paid prices : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_avg_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="152"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="155"/>
         <source>Avergae unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_min_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="155"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="158"/>
         <source>Minimal unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_max_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="158"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="161"/>
         <source>Maximal unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_time_taken_by_sql_query_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="161"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="164"/>
         <source>Time taken by the SQL query : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_view_tags_widget_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="166"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="169"/>
         <source>Tags for every ware named &apos;&lt;i&gt;%1&lt;/i&gt;&apos; :</source>
         <oldsource>Tags for every ware named &lt;i&gt;%1&lt;/i&gt; :</oldsource>
         <translation type="unfinished"></translation>
@@ -232,37 +237,37 @@
         <translation type="obsolete">megvásárolva</translation>
     </message>
     <message id="tid_add_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="120"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="123"/>
         <source>Add new item</source>
         <translation type="unfinished">Új tétel hozzáadása</translation>
     </message>
     <message id="tid_edit_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="123"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="126"/>
         <source>Edit item</source>
         <translation type="unfinished">Tétel szerkesztése</translation>
     </message>
     <message id="tid_delete_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="126"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="129"/>
         <source>Delete item</source>
         <translation type="unfinished">Tétel törlése</translation>
     </message>
     <message id="tid_shopping_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="129"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="132"/>
         <source>Add item to shopping list</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_drop_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="132"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="135"/>
         <source>Drop item from stock</source>
         <translation type="unfinished">Törlés a készletből</translation>
     </message>
     <message id="tid_filter_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="135"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="138"/>
         <source>Filter items</source>
         <translation type="unfinished">Tételek szűrése</translation>
     </message>
     <message id="tid_stats_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="140"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="143"/>
         <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>

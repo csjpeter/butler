@@ -35,6 +35,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	prevButton.hide();
 	nextButton.hide();
+	boughtCheck.hide();
 	
 	item.bought = true;
 	uploadDateTime.setEnabled(false);
@@ -80,8 +81,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&quantityEditor.editor, SIGNAL(editingFinished()),
 			this, SLOT(quantityEditFinishedSlot()));
 
-	retranslate();
 	loadState();
+	retranslate();
 }
 
 AccountingView::~AccountingView()
@@ -280,6 +281,8 @@ void AccountingView::relayout()
 
 	switch(newState) {
 		case ViewState::Wide :
+			prevButton.setEnabled(true);
+			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.wideLayout();
@@ -295,6 +298,8 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
+			prevButton.setEnabled(false);
+			nextButton.setEnabled(false);
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.narrowLayout();
@@ -310,6 +315,8 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
+			prevButton.setEnabled(false);
+			nextButton.setEnabled(false);
 			wareEditor.narrowLayout();
 			categoryEditor.narrowLayout();
 			quantityEditor.narrowLayout();
@@ -334,6 +341,7 @@ void AccountingView::setCursor(const QModelIndex& index)
 	ENSURE(index.model() == &model, csjp::LogicError);
 
 	cursor = index;
+	boughtCheck.show();
 	setWindowTitle(qtTrId(TidEditItemWindowTitle));
 	mapToGui();
 }
@@ -377,6 +385,8 @@ void AccountingView::saveSlot()
 	if(cursor.isValid()){
 		if(model.item(cursor.row()) != item)
 			model.update(cursor.row(), item);
+		updateToolButtonStates();
+		infoLabel.setText(qtTrId(TidItemEditingSavedInfoLabel));
 	} else {
 		model.addNew(item);
 
@@ -386,11 +396,9 @@ void AccountingView::saveSlot()
 		mapToGui();
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 
+		updateToolButtonStates();
 		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
-		infoLabel.updateGeometry();
 	}
-
-	updateToolButtonStates();
 }
 
 void AccountingView::quantityValueChangedSlot(double q)
@@ -492,17 +500,16 @@ void AccountingView::updateToolButtonStates()
 		wareEditor.editor.text().size() &&
 		0.001 <= quantityEditor.value();
 
-	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
-	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row() &&
+			prevButton.isEnabled());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1 &&
+			nextButton.isEnabled());
 	doneButton.setVisible(mandatoriesGiven && modified);
 
-	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel)){
+	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel))
 		infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
-		infoLabel.updateGeometry();
-	} else if(mandatoriesGiven && infoLabel.text().size()){
+	else if(mandatoriesGiven && infoLabel.text().size())
 		infoLabel.setText("");
-		infoLabel.updateGeometry();
-	}
 }
 
 void AccountingView::wareNameEditFinishedSlot()

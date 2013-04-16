@@ -75,6 +75,9 @@ const char* TidFillMandatoryFieldsInfoLabel = QT_TRID_NOOP("tid_fill_mandatory_f
 //% "Item is saved, you may add another."
 const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_info_label");
 
+//% "Item is updated."
+const char* TidItemEditingSavedInfoLabel = QT_TRID_NOOP("tid_item_editing_saved_info_label");
+
 //% "Shop (place of buy):"
 const char* TidShopSelectorLabel = QT_TRID_NOOP("tid_shop_selector_label");
 

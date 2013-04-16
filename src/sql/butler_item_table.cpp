@@ -25,13 +25,13 @@ void ItemTable::check(QStringList &tables)
 {
 	if(!tables.contains("Items"))
 		sql.exec("CREATE TABLE Items ("
-				  "uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
-				  "name VARCHAR(256) NOT NULL, "
-				  "category VARCHAR(256) NOT NULL, "
-				  "quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
-				  "comment TEXT NOT NULL DEFAULT ''"
-				  ")"
-				  );
+				"uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
+				"name VARCHAR(256) NOT NULL, "
+				"category VARCHAR(256) NOT NULL, "
+				"quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
+				"comment TEXT NOT NULL DEFAULT ''"
+				")"
+				);
 
 	QSqlRecord table = sql.record("Items");
 	if(		!table.contains("name") ||
