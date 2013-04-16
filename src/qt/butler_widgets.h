@@ -41,7 +41,6 @@ public:
 	{
 		setAlternatingRowColors(true);
 		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-//		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 		setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 		setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 		setAutoScroll(true);
@@ -467,7 +466,7 @@ public:
 		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 	}
 
-	void narrowLayout()
+	virtual void narrowLayout()
 	{
 		delete layout();
 		VLayout * newLayout = new VLayout;
@@ -477,7 +476,7 @@ public:
 		setLayout(newLayout);
 	}
 
-	void wideLayout()
+	virtual void wideLayout()
 	{
 		delete layout();
 		HLayout * newLayout = new HLayout;
@@ -506,8 +505,6 @@ public:
 		box.setEditable(true);
 		box.setLineEdit(&editor);
 		box.setInsertPolicy(QComboBox::NoInsert);
-		box.completer()->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-//		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
 		box.completer()->setPopup(&completerTableView);
 		box.setCurrentIndex(-1);
 		if(!model){
@@ -527,6 +524,18 @@ public:
 			return;
 		}
 		Selector::keyPressEvent(event);
+	}
+
+	virtual void narrowLayout()
+	{
+		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
+		Selector::narrowLayout();
+	}
+
+	virtual void wideLayout()
+	{
+		box.completer()->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+		Selector::wideLayout();
 	}
 
 public:
@@ -668,7 +677,6 @@ public:
 		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		scrollArea.setSizePolicy(QSizePolicy(
 				  QSizePolicy::Expanding, QSizePolicy::Preferred));
-//		setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));
 
 		QHBoxLayout * hLayout = new QHBoxLayout;
 		hLayout->setContentsMargins(0,0,0,0);

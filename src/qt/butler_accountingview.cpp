@@ -298,8 +298,8 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
-			prevButton.setEnabled(false);
-			nextButton.setEnabled(false);
+			prevButton.setEnabled(true);
+			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.narrowLayout();
