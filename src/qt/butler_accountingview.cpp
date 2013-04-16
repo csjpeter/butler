@@ -387,6 +387,8 @@ void AccountingView::saveSlot()
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
 		infoLabel.setText(qtTrId(TidItemEditingSavedInfoLabel));
+		if(!prevButton.isEnabled() || !nextButton.isEnabled())
+			accept();
 	} else {
 		model.addNew(item);
 
