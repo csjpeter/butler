@@ -128,6 +128,9 @@ const char* TidEditItemButtonLabel = QT_TRID_NOOP("tid_edit_item_button_label");
 //% "Delete item"
 const char* TidDeleteItemButtonLabel = QT_TRID_NOOP("tid_delete_item_button_label");
 
+//% "Refresh items"
+const char* TidRefreshItemsButtonLabel = QT_TRID_NOOP("tid_refresh_items_button_label");
+
 //% "Add item to shopping list"
 const char* TidShoppingItemButtonLabel = QT_TRID_NOOP("tid_shopping_item_button_label");
 
@@ -164,6 +167,40 @@ const char* TidStatsMaxUnitPriceLabel = QT_TRID_NOOP("tid_stats_max_unit_price_l
 const char* TidStatsTimeTakenBySqlQueryLabel = QT_TRID_NOOP("tid_stats_time_taken_by_sql_query_label");
 
 
-
-//% "Tags for every ware named '<i>%1</i>' :"
+//% "Tags for wares named '<i>%1</i>' :"
 const char* TidItemViewTagsWidgetLabel = QT_TRID_NOOP("tid_item_view_tags_widget_label");
+
+
+//% "Common name"
+const char* TidItemFieldCommonName = QT_TRID_NOOP("tid_item_field_common_name");
+
+//% "Brand or type"
+const char* TidItemFieldCategory = QT_TRID_NOOP("tid_item_field_category");
+
+//% "Upload date"
+const char* TidItemFieldUploadDate = QT_TRID_NOOP("tid_item_field_upload_date");
+
+//% "Bought"
+const char* TidItemFieldIsBought = QT_TRID_NOOP("tid_item_field_is_bought");
+
+//% "Bought on"
+const char* TidItemFieldPurchaseDate = QT_TRID_NOOP("tid_item_field_purchase_date");
+
+//% "Shop"
+const char* TidItemFieldShop = QT_TRID_NOOP("tid_item_field_shop");
+
+//% "Gross price"
+const char* TidItemFieldGrossPrice = QT_TRID_NOOP("tid_item_field_gross_price");
+
+//% "Quantity"
+const char* TidItemFieldQuantity = QT_TRID_NOOP("tid_item_field_quantity");
+
+//% "On stock"
+const char* TidItemFieldOnStock = QT_TRID_NOOP("tid_item_field_on_stock");
+
+//% "Comment"
+const char* TidItemFieldComment = QT_TRID_NOOP("tid_item_field_comment");
+
+//% "Unit price"
+const char* TidItemFieldUnitPrice = QT_TRID_NOOP("tid_item_field_unit_price");
+

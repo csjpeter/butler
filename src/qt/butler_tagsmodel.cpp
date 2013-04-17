@@ -193,10 +193,6 @@ void TagsModel::setTagSet(const TagSet &ts)
 	}
 }
 */
-const TagSet& TagsModel::tagSet()
-{
-	return TagsModel::tags;
-}
 
 const Tag& TagsModel::tag(int row)
 {

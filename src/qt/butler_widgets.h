@@ -56,6 +56,59 @@ public:
 		scroller.stealEventFromFocusedWidgets = true;
 	}
 
+	virtual void loadState(const QString & pref)
+	{
+		if(!model())
+			throw csjp::LogicError(
+					"Missing model in TableView when loadState() is called.");
+
+		QString prefix(pref + "/TableView");
+		QSettings settings;
+
+		int c = model()->columnCount();
+		for(int i = 0; i < c; i++){
+			int pos = settings.value(prefix + "/column" + i, i).toInt();
+			DBG("Lets move logical %d (%s, visual %d) to visual %d (%s)",
+					i,
+					C_STR(model()->headerData(
+							i, Qt::Horizontal,
+							Qt::DisplayRole).toString()),
+					horizontalHeader()->visualIndex(i),
+					pos,
+					C_STR(model()->headerData(
+							horizontalHeader()->logicalIndex(pos),
+							Qt::Horizontal, Qt::DisplayRole).toString())
+					);
+			horizontalHeader()->moveSection(horizontalHeader()->visualIndex(i), pos);
+		}
+		horizontalScrollBar()->setValue(horizontalScrollBar()->minimum());
+
+		int sortPos = settings.value(prefix + "/sortColumn", 0).toInt();
+		int sortOrder = settings.value(prefix + "/sortOrder", 0).toInt();
+		horizontalHeader()->setSortIndicator(sortPos,
+				sortOrder ? Qt::DescendingOrder : Qt::AscendingOrder);
+	}
+
+	virtual void saveState(const QString & pref)
+	{
+		if(!model())
+			return;
+
+		QString prefix(pref + "/TableView");
+		QSettings settings;
+
+		unsigned c = model()->columnCount();
+		for(unsigned i = 0; i < c; i++)
+			settings.setValue(prefix + "/column" + i,
+					horizontalHeader()->visualIndex(i));
+
+		settings.setValue(prefix + "/sortColumn",
+				horizontalHeader()->sortIndicatorSection());
+
+		settings.setValue(prefix + "/sortOrder",
+				horizontalHeader()->sortIndicatorOrder());
+	}
+
 signals:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 

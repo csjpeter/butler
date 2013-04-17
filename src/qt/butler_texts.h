@@ -48,6 +48,7 @@ extern const char* TidBoughtFormCheckBoxLabel;
 extern const char* TidAddItemButtonLabel;
 extern const char* TidEditItemButtonLabel;
 extern const char* TidDeleteItemButtonLabel;
+extern const char* TidRefreshItemsButtonLabel;
 extern const char* TidShoppingItemButtonLabel;
 extern const char* TidDropItemButtonLabel;
 extern const char* TidFilterItemButtonLabel;
@@ -63,5 +64,17 @@ extern const char* TidStatsMaxUnitPriceLabel;
 extern const char* TidStatsTimeTakenBySqlQueryLabel;
 
 extern const char* TidItemViewTagsWidgetLabel;
+
+extern const char* TidItemFieldCommonName;
+extern const char* TidItemFieldCategory;
+extern const char* TidItemFieldUploadDate;
+extern const char* TidItemFieldIsBought;
+extern const char* TidItemFieldPurchaseDate;
+extern const char* TidItemFieldShop;
+extern const char* TidItemFieldGrossPrice;
+extern const char* TidItemFieldQuantity;
+extern const char* TidItemFieldOnStock;
+extern const char* TidItemFieldComment;
+extern const char* TidItemFieldUnitPrice;
 
 #endif

@@ -39,13 +39,13 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void openAccountingView();
 	void editItem();
 	void delItem();
 	void shoppingItem();
+	void refreshItems();
 	void editWare();
 	void filterItems();
-	void filterAcceptedSlot();
+	void applyNewFilter();
 	void statsItems();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void updateToolButtonStates();
@@ -56,12 +56,12 @@ private:
 	csjp::Object<CustomModel> model;
 
 	ToolBar toolBar;
-	ToolButton addButton;
 	ToolButton editButton;
 	ToolButton delButton;
 	ToolButton shoppigButton;
-	ToolButton filterButton;
 	ToolButton statsButton;
+	ToolButton refreshButton;
+	ToolButton filterButton;
 
 	TableView tableView;
 

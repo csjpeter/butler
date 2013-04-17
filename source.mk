@@ -170,6 +170,7 @@ source: \
 	$(DIST_DIR)/share/icons/right.png \
 	$(DIST_DIR)/share/icons/tick.png \
 	$(DIST_DIR)/share/icons/partner.png \
+	$(DIST_DIR)/share/icons/refresh.png \
 	$(DIST_DIR)/share/icons/statistics.png \
 	$(DIST_DIR)/share/icons/comboarrowdown.png \
 	$(DIST_DIR)/share/icons/comboarrowup.png \

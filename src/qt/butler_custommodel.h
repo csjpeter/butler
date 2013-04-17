@@ -6,10 +6,6 @@
 #ifndef BUTLER_CUSTOMMODEL_H
 #define BUTLER_CUSTOMMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
-
 #include <butler_item.h>
 #include <butler_item_set.h>
 #include <butler_query.h>

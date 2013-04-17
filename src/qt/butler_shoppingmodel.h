@@ -26,8 +26,7 @@ public:
 	ShoppingModel(Db & db, const WaresModel & wmodel);
 	virtual ~ShoppingModel();
 
-	virtual Qt::ItemFlags flags(const QModelIndex & index) const
-		__attribute__ ((no_instrument_function));
+	virtual Qt::ItemFlags flags(const QModelIndex & index) const NO_FCLOG;
 
 	void query();
 	void buy(unsigned itemRow, Item &modified);

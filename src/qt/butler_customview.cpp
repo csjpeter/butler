@@ -21,12 +21,12 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	dbname(dbname),
 	model(customModel(dbname)),
 	toolBar(this),
-	addButton(QIcon(Path::icon("add.png")), QKeySequence(Qt::Key_F1)),
-	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F2)),
-	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F3)),
-	shoppigButton(QIcon(Path::icon("shopping.png")), QKeySequence(Qt::Key_F4)),
-	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F5)),
-	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F6)),
+	editButton(QIcon(Path::icon("edit.png")), QKeySequence(Qt::Key_F1)),
+	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F2)),
+	shoppigButton(QIcon(Path::icon("shopping.png")), QKeySequence(Qt::Key_F3)),
+	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F4)),
+	refreshButton(QIcon(Path::icon("refresh.png")), QKeySequence(Qt::Key_F5)),
+	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F6)),
 	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
@@ -39,10 +39,10 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	tableView.hideColumn(Item::Bought);
 	updateToolButtonStates();
 
-	connect(&addButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
 	connect(&shoppigButton, SIGNAL(clicked()), this, SLOT(shoppingItem()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refreshItems()));
 	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
 	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
 //	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
@@ -66,10 +66,10 @@ CustomView::~CustomView()
 void CustomView::retranslate()
 {
 	setWindowTitle(qtTrId(TidAnaliticsWindowTitle));
-	addButton.setText(qtTrId(TidAddItemButtonLabel));
 	editButton.setText(qtTrId(TidEditItemButtonLabel));
 	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
 	shoppigButton.setText(qtTrId(TidShoppingItemButtonLabel));
+	refreshButton.setText(qtTrId(TidRefreshItemsButtonLabel));
 	filterButton.setText(qtTrId(TidFilterItemButtonLabel));
 	statsButton.setText(qtTrId(TidStatsItemButtonLabel));
 
@@ -87,12 +87,12 @@ void CustomView::applyLayout()
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
-	toolLayout->addWidget(&addButton);
 	toolLayout->addWidget(&editButton);
 	toolLayout->addWidget(&delButton);
 	toolLayout->addWidget(&shoppigButton);
-	toolLayout->addWidget(&filterButton);
 	toolLayout->addWidget(&statsButton);
+	toolLayout->addWidget(&refreshButton);
+	toolLayout->addWidget(&filterButton);
 	toolLayout->addStretch();
 	toolBar.setLayout(toolLayout);
 
@@ -117,10 +117,10 @@ void CustomView::relayout()
 
 	switch(newState) {
 		case ViewState::Wide :
-			addButton.wideLayout();
 			editButton.wideLayout();
 			delButton.wideLayout();
 			shoppigButton.wideLayout();
+			refreshButton.wideLayout();
 			filterButton.wideLayout();
 			statsButton.wideLayout();
 			applyLayout();
@@ -129,9 +129,9 @@ void CustomView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
-			addButton.mediumLayout();
 			editButton.mediumLayout();
 			delButton.mediumLayout();
+			refreshButton.mediumLayout();
 			shoppigButton.mediumLayout();
 			filterButton.mediumLayout();
 			statsButton.mediumLayout();
@@ -141,10 +141,10 @@ void CustomView::relayout()
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
-			addButton.narrowLayout();
 			editButton.narrowLayout();
 			delButton.narrowLayout();
 			shoppigButton.narrowLayout();
+			refreshButton.narrowLayout();
 			filterButton.narrowLayout();
 			statsButton.narrowLayout();
 			applyLayout();
@@ -178,14 +178,6 @@ void CustomView::keyPressEvent(QKeyEvent * event)
 void CustomView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
-
-	QueriesModel & qm = queriesModel(dbname);
-	if(qm.rowCount())
-		model->opts = qm.query(0);
-	model->opts.name = "default";
-
-	model->query();
-	updateToolButtonStates();
 }
 
 void CustomView::closeEvent(QCloseEvent *event)
@@ -200,14 +192,25 @@ void CustomView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
-	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
-	tableView.selectRow(model->index(uploaded));
+	QString queryName = settings.value(prefix + "/query", "").toString();
+	QueriesModel & qm = queriesModel(dbname);
+	if(qm.querySet().has(queryName))
+		model->opts = qm.querySet().query(queryName);
+	model->query();
 
-	if(settings.value(prefix + "/accountingView", false).toBool())
-		QTimer::singleShot(0, this, SLOT(openAccountingView()));
+	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
+	if(model->itemSet().has(uploaded))
+		tableView.setCurrentIndex(model->index(model->index(uploaded), 0));
+
+	tableView.loadState(prefix);
 
 	if(settings.value(prefix + "/editItemView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
+
+	if(settings.value(prefix + "/queryOptsView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(filterItems()));
+
+	updateToolButtonStates();
 }
 
 void CustomView::saveState()
@@ -216,6 +219,8 @@ void CustomView::saveState()
 	PannView::saveState(prefix);
 	QSettings settings;
 
+	settings.setValue(prefix + "/query", model->opts.name);
+
 	QString uploaded;
 	if(tableView.currentIndex().isValid()){
 		const Item &item = model->item(tableView.currentIndex().row());
@@ -223,15 +228,28 @@ void CustomView::saveState()
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
 
-	SAVE_VIEW_STATE(accountingView);
+	tableView.saveState(prefix);
+
 	SAVE_VIEW_STATE(editItemView);
+	SAVE_VIEW_STATE(queryOptsView);
 }
 
-void CustomView::openAccountingView()
+void CustomView::refreshItems()
 {
-	if(!accountingView)
-		accountingView = new AccountingView(dbname, *model);
-	accountingView->activate();
+	QDateTime uploaded;
+	if(tableView.currentIndex().isValid()){
+		const Item &item = model->item(tableView.currentIndex().row());
+		uploaded = item.uploaded;
+	}
+
+	model->query();
+
+	if(model->itemSet().has(uploaded))
+		tableView.setCurrentIndex(model->index(model->index(uploaded), 0));
+
+	updateToolButtonStates();
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
 
 void CustomView::editItem()
@@ -313,27 +331,15 @@ void CustomView::filterItems()
 {
 	if(!queryOptsView){
 		queryOptsView = new QueryOptionsView(dbname, model->opts);
-		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
-		QueriesModel & qm = queriesModel(dbname);
-		if(qm.rowCount())
-			model->opts = qm.query(0);
-		model->opts.name = "default";
+		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(applyNewFilter()));
 	}
 	queryOptsView->activate();
 }
 
-void CustomView::filterAcceptedSlot()
+void CustomView::applyNewFilter()
 {
-	QueriesModel & qm = queriesModel(dbname);
-	if(qm.rowCount()) {
-		model->opts.name = "default";
-		qm.update(0, model->opts);
-	} else {
-		model->opts.name = "default";
-		qm.addNew(model->opts);
-	}
-
 	model->query();
+	tableView.setCurrentIndex(model->index(-1, -1));
 	updateToolButtonStates();
 }
 
@@ -352,13 +358,17 @@ void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void CustomView::updateToolButtonStates()
 {
 	if(tableView.currentIndex().isValid()){
-		editButton.show();
-		delButton.show();
-		shoppigButton.show();
-	} else {
+		if(!editButton.isVisible()){
+			editButton.show();
+			delButton.show();
+			shoppigButton.show();
+			relayout();
+		}
+	} else if(editButton.isVisible()) {
 		editButton.hide();
 		delButton.hide();
 		shoppigButton.hide();
+		relayout();
 	}
 }
 

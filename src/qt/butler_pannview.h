@@ -99,7 +99,7 @@ public:
 		return QObject::eventFilter(obj, event);
 	}
 
-	virtual void loadState(QString prefix)
+	virtual void loadState(const QString & prefix)
 	{
 		QSettings settings;
 		QPoint pos = settings.value(prefix + "/position", QPoint(-1, -1)).toPoint();
@@ -112,7 +112,7 @@ public:
 			move(pos);
 	}
 
-	virtual void saveState(QString prefix)
+	virtual void saveState(const QString & prefix)
 	{
 		QSettings settings;
 		settings.setValue(prefix + "/position", pos());

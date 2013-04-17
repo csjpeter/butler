@@ -87,7 +87,6 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			break;
 		case Item::Quantity :
 			{
-				/* FIXME move this to views */
 				Item &item = items.queryAt(index.row());
 				int i = wmodel.index(item.name);
 				QString val;
@@ -123,41 +122,41 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant();
 
 	if(orientation != Qt::Horizontal)
-		return QVariant("---");
+		return QVariant("");
 
 	switch(section){
 		case Item::Name :
-			return QVariant("Common name");
+			return QVariant(qtTrId(TidItemFieldCommonName));
 			break;
 		case Item::Category :
-			return QVariant("Category name");
+			return QVariant(qtTrId(TidItemFieldCategory));
 			break;
 		case Item::Uploaded :
-			return QVariant("Upload date");
+			return QVariant(qtTrId(TidItemFieldUploadDate));
 			break;
 		case Item::Bought :
-			return QVariant("Bought");
+			return QVariant(qtTrId(TidItemFieldIsBought));
 			break;
 		case Item::Purchased :
-			return QVariant("Bought on");
+			return QVariant(qtTrId(TidItemFieldPurchaseDate));
 			break;
 		case Item::Shop :
-			return QVariant("Shop");
+			return QVariant(qtTrId(TidItemFieldShop));
 			break;
 		case Item::Price :
-			return QVariant("Gross price");
+			return QVariant(qtTrId(TidItemFieldGrossPrice));
 			break;
 		case Item::Quantity :
-			return QVariant("Quantity");
+			return QVariant(qtTrId(TidItemFieldQuantity));
 			break;
 		case Item::OnStock :
-			return QVariant("On stock");
+			return QVariant(qtTrId(TidItemFieldOnStock));
 			break;
 		case Item::Comment :
-			return QVariant("Comment");
+			return QVariant(qtTrId(TidItemFieldComment));
 			break;
 		case Item::UnitPrice :
-			return QVariant("Unit price");
+			return QVariant(qtTrId(TidItemFieldUnitPrice));
 			break;
 		default :
 			return QVariant();

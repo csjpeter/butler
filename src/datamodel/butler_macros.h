@@ -8,6 +8,8 @@
 
 #define C_STR(QStr) QStr.toUtf8().constData()
 
+#define NO_FCLOG __attribute__ ((no_instrument_function))
+
 #define SAVE_VIEW_STATE(view) \
 	if(view && view->isVisible()){ \
 		view->saveState(); \

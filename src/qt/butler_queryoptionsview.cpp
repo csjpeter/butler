@@ -200,6 +200,7 @@ void QueryOptionsView::mapToGui()
 void QueryOptionsView::mapFromGui()
 {
 	query.name = nameEditor->text();
+	query.name = "default"; /* FIXME */
 	query.startDate = startDate->dateTime();
 	query.endDate = endDate->dateTime();
 
@@ -238,6 +239,14 @@ void QueryOptionsView::mapFromGui()
 void QueryOptionsView::okClickedSlot(bool)
 {
 	mapFromGui();
+
+	QueriesModel & qm = queriesModel(dbname);
+	if(qm.querySet().has(query.name)) {
+		if(qm.querySet().query(query.name) != query)
+			qm.update(qm.index(query.name), query);
+	} else {
+		qm.addNew(query);
+	}
 
 	accept();
 }

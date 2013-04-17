@@ -198,7 +198,6 @@ void MainView::activateSavedActiveWindow()
 	PannView * activeWindow = 0;
 	QString activeWindowName = settings.value(
 			prefix + "/activeWindow", false).toString();
-	LOG("Loaded last activate window name: %s", C_STR(activeWindowName));
 	if(activeWindowName == "mainView")
 		activeWindow = this;
 	else if(activeWindowName == "shoppingView")
@@ -217,10 +216,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = queryOptionsView;
 	else if(activeWindowName == "infoView")
 		activeWindow = infoView;
-	if(activeWindow){
-		LOG("Activating window: %p", activeWindow);
+	if(activeWindow)
 		activeWindow->activate();
-	}
 }
 
 void MainView::saveState()
