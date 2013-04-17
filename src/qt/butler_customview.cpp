@@ -37,7 +37,10 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
-	updateToolButtonStates();
+
+	editButton.hide();
+	delButton.hide();
+	shoppigButton.hide();
 
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
