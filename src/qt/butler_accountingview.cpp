@@ -3,8 +3,6 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#define DEBUG
-
 #include <float.h>
 #include <math.h>
 
@@ -39,9 +37,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	
 	item.bought = true;
 	uploadDateTime.setEnabled(false);
-
-	infoLabel.setProperty("infoField", true);
-	infoLabel.setAlignment(Qt::AlignCenter);
 
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
@@ -149,6 +144,7 @@ void AccountingView::mapToGui()
 	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
 
 	updateToolButtonStates();
+	relayout();
 }
 
 void AccountingView::mapFromGui()
@@ -175,7 +171,7 @@ void AccountingView::mapFromGui()
 
 void AccountingView::changeEvent(QEvent * event)
 {
-	QWidget::changeEvent(event);
+	PannView::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
 }
@@ -228,11 +224,14 @@ void AccountingView::applyLayout()
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
+	if(prevButton.isEnabled())
+		toolLayout->addWidget(&prevButton);
+	if(nextButton.isEnabled())
+		toolLayout->addWidget(&nextButton);
+	toolLayout->addStretch(0);
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
-	toolLayout->addWidget(&prevButton);
 	toolLayout->addWidget(&doneButton);
-	toolLayout->addWidget(&nextButton);
 	toolLayout->addWidget(&backButton);
 
 	HLayout * hlayout = new HLayout;
@@ -270,7 +269,6 @@ void AccountingView::applyLayout()
 	mainLayout->addWidget(&tagsWidget);
 
 	setLayout(mainLayout);
-	updateToolButtonStates();
 }
 
 void AccountingView::relayout()
@@ -394,9 +392,9 @@ void AccountingView::saveSlot()
 		item = Item();
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
-		mapToGui();
 		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
+		mapToGui();
 	}
 }
 
@@ -499,10 +497,8 @@ void AccountingView::updateToolButtonStates()
 		wareEditor.editor.text().size() &&
 		0.001 <= quantityEditor.value();
 
-	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row() &&
-			prevButton.isEnabled());
-	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1 &&
-			nextButton.isEnabled());
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
 	doneButton.setVisible(mandatoriesGiven && modified);
 
 	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel))

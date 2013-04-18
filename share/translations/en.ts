@@ -33,285 +33,377 @@
         <source>Editing an existing item</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_edit_query_window_title">
+        <location filename="../../src/qt/butler_texts.cpp" line="28"/>
+        <source>Select and edit query</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_todo_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="30"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="33"/>
         <source>Todo notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_shopping_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="33"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="36"/>
         <source>Shopping list</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_accounting_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="36"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="39"/>
         <source>Accounting</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_analitics_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="39"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="42"/>
         <source>Analitics / History</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_partners_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="42"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="45"/>
         <source>Business partners</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_ware_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="45"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="48"/>
         <source>Wares</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_tag_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="48"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="51"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_info_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="51"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="54"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_quit_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="54"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="57"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_back_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="59"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="62"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_done_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="62"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="65"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_query_button_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="68"/>
+        <source>Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_save_button_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="71"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_del_button_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="74"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_prev_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="65"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="77"/>
         <source>Previous item</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_next_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="68"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="80"/>
         <source>Next item</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_fill_mandatory_fields_info_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="73"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="85"/>
         <source>Please fill at least the mandatory fields.</source>
         <oldsource>Please fill at least the mandatory (red) fields.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_accounting_saved_info_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="76"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="88"/>
         <source>Item is saved, you may add another.</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_editing_saved_info_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="79"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="91"/>
         <source>Item is updated.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_query_saved_info_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="94"/>
+        <source>Query is saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_shop_filter_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="99"/>
+        <source>Filter by partner:</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_shop_selector_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="82"/>
-        <source>Shop (place of buy):</source>
+        <location filename="../../src/qt/butler_texts.cpp" line="102"/>
+        <source>Business partner:</source>
+        <oldsource>Shop (place of buy):</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_ware_filter_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="105"/>
+        <source>Filter by ware:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_ware_selector_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="85"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="108"/>
         <source>Common ware name:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_query_selector_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="111"/>
+        <source>Query name:</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_ware_selector_placeholder">
-        <location filename="../../src/qt/butler_texts.cpp" line="88"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="114"/>
         <source>It is mandatory to define the ware.</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_category_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="91"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="117"/>
         <source>Special ware name</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_quantity_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="94"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="120"/>
         <source>Quantity</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_quantity_editor_placeholder">
-        <location filename="../../src/qt/butler_texts.cpp" line="97"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="123"/>
         <source>Mandatory field.</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_unit_price_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="100"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="126"/>
         <source>Unit price:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_gross_price_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="103"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="129"/>
         <source>Gross price:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_purchase_date_time_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="106"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="132"/>
         <source>Date of purchase:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_upload_date_time_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="109"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="135"/>
         <source>Date of upload:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_from_date_time_editor_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="138"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="141"/>
+        <source>From:</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_comment_editor_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="112"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="144"/>
         <source>Comments:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_on_stock_form_check_box_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="115"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="147"/>
         <source>On stock:</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_bought_form_check_box_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="118"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="150"/>
         <source>Bought:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="tid_query_tags_widget_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="153"/>
+        <source>With some or all of these tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_query_without_tags_widget_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="156"/>
+        <source>Without any of these tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_stock_options_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="159"/>
+        <source>Stock option:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_tag_options_label">
+        <location filename="../../src/qt/butler_texts.cpp" line="162"/>
+        <source>Tags need to match:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_stock_opt_all_radio_button">
+        <location filename="../../src/qt/butler_texts.cpp" line="165"/>
+        <source>all items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_stock_opt_on_stock_radio_button">
+        <location filename="../../src/qt/butler_texts.cpp" line="168"/>
+        <source>items on stock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_stock_opt_used_up_radio_button">
+        <location filename="../../src/qt/butler_texts.cpp" line="171"/>
+        <source>items used up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_tag_opt_all_match_radio_button">
+        <location filename="../../src/qt/butler_texts.cpp" line="174"/>
+        <source>all need to match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="tid_tag_opt_any_match_radio_button">
+        <location filename="../../src/qt/butler_texts.cpp" line="177"/>
+        <source>any enough to match</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="tid_add_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="123"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="182"/>
         <source>Add new item</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_edit_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="126"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="185"/>
         <source>Edit item</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_delete_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="129"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="188"/>
         <source>Delete item</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_refresh_items_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="132"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="191"/>
         <source>Refresh items</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_shopping_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="135"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="194"/>
         <source>Add item to shopping list</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_drop_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="138"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="197"/>
         <source>Drop item from stock</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_filter_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="141"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="200"/>
         <source>Filter items</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_button_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="146"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="205"/>
         <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_count_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="149"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="208"/>
         <source>Number of queried items : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_sum_quantity_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="152"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="211"/>
         <source>Summary of queried quantites : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_item_sum_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="155"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="214"/>
         <source>Summary of paid prices : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_avg_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="158"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="217"/>
         <source>Avergae unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_min_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="161"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="220"/>
         <source>Minimal unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_max_unit_price_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="164"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="223"/>
         <source>Maximal unit price : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_stats_time_taken_by_sql_query_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="167"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="226"/>
         <source>Time taken by the SQL query : </source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_view_tags_widget_label">
-        <location filename="../../src/qt/butler_texts.cpp" line="171"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="230"/>
         <source>Tags for wares named &apos;&lt;i&gt;%1&lt;/i&gt;&apos; :</source>
         <oldsource>Tags for every ware named &apos;&lt;i&gt;%1&lt;/i&gt;&apos; :</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_common_name">
-        <location filename="../../src/qt/butler_texts.cpp" line="175"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="234"/>
         <source>Common name</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_category">
-        <location filename="../../src/qt/butler_texts.cpp" line="178"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="237"/>
         <source>Brand or type</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_upload_date">
-        <location filename="../../src/qt/butler_texts.cpp" line="181"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="240"/>
         <source>Upload date</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_is_bought">
-        <location filename="../../src/qt/butler_texts.cpp" line="184"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="243"/>
         <source>Bought</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_purchase_date">
-        <location filename="../../src/qt/butler_texts.cpp" line="187"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="246"/>
         <source>Bought on</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_shop">
-        <location filename="../../src/qt/butler_texts.cpp" line="190"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="249"/>
         <source>Shop</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_gross_price">
-        <location filename="../../src/qt/butler_texts.cpp" line="193"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="252"/>
         <source>Gross price</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_quantity">
-        <location filename="../../src/qt/butler_texts.cpp" line="196"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="255"/>
         <source>Quantity</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_on_stock">
-        <location filename="../../src/qt/butler_texts.cpp" line="199"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="258"/>
         <source>On stock</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_comment">
-        <location filename="../../src/qt/butler_texts.cpp" line="202"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="261"/>
         <source>Comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="tid_item_field_unit_price">
-        <location filename="../../src/qt/butler_texts.cpp" line="205"/>
+        <location filename="../../src/qt/butler_texts.cpp" line="264"/>
         <source>Unit price</source>
         <translation type="unfinished"></translation>
     </message>
@@ -747,90 +839,13 @@
 <context>
     <name>QueryOptionsView</name>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="20"/>
-        <source>Edit query view</source>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="361"/>
+        <source>Deleting a query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="26"/>
-        <source>Name :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="31"/>
-        <source>Start date :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="38"/>
-        <source>End date :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="45"/>
-        <source>Wares (any) :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="55"/>
-        <source>Shops (any) :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="65"/>
-        <source>Stock option :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="70"/>
-        <source>all bought items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="74"/>
-        <source>items on stock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="78"/>
-        <source>items used up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="83"/>
-        <source>With these tags :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="87"/>
-        <source>all selected tag need to match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="91"/>
-        <source>any selected tag enough to match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="101"/>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="120"/>
-        <source>Select all tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="108"/>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="127"/>
-        <source>Deselect all tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="111"/>
-        <source>Without these tags :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="133"/>
-        <source>Ok</source>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="362"/>
+        <source>Shall we delete this query: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

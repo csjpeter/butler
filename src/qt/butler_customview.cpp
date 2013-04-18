@@ -333,14 +333,16 @@ void CustomView::editWare()
 void CustomView::filterItems()
 {
 	if(!queryOptsView){
-		queryOptsView = new QueryOptionsView(dbname, model->opts);
+		queryOptsView = new QueryOptionsView(dbname);
 		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(applyNewFilter()));
 	}
+	queryOptsView->query = model->opts;
 	queryOptsView->activate();
 }
 
 void CustomView::applyNewFilter()
 {
+	model->opts = queryOptsView->query;
 	model->query();
 	tableView.setCurrentIndex(model->index(-1, -1));
 	updateToolButtonStates();

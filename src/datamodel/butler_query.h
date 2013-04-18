@@ -16,15 +16,15 @@
 class Query
 {
 public:
-	enum StockOptions {
-		ALL_BOUGHT_ITEM = 0,
-		ITEMS_ON_STOCK,
-		ITEMS_USED_UP
+	enum class StockOptions {
+		AllBoughtItem = 0,
+		ItemsOnStock,
+		ItemsUsedUp
 	};
 	
-	enum TagOptions {
-		MATCH_ALL_TAGS = 0,
-		MATCH_ANY_TAGS
+	enum class TagOptions {
+		MatchAll = 0,
+		MatchAny
 	};
 
 	Query();

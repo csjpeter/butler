@@ -48,9 +48,9 @@ bool CustomModel::queryFilter(const Item &modified)
 	bool want = false;
 	if(modified.bought)
 		want = true;
-	if(modified.onStock && opts.stockOption == Query::ITEMS_ON_STOCK)
+	if(modified.onStock && opts.stockOption == Query::StockOptions::ItemsOnStock)
 		want = true;
-	if(!modified.onStock && opts.stockOption == Query::ITEMS_USED_UP)
+	if(!modified.onStock && opts.stockOption == Query::StockOptions::ItemsUsedUp)
 		want = true;
 	return want;
 }

@@ -9,8 +9,8 @@ Query::Query() :
 	name(""),
 	startDate(QDate(-4000, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
-	stockOption(ALL_BOUGHT_ITEM),
-	tagOption(MATCH_ANY_TAGS)
+	stockOption(StockOptions::AllBoughtItem),
+	tagOption(TagOptions::MatchAny)
 {
 }
 
@@ -18,8 +18,8 @@ Query::Query(const QString & name) :
 	name(name),
 	startDate(QDate(-4000, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
-	stockOption(ALL_BOUGHT_ITEM),
-	tagOption(MATCH_ANY_TAGS)
+	stockOption(StockOptions::AllBoughtItem),
+	tagOption(TagOptions::MatchAny)
 {
 }
 

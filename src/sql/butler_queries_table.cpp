@@ -55,8 +55,8 @@ void QueryTable::insert(const Query &q)
 			"VALUES (?, ?, ?, ?, ?)");
 
 	insertQuery.bindValue(0, q.name);
-	insertQuery.bindValue(1, q.stockOption);
-	insertQuery.bindValue(2, q.tagOption);
+	insertQuery.bindValue(1, (int)q.stockOption);
+	insertQuery.bindValue(2, (int)q.tagOption);
 	insertQuery.bindValue(3, q.startDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(4, q.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.exec();
@@ -75,8 +75,8 @@ void QueryTable::update(const Query &orig, const Query &modified)
 				"WHERE query_name = ?");
 
 	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.stockOption);
-	updateQuery.bindValue(2, modified.tagOption);
+	updateQuery.bindValue(1, (int)modified.stockOption);
+	updateQuery.bindValue(2, (int)modified.tagOption);
 	updateQuery.bindValue(3, modified.startDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(4, modified.endDate.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(5, orig.name);

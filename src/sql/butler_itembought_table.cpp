@@ -114,11 +114,11 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	
 	QString filter;
 
-	if(q.stockOption == Query::ITEMS_ON_STOCK){
+	if(q.stockOption == Query::StockOptions::ItemsOnStock){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " on_stock = '1'";
-	} else if(q.stockOption == Query::ITEMS_USED_UP){
+	} else if(q.stockOption == Query::StockOptions::ItemsUsedUp){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " on_stock = '0'";
@@ -211,7 +211,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	
 	cmd += " GROUP BY Items.uploaded";
 
-	if(q.tagOption == Query::MATCH_ALL_TAGS){
+	if(q.tagOption == Query::TagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";
 		cmd += QString::number(q.withTags.size());
 	}

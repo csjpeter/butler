@@ -28,6 +28,7 @@ void TagWidget::applyLayout()
 	delete layout();
 
 	VLayout *mainLayout = new VLayout;
+	mainLayout->setSpacing(0);
 
 	QGridLayout * gridLayout = new QGridLayout;
 	gridLayout->setContentsMargins(0,0,0,0);
@@ -45,7 +46,8 @@ void TagWidget::applyLayout()
 		gridLayout->addWidget(&tagBox, row, col);
 	}
 
-	mainLayout->addWidget(&label);
+	if(label.text().size())
+		mainLayout->addWidget(&label);
 	mainLayout->addLayout(gridLayout);
 
 	setLayout(mainLayout);

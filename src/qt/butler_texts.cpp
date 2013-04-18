@@ -24,6 +24,9 @@ const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title
 //% "Editing an existing item"
 const char* TidEditItemWindowTitle = QT_TRID_NOOP("tid_edit_item_window_title");
 
+//% "Select and edit query"
+const char* TidEditQueryWindowTitle = QT_TRID_NOOP("tid_edit_query_window_title");
+
 
 
 //% "Todo notes"
@@ -61,6 +64,15 @@ const char* TidBackButtonLabel = QT_TRID_NOOP("tid_back_button_label");
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 
+//% "Query"
+const char* TidQueryButtonLabel = QT_TRID_NOOP("tid_query_button_label");
+
+//% "Save"
+const char* TidSaveButtonLabel = QT_TRID_NOOP("tid_save_button_label");
+
+//% "Delete"
+const char* TidDelButtonLabel = QT_TRID_NOOP("tid_del_button_label");
+
 //% "Previous item"
 const char* TidPrevItemButtonLabel = QT_TRID_NOOP("tid_prev_item_button_label");
 
@@ -78,11 +90,25 @@ const char* TidAccountingSavedInfoLabel = QT_TRID_NOOP("tid_accounting_saved_inf
 //% "Item is updated."
 const char* TidItemEditingSavedInfoLabel = QT_TRID_NOOP("tid_item_editing_saved_info_label");
 
-//% "Shop (place of buy):"
+//% "Query is saved."
+const char* TidQuerySavedInfoLabel = QT_TRID_NOOP("tid_query_saved_info_label");
+
+
+
+//% "Filter by partner:"
+const char* TidShopFilterLabel = QT_TRID_NOOP("tid_shop_filter_label");
+
+//% "Business partner:"
 const char* TidShopSelectorLabel = QT_TRID_NOOP("tid_shop_selector_label");
+
+//% "Filter by ware:"
+const char* TidWareFilterLabel = QT_TRID_NOOP("tid_ware_filter_label");
 
 //% "Common ware name:"
 const char* TidWareSelectorLabel = QT_TRID_NOOP("tid_ware_selector_label");
+
+//% "Query name:"
+const char* TidQuerySelectorLabel = QT_TRID_NOOP("tid_query_selector_label");
 
 //% "It is mandatory to define the ware."
 const char* TidWareSelectorPlaceholder = QT_TRID_NOOP("tid_ware_selector_placeholder");
@@ -108,6 +134,12 @@ const char* TidPurchaseDateTimeEditorLabel = QT_TRID_NOOP("tid_purchase_date_tim
 //% "Date of upload:"
 const char* TidUploadDateTimeEditorLabel = QT_TRID_NOOP("tid_upload_date_time_editor_label");
 
+//% "From:"
+const char* TidFromDateTimeEditorLabel = QT_TRID_NOOP("tid_from_date_time_editor_label");
+
+//% "Till:"
+const char* TidTillDateTimeEditorLabel = QT_TRID_NOOP("tid_from_date_time_editor_label");
+
 //% "Comments:"
 const char* TidCommentEditorLabel = QT_TRID_NOOP("tid_comment_editor_label");
 
@@ -116,6 +148,33 @@ const char* TidOnStockFormCheckBoxLabel = QT_TRID_NOOP("tid_on_stock_form_check_
 
 //% "Bought:"
 const char* TidBoughtFormCheckBoxLabel = QT_TRID_NOOP("tid_bought_form_check_box_label");
+
+//% "With some or all of these tags:"
+const char* TidQueryTagsWidgetLabel = QT_TRID_NOOP("tid_query_tags_widget_label");
+
+//% "Without any of these tags:"
+const char* TidQueryWithoutTagsWidgetLabel = QT_TRID_NOOP("tid_query_without_tags_widget_label");
+
+//% "Stock option:"
+const char* TidStockOptionsLabel = QT_TRID_NOOP("tid_stock_options_label");
+
+//% "Tags need to match:"
+const char* TidTagOptionsLabel = QT_TRID_NOOP("tid_tag_options_label");
+
+//% "all items"
+const char* TidStockOptAllRadioButton = QT_TRID_NOOP("tid_stock_opt_all_radio_button");
+
+//% "items on stock"
+const char* TidStockOptOnStockRadioButton = QT_TRID_NOOP("tid_stock_opt_on_stock_radio_button");
+
+//% "items used up"
+const char* TidStockOptUsedUpRadioButton = QT_TRID_NOOP("tid_stock_opt_used_up_radio_button");
+
+//% "all need to match"
+const char* TidTagOptAllMatchRadioButton = QT_TRID_NOOP("tid_tag_opt_all_match_radio_button");
+
+//% "any enough to match"
+const char* TidTagOptAnyMatchRadioButton = QT_TRID_NOOP("tid_tag_opt_any_match_radio_button");
 
 
 

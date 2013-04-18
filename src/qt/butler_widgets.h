@@ -131,7 +131,7 @@ public:
 	HLayout() : QHBoxLayout()
 	{
 		setContentsMargins(0,0,0,0);
-		setSpacing(3);
+		setSpacing(5);
 	}
 };
 
@@ -143,7 +143,7 @@ public:
 	VLayout() : QVBoxLayout()
 	{
 		setContentsMargins(0,0,0,0);
-		setSpacing(3);
+		setSpacing(5);
 	}
 };
 
@@ -166,6 +166,8 @@ public:
 	InfoLabel() : Label()
 	{
 		setWordWrap(true);
+		setProperty("infoField", true);
+		setAlignment(Qt::AlignCenter);
 	}
 };
 
@@ -502,6 +504,7 @@ private:
 public:
 	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
 		QWidget(parent),
+		boxLayout(0),
 		tableView(*(new TableView))
 	{
 		(void)column;
@@ -534,26 +537,27 @@ public:
 	virtual void narrowLayout()
 	{
 		delete layout();
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addWidget(&box);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
+		boxLayout = new VLayout;
+		boxLayout->addWidget(&label, 0, Qt::AlignBottom);
+		boxLayout->addWidget(&box);
+		boxLayout->setSpacing(1);
+		setLayout(boxLayout);
 	}
 
 	virtual void wideLayout()
 	{
 		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&box, 0);
-		setLayout(newLayout);
+		boxLayout = new HLayout;
+		boxLayout->addWidget(&label, 0, Qt::AlignTop);
+		boxLayout->addWidget(&box, 0);
+		setLayout(boxLayout);
 	}
 
 	QLabel label;
 	ComboBox box;
 
 public:
+	QBoxLayout * boxLayout; /* This should valid all the time. */
 	TableView & tableView; /* Ownership held by QComboBox */
 };
 
@@ -685,6 +689,7 @@ public:
 	{
 		label.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
+		wideLayout();
 	}
 
 	void narrowLayout()
@@ -707,6 +712,61 @@ public:
 	}
 
 	QTextEdit edit;
+	QLabel label;
+};
+
+class ButtonGroup : public QWidget
+{
+private:
+	Q_OBJECT
+public:
+	ButtonGroup(QWidget * parent = 0) :
+		QWidget(parent)
+	{
+		label.setFocusPolicy(Qt::NoFocus);
+		setContentsMargins(0,0,0,0);
+		wideLayout();
+	}
+
+	void narrowLayout()
+	{
+		delete layout();
+		VLayout * newLayout = new VLayout;
+		newLayout->addWidget(&label, -1, Qt::AlignBottom);
+		QList<QAbstractButton*> list = group.buttons();
+		for(int i = 0; i < list.size(); i++)
+			newLayout->addWidget(list[i]);
+		newLayout->setSpacing(1);
+		setLayout(newLayout);
+	}
+
+	void mediumLayout()
+	{
+		delete layout();
+		HLayout * newLayout = new HLayout;
+		newLayout->addWidget(&label, -1, Qt::AlignTop);
+
+		VLayout * vLayout = new VLayout;
+		QList<QAbstractButton*> list = group.buttons();
+		for(int i = 0; i < list.size(); i++)
+			vLayout->addWidget(list[i]);
+		newLayout->addLayout(vLayout);
+
+		setLayout(newLayout);
+	}
+
+	void wideLayout()
+	{
+		delete layout();
+		HLayout * newLayout = new HLayout;
+		newLayout->addWidget(&label, -1, Qt::AlignTop);
+		QList<QAbstractButton*> list = group.buttons();
+		for(int i = 0; i < list.size(); i++)
+			newLayout->addWidget(list[i]);
+		setLayout(newLayout);
+	}
+
+	QButtonGroup group;
 	QLabel label;
 };
 

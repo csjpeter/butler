@@ -61,7 +61,7 @@ void StatsView::mapToGui()
 
 void StatsView::changeEvent(QEvent * event)
 {
-	QWidget::changeEvent(event);
+	PannView::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
 }

@@ -12,6 +12,7 @@ extern const char* TidUserQueryWindowTitle;
 extern const char* TidAnaliticsWindowTitle;
 extern const char* TidAccountingWindowTitle;
 extern const char* TidEditItemWindowTitle;
+extern const char* TidEditQueryWindowTitle;
 
 extern const char* TidTodoButtonLabel;
 extern const char* TidShoppingButtonLabel;
@@ -25,14 +26,22 @@ extern const char* TidQuitButtonLabel;
 
 extern const char* TidBackButtonLabel;
 extern const char* TidDoneButtonLabel;
+extern const char* TidQueryButtonLabel;
+extern const char* TidSaveButtonLabel;
+extern const char* TidDelButtonLabel;
 extern const char* TidPrevItemButtonLabel;
 extern const char* TidNextItemButtonLabel;
 
 extern const char* TidFillMandatoryFieldsInfoLabel;
 extern const char* TidAccountingSavedInfoLabel;
 extern const char* TidItemEditingSavedInfoLabel;
+extern const char* TidQuerySavedInfoLabel;
+
+extern const char* TidShopFilterLabel;
 extern const char* TidShopSelectorLabel;
+extern const char* TidWareFilterLabel;
 extern const char* TidWareSelectorLabel;
+extern const char* TidQuerySelectorLabel;
 extern const char* TidWareSelectorPlaceholder;
 extern const char* TidCategoryEditorLabel;
 extern const char* TidQuantityEditorLabel;
@@ -41,9 +50,20 @@ extern const char* TidUnitPriceEditorLabel;
 extern const char* TidGrossPriceEditorLabel;
 extern const char* TidPurchaseDateTimeEditorLabel;
 extern const char* TidUploadDateTimeEditorLabel;
+extern const char* TidFromDateTimeEditorLabel;
+extern const char* TidTillDateTimeEditorLabel;
 extern const char* TidCommentEditorLabel;
 extern const char* TidOnStockFormCheckBoxLabel;
 extern const char* TidBoughtFormCheckBoxLabel;
+extern const char* TidQueryTagsWidgetLabel;
+extern const char* TidQueryWithoutTagsWidgetLabel;
+extern const char* TidStockOptionsLabel;
+extern const char* TidTagOptionsLabel;
+extern const char* TidStockOptAllRadioButton;
+extern const char* TidStockOptOnStockRadioButton;
+extern const char* TidStockOptUsedUpRadioButton;
+extern const char* TidTagOptAllMatchRadioButton;
+extern const char* TidTagOptAnyMatchRadioButton;
 
 extern const char* TidAddItemButtonLabel;
 extern const char* TidEditItemButtonLabel;

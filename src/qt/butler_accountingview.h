@@ -8,7 +8,7 @@
 
 #include <butler_item.h>
 #include <butler_widgets.h>
-#include "butler_tagwidget.h"
+#include <butler_tagwidget.h>
 
 class AccountingView : public PannView
 {
