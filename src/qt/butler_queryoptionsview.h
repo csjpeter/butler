@@ -40,9 +40,8 @@ private slots:
 	void delClickedSlot();
 	void queryClickedSlot();
 	void backClickedSlot();
+	void querySelectedSlot();
 	void updateToolButtonStates();
-	void wareCheckBoxStateChangedSlot(int);
-	void shopCheckBoxStateChangedSlot(int);
 
 private:
 	const QString & dbname;

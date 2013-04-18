@@ -504,8 +504,9 @@ private:
 public:
 	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
 		QWidget(parent),
+		tableViewPtr(new TableView),
 		boxLayout(0),
-		tableView(*(new TableView))
+		tableView(*tableViewPtr)
 	{
 		(void)column;
 		(void)model;
@@ -514,7 +515,7 @@ public:
 			box.setModel(model);
 			box.setModelColumn(column);
 		}
-		box.setView(&tableView);
+		box.setView(tableViewPtr);
 		if(box.lineEdit())
 			box.lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
 		wideLayout();
@@ -556,8 +557,10 @@ public:
 	QLabel label;
 	ComboBox box;
 
+private:
+	TableView * tableViewPtr;
 public:
-	QBoxLayout * boxLayout; /* This should valid all the time. */
+	QBoxLayout * boxLayout; /* This should be valid all the time. */
 	TableView & tableView; /* Ownership held by QComboBox */
 };
 
@@ -568,13 +571,15 @@ private:
 public:
 	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
 		Selector(model, column, parent),
-		editor(*(new LineEditor)), /* hack, I know */
-		completerTableView(*(new TableView))
+		editorPtr(new LineEditor),
+		completerTableViewPtr(new TableView),
+		editor(*editorPtr),
+		completerTableView(*completerTableViewPtr)
 	{
 		box.setEditable(true);
 		box.setLineEdit(&editor);
 		box.setInsertPolicy(QComboBox::NoInsert);
-		box.completer()->setPopup(&completerTableView);
+		box.completer()->setPopup(completerTableViewPtr);
 		box.setCurrentIndex(-1);
 		if(!model){
 			tableView.horizontalHeader()->hide();
@@ -607,6 +612,9 @@ public:
 		Selector::wideLayout();
 	}
 
+private:
+	LineEditor * editorPtr; /* Ownership held by QComboBox */
+	TableView * completerTableViewPtr; /* Ownership held by QComboBox's QCompleter */
 public:
 	LineEditor & editor; /* Ownership held by QComboBox */
 	TableView & completerTableView; /* Ownership held by QComboBox's QCompleter */

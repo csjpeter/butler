@@ -143,7 +143,6 @@ void AccountingView::mapToGui()
 	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
 	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
 
-	updateToolButtonStates();
 	relayout();
 }
 
@@ -178,7 +177,7 @@ void AccountingView::changeEvent(QEvent * event)
 
 void AccountingView::resizeEvent(QResizeEvent * event)
 {
-	if(layout() && (event->size() == event->oldSize() || !isVisible()))
+	if(layout() && (event->size() == event->oldSize()))
 		return;
 	relayout();
 }
@@ -222,6 +221,8 @@ enum class ViewState {
 void AccountingView::applyLayout()
 {
 	delete layout();
+
+	updateToolButtonStates();
 
 	HLayout * toolLayout = new HLayout;
 	if(prevButton.isEnabled())
@@ -501,7 +502,8 @@ void AccountingView::updateToolButtonStates()
 	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
 	doneButton.setVisible(mandatoriesGiven && modified);
 
-	if(!mandatoriesGiven && infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel))
+	if(modified && !mandatoriesGiven &&
+			infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel))
 		infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
 	else if(mandatoriesGiven && infoLabel.text().size())
 		infoLabel.setText("");
