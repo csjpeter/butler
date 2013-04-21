@@ -30,10 +30,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	setWindowModality(Qt::ApplicationModal);
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
-
-	prevButton.hide();
-	nextButton.hide();
-	boughtCheck.hide();
 	
 	item.bought = true;
 	uploadDateTime.setEnabled(false);
@@ -87,8 +83,9 @@ AccountingView::~AccountingView()
 void AccountingView::showEvent(QShowEvent *event)
 {
 	lastWareName.clear();
-	uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
 	mapToGui();
+	if(!cursor.isValid())
+		uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
 
 	PannView::showEvent(event);
 	wareEditor.editor.setFocus(Qt::OtherFocusReason);
@@ -109,6 +106,7 @@ void AccountingView::loadState()
 void AccountingView::saveState()
 {
 	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
+	LOG("Save view as %s", C_STR(prefix));
 	PannView::saveState(prefix);
 }
 
@@ -143,7 +141,7 @@ void AccountingView::mapToGui()
 	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
 	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
 
-	relayout();
+	updateToolButtonStates();
 }
 
 void AccountingView::mapFromGui()
@@ -222,8 +220,6 @@ void AccountingView::applyLayout()
 {
 	delete layout();
 
-	updateToolButtonStates();
-
 	HLayout * toolLayout = new HLayout;
 	if(prevButton.isEnabled())
 		toolLayout->addWidget(&prevButton);
@@ -234,11 +230,15 @@ void AccountingView::applyLayout()
 	toolLayout->addStretch(0);
 	toolLayout->addWidget(&doneButton);
 	toolLayout->addWidget(&backButton);
+	delete toolBar.layout();
+	toolBar.setLayout(toolLayout);
+
+	setToolBar(&toolBar);
 
 	HLayout * hlayout = new HLayout;
-	hlayout->addWidget(&quantityEditor);
-	hlayout->addStretch();
 	hlayout->addWidget(&grossPriceEditor);
+	hlayout->addStretch();
+	hlayout->addWidget(&quantityEditor);
 	hlayout->addStretch();
 	hlayout->addWidget(&unitPriceEditor);
 
@@ -249,13 +249,12 @@ void AccountingView::applyLayout()
 	h2layout->addStretch();
 
 	VLayout * mainLayout = new VLayout;
-	mainLayout->addLayout(toolLayout);
+	mainLayout->addStretch(0);
+	mainLayout->addLayout(hlayout);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&categoryEditor);
-	mainLayout->addStretch(0);
-	mainLayout->addLayout(hlayout);
 	mainLayout->addStretch(0);
 	mainLayout->addLayout(h2layout);
 	mainLayout->addStretch(0);
@@ -268,8 +267,10 @@ void AccountingView::applyLayout()
 	mainLayout->addWidget(&commentEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&tagsWidget);
+	mainLayout->addStretch(0);
 
 	setLayout(mainLayout);
+	updateGeometry();
 }
 
 void AccountingView::relayout()
@@ -291,8 +292,7 @@ void AccountingView::relayout()
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
@@ -308,13 +308,12 @@ void AccountingView::relayout()
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
-			prevButton.setEnabled(false);
-			nextButton.setEnabled(false);
+			prevButton.setEnabled(false); prevButton.hide(); prevButton.setParent(0);
+			nextButton.setEnabled(false); nextButton.hide(); nextButton.setParent(0);
 			wareEditor.narrowLayout();
 			categoryEditor.narrowLayout();
 			quantityEditor.narrowLayout();
@@ -325,12 +324,12 @@ void AccountingView::relayout()
 			uploadDateTime.narrowLayout();
 			commentEditor.narrowLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 			break;
 	}
+	updateToolButtonStates();
 }
 
 void AccountingView::setCursor(const QModelIndex& index)
@@ -393,9 +392,9 @@ void AccountingView::saveSlot()
 		item = Item();
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
+		mapToGui();
 		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
-		mapToGui();
 	}
 }
 
@@ -498,15 +497,18 @@ void AccountingView::updateToolButtonStates()
 		wareEditor.editor.text().size() &&
 		0.001 <= quantityEditor.value();
 
-	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
-	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
+	prevButton.setVisible(!modified && cursor.isValid() &&
+			0 < cursor.row() && prevButton.isEnabled());
+	nextButton.setVisible(!modified && cursor.isValid() &&
+			cursor.row() < model.rowCount()-1 && nextButton.isEnabled());
 	doneButton.setVisible(mandatoriesGiven && modified);
 
-	if(modified && !mandatoriesGiven &&
-			infoLabel.text() != qtTrId(TidFillMandatoryFieldsInfoLabel))
-		infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
-	else if(mandatoriesGiven && infoLabel.text().size())
-		infoLabel.setText("");
+	if(modified){
+		if(!mandatoriesGiven)
+			infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
+		else if(infoLabel.text().size())
+			infoLabel.setText("");
+	}
 }
 
 void AccountingView::wareNameEditFinishedSlot()

@@ -10,11 +10,20 @@
 #include <QString>
 
 namespace Config {
+	enum class ToolBarPosition
+	{
+		Top = 0,
+		Bottom,
+		Left,
+		Right
+	};
+
 	extern QString dbFileName;
 	extern const char * defaultDbName;
 	extern QLocale locale;
 	extern double pxPerMM;
 	extern int thresholdScrollDistance; /* Kinetic scroll, threshold for scroll. */
+	extern ToolBarPosition toolBarPosition;
 
 	void save();
 	void load();

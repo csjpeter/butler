@@ -67,12 +67,12 @@ public:
 	void sort(int logicalIndex, bool ascending);
 
 protected:
-	void itemChange(const Item &modified);
-	void itemChangeListener(const Item &modified);
+	static void itemChange(const Db & db, const Item &modified);
+	void itemChangeListener(const Db & db, const Item &modified);
 	/* return true if 'modified' should be in query list */
 	virtual bool queryFilter(const Item &modified) = 0;
-	void itemRemoved(const Item &removed);
-	void itemRemovedListener(const Item &removed);
+	static void itemRemoved(const Db & db, const Item &removed);
+	void itemRemovedListener(const Db & db, const Item &removed);
 
 protected:
 	Db & db;

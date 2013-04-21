@@ -63,22 +63,5 @@ void CustomModel::addShoppingItem(int row)
 	shopItem.name = i.name;
 	shopItem.category = i.category;
 	db.item.insert(shopItem);
-	itemChange(shopItem);
-}
-
-void CustomModel::drop(int row)
-{
-	Item &orig = items.queryAt(row);
-	Item modified(orig);
-	modified.onStock = false;
-	db.item.update(orig, modified);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		items.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
-	itemChange(modified);
+	itemChange(db, shopItem);
 }

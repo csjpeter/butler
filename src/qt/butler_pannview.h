@@ -8,6 +8,7 @@
 
 #include <QWidget>
 #include <butler_macros.h>
+#include <butler_config.h>
 #include <butler_kineticscroller.h>
 
 #include <config.h>
@@ -21,7 +22,6 @@ public:
 	PannView(QWidget * parent = 0) :
 		QWidget(parent),
 		scrollArea(0),
-		quitShortcut(QKeySequence(QKeySequence::Quit), this),
 		scroller(&scrollArea)
 	{
 		setAttribute(Qt::WA_QuitOnClose, false);
@@ -40,11 +40,41 @@ public:
 		QWidget::setLayout(vLayout);
 
 		installEventFilter(this);
-		setSizeIncrement(5, 1);
-
-		connect(&quitShortcut, SIGNAL(activated()), qApp, SLOT(quit()));
+		setSizeIncrement(0, 0);
 	}
 	virtual ~PannView() {}
+
+	void setToolBar(QWidget * wgt)
+	{
+		delete QWidget::layout();
+
+		QBoxLayout * layout = 0;
+
+		switch(Config::toolBarPosition){
+			case Config::ToolBarPosition::Top:
+			case Config::ToolBarPosition::Bottom:
+				layout = new QVBoxLayout;
+				layout->setContentsMargins(0,0,0,0);
+				if(Config::toolBarPosition == Config::ToolBarPosition::Top)
+					layout->addWidget(wgt);
+				layout->addWidget(&scrollArea);
+				if(Config::toolBarPosition == Config::ToolBarPosition::Bottom)
+					layout->addWidget(wgt);
+				break;
+			case Config::ToolBarPosition::Left:
+			case Config::ToolBarPosition::Right:
+				layout = new QHBoxLayout;
+				layout->setContentsMargins(0,0,0,0);
+				if(Config::toolBarPosition == Config::ToolBarPosition::Left)
+					layout->addWidget(wgt);
+				layout->addWidget(&scrollArea);
+				if(Config::toolBarPosition == Config::ToolBarPosition::Right)
+					layout->addWidget(wgt);
+				break;
+		}
+
+		QWidget::setLayout(layout);
+	}
 
 	virtual QLayout * layout() const
 	{
@@ -60,6 +90,11 @@ public:
 	virtual QSize sizeHint()
 	{
 		return main.sizeHint();
+	}
+
+	virtual int width()
+	{
+		return QWidget::width() - scrollArea.verticalScrollBar()->width();
 	}
 
 	virtual void showEvent(QShowEvent *event)
@@ -137,7 +172,6 @@ signals:
 private:
 	QScrollArea scrollArea;
 	QWidget main;
-	QShortcut quitShortcut;
 
 	KineticScroller scroller;
 };

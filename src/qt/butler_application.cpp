@@ -15,7 +15,8 @@
 #include "butler_application.h"
 
 Application::Application(int &argc, char *argv[]) :
-	QApplication(argc, argv)
+	QApplication(argc, argv),
+	mainViewPtr(0)
 {
 	QCoreApplication::setOrganizationName(ORGANIZATION);
 	QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN_NAME);
@@ -24,6 +25,14 @@ Application::Application(int &argc, char *argv[]) :
 
 Application::~Application()
 {
+	delete mainViewPtr;
+}
+
+MainView & Application::mainView()
+{
+	if(!mainViewPtr)
+		mainViewPtr = new MainView(Config::defaultDbName);
+	return *mainViewPtr;
 }
 
 /* Init the local database */
@@ -147,6 +156,15 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		case QEvent::KeyPress:
 			{
 				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+				if(keyEvent->matches(QKeySequence::Quit)){
+					Config::save();
+					if(mainViewPtr)
+						mainViewPtr->saveState();
+					quit();
+					break;
+				}
+
 				/* Close VKB if return/done is pressed on it. */
 				if(keyEvent->key() == Qt::Key_Return)
 					postEvent(receiver, new QEvent(

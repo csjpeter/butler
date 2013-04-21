@@ -146,8 +146,7 @@ void StatsView::relayout()
 			maxUnitPriceLabel.setWordWrap(false);
 			timeTakenBySqlQueryLabel.setWordWrap(false);
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
@@ -159,8 +158,7 @@ void StatsView::relayout()
 			maxUnitPriceLabel.setWordWrap(true);
 			timeTakenBySqlQueryLabel.setWordWrap(true);
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 			break;

@@ -8,6 +8,8 @@
 
 #include <QApplication>
 
+#include "butler_mainview.h"
+
 /* Forwards: */
 class QSessionManager;
 
@@ -22,7 +24,12 @@ public:
 	void pixelPerMM();
 	void loadCSS();
 
+	MainView & mainView();
+
 	virtual bool notify(QObject * receiver, QEvent * event);
+
+private:
+	MainView * mainViewPtr;
 };
 
 #endif

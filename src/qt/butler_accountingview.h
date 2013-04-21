@@ -56,11 +56,13 @@ private:
 	Item item;
 	Ware ware;
 
+	QWidget toolBar;
 	Button backButton;
 	Button doneButton;
 	Button prevButton;
 	Button nextButton;
 	InfoLabel infoLabel;
+
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;
 	QuantityEditor quantityEditor;

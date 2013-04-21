@@ -38,10 +38,6 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
 
-	editButton.hide();
-	delButton.hide();
-	shoppigButton.hide();
-
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
 	connect(&shoppigButton, SIGNAL(clicked()), this, SLOT(shoppingItem()));
@@ -98,9 +94,9 @@ void CustomView::applyLayout()
 	toolLayout->addWidget(&filterButton);
 	toolLayout->addStretch();
 	toolBar.setLayout(toolLayout);
+	setToolBar(&toolBar);
 
 	VLayout * mainLayout = new VLayout;
-	mainLayout->addWidget(&toolBar);
 	mainLayout->addWidget(&tableView);
 
 	setLayout(mainLayout);
@@ -127,8 +123,7 @@ void CustomView::relayout()
 			filterButton.wideLayout();
 			statsButton.wideLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
@@ -139,8 +134,7 @@ void CustomView::relayout()
 			filterButton.mediumLayout();
 			statsButton.mediumLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
@@ -151,11 +145,11 @@ void CustomView::relayout()
 			filterButton.narrowLayout();
 			statsButton.narrowLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 	}
+	updateToolButtonStates();
 }
 
 void CustomView::changeEvent(QEvent * event)
@@ -201,11 +195,12 @@ void CustomView::loadState()
 		model->opts = qm.querySet().query(queryName);
 	model->query();
 
-	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
-	if(model->itemSet().has(uploaded))
-		tableView.setCurrentIndex(model->index(model->index(uploaded), 0));
-
 	tableView.loadState(prefix);
+
+	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
+	int col = settings.value(prefix + "/currentitemCol", "").toInt();
+	if(model->itemSet().has(uploaded))
+		tableView.setCurrentIndex(model->index(model->index(uploaded), col));
 
 	if(settings.value(prefix + "/editItemView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
@@ -230,6 +225,7 @@ void CustomView::saveState()
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
 	tableView.saveState(prefix);
 
@@ -250,8 +246,6 @@ void CustomView::refreshItems()
 	if(model->itemSet().has(uploaded))
 		tableView.setCurrentIndex(model->index(model->index(uploaded), 0));
 
-	updateToolButtonStates();
-
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
 
@@ -263,8 +257,12 @@ void CustomView::editItem()
 		return;
 	}
 
-	if(!editItemView)
+	if(!editItemView){
 		editItemView = new AccountingView(dbname, *model);
+		editItemView->setCursor(tableView.currentIndex());
+		editItemView->loadState();
+		editItemView->activate();
+	}
 
 	editItemView->setCursor(tableView.currentIndex());
 	editItemView->activate();
@@ -345,7 +343,6 @@ void CustomView::applyNewFilter()
 	model->opts = queryOptsView->query;
 	model->query();
 	tableView.setCurrentIndex(model->index(-1, -1));
-	updateToolButtonStates();
 }
 
 void CustomView::statsItems()
@@ -363,6 +360,22 @@ void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 void CustomView::updateToolButtonStates()
 {
 	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+		shoppigButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+		shoppigButton.hide();
+	}
+}
+
+void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() == previous.isValid())
+		return;
+
+	if(current.isValid()){
 		if(!editButton.isVisible()){
 			editButton.show();
 			delButton.show();
@@ -375,10 +388,4 @@ void CustomView::updateToolButtonStates()
 		shoppigButton.hide();
 		relayout();
 	}
-}
-
-void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
-{
-	if(current.isValid() != previous.isValid())
-		updateToolButtonStates();
 }

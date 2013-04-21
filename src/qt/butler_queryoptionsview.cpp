@@ -26,9 +26,6 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 {
 	setWindowModality(Qt::ApplicationModal);
 
-	delButton.hide();
-	saveButton.hide();
-
 	stockOptions.group.addButton(&stockOptAll);
 	stockOptions.group.addButton(&stockOptOnStock);
 	stockOptions.group.addButton(&stockOptUsedUp);
@@ -41,11 +38,8 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
 	connect(&backButton, SIGNAL(clicked()), this, SLOT(backClickedSlot()));
 
-/*	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(relayout()));
-	connect(&shopFilter.box, SIGNAL(stateChanged(int)), this, SLOT(relayout()));*/
-	connect(&stockOptAll, SIGNAL(toggled(bool)), this, SLOT(relayout()));
-	connect(&stockOptOnStock, SIGNAL(toggled(bool)), this, SLOT(relayout()));
-	connect(&stockOptUsedUp, SIGNAL(toggled(bool)), this, SLOT(relayout()));
+	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
+	connect(&shopFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
 
 	connect(&nameEditor.box, SIGNAL(activated(const QString &)),
 			this, SLOT(querySelectedSlot()));
@@ -65,10 +59,15 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&shopFilter.box, SIGNAL(stateChanged(int)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&stockOptions, SIGNAL(buttonClicked(int)),
+	connect(&stockOptAll, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&stockOptOnStock, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&stockOptUsedUp, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+/*	connect(&stockOptions, SIGNAL(buttonClicked(int)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&tagOptions, SIGNAL(buttonClicked(int)),
-			this, SLOT(updateToolButtonStates()));
+			this, SLOT(updateToolButtonStates()));*/
+	connect(&tagOptAllMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&tagOptAnyMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 	connect(&tagsWidget, SIGNAL(selectionChanged()),
 			this, SLOT(updateToolButtonStates()));
 	connect(&withoutTagsWidget, SIGNAL(selectionChanged()),
@@ -151,7 +150,7 @@ void QueryOptionsView::mapToGui()
 	tagsWidget.setTags(query.withTags);
 	withoutTagsWidget.setTags(query.withoutTags);
 
-	relayout();
+	updateToolButtonStates();
 }
 
 void QueryOptionsView::mapFromGui()
@@ -253,12 +252,17 @@ void QueryOptionsView::applyLayout()
 
 	HLayout * toolLayout = new HLayout;
 	toolLayout->addWidget(&saveButton);
-	toolLayout->addWidget(&delButton);
+	if(delButton.isEnabled())
+		toolLayout->addWidget(&delButton);
 	toolLayout->addStretch(0);
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
 	toolLayout->addWidget(&queryButton);
 	toolLayout->addWidget(&backButton);
+	delete toolBar.layout();
+	toolBar.setLayout(toolLayout);
+
+	setToolBar(&toolBar);
 
 	HLayout * filterLayout = new HLayout;
 	filterLayout->addWidget(&wareFilter);
@@ -267,7 +271,6 @@ void QueryOptionsView::applyLayout()
 	filterLayout->addStretch();
 
 	VLayout * mainLayout = new VLayout;
-	mainLayout->addLayout(toolLayout);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&nameEditor);
 	mainLayout->addStretch(0);
@@ -287,8 +290,10 @@ void QueryOptionsView::applyLayout()
 	mainLayout->addWidget(&tagsWidget);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&withoutTagsWidget);
+	mainLayout->addStretch(0);
 
 	setLayout(mainLayout);
+	updateGeometry();
 }
 
 void QueryOptionsView::relayout()
@@ -298,7 +303,6 @@ void QueryOptionsView::relayout()
 
 	switch(newState) {
 		case ViewState::Wide :
-			updateToolButtonStates();
 			delButton.setEnabled(true);
 			nameEditor.wideLayout();
 			startDate.wideLayout();
@@ -308,13 +312,11 @@ void QueryOptionsView::relayout()
 			stockOptions.wideLayout();
 			tagOptions.wideLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Medium :
-			updateToolButtonStates();
-			delButton.setEnabled(false);
+			delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
 			nameEditor.wideLayout();
 			startDate.wideLayout();
 			endDate.wideLayout();
@@ -323,13 +325,11 @@ void QueryOptionsView::relayout()
 			stockOptions.mediumLayout();
 			tagOptions.mediumLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 		case ViewState::Narrow :
-			updateToolButtonStates();
-			delButton.setEnabled(false);
+			delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
 			nameEditor.narrowLayout();
 			startDate.narrowLayout();
 			endDate.narrowLayout();
@@ -338,12 +338,12 @@ void QueryOptionsView::relayout()
 			stockOptions.narrowLayout();
 			tagOptions.narrowLayout();
 			applyLayout();
-			newSize = sizeHint();
-			if(newSize.width() <= width())
+			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 			break;
 	}
+	updateToolButtonStates();
 }
 
 void QueryOptionsView::saveClickedSlot()
@@ -402,6 +402,11 @@ void QueryOptionsView::querySelectedSlot()
 		return;
 	query = qm.querySet().query(nameEditor.text());
 	mapToGui();
+}
+
+void QueryOptionsView::layoutContentChangeSlot()
+{
+	relayout();
 }
 
 void QueryOptionsView::updateToolButtonStates()

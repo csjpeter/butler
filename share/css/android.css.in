@@ -64,6 +64,16 @@ QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRa
 	font-size: 3mm;
 }
 
+QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox {
+	min-width: 30mm;
+/*	width: 30mm;*/
+}
+
+DoubleEditor QLineEdit {
+	min-width: 10mm;
+/*	width: 10mm;*/
+}
+
 QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
 	padding-right: 1mm;
 	padding-left: 1mm;
@@ -71,7 +81,7 @@ QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
 	max-height: 8mm;
 }
 
-QLineEdit, QComboBox, QDateTimeEdit, QTextEdit, QAbstractSpinBox, QCheckBox::indicator, QRadioButton::indicator {
+QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox::indicator, QRadioButton::indicator {
 	border: solid;
 	border-width: 0.5mm;
 	border-radius: 1mm;
@@ -156,7 +166,7 @@ QTableView {
 	border-width: 0.5mm;
 	color: #cccccc;
 }
-/*
+
 QTableView QHeaderView::section, \
 QTableView QHeaderView::section:first, \
 QTableView QHeaderView::section:last, \
@@ -169,15 +179,23 @@ QTableView QHeaderView::section:checked {
 	border-color: #444444;
 	border-top-style: none;
 	border-bottom-style: ridge;
-	border-bottom-width: 1mm;
-	border-left-style: ridge;
-	border-left-width: 5mm;
-	border-right-style: ridge;
-	border-right-width: 5mm;
+	border-bottom-width: 0.5mm;
+	border-left-style: none;
+/*	border-left-width: 0.5mm;*/
+	border-right-style: dotted;
+	border-right-width: 0.5mm;
 	background-color: #000000;
 	color: #888888;
 }
-*/
+
+QTableView QHeaderView::section:first {
+	border-left: none;
+}
+
+QTableView QHeaderView::section:last {
+	border-right: none;
+}
+
 QTableView QHeaderView::section:only-one {
 	border: none;
 	max-height: 0mm;

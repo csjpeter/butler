@@ -44,15 +44,7 @@ void ShoppingModel::buy(unsigned itemRow, Item &modified)
 	modified.bought = true;
 	modified.onStock = true;
 	db.item.update(orig, modified);
-	try {
-		beginRemoveRows(QModelIndex(), itemRow, itemRow);
-		items.removeAt(itemRow);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
-	itemChange(modified);
+	itemChange(db, modified);
 }
 
 void ShoppingModel::update(int row, Item &modified)

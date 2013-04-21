@@ -138,7 +138,7 @@ const char* TidUploadDateTimeEditorLabel = QT_TRID_NOOP("tid_upload_date_time_ed
 const char* TidFromDateTimeEditorLabel = QT_TRID_NOOP("tid_from_date_time_editor_label");
 
 //% "Till:"
-const char* TidTillDateTimeEditorLabel = QT_TRID_NOOP("tid_from_date_time_editor_label");
+const char* TidTillDateTimeEditorLabel = QT_TRID_NOOP("tid_till_date_time_editor_label");
 
 //% "Comments:"
 const char* TidCommentEditorLabel = QT_TRID_NOOP("tid_comment_editor_label");

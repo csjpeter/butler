@@ -300,30 +300,21 @@ void ItemsModel::del(int row)
 {
 	Item &item = items.queryAt(row);
 	db.item.del(item);
-	itemRemoved(item);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		items.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	itemRemoved(db, item);
 }
 
-void ItemsModel::itemRemoved(const Item &removed)
+void ItemsModel::itemRemoved(const Db & db, const Item &removed)
 {
 	int s = itemOperationListeners.size();
-	for(int i=0; i<s; i++){
-		ItemsModel &model = itemOperationListeners.queryAt(i);
-		if(&model == this)
-			continue;
-		model.itemRemovedListener(removed);
-	}
+	for(int i=0; i<s; i++)
+		itemOperationListeners.queryAt(i).itemRemovedListener(db, removed);
 }
 
-void ItemsModel::itemRemovedListener(const Item &removed)
+void ItemsModel::itemRemovedListener(const Db & db, const Item &removed)
 {
+	if(&db != &(this->db))
+		return;
+
 	if(!items.has(removed.uploaded))
 		return;
 
@@ -341,15 +332,7 @@ void ItemsModel::itemRemovedListener(const Item &removed)
 void ItemsModel::addNew(Item &item)
 {
 	db.item.insert(item);
-	try {
-		beginInsertRows(QModelIndex(), items.size(), items.size());
-		items.add(new Item(item));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
-	itemChange(item);
+	itemChange(db, item);
 }
 
 void ItemsModel::update(int row, Item &modified)
@@ -359,22 +342,21 @@ void ItemsModel::update(int row, Item &modified)
 	db.item.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
-	itemChange(modified);
+	itemChange(db, modified);
 }
 
-void ItemsModel::itemChange(const Item &modified)
+void ItemsModel::itemChange(const Db & db, const Item &modified)
 {
 	int s = itemOperationListeners.size();
-	for(int i=0; i<s; i++){
-		ItemsModel &model = itemOperationListeners.queryAt(i);
-		if(&model == this)
-			continue;
-		model.itemChangeListener(modified);
-	}
+	for(int i=0; i<s; i++)
+		itemOperationListeners.queryAt(i).itemChangeListener(db, modified);
 }
 
-void ItemsModel::itemChangeListener(const Item &modified)
+void ItemsModel::itemChangeListener(const Db & db, const Item &modified)
 {
+	if(&db != &(this->db))
+		return;
+
 	bool want = queryFilter(modified);
 	if(items.has(modified.uploaded)){
 		int row = items.index(modified.uploaded);

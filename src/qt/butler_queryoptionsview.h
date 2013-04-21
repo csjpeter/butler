@@ -41,6 +41,7 @@ private slots:
 	void queryClickedSlot();
 	void backClickedSlot();
 	void querySelectedSlot();
+	void layoutContentChangeSlot();
 	void updateToolButtonStates();
 
 private:
@@ -50,6 +51,7 @@ public:
 	Query query;
 
 private:
+	QWidget toolBar;
 	Button saveButton;
 	Button delButton;
 	Button queryButton;

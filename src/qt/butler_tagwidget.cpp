@@ -35,6 +35,7 @@ void TagWidget::applyLayout()
 
 	unsigned i, s = tagSet.size();
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;
+	DBG("Row to apply %d", rows);
 
 	/* With this the nth tag in tagset will be represented by the nth
 	 * button in the btnContainer. */
@@ -51,6 +52,7 @@ void TagWidget::applyLayout()
 	mainLayout->addLayout(gridLayout);
 
 	setLayout(mainLayout);
+	updateGeometry();
 }
 
 void TagWidget::relayout()
@@ -62,6 +64,7 @@ void TagWidget::relayout()
 
 	if(newColumns != columns){
 		columns = newColumns;
+		DBG("Columns changed to %d", columns);
 		applyLayout();
 	}
 }
@@ -72,7 +75,7 @@ QSize TagWidget::sizeHint() const
 	int lw = label.sizeHint().width();
 	if(w < lw)
 		w = lw;
-	int h = label.sizeHint().height();
+/*	int h = label.sizeHint().height();
 	if(btnContainer.size()){
 		QCheckBox & tagBox = btnContainer.queryAt(0);
 		h += tagBox.sizeHint().height() * btnContainer.size();
@@ -80,8 +83,8 @@ QSize TagWidget::sizeHint() const
 	DBG("width() in SizeHint: %d", width());
 	if(w < width())
 		h = heightForWidth(width());
-	DBG("SizeHint: %d, %d", w, h);
-	return QSize(w, h);
+	DBG("SizeHint: %d, %d", w, h);*/
+	return QSize(w, -1);
 }
 
 int TagWidget::heightForWidth(int w) const

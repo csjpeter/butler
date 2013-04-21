@@ -24,13 +24,24 @@ const char * defaultDbName = "localdb";
 QLocale locale;
 double pxPerMM = 0;
 int thresholdScrollDistance = 0;
+ToolBarPosition toolBarPosition = ToolBarPosition::Top;
 
 void save()
 {
+	QString prefix("Config");
+	QSettings settings;
+
+	settings.setValue(prefix + "/locale", locale.bcp47Name());
 }
 
 void load()
 {
+	QString prefix("Config");
+	QSettings settings;
+
+	QString l = settings.value(prefix + "/locale", "").toString();
+	if(l.size())
+		locale = QLocale(l);
 }
 
 const QString & dateTimeFormat()

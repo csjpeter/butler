@@ -81,7 +81,6 @@ public:
 					);
 			horizontalHeader()->moveSection(horizontalHeader()->visualIndex(i), pos);
 		}
-		horizontalScrollBar()->setValue(horizontalScrollBar()->minimum());
 
 		int sortPos = settings.value(prefix + "/sortColumn", 0).toInt();
 		int sortOrder = settings.value(prefix + "/sortOrder", 0).toInt();
@@ -302,6 +301,7 @@ public:
 		label.setFocusPolicy(Qt::NoFocus);
 		resetRegexp();
 		editor.setValidator(&validator);
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 		connect(&editor, SIGNAL(textChanged(const QString &)),
 				this, SLOT(textChangedSlot(const QString &)));
 
@@ -403,7 +403,7 @@ public:
 	{
 		delete layout();
 		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignBottom);
+		newLayout->addWidget(&label, -1, Qt::AlignBottom);
 		newLayout->addWidget(&editor);
 		newLayout->setSpacing(1);
 		setLayout(newLayout);
@@ -413,9 +413,8 @@ public:
 	{
 		delete layout();
 		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&editor);
-		newLayout->setStretch(1, 0);
+		newLayout->addWidget(&label, 1, Qt::AlignTop);
+		newLayout->addWidget(&editor, 4);
 		setLayout(newLayout);
 	}
 public:
@@ -463,8 +462,8 @@ public:
 		setContentsMargins(0,0,0,0);
 
 		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignVCenter);
-		newLayout->addWidget(&box, 0, Qt::AlignLeft);
+		newLayout->addWidget(&label, -1, Qt::AlignVCenter);
+		newLayout->addWidget(&box, -1, Qt::AlignLeft);
 		setLayout(newLayout);
 	}
 
@@ -485,14 +484,12 @@ public:
 	virtual QSize sizeHint() const
 	{
 		QSize hint = QComboBox::sizeHint();
-		hint.setWidth(220);
 		return hint;
 	}
 
 	virtual QSize minimumSizeHint() const
 	{
 		QSize hint = QComboBox::minimumSizeHint();
-		hint.setWidth(220);
 		return hint;
 	}
 };
@@ -530,7 +527,7 @@ public:
 
 	virtual void resizeEvent(QResizeEvent * event)
 	{
-		if((event->size() == event->oldSize()) || !isVisible())
+		if(event->size() == event->oldSize())
 			return;
 		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
 	}
@@ -539,7 +536,7 @@ public:
 	{
 		delete layout();
 		boxLayout = new VLayout;
-		boxLayout->addWidget(&label, 0, Qt::AlignBottom);
+		boxLayout->addWidget(&label, -1, Qt::AlignBottom);
 		boxLayout->addWidget(&box);
 		boxLayout->setSpacing(1);
 		setLayout(boxLayout);
@@ -549,8 +546,8 @@ public:
 	{
 		delete layout();
 		boxLayout = new HLayout;
-		boxLayout->addWidget(&label, 0, Qt::AlignTop);
-		boxLayout->addWidget(&box, 0);
+		boxLayout->addWidget(&label, 1, Qt::AlignTop);
+		boxLayout->addWidget(&box, 4);
 		setLayout(boxLayout);
 	}
 
@@ -638,14 +635,12 @@ public:
 	virtual QSize sizeHint() const
 	{
 		QSize hint = QDateTimeEdit::sizeHint();
-		hint.setWidth(220);
 		return hint;
 	}
 
 	virtual QSize minimumSizeHint() const
 	{
 		QSize hint = QDateTimeEdit::minimumSizeHint();
-		hint.setWidth(220);
 		return hint;
 	}
 };
@@ -677,9 +672,8 @@ public:
 	{
 		delete layout();
 		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&edit);
-		newLayout->setStretch(1, 0);
+		newLayout->addWidget(&label, 1, Qt::AlignTop);
+		newLayout->addWidget(&edit, 4);
 		setLayout(newLayout);
 	}
 
@@ -714,8 +708,8 @@ public:
 	{
 		delete layout();
 		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignTop);
-		newLayout->addWidget(&edit, 1);
+		newLayout->addWidget(&label, 1, Qt::AlignTop);
+		newLayout->addWidget(&edit, 4);
 		setLayout(newLayout);
 	}
 
@@ -770,7 +764,7 @@ public:
 		newLayout->addWidget(&label, -1, Qt::AlignTop);
 		QList<QAbstractButton*> list = group.buttons();
 		for(int i = 0; i < list.size(); i++)
-			newLayout->addWidget(list[i]);
+			newLayout->addWidget(list[i], -1, Qt::AlignLeft);
 		setLayout(newLayout);
 	}
 

@@ -82,12 +82,10 @@ int main(int argc, char *args[])
 		Config::thresholdScrollDistance = Config::pxPerMM * 2;
 		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
 		app.loadCSS();
+		Config::load();
 
-		/* Mainview */
-		MainView view(Config::defaultDbName);
-		view.show();
-
-		/* Run the app */
+		/* Show main view and run the app */
+		app.mainView().show();
 		return app.exec();
 	} catch (csjp::Exception & e) {
 		EXCEPTION(e);
