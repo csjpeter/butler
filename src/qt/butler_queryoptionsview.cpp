@@ -75,6 +75,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 
 	loadState();
 	retranslate();
+	LOG("QueryOptionsView constructed");
 }
 
 QueryOptionsView::~QueryOptionsView()
@@ -85,6 +86,7 @@ void QueryOptionsView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 	PannView::showEvent(event);
+	relayout();
 }
 
 void QueryOptionsView::closeEvent(QCloseEvent *event)
@@ -312,6 +314,7 @@ void QueryOptionsView::relayout()
 			stockOptions.wideLayout();
 			tagOptions.wideLayout();
 			applyLayout();
+			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -325,6 +328,7 @@ void QueryOptionsView::relayout()
 			stockOptions.mediumLayout();
 			tagOptions.mediumLayout();
 			applyLayout();
+			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -338,6 +342,7 @@ void QueryOptionsView::relayout()
 			stockOptions.narrowLayout();
 			tagOptions.narrowLayout();
 			applyLayout();
+			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size

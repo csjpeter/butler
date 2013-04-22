@@ -94,7 +94,9 @@ public:
 
 	virtual int width()
 	{
-		return QWidget::width() - scrollArea.verticalScrollBar()->width();
+		LOG("PannView Width: %d, viewport width: %d",
+				QWidget::width(), scrollArea.viewport()->width());
+		return scrollArea.viewport()->width();
 	}
 
 	virtual void showEvent(QShowEvent *event)
@@ -139,6 +141,7 @@ public:
 		QSettings settings;
 		QPoint pos = settings.value(prefix + "/position", QPoint(-1, -1)).toPoint();
 		QSize size = settings.value(prefix + "/size", QSize()).toSize();
+		LOG("Resize to loaded size: width %d", size.width());
 		if(size.isValid())
 			resize(size);
 		else

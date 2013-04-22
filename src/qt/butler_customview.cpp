@@ -175,6 +175,7 @@ void CustomView::keyPressEvent(QKeyEvent * event)
 void CustomView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
+	relayout();
 }
 
 void CustomView::closeEvent(QCloseEvent *event)

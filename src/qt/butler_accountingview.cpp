@@ -89,6 +89,7 @@ void AccountingView::showEvent(QShowEvent *event)
 
 	PannView::showEvent(event);
 	wareEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
 }
 
 void AccountingView::closeEvent(QCloseEvent *event)

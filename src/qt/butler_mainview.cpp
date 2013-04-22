@@ -154,6 +154,7 @@ void MainView::resizeEvent(QResizeEvent * event)
 void MainView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
+	relayout();
 }
 
 void MainView::closeEvent(QCloseEvent *event)
