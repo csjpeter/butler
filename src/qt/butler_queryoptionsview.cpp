@@ -75,7 +75,6 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 
 	loadState();
 	retranslate();
-	LOG("QueryOptionsView constructed");
 }
 
 QueryOptionsView::~QueryOptionsView()
@@ -249,7 +248,7 @@ enum class ViewState {
 	Narrow
 };
 
-void QueryOptionsView::applyLayout()
+void QueryOptionsView::applyLayout(bool test)
 {
 	delete layout();
 
@@ -290,10 +289,12 @@ void QueryOptionsView::applyLayout()
 	mainLayout->addWidget(&stockOptions);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&tagOptions);
-	mainLayout->addWidget(&tagsWidget);
-	mainLayout->addStretch(0);
-	mainLayout->addWidget(&withoutTagsWidget);
-	mainLayout->addStretch(0);
+	if(!test){
+		mainLayout->addWidget(&tagsWidget);
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&withoutTagsWidget);
+		mainLayout->addStretch(0);
+	}
 
 	setLayout(mainLayout);
 	updateGeometry();
@@ -314,9 +315,7 @@ void QueryOptionsView::relayout()
 			shopSelector.wideLayout();
 			stockOptions.wideLayout();
 			tagOptions.wideLayout();
-			LOG("Apply wide layout");
-			applyLayout();
-			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -329,9 +328,7 @@ void QueryOptionsView::relayout()
 			shopSelector.wideLayout();
 			stockOptions.mediumLayout();
 			tagOptions.mediumLayout();
-			LOG("Apply medium layout");
-			applyLayout();
-			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -344,14 +341,13 @@ void QueryOptionsView::relayout()
 			shopSelector.narrowLayout();
 			stockOptions.narrowLayout();
 			tagOptions.narrowLayout();
-			LOG("Apply narrow layout");
-			applyLayout();
-			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 			break;
 	}
+	applyLayout(false);
 	updateToolButtonStates();
 }
 

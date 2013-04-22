@@ -36,7 +36,7 @@ private:
 
 private slots:
 	void retranslate();
-	void applyLayout();
+	void applyLayout(bool test);
 	void relayout();
 	void prevClickedSlot();
 	void nextClickedSlot();

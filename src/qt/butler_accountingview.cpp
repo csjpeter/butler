@@ -107,7 +107,6 @@ void AccountingView::loadState()
 void AccountingView::saveState()
 {
 	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
-	LOG("Save view as %s", C_STR(prefix));
 	PannView::saveState(prefix);
 }
 
@@ -217,7 +216,7 @@ enum class ViewState {
 	Narrow
 };
 
-void AccountingView::applyLayout()
+void AccountingView::applyLayout(bool test)
 {
 	delete layout();
 
@@ -267,8 +266,10 @@ void AccountingView::applyLayout()
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&commentEditor);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&tagsWidget);
-	mainLayout->addStretch(0);
+	if(!test){
+		mainLayout->addWidget(&tagsWidget);
+		mainLayout->addStretch(0);
+	}
 
 	setLayout(mainLayout);
 	updateGeometry();
@@ -292,7 +293,7 @@ void AccountingView::relayout()
 			purchaseDateTime.wideLayout();
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
-			applyLayout();
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -308,7 +309,7 @@ void AccountingView::relayout()
 			purchaseDateTime.wideLayout();
 			uploadDateTime.wideLayout();
 			commentEditor.wideLayout();
-			applyLayout();
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
@@ -324,12 +325,13 @@ void AccountingView::relayout()
 			purchaseDateTime.narrowLayout();
 			uploadDateTime.narrowLayout();
 			commentEditor.narrowLayout();
-			applyLayout();
+			applyLayout(true);
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
 			break;
 	}
+	applyLayout(false);
 	updateToolButtonStates();
 }
 

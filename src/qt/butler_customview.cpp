@@ -104,6 +104,7 @@ void CustomView::applyLayout()
 
 void CustomView::relayout()
 {
+	LOG("relayout");
 	ViewState newState = ViewState::Wide;
 	QSize newSize;
 
@@ -344,6 +345,8 @@ void CustomView::applyNewFilter()
 	model->opts = queryOptsView->query;
 	model->query();
 	tableView.setCurrentIndex(model->index(-1, -1));
+	updateToolButtonStates();
+	relayout();
 }
 
 void CustomView::statsItems()
@@ -373,8 +376,10 @@ void CustomView::updateToolButtonStates()
 
 void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
 {
+	LOG("current index changed");
 	if(current.isValid() == previous.isValid())
 		return;
+	LOG("current index really changed");
 
 	if(current.isValid()){
 		if(!editButton.isVisible()){

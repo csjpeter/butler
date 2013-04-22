@@ -33,7 +33,6 @@ public:
 		scrollArea.setWidgetResizable(true);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
 		main.setFocusPolicy(Qt::NoFocus);
-		main.resize(QSize(1,1));
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
 		vLayout->addWidget(&scrollArea);
@@ -95,14 +94,11 @@ public:
 
 	virtual int width()
 	{
-		LOG("PannView Width: %d, viewport width: %d",
-				QWidget::width(), scrollArea.viewport()->width());
 		return scrollArea.viewport()->width();
 	}
 
 	virtual void showEvent(QShowEvent *event)
 	{
-		LOG("PannView::showEvent()");
 		QWidget::showEvent(event);
 	}
 
@@ -143,7 +139,6 @@ public:
 		QSettings settings;
 		QPoint pos = settings.value(prefix + "/position", QPoint(-1, -1)).toPoint();
 		QSize size = settings.value(prefix + "/size", QSize()).toSize();
-		LOG("Resize to loaded size: width %d", size.width());
 		if(size.isValid())
 			resize(size);
 		else

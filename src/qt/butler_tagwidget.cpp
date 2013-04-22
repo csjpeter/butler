@@ -64,7 +64,7 @@ void TagWidget::relayout()
 
 	if(newColumns != columns){
 		columns = newColumns;
-		LOG("Columns changed to %d", columns);
+		DBG("Columns changed to %d", columns);
 		applyLayout();
 	}
 }
@@ -84,9 +84,6 @@ QSize TagWidget::sizeHint() const
 	if(w < width())
 		h = heightForWidth(width());
 	DBG("SizeHint: %d, %d", w, h);*/
-	QSize wsize = QWidget::sizeHint();
-	LOG("QWidget::SizeHint: %d, %d", wsize.width(), wsize.height());
-	LOG("SizeHint: %d, %d", w, -1);
 	return QSize(w, -1);
 }
 
