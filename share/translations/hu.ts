@@ -882,12 +882,12 @@
 <context>
     <name>QueryOptionsView</name>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="372"/>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="376"/>
         <source>Deleting a query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="373"/>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="377"/>
         <source>Shall we delete this query: </source>
         <translation type="unfinished"></translation>
     </message>

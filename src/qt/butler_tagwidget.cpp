@@ -35,7 +35,7 @@ void TagWidget::applyLayout()
 
 	unsigned i, s = tagSet.size();
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;
-	DBG("Row to apply %d", rows);
+	DBG("Rows to apply %d", rows);
 
 	/* With this the nth tag in tagset will be represented by the nth
 	 * button in the btnContainer. */
@@ -64,7 +64,7 @@ void TagWidget::relayout()
 
 	if(newColumns != columns){
 		columns = newColumns;
-		DBG("Columns changed to %d", columns);
+		LOG("Columns changed to %d", columns);
 		applyLayout();
 	}
 }
@@ -84,6 +84,9 @@ QSize TagWidget::sizeHint() const
 	if(w < width())
 		h = heightForWidth(width());
 	DBG("SizeHint: %d, %d", w, h);*/
+	QSize wsize = QWidget::sizeHint();
+	LOG("QWidget::SizeHint: %d, %d", wsize.width(), wsize.height());
+	LOG("SizeHint: %d, %d", w, -1);
 	return QSize(w, -1);
 }
 

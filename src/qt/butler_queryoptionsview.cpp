@@ -204,6 +204,7 @@ void QueryOptionsView::resizeEvent(QResizeEvent *event)
 {
 	if(layout() && (event->size() == event->oldSize()))
 		return;
+	updateGeometry();
 	relayout();
 }
 
@@ -313,6 +314,7 @@ void QueryOptionsView::relayout()
 			shopSelector.wideLayout();
 			stockOptions.wideLayout();
 			tagOptions.wideLayout();
+			LOG("Apply wide layout");
 			applyLayout();
 			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())
@@ -327,6 +329,7 @@ void QueryOptionsView::relayout()
 			shopSelector.wideLayout();
 			stockOptions.mediumLayout();
 			tagOptions.mediumLayout();
+			LOG("Apply medium layout");
 			applyLayout();
 			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())
@@ -341,6 +344,7 @@ void QueryOptionsView::relayout()
 			shopSelector.narrowLayout();
 			stockOptions.narrowLayout();
 			tagOptions.narrowLayout();
+			LOG("Apply narrow layout");
 			applyLayout();
 			LOG("SizeHintWidth: %d, Width: %d", sizeHint().width(), width());
 			if(sizeHint().width() <= width())

@@ -33,6 +33,7 @@ public:
 		scrollArea.setWidgetResizable(true);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
 		main.setFocusPolicy(Qt::NoFocus);
+		main.resize(QSize(1,1));
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
 		vLayout->addWidget(&scrollArea);
@@ -101,6 +102,7 @@ public:
 
 	virtual void showEvent(QShowEvent *event)
 	{
+		LOG("PannView::showEvent()");
 		QWidget::showEvent(event);
 	}
 
