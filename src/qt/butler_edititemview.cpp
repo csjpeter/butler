@@ -130,12 +130,9 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	commentEditor = new QTextEdit;
 	gridLayout->addWidget(commentEditor, 12, 0, 1, 3);
 
-	connect(prevButton, SIGNAL(clicked()),
-			this, SLOT(prevClickedSlot()));
-	connect(nextButton, SIGNAL(clicked()),
-			this, SLOT(nextClickedSlot()));
-	connect(saveButton, SIGNAL(clicked()),
-			this, SLOT(saveSlot()));
+	connect(prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
+	connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	
 	connect(nameEditor, SIGNAL(editingFinished()),
 			this, SLOT(nameEditFinishedSlot()));

@@ -12,9 +12,9 @@
 #include <config.h>
 
 #include <butler_kineticscroller.h>
-#include "butler_pannview.h"
 #include "butler_databases.h"
 #include "butler_config.h"
+#include "butler_pannview.h"
 #include "butler_texts.h"
 
 #define PRIMITIVE_PROPERTY(type, name, reader, writer) \

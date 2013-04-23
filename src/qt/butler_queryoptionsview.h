@@ -36,9 +36,10 @@ private slots:
 	void retranslate();
 	void applyLayout(LayoutState state, bool test);
 	void relayout();
+	void queryClickedSlot();
 	void saveClickedSlot();
 	void delClickedSlot();
-	void queryClickedSlot();
+	void resetClickedSlot();
 	void backClickedSlot();
 	void querySelectedSlot();
 	void layoutContentChangeSlot();
@@ -51,11 +52,11 @@ public:
 	Query query;
 
 private:
-	QWidget toolBar;
+	ToolBar toolBar;
+	Button queryButton;
 	Button saveButton;
 	Button delButton;
-	Button queryButton;
-	Button backButton;
+	Button resetButton;
 	InfoLabel infoLabel;
 
 	ComboSelector nameEditor;

@@ -103,9 +103,6 @@ function generate ()
 		> $2 || exit $?
 }
 
-#lupdate -verbose src/qt -ts share/translations/en.ts
-#lupdate -verbose src/qt -ts share/translations/hu.ts
-
 function debian_packaging ()
 {
 	test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }

@@ -14,10 +14,11 @@
 QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
+	toolBar(this),
+	queryButton(QKeySequence(Qt::ALT + Qt::Key_Enter)),
 	saveButton(QKeySequence(QKeySequence::Save)),
 	delButton(QKeySequence(QKeySequence::Delete)),
-	queryButton(QKeySequence(Qt::ALT + Qt::Key_Enter)),
-	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
+	resetButton(QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queriesModel(dbname), Query::Name),
 	wareSelector(&waresModel(dbname), Ware::Name),
 	shopSelector(&shopsModel(dbname), Shop::Name),
@@ -33,10 +34,10 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	tagOptions.group.addButton(&tagOptAllMatch);
 	tagOptions.group.addButton(&tagOptAnyMatch);
 
+	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
 	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveClickedSlot()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delClickedSlot()));
-	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
-	connect(&backButton, SIGNAL(clicked()), this, SLOT(backClickedSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetClickedSlot()));
 
 	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
 	connect(&shopFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
@@ -211,8 +212,8 @@ void QueryOptionsView::retranslate()
 {
 	setWindowTitle(qtTrId(TidEditQueryWindowTitle));
 
-	backButton.setText(qtTrId(TidBackButtonLabel));
 	queryButton.setText(qtTrId(TidQueryButtonLabel));
+	resetButton.setText(qtTrId(TidResetButtonLabel));
 	saveButton.setText(qtTrId(TidSaveButtonLabel));
 	delButton.setText(qtTrId(TidDelButtonLabel));
 
@@ -247,24 +248,19 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
+	toolLayout->addWidget(&queryButton);
+	toolLayout->addStretch(0);
 	toolLayout->addWidget(&saveButton);
-	if(delButton.isEnabled())
-		toolLayout->addWidget(&delButton);
+	toolLayout->addStretch(0);
+	toolLayout->addWidget(&delButton);
+	toolLayout->addWidget(&resetButton);
 	toolLayout->addStretch(0);
 	toolLayout->addWidget(&infoLabel, 1);
-	toolLayout->addStretch(0);
-	toolLayout->addWidget(&queryButton);
-	toolLayout->addWidget(&backButton);
-	delete toolBar.layout();
 	toolBar.setLayout(toolLayout);
 
 	setToolBar(&toolBar);
 
-	QBoxLayout * filterLayout = 0;
-	if(state != LayoutState::Narrow)
-		filterLayout = new HLayout;
-	else
-		filterLayout = new VLayout;
+	HLayout * filterLayout = new HLayout;
 	filterLayout->addWidget(&wareFilter);
 	filterLayout->addStretch();
 	filterLayout->addWidget(&shopFilter);
@@ -277,10 +273,20 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 	mainLayout->addWidget(&startDate);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&endDate);
-	mainLayout->addStretch(0);
-	mainLayout->addLayout(filterLayout);
+	if(state != LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addLayout(filterLayout);
+	}
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&wareFilter);
+	}
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareSelector);
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&shopFilter);
+	}
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&shopSelector);
 	mainLayout->addStretch(0);
@@ -301,7 +307,6 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 void QueryOptionsView::relayout()
 {
 	LayoutState newState = LayoutState::Wide;
-	delButton.setEnabled(true);
 	nameEditor.wideLayout();
 	startDate.wideLayout();
 	endDate.wideLayout();
@@ -313,7 +318,6 @@ void QueryOptionsView::relayout()
 
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Medium;
-		delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
 		nameEditor.wideLayout();
 		startDate.wideLayout();
 		endDate.wideLayout();
@@ -325,7 +329,6 @@ void QueryOptionsView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Narrow;
-		delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
 		nameEditor.narrowLayout();
 		startDate.narrowLayout();
 		endDate.narrowLayout();
@@ -384,6 +387,11 @@ void QueryOptionsView::queryClickedSlot()
 	accept();
 }
 
+void QueryOptionsView::resetClickedSlot()
+{
+	mapToGui();
+}
+
 void QueryOptionsView::backClickedSlot()
 {
 	reject();
@@ -400,6 +408,7 @@ void QueryOptionsView::querySelectedSlot()
 
 void QueryOptionsView::layoutContentChangeSlot()
 {
+	updateToolButtonStates();
 	relayout();
 }
 
@@ -408,7 +417,7 @@ void QueryOptionsView::updateToolButtonStates()
 	bool modified = !(
 			query.name == nameEditor.text() &&
 			query.startDate == startDate.edit.dateTime() &&
-			query.endDate == endDate.edit.dateTime() &&
+//			query.endDate == endDate.edit.dateTime() &&
 
 			((bool)(query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
 			((bool)(query.shops.size()) ==(shopFilter.box.checkState()==Qt::Checked)) &&
@@ -465,8 +474,9 @@ void QueryOptionsView::updateToolButtonStates()
 
 	/* Lets adjust states */
 
-	saveButton.setVisible(modified && hasName && saveButton.isEnabled());
-	delButton.setVisible(hasName && delButton.isEnabled());
+	saveButton.setVisible(modified && hasName);
+	delButton.setVisible(!modified && hasName);
+	resetButton.setVisible(modified);
 
 	wareSelector.setVisible(wareFilter.box.checkState()==Qt::Checked);
 	shopSelector.setVisible(shopFilter.box.checkState()==Qt::Checked);

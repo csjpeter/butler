@@ -19,8 +19,9 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	PannView(parent),
 	dbname(dbname),
 	model(model),
-	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape)),
+	toolBar(this),
 	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
+	resetButton(QKeySequence(QKeySequence::Refresh)),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	shopEditor(&shopsModel(dbname), Shop::Name),
 	tagsWidget(dbname),
@@ -34,8 +35,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	item.bought = true;
 	uploadDateTime.setEnabled(false);
 
-	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
 	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
 	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
 	
@@ -69,8 +70,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 			this, SLOT(wareNameEditFinishedSlot()));
 	connect(&wareEditor.box, SIGNAL(currentIndexChanged(int)),
 			this, SLOT(wareNameEditFinishedSlot(int)));
-	connect(&quantityEditor.editor, SIGNAL(editingFinished()),
-			this, SLOT(quantityEditFinishedSlot()));
 
 	loadState();
 	retranslate();
@@ -187,15 +186,14 @@ void AccountingView::retranslate()
 	else
 		setWindowTitle(qtTrId(TidAccountingWindowTitle));
 
-	backButton.setText(qtTrId(TidBackButtonLabel));
 	doneButton.setText(qtTrId(TidDoneButtonLabel));
+	resetButton.setText(qtTrId(TidResetButtonLabel));
 	prevButton.setText(qtTrId(TidPrevItemButtonLabel));
 	nextButton.setText(qtTrId(TidNextItemButtonLabel));
 	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
 	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
 	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
 	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
-	quantityEditor.editor.setPlaceholderText(qtTrId(TidQuantityEditorPlaceholder));
 	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
 	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
 	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
@@ -215,16 +213,13 @@ void AccountingView::applyLayout(bool test)
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
-	if(prevButton.isEnabled())
-		toolLayout->addWidget(&prevButton);
-	if(nextButton.isEnabled())
-		toolLayout->addWidget(&nextButton);
+	toolLayout->addWidget(&doneButton);
+	toolLayout->addWidget(&resetButton);
+	toolLayout->addWidget(&prevButton);
+	toolLayout->addWidget(&nextButton);
 	toolLayout->addStretch(0);
 	toolLayout->addWidget(&infoLabel, 1);
 	toolLayout->addStretch(0);
-	toolLayout->addWidget(&doneButton);
-	toolLayout->addWidget(&backButton);
-	delete toolBar.layout();
 	toolBar.setLayout(toolLayout);
 
 	setToolBar(&toolBar);
@@ -396,6 +391,12 @@ void AccountingView::saveSlot()
 	}
 }
 
+void AccountingView::resetSlot()
+{
+	mapToGui();
+	tagsWidget.setTags(ware.tags);
+}
+
 void AccountingView::quantityValueChangedSlot(double q)
 {
 	if(lastNumEdited != &quantityEditor){
@@ -478,28 +479,26 @@ void AccountingView::updateToolButtonStates()
 			item.shop == shopEditor.text() &&
 			item.name == wareEditor.text() &&
 			item.category == categoryEditor.text() &&
-			item.quantity == quantityEditor.value() &&
+			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
 			item.comment == commentEditor.edit.toPlainText() &&
 			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
-			item.price == grossPriceEditor.value() &&
+			fabs(item.price - grossPriceEditor.value()) < 0.01 &&
 			item.purchased == purchaseDateTime.edit.dateTime() &&
-			item.onStock == (onStockCheck.box.checkState() == Qt::Checked) &&
-			item == Item(model.item(cursor.row()))
+			item.onStock == (onStockCheck.box.checkState() == Qt::Checked)
 			);
 
 	/* tag states might have changed for ware */
 	if(tagsWidget.selectedTags() != ware.tags)
 		modified = true;
 
-	bool mandatoriesGiven =
-		wareEditor.editor.text().size() &&
-		0.001 <= quantityEditor.value();
+	bool mandatoriesGiven = wareEditor.editor.text().size();
 
 	prevButton.setVisible(!modified && cursor.isValid() &&
 			0 < cursor.row() && prevButton.isEnabled());
 	nextButton.setVisible(!modified && cursor.isValid() &&
 			cursor.row() < model.rowCount()-1 && nextButton.isEnabled());
 	doneButton.setVisible(mandatoriesGiven && modified);
+	resetButton.setVisible(modified);
 
 	if(modified){
 		if(!mandatoriesGiven)
@@ -540,10 +539,4 @@ void AccountingView::wareNameEditFinishedSlot()
 void AccountingView::wareNameEditFinishedSlot(int)
 {
 	wareNameEditFinishedSlot();
-}
-
-void AccountingView::quantityEditFinishedSlot()
-{
-	if(quantityEditor.value() < 0.001)
-		quantityEditor.editor.setText("");
 }

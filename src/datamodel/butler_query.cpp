@@ -7,7 +7,7 @@
 
 Query::Query() :
 	name(""),
-	startDate(QDate(-4000, 1, 1)),
+	startDate(QDate(1900, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
 	stockOption(StockOptions::AllBoughtItem),
 	tagOption(TagOptions::MatchAny)
@@ -16,7 +16,7 @@ Query::Query() :
 
 Query::Query(const QString & name) :
 	name(name),
-	startDate(QDate(-4000, 1, 1)),
+	startDate(QDate(1900, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
 	stockOption(StockOptions::AllBoughtItem),
 	tagOption(TagOptions::MatchAny)

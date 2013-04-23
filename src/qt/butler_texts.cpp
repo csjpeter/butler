@@ -64,6 +64,9 @@ const char* TidBackButtonLabel = QT_TRID_NOOP("tid_back_button_label");
 //% "Done"
 const char* TidDoneButtonLabel = QT_TRID_NOOP("tid_done_button_label");
 
+//% "Reset"
+const char* TidResetButtonLabel = QT_TRID_NOOP("tid_reset_button_label");
+
 //% "Query"
 const char* TidQueryButtonLabel = QT_TRID_NOOP("tid_query_button_label");
 

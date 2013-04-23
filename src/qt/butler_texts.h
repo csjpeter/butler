@@ -26,6 +26,7 @@ extern const char* TidQuitButtonLabel;
 
 extern const char* TidBackButtonLabel;
 extern const char* TidDoneButtonLabel;
+extern const char* TidResetButtonLabel;
 extern const char* TidQueryButtonLabel;
 extern const char* TidSaveButtonLabel;
 extern const char* TidDelButtonLabel;

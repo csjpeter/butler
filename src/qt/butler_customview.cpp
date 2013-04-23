@@ -25,7 +25,7 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	delButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F2)),
 	shoppigButton(QIcon(Path::icon("shopping.png")), QKeySequence(Qt::Key_F3)),
 	statsButton(QIcon(Path::icon("statistics.png")), QKeySequence(Qt::Key_F4)),
-	refreshButton(QIcon(Path::icon("refresh.png")), QKeySequence(Qt::Key_F5)),
+	refreshButton(QIcon(Path::icon("refresh.png")), QKeySequence(QKeySequence::Refresh)),/*F5*/
 	filterButton(QIcon(Path::icon("query.png")), QKeySequence(Qt::Key_F6)),
 	accountingView(NULL),
 	editItemView(NULL),

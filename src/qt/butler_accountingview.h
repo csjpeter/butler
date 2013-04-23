@@ -41,13 +41,13 @@ private slots:
 	void prevClickedSlot();
 	void nextClickedSlot();
 	void saveSlot();
+	void resetSlot();
 	void quantityValueChangedSlot(double q);
 	void unitPriceValueChangedSlot(double q);
 	void grossPriceValueChangedSlot(double q);
 	void updateToolButtonStates();
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
-	void quantityEditFinishedSlot();
 
 private:
 	const QString & dbname;
@@ -56,9 +56,9 @@ private:
 	Item item;
 	Ware ware;
 
-	QWidget toolBar;
-	Button backButton;
+	ToolBar toolBar;
 	Button doneButton;
+	Button resetButton;
 	Button prevButton;
 	Button nextButton;
 	InfoLabel infoLabel;

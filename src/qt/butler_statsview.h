@@ -39,7 +39,8 @@ private slots:
 private:
 	const QueryStat & stat;
 
-	Button backButton;
+	ToolBar toolBar;
+
 	Label itemCountLabel;
 	Label itemCountValueLabel;
 	Label itemSumQuantityLabel;

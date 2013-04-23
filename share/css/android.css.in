@@ -228,7 +228,7 @@ QRadioButton {
 QRadioButton::indicator {
 	height: 6mm;
 	width: 6mm;
-	border-radius: 3mm;
+	border-radius: 3.3mm;
 }
 
 QRadioButton::indicator:checked {

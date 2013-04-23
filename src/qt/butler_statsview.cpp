@@ -14,13 +14,11 @@
 StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 	PannView(parent),
 	stat(stat),
-	backButton(QKeySequence(Qt::ALT + Qt::Key_Escape))
+	toolBar(this)
 {
 	setWindowIcon(QIcon(Path::icon("statistics.png")));
 	setWindowModality(Qt::ApplicationModal);
 	
-	connect(&backButton, SIGNAL(clicked()), this, SLOT(reject()));
-
 	retranslate();
 	loadState();
 }
@@ -76,7 +74,6 @@ void StatsView::resizeEvent(QResizeEvent * event)
 void StatsView::retranslate()
 {
 	setWindowTitle(qtTrId(TidStatsWindowTitle));
-	backButton.setText(qtTrId(TidBackButtonLabel));
 
 	itemCountLabel      .setText(qtTrId(TidStatsItemCountLabel      ));
 	itemSumQuantityLabel.setText(qtTrId(TidStatsItemSumQuantityLabel));
@@ -95,9 +92,7 @@ void StatsView::applyLayout()
 
 	VLayout * mainLayout = new VLayout;
 
-	HLayout * toolLayout = new HLayout;
-	toolLayout->addStretch(0);
-	toolLayout->addWidget(&backButton);
+	setToolBar(&toolBar);
 
 	QGridLayout * gridLayout = new QGridLayout;
 
@@ -119,7 +114,6 @@ void StatsView::applyLayout()
 	gridLayout->setColumnStretch(0, 3);
 	gridLayout->setColumnStretch(1, -1);
 
-	mainLayout->addLayout(toolLayout);
 	mainLayout->addLayout(gridLayout);
 	mainLayout->addStretch(1);
 
