@@ -22,6 +22,7 @@ namespace Config {
 	extern const char * defaultDbName;
 	extern QLocale locale;
 	extern double pxPerMM;
+	extern double scaleFactor;
 	extern int thresholdScrollDistance; /* Kinetic scroll, threshold for scroll. */
 	extern ToolBarPosition toolBarPosition;
 

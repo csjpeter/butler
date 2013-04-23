@@ -34,7 +34,7 @@ private:
 
 private slots:
 	void retranslate();
-	void applyLayout(bool test);
+	void applyLayout(LayoutState state, bool test);
 	void relayout();
 	void saveClickedSlot();
 	void delClickedSlot();

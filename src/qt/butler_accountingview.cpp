@@ -210,12 +210,6 @@ void AccountingView::retranslate()
 	relayout();
 }
 
-enum class ViewState {
-	Wide,
-	Medium,
-	Narrow
-};
-
 void AccountingView::applyLayout(bool test)
 {
 	delete layout();
@@ -277,11 +271,12 @@ void AccountingView::applyLayout(bool test)
 
 void AccountingView::relayout()
 {
-	ViewState newState = ViewState::Wide;
+	LayoutState newState = LayoutState::Wide;
 	QSize newSize;
 
 	switch(newState) {
-		case ViewState::Wide :
+		case LayoutState::Expanding :
+		case LayoutState::Wide :
 			prevButton.setEnabled(true);
 			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
@@ -297,7 +292,7 @@ void AccountingView::relayout()
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
-		case ViewState::Medium :
+		case LayoutState::Medium :
 			prevButton.setEnabled(true);
 			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
@@ -313,7 +308,7 @@ void AccountingView::relayout()
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
-		case ViewState::Narrow :
+		case LayoutState::Narrow :
 			prevButton.setEnabled(false); prevButton.hide(); prevButton.setParent(0);
 			nextButton.setEnabled(false); nextButton.hide(); nextButton.setParent(0);
 			wareEditor.narrowLayout();

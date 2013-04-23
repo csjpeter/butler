@@ -242,13 +242,7 @@ void QueryOptionsView::retranslate()
 	relayout();
 }
 
-enum class ViewState {
-	Wide,
-	Medium,
-	Narrow
-};
-
-void QueryOptionsView::applyLayout(bool test)
+void QueryOptionsView::applyLayout(LayoutState state, bool test)
 {
 	delete layout();
 
@@ -266,7 +260,11 @@ void QueryOptionsView::applyLayout(bool test)
 
 	setToolBar(&toolBar);
 
-	HLayout * filterLayout = new HLayout;
+	QBoxLayout * filterLayout = 0;
+	if(state != LayoutState::Narrow)
+		filterLayout = new HLayout;
+	else
+		filterLayout = new VLayout;
 	filterLayout->addWidget(&wareFilter);
 	filterLayout->addStretch();
 	filterLayout->addWidget(&shopFilter);
@@ -302,52 +300,43 @@ void QueryOptionsView::applyLayout(bool test)
 
 void QueryOptionsView::relayout()
 {
-	ViewState newState = ViewState::Wide;
-	QSize newSize;
+	LayoutState newState = LayoutState::Wide;
+	delButton.setEnabled(true);
+	nameEditor.wideLayout();
+	startDate.wideLayout();
+	endDate.wideLayout();
+	wareSelector.wideLayout();
+	shopSelector.wideLayout();
+	stockOptions.wideLayout();
+	tagOptions.wideLayout();
+	applyLayout(newState, true);
 
-	switch(newState) {
-		case ViewState::Wide :
-			delButton.setEnabled(true);
-			nameEditor.wideLayout();
-			startDate.wideLayout();
-			endDate.wideLayout();
-			wareSelector.wideLayout();
-			shopSelector.wideLayout();
-			stockOptions.wideLayout();
-			tagOptions.wideLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case ViewState::Medium :
-			delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
-			nameEditor.wideLayout();
-			startDate.wideLayout();
-			endDate.wideLayout();
-			wareSelector.wideLayout();
-			shopSelector.wideLayout();
-			stockOptions.mediumLayout();
-			tagOptions.mediumLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case ViewState::Narrow :
-			delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
-			nameEditor.narrowLayout();
-			startDate.narrowLayout();
-			endDate.narrowLayout();
-			wareSelector.narrowLayout();
-			shopSelector.narrowLayout();
-			stockOptions.narrowLayout();
-			tagOptions.narrowLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-			break;
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Medium;
+		delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
+		nameEditor.wideLayout();
+		startDate.wideLayout();
+		endDate.wideLayout();
+		wareSelector.wideLayout();
+		shopSelector.wideLayout();
+		stockOptions.mediumLayout();
+		tagOptions.mediumLayout();
+		applyLayout(newState, true);
 	}
-	applyLayout(false);
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Narrow;
+		delButton.setEnabled(false); delButton.hide(); delButton.setParent(0);
+		nameEditor.narrowLayout();
+		startDate.narrowLayout();
+		endDate.narrowLayout();
+		wareSelector.narrowLayout();
+		shopSelector.narrowLayout();
+		stockOptions.narrowLayout();
+		tagOptions.narrowLayout();
+		applyLayout(newState, true);
+	}
+
+	applyLayout(newState, false);
 	updateToolButtonStates();
 }
 

@@ -30,6 +30,13 @@
 		update(); \
 	}
 
+enum class LayoutState {
+	Expanding,
+	Wide,
+	Medium,
+	Narrow
+};
+
 class TableView : public QTableView
 {
 private:

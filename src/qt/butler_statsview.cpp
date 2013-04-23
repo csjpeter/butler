@@ -126,18 +126,15 @@ void StatsView::applyLayout()
 	setLayout(mainLayout);
 }
 
-enum class ViewState {
-	Wide,
-	Narrow
-};
-
 void StatsView::relayout()
 {
-	ViewState newState = ViewState::Wide;
+	LayoutState newState = LayoutState::Wide;
 	QSize newSize;
 
 	switch(newState) {
-		case ViewState::Wide :
+		case LayoutState::Expanding :
+		case LayoutState::Wide :
+		case LayoutState::Medium :
 			itemCountLabel.setWordWrap(false);
 			itemSumQuantityLabel.setWordWrap(false);
 			itemSumPriceLabel.setWordWrap(false);
@@ -149,7 +146,7 @@ void StatsView::relayout()
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
-		case ViewState::Narrow :
+		case LayoutState::Narrow :
 			itemCountLabel.setWordWrap(true);
 			itemSumQuantityLabel.setWordWrap(true);
 			itemSumPriceLabel.setWordWrap(true);

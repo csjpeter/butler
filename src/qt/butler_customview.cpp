@@ -75,12 +75,6 @@ void CustomView::retranslate()
 	relayout();
 }
 
-enum class ViewState {
-	Wide,
-	Medium,
-	Narrow
-};
-
 void CustomView::applyLayout()
 {
 	delete layout();
@@ -105,7 +99,7 @@ void CustomView::applyLayout()
 void CustomView::relayout()
 {
 	LOG("relayout");
-	ViewState newState = ViewState::Wide;
+	LayoutState newState = LayoutState::Wide;
 	QSize newSize;
 
 	if(tableView.horizontalHeader()->width() < width())
@@ -116,7 +110,8 @@ void CustomView::relayout()
 				Item::Comment, QHeaderView::ResizeToContents);
 
 	switch(newState) {
-		case ViewState::Wide :
+		case LayoutState::Expanding :
+		case LayoutState::Wide :
 			editButton.wideLayout();
 			delButton.wideLayout();
 			shoppigButton.wideLayout();
@@ -127,7 +122,7 @@ void CustomView::relayout()
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
-		case ViewState::Medium :
+		case LayoutState::Medium :
 			editButton.mediumLayout();
 			delButton.mediumLayout();
 			refreshButton.mediumLayout();
@@ -138,7 +133,7 @@ void CustomView::relayout()
 			if(sizeHint().width() <= width())
 				break;
 			// falling back to a smaller size
-		case ViewState::Narrow :
+		case LayoutState::Narrow :
 			editButton.narrowLayout();
 			delButton.narrowLayout();
 			shoppigButton.narrowLayout();

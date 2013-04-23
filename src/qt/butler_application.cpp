@@ -103,6 +103,8 @@ void Application::pixelPerMM()
 	double qtWidthMM = qApp->desktop()->widthMM();
 	double qtHeightMM = qApp->desktop()->heightMM();
 	LOG("Qt given Horiz length in mm: %.2f, Vertic length in mm: %.2f", qtWidthMM, qtHeightMM);
+
+	Config::scaleFactor = 1.0/* + widthMM / 200.0 / 20.0*/;
 }
 
 /* Init the styleshhet */
@@ -127,7 +129,7 @@ void Application::loadCSS()
 		if(-1 < j){
 			lastPos = j + regExp.matchedLength();
 			double mm = regExp.cap(1).toDouble();
-			int px = round(mm * Config::pxPerMM); /* math round */
+			int px = round(mm * Config::pxPerMM * Config::scaleFactor); /* math round */
 			if(!px && 0.01 <= mm) /* except sizes less 1 but not zero */
 				px = 1;
 			newCSS += " ";

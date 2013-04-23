@@ -34,7 +34,7 @@ QLabel::pressed:focus {
 
 *:focus, *::pressed:focus, *::indicator:focus, QCheckBox::indicator:focus, QCheckBox::pressed:focus, QCheckBox:focus {
 	border-color: #338833;
-	border-width: 0.5mm;
+	border-width: 0.4mm;
 	border-style: solid;
 }
 
@@ -77,13 +77,13 @@ DoubleEditor QLineEdit {
 QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
 	padding-right: 1mm;
 	padding-left: 1mm;
-	min-height: 8mm;
-	max-height: 8mm;
+	min-height: 7mm;
+	max-height: 7mm;
 }
 
 QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox::indicator, QRadioButton::indicator {
 	border: solid;
-	border-width: 0.5mm;
+	border-width: 0.4mm;
 	border-radius: 1mm;
 	border-color: #666666;
 }
@@ -106,7 +106,7 @@ QLabel {
 QPushButton {
 	font-size: 3mm;
 	font-weight: bold;
-	border-width: 0.25mm;
+	border-width: 0.2mm;
 	border-radius: 3mm;
 	padding-right: 3mm;
 	padding-left: 3mm;
@@ -136,7 +136,7 @@ QToolButton {
 }
 
 QToolButton:pressed {
-	border-width: 0.25mm;
+	border-width: 0.2mm;
 	background-color: #444444;
 	border-color: #666666;
 }
@@ -163,7 +163,7 @@ QAbstractSpinBox, QAbstractSpinBox:no-frame {
 /* QTableView and QHeaderView */
 
 QTableView {
-	border-width: 0.5mm;
+	border-width: 0.4mm;
 	color: #cccccc;
 }
 
@@ -204,10 +204,13 @@ QTableView QHeaderView::section:only-one {
 
 /* QCheckBox and QRadioButton */
 
+QCheckBox {
+	margin: 0.5mm;
+}
+
 QCheckBox::indicator {
 	height: 6mm;
 	width: 6mm;
-	margin: 1mm;
 }
 
 QCheckBox::indicator:checked {
@@ -218,11 +221,14 @@ QCheckBox:focus, QCheckBox::pressed::indicator:focus {
 	border-width: 0mm;
 }
 
-QRadioButton::indicator{
+QRadioButton {
+	margin: 0.5mm;
+}
+
+QRadioButton::indicator {
 	height: 6mm;
 	width: 6mm;
-	margin: 1mm;
-	border-radius: 3.5mm;
+	border-radius: 3mm;
 }
 
 QRadioButton::indicator:checked {
@@ -237,8 +243,8 @@ QRadioButton:focus, QRadioButton::pressed::indicator:focus {
 /* QDateTimeEdit */
 
 QDateTimeEdit {
-	min-height: 8mm;
-	max-height: 8mm;
+	min-height: 7mm;
+	max-height: 7mm;
 }
 
 QDateTimeEdit * {
@@ -253,14 +259,14 @@ QDateTimeEdit::drop-down:disabled {
 }
 
 QDateTimeEdit::drop-down {
-	width: 8mm;
-	height: 8mm;
+	width: 7mm;
+	height: 7mm;
 	image: url(ICONS_DIR/calendar.png);
 }
 
 QDateTimeEdit::drop-down:pressed {
-	width: 8mm;
-	height: 8mm;
+	width: 7mm;
+	height: 7mm;
 	image: url(ICONS_DIR/comboarrowup.png);
 }
 
@@ -281,14 +287,14 @@ QComboBox QLineEdit:focus {
 }
 
 QComboBox::drop-down {
-	width: 8mm;
-	height: 8mm;
+	width: 7mm;
+	height: 7mm;
 	image: url(ICONS_DIR/comboarrowdown.png);
 }
 
 QComboBox::drop-down:pressed {
-	width: 8mm;
-	height: 8mm;
+	width: 7mm;
+	height: 7mm;
 	image: url(ICONS_DIR/comboarrowup.png);
 }
 
@@ -296,7 +302,7 @@ QComboBox::drop-down:pressed {
 
 * QCalendarWidget {
 	border: solid;
-	border-width: 0.25mm;
+	border-width: 0.2mm;
 	border-color: red;
 }
 
