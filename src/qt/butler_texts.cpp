@@ -4,7 +4,29 @@
  */
 
 #include <QtGlobal>
+#include <QtGui>
 
+#include <csjp_logger.h>
+
+#include <butler_macros.h>
+#include <butler_texts.h>
+
+QString trId(const char * id, TextVariant variant)
+{
+//	QString str = qtTrId(id);
+	QString str = QCoreApplication::translate(0, id);
+	for(int i = 0; i < str.size(); i++)
+		LOG("%c - %x", str[i].toAscii(), str[i].digitValue());
+	QStringList list = qtTrId(id).split(QChar(0x9c), QString::SkipEmptyParts);
+	LOG("Variants: %s", C_STR(list.join(", ")));
+
+	int lengthVariantIdx = (int)(variant);
+	if(list.size() <= lengthVariantIdx)
+		lengthVariantIdx = list.size() - 1;
+	ENSURE(0 <= lengthVariantIdx, csjp::LogicError);
+
+	return list.at(lengthVariantIdx);
+}
 
 //% "%1 - main view"
 const char* TidMainWindowTitle = QT_TRID_NOOP("tid_main_window_title");

@@ -6,6 +6,14 @@
 #ifndef BUTLER_TEXTS_H
 #define BUTLER_TEXTS_H
 
+enum class TextVariant {
+	Long = 0,
+	Medium,
+	Short
+};
+
+QString trId(const char * id, TextVariant variant = TextVariant::Long);
+
 extern const char* TidMainWindowTitle;
 extern const char* TidStatsWindowTitle;
 extern const char* TidUserQueryWindowTitle;

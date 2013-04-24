@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="en_US">
 <context>
     <name></name>
     <message id="tid_main_window_title">
@@ -116,12 +116,18 @@
     <message id="tid_prev_item_button_label">
         <location filename="../../src/qt/butler_texts.cpp" line="80"/>
         <source>Previous item</source>
-        <translation type="unfinished"></translation>
+        <translation variants="yes">
+            <lengthvariant>Previous item</lengthvariant>
+            <lengthvariant>Prev.</lengthvariant>
+        </translation>
     </message>
     <message id="tid_next_item_button_label">
         <location filename="../../src/qt/butler_texts.cpp" line="83"/>
         <source>Next item</source>
-        <translation type="unfinished"></translation>
+        <translation variants="yes">
+            <lengthvariant>Next item</lengthvariant>
+            <lengthvariant>Next</lengthvariant>
+        </translation>
     </message>
     <message id="tid_fill_mandatory_fields_info_label">
         <location filename="../../src/qt/butler_texts.cpp" line="88"/>

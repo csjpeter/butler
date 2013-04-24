@@ -33,6 +33,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 	
 	item.bought = true;
+	item.purchased = QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
@@ -113,11 +114,11 @@ void AccountingView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.item(cursor.row()));
-		purchaseDateTime.edit.setDateTime(item.purchased);
 		shopEditor.setText(item.shop);
 	}
 
 	uploadDateTime.edit.setDateTime(item.uploaded);
+	purchaseDateTime.edit.setDateTime(item.purchased);
 
 	wareEditor.setText(item.name);
 	wareNameEditFinishedSlot();
@@ -271,9 +272,9 @@ void AccountingView::relayout()
 
 	switch(newState) {
 		case LayoutState::Expanding :
+			prevButton.setText(qtTrId(TidPrevItemButtonLabel));
+			nextButton.setText(qtTrId(TidNextItemButtonLabel));
 		case LayoutState::Wide :
-			prevButton.setEnabled(true);
-			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.wideLayout();
@@ -288,8 +289,6 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case LayoutState::Medium :
-			prevButton.setEnabled(true);
-			nextButton.setEnabled(true);
 			wareEditor.wideLayout();
 			categoryEditor.wideLayout();
 			quantityEditor.narrowLayout();
@@ -304,8 +303,8 @@ void AccountingView::relayout()
 				break;
 			// falling back to a smaller size
 		case LayoutState::Narrow :
-			prevButton.setEnabled(false); prevButton.hide(); prevButton.setParent(0);
-			nextButton.setEnabled(false); nextButton.hide(); nextButton.setParent(0);
+			prevButton.setText(trId(TidPrevItemButtonLabel, TextVariant::Short));
+			nextButton.setText(trId(TidNextItemButtonLabel, TextVariant::Short));
 			wareEditor.narrowLayout();
 			categoryEditor.narrowLayout();
 			quantityEditor.narrowLayout();
@@ -377,8 +376,7 @@ void AccountingView::saveSlot()
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
 		infoLabel.setText(qtTrId(TidItemEditingSavedInfoLabel));
-		if(!prevButton.isEnabled() || !nextButton.isEnabled())
-			accept();
+		accept();
 	} else {
 		model.addNew(item);
 
@@ -493,10 +491,8 @@ void AccountingView::updateToolButtonStates()
 
 	bool mandatoriesGiven = wareEditor.editor.text().size();
 
-	prevButton.setVisible(!modified && cursor.isValid() &&
-			0 < cursor.row() && prevButton.isEnabled());
-	nextButton.setVisible(!modified && cursor.isValid() &&
-			cursor.row() < model.rowCount()-1 && nextButton.isEnabled());
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
 	doneButton.setVisible(mandatoriesGiven && modified);
 	resetButton.setVisible(modified);
 

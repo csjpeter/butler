@@ -31,10 +31,10 @@
 	}
 
 enum class LayoutState {
-	Expanding,
-	Wide,
+	Narrow = 0,
 	Medium,
-	Narrow
+	Wide,
+	Expanding
 };
 
 class TableView : public QTableView
