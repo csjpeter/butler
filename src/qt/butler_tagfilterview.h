@@ -7,7 +7,6 @@
 #define BUTLER_TAGFILTERVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_pannable.h>
 
 #include "butler_tagsmodel.h"
 
@@ -22,6 +21,7 @@ class TagFilterView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	TagFilterView(const QString & dbname, TagNameSet &tags, QWidget * parent = 0);

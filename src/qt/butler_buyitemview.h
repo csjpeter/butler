@@ -33,6 +33,7 @@ class BuyItemView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	BuyItemView(const QString & dbname, QWidget *parent = 0);

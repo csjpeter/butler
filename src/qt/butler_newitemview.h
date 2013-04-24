@@ -30,6 +30,7 @@ class NewItemView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	NewItemView(const QString & dbname, QWidget *parent = 0);

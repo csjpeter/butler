@@ -17,8 +17,8 @@
 
 #include <butler_db.h>
 
-#include "butler_texts.h"
-#include "butler_config.h"
+#include <butler_config.h>
+
 #include "butler_waresmodel.h"
 
 class Item;
@@ -27,7 +27,8 @@ class ItemsModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	ItemsModel(Db & db, const WaresModel & wmodel);

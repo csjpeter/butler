@@ -12,9 +12,13 @@
 
 #include <csjp_owner_container.h>
 
+#include <butler_config.h>
+
 class KineticScroller: public QObject
 {
-Q_OBJECT
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	/* scrollArea must outlive a QSKineticScroller */
 	KineticScroller(QAbstractScrollArea * scrollArea, QObject* parent = 0);

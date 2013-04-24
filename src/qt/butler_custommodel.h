@@ -18,7 +18,8 @@ class Item;
 class CustomModel : public ItemsModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	CustomModel(Db & db, const WaresModel & wmodel);

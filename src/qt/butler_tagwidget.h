@@ -19,6 +19,7 @@ class TagWidget : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	TagWidget(const QString & dbname, QWidget * parent = 0);

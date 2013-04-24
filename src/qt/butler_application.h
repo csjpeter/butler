@@ -15,6 +15,9 @@ class QSessionManager;
 
 class Application : public QApplication
 {
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	Application(int &argc, char *argv[]);
 	virtual ~Application();

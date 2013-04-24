@@ -28,6 +28,7 @@ class EditShopView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	EditShopView(const QString & dbname, QWidget * parent = 0);

@@ -25,6 +25,7 @@ class ShopsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	ShopsView(const QString & dbname, QWidget * parent = 0);

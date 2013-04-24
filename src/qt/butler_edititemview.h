@@ -31,6 +31,7 @@ class EditItemView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);

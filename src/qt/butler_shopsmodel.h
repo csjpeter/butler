@@ -12,14 +12,16 @@
 
 #include <butler_shop_set.h>
 
-#include "butler_config.h"
 #include <butler_db.h>
+
+#include <butler_config.h>
 
 class ShopsModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	ShopsModel(Db & db);

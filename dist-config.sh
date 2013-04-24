@@ -165,9 +165,9 @@ function android_packaging ()
 	test -d ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || {
 		mkdir -p ${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations || exit $?
 	}
-	lrelease -idbased share/translations/en.ts -qm \
+	lrelease share/translations/en.ts -qm \
 		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations/en.qm || exit $?
-	lrelease -idbased share/translations/hu.ts -qm \
+	lrelease share/translations/hu.ts -qm \
 		${DIST_DIR}/android/assets/share/${PKGNAME_BASE}/translations/hu.qm || exit $?
 }
 
@@ -199,8 +199,8 @@ make -f source.mk DIST_DIR=${DIST_DIR} source || exit $?
 test -d ${DIST_DIR}/share/translations || {
 	mkdir -p ${DIST_DIR}/share/translations || exit $?
 }
-lrelease -idbased share/translations/en.ts -qm ${DIST_DIR}/share/translations/en.qm || exit $?
-lrelease -idbased share/translations/hu.ts -qm ${DIST_DIR}/share/translations/hu.qm || exit $?
+lrelease share/translations/en.ts -qm ${DIST_DIR}/share/translations/en.qm || exit $?
+lrelease share/translations/hu.ts -qm ${DIST_DIR}/share/translations/hu.qm || exit $?
 
 test "x${PACKAGING}" = "x" || {
 	${PACKAGING}_packaging || exit $?

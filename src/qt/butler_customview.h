@@ -18,6 +18,7 @@ class CustomView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	CustomView(const QString & dbname, QWidget *parent = 0);

@@ -15,6 +15,15 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
+static const char* TidAccountingWindowTitle =
+		QT_TRANSLATE_NOOP("AccountingView", "Already bought new item");
+static const char* TidEditItemWindowTitle =
+		QT_TRANSLATE_NOOP("AccountingView", "Editing an existing item");
+static const char* TidPrevItemButtonLabel =
+		QT_TRANSLATE_NOOP("AccountingView", "Previous item");
+static const char* TidNextItemButtonLabel =
+		QT_TRANSLATE_NOOP("AccountingView", "Next item");
+
 AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
@@ -209,8 +218,10 @@ void AccountingView::retranslate()
 	relayout();
 }
 
-void AccountingView::applyLayout(bool test)
+void AccountingView::applyLayout(LayoutState state, bool test)
 {
+	(void)state;
+
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
@@ -267,60 +278,55 @@ void AccountingView::applyLayout(bool test)
 
 void AccountingView::relayout()
 {
-	LayoutState newState = LayoutState::Wide;
-	QSize newSize;
+	LayoutState newState = LayoutState::Expanding;
+	prevButton.setText(tr(TidPrevItemButtonLabel));
+	nextButton.setText(tr(TidNextItemButtonLabel));
 
-	switch(newState) {
-		case LayoutState::Expanding :
-			prevButton.setText(qtTrId(TidPrevItemButtonLabel));
-			nextButton.setText(qtTrId(TidNextItemButtonLabel));
-		case LayoutState::Wide :
-			wareEditor.wideLayout();
-			categoryEditor.wideLayout();
-			quantityEditor.wideLayout();
-			unitPriceEditor.wideLayout();
-			grossPriceEditor.wideLayout();
-			shopEditor.wideLayout();
-			purchaseDateTime.wideLayout();
-			uploadDateTime.wideLayout();
-			commentEditor.wideLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case LayoutState::Medium :
-			wareEditor.wideLayout();
-			categoryEditor.wideLayout();
-			quantityEditor.narrowLayout();
-			unitPriceEditor.narrowLayout();
-			grossPriceEditor.narrowLayout();
-			shopEditor.wideLayout();
-			purchaseDateTime.wideLayout();
-			uploadDateTime.wideLayout();
-			commentEditor.wideLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case LayoutState::Narrow :
-			prevButton.setText(trId(TidPrevItemButtonLabel, TextVariant::Short));
-			nextButton.setText(trId(TidNextItemButtonLabel, TextVariant::Short));
-			wareEditor.narrowLayout();
-			categoryEditor.narrowLayout();
-			quantityEditor.narrowLayout();
-			unitPriceEditor.narrowLayout();
-			grossPriceEditor.narrowLayout();
-			shopEditor.narrowLayout();
-			purchaseDateTime.narrowLayout();
-			uploadDateTime.narrowLayout();
-			commentEditor.narrowLayout();
-			applyLayout(true);
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-			break;
+/*	if(width() < sizeHint().width())*/{
+		newState = LayoutState::Wide;
+		wareEditor.wideLayout();
+		categoryEditor.wideLayout();
+		quantityEditor.wideLayout();
+		unitPriceEditor.wideLayout();
+		grossPriceEditor.wideLayout();
+		shopEditor.wideLayout();
+		purchaseDateTime.wideLayout();
+		uploadDateTime.wideLayout();
+		commentEditor.wideLayout();
+		applyLayout(newState, true);
 	}
-	applyLayout(false);
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Medium;
+		prevButton.setText(trMed(TidPrevItemButtonLabel));
+		nextButton.setText(trMed(TidNextItemButtonLabel));
+		wareEditor.wideLayout();
+		categoryEditor.wideLayout();
+		quantityEditor.narrowLayout();
+		unitPriceEditor.narrowLayout();
+		grossPriceEditor.narrowLayout();
+		shopEditor.wideLayout();
+		purchaseDateTime.wideLayout();
+		uploadDateTime.wideLayout();
+		commentEditor.wideLayout();
+		applyLayout(newState, true);
+	}
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Narrow;
+		prevButton.setText(trShort(TidPrevItemButtonLabel));
+		nextButton.setText(trShort(TidNextItemButtonLabel));
+		wareEditor.narrowLayout();
+		categoryEditor.narrowLayout();
+		quantityEditor.narrowLayout();
+		unitPriceEditor.narrowLayout();
+		grossPriceEditor.narrowLayout();
+		shopEditor.narrowLayout();
+		purchaseDateTime.narrowLayout();
+		uploadDateTime.narrowLayout();
+		commentEditor.narrowLayout();
+		applyLayout(newState, true);
+	}
+
+	applyLayout(newState);
 	updateToolButtonStates();
 }
 

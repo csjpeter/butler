@@ -7,13 +7,13 @@
 #define BUTLER_ACCOUNTINGVIEW_H
 
 #include <butler_item.h>
-#include <butler_widgets.h>
 #include <butler_tagwidget.h>
 
 class AccountingView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
@@ -36,7 +36,7 @@ private:
 
 private slots:
 	void retranslate();
-	void applyLayout(bool test);
+	void applyLayout(LayoutState state, bool test = false);
 	void relayout();
 	void prevClickedSlot();
 	void nextClickedSlot();

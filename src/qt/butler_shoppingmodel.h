@@ -21,7 +21,8 @@ class Item;
 class ShoppingModel : public ItemsModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 public:
 	ShoppingModel(Db & db, const WaresModel & wmodel);
 	virtual ~ShoppingModel();

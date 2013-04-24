@@ -25,6 +25,7 @@ class TagsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	TagsView(const QString & dbname, QWidget * parent = 0);

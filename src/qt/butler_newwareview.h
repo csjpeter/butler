@@ -29,6 +29,7 @@ class NewWareView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	NewWareView(const QString & dbname, QWidget * parent = 0);

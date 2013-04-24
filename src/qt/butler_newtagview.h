@@ -27,6 +27,7 @@ class NewTagView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	NewTagView(const QString & dbname, QWidget * parent = 0);

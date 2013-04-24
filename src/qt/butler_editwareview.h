@@ -30,6 +30,7 @@ class EditWareView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	EditWareView(const QString & dbname, QWidget * parent = 0);

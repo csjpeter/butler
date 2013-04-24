@@ -18,6 +18,8 @@
 
 #include <butler_db.h>
 
+#include <butler_config.h>
+
 class QueryOptions;
 class Tag;
 class Item;
@@ -26,7 +28,8 @@ class TagsModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	TagsModel(Db & db);

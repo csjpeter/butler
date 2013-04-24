@@ -15,6 +15,7 @@ class InfoView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	InfoView(QWidget *parent = 0);

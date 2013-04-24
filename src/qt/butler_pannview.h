@@ -7,8 +7,6 @@
 #define BUTLER_PANNVIEW_H
 
 #include <QWidget>
-#include <butler_macros.h>
-#include <butler_config.h>
 #include <butler_kineticscroller.h>
 
 #include <config.h>
@@ -17,6 +15,7 @@ class PannView : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	PannView(QWidget * parent = 0) :

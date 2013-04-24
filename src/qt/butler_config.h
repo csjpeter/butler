@@ -9,6 +9,9 @@
 #include <QLocale>
 #include <QString>
 
+#include <butler_texts.h>
+#include <butler_macros.h>
+
 namespace Config {
 	enum class ToolBarPosition
 	{

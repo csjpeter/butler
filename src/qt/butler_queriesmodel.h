@@ -12,14 +12,16 @@
 
 #include <butler_query_set.h>
 
-#include "butler_config.h"
 #include <butler_db.h>
+
+#include <butler_config.h>
 
 class QueriesModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	QueriesModel(Db & db);

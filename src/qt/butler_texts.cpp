@@ -11,14 +11,9 @@
 #include <butler_macros.h>
 #include <butler_texts.h>
 
-QString trId(const char * id, TextVariant variant)
+QString translationVariant(const QString & text, TextVariant variant)
 {
-//	QString str = qtTrId(id);
-	QString str = QCoreApplication::translate(0, id);
-	for(int i = 0; i < str.size(); i++)
-		LOG("%c - %x", str[i].toAscii(), str[i].digitValue());
-	QStringList list = qtTrId(id).split(QChar(0x9c), QString::SkipEmptyParts);
-	LOG("Variants: %s", C_STR(list.join(", ")));
+	QStringList list = text.split(QChar(0x9c), QString::SkipEmptyParts);
 
 	int lengthVariantIdx = (int)(variant);
 	if(list.size() <= lengthVariantIdx)
@@ -39,12 +34,6 @@ const char* TidUserQueryWindowTitle = QT_TRID_NOOP("tid_user_query_window_title"
 
 //% "Analitics"
 const char* TidAnaliticsWindowTitle = QT_TRID_NOOP("tid_analitics_window_title");
-
-//% "Already bought new item"
-const char* TidAccountingWindowTitle = QT_TRID_NOOP("tid_accounting_window_title");
-
-//% "Editing an existing item"
-const char* TidEditItemWindowTitle = QT_TRID_NOOP("tid_edit_item_window_title");
 
 //% "Select and edit query"
 const char* TidEditQueryWindowTitle = QT_TRID_NOOP("tid_edit_query_window_title");
@@ -97,12 +86,6 @@ const char* TidSaveButtonLabel = QT_TRID_NOOP("tid_save_button_label");
 
 //% "Delete"
 const char* TidDelButtonLabel = QT_TRID_NOOP("tid_del_button_label");
-
-//% "Previous item"
-const char* TidPrevItemButtonLabel = QT_TRID_NOOP("tid_prev_item_button_label");
-
-//% "Next item"
-const char* TidNextItemButtonLabel = QT_TRID_NOOP("tid_next_item_button_label");
 
 
 

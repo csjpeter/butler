@@ -28,6 +28,7 @@ class EditTagView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	EditTagView(const QString & dbname, QWidget * parent = 0);

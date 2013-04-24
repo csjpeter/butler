@@ -19,5 +19,9 @@
 			settings.setValue(prefix + "/" #view, false); \
 	}
 
-#endif
+#define MY_Q_OBJECT \
+	QString trShort(const char * sourceText, const char * disambiguation = 0, int n = -1) { return translationVariant(tr(sourceText, disambiguation, n), TextVariant::Short); } \
+	QString trMed(const char * sourceText, const char * disambiguation = 0, int n = -1) { return translationVariant(tr(sourceText, disambiguation, n), TextVariant::Medium); } \
+	QString trLong(const char * sourceText, const char * disambiguation = 0, int n = -1) { return translationVariant(tr(sourceText, disambiguation, n), TextVariant::Long); }
 
+#endif

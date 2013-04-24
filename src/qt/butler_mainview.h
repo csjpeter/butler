@@ -6,7 +6,6 @@
 #ifndef BUTLER_MAINVIEW_H
 #define BUTLER_MAINVIEW_H
 
-#include <butler_pannview.h>
 #include <butler_widgets.h>
 #include <butler_query.h>
 #include <butler_databases.h>
@@ -25,6 +24,7 @@ class MainView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	MainView(const QString & dbname, QWidget *parent = 0);

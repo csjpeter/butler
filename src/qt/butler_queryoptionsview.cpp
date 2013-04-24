@@ -339,7 +339,7 @@ void QueryOptionsView::relayout()
 		applyLayout(newState, true);
 	}
 
-	applyLayout(newState, false);
+	applyLayout(newState);
 	updateToolButtonStates();
 }
 

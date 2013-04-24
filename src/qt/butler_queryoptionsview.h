@@ -7,13 +7,13 @@
 #define BUTLER_QUERYOPTIONSVIEW_H
 
 #include <butler_query.h>
-#include <butler_widgets.h>
 #include <butler_tagwidget.h>
 
 class QueryOptionsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	QueryOptionsView(const QString & dbname, QWidget * parent = 0);
@@ -34,7 +34,7 @@ private:
 
 private slots:
 	void retranslate();
-	void applyLayout(LayoutState state, bool test);
+	void applyLayout(LayoutState state, bool test = false);
 	void relayout();
 	void queryClickedSlot();
 	void saveClickedSlot();

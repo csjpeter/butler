@@ -12,15 +12,16 @@
 
 #include <butler_ware_set.h>
 
-#include "butler_config.h"
-
 #include <butler_db.h>
+
+#include <butler_config.h>
 
 class WaresModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	WaresModel(Db & db);

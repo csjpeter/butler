@@ -12,14 +12,12 @@ enum class TextVariant {
 	Short
 };
 
-QString trId(const char * id, TextVariant variant = TextVariant::Long);
+QString translationVariant(const QString & text, TextVariant variant);
 
 extern const char* TidMainWindowTitle;
 extern const char* TidStatsWindowTitle;
 extern const char* TidUserQueryWindowTitle;
 extern const char* TidAnaliticsWindowTitle;
-extern const char* TidAccountingWindowTitle;
-extern const char* TidEditItemWindowTitle;
 extern const char* TidEditQueryWindowTitle;
 
 extern const char* TidTodoButtonLabel;
@@ -38,8 +36,6 @@ extern const char* TidResetButtonLabel;
 extern const char* TidQueryButtonLabel;
 extern const char* TidSaveButtonLabel;
 extern const char* TidDelButtonLabel;
-extern const char* TidPrevItemButtonLabel;
-extern const char* TidNextItemButtonLabel;
 
 extern const char* TidFillMandatoryFieldsInfoLabel;
 extern const char* TidAccountingSavedInfoLabel;

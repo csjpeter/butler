@@ -12,13 +12,14 @@
 
 #include <butler_ware.h>
 
-#include "butler_config.h"
+#include <butler_config.h>
 
 class WareCategoriesModel :
 	public QAbstractTableModel
 {
 private:
-	Q_OBJECT;
+	Q_OBJECT
+	MY_Q_OBJECT;
 
 public:
 	WareCategoriesModel(CategoryNameSet &);

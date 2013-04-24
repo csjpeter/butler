@@ -11,11 +11,8 @@
 
 #include <config.h>
 
-#include <butler_kineticscroller.h>
 #include "butler_databases.h"
-#include "butler_config.h"
 #include "butler_pannview.h"
-#include "butler_texts.h"
 
 #define PRIMITIVE_PROPERTY(type, name, reader, writer) \
 	Q_PROPERTY(type name READ reader WRITE writer); \
@@ -41,6 +38,7 @@ class TableView : public QTableView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	TableView(QWidget * parent = 0) :
 		QTableView(parent),
@@ -133,6 +131,7 @@ class HLayout : public QHBoxLayout
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	HLayout() : QHBoxLayout()
 	{
@@ -145,6 +144,7 @@ class VLayout : public QVBoxLayout
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	VLayout() : QVBoxLayout()
 	{
@@ -157,6 +157,7 @@ class Label : public QLabel
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	Label() : QLabel()
 	{
@@ -168,6 +169,7 @@ class InfoLabel : public Label
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	InfoLabel() : Label()
 	{
@@ -181,6 +183,7 @@ class Button : public QPushButton
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	Button(const QKeySequence & seq = QKeySequence(), QWidget * parent = 0) :
 		QPushButton(parent),
@@ -207,6 +210,7 @@ class ToolButton : public QToolButton
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	ToolButton(	const QIcon & icon,
 			const QKeySequence & seq = QKeySequence(),
@@ -259,6 +263,7 @@ class LineEditor : public QLineEdit
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	LineEditor() : QLineEdit(),
 		justFocusedIn(true)
@@ -299,6 +304,7 @@ class DoubleEditor : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	DoubleEditor(QWidget * parent = 0) :
 		QWidget(parent),
@@ -437,6 +443,7 @@ class QuantityEditor : public DoubleEditor
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	QuantityEditor(QWidget * parent = 0) :
 		DoubleEditor(parent)
@@ -449,6 +456,7 @@ class PriceEditor : public DoubleEditor
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	PriceEditor(QWidget * parent = 0) :
 		DoubleEditor(parent)
@@ -461,6 +469,7 @@ class FormCheckBox : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	FormCheckBox(QWidget * parent = 0) :
 		QWidget(parent)
@@ -482,6 +491,7 @@ class ComboBox : public QComboBox
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	ComboBox(QWidget * parent = 0) :
 		QComboBox(parent)
@@ -505,6 +515,7 @@ class Selector : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
 		QWidget(parent),
@@ -572,6 +583,7 @@ class ComboSelector : public Selector
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
 		Selector(model, column, parent),
@@ -628,6 +640,7 @@ class DateTimeEdit : public QDateTimeEdit
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	DateTimeEdit(QWidget * parent = 0) :
 		QDateTimeEdit(parent)
@@ -656,6 +669,7 @@ class DateTimeEditor : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	DateTimeEditor(QWidget * parent = 0) :
 		QWidget(parent)
@@ -692,6 +706,7 @@ class CommentEditor : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	CommentEditor(QWidget * parent = 0) :
 		QWidget(parent)
@@ -728,6 +743,7 @@ class ButtonGroup : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	ButtonGroup(QWidget * parent = 0) :
 		QWidget(parent)
@@ -783,6 +799,7 @@ class ToolBar : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 public:
 	ToolBar(PannView * parent) :
 		QWidget(parent),

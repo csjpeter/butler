@@ -14,6 +14,7 @@ class StatsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	StatsView(const QueryStat & stat, QWidget * parent = 0);

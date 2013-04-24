@@ -27,6 +27,7 @@ class NewShopView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
 	NewShopView(const QString & dbname, QWidget * parent = 0);
