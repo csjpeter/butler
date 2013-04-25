@@ -192,9 +192,9 @@ TagNameSet TagWidget::selectedTags()
 {
 	if(tagSet.size() != btnContainer.size())
 		throw csjp::InvariantFailure("Number of tags in TagSet since "
-				"opening the view containing TagWidget changed!\n"
+				"opening the view containing TagWidget changed.\n"
 				"You should use this widget only in "
-				"top-level dialogs!");
+				"top-level dialogs.");
 
 	TagNameSet tags;
 	unsigned i, s = btnContainer.size();

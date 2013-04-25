@@ -47,7 +47,6 @@ private slots:
 	void newItem();
 	void finishedNewItem(int);
 	void editItem();
-	void finishedEditItem(int);
 	void delItem();
 	void buyItem();
 	void finishedBuyItem(int price);
@@ -65,7 +64,6 @@ private:
 	QSqlTableModel *queryTable;
 
 	NewItemView *newItemView;
-	EditItemView *editItemView;
 	BuyItemView *buyItemView;
 	TagFilterView *tagFilterView;
 };

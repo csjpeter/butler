@@ -133,7 +133,7 @@ void TagsView::editTag()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select tag first!"));
+				tr("Please select tag first."));
 		return;
 	}
 
@@ -156,7 +156,7 @@ void TagsView::delTag()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select tag first!"));
+				tr("Please select tag first."));
 		return;
 	}
 

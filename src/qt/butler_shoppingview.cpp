@@ -9,7 +9,6 @@
 
 #include "butler_shoppingview.h"
 #include "butler_newitemview.h"
-#include "butler_edititemview.h"
 #include "butler_buyitemview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_tagfilterview.h"
@@ -21,7 +20,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	dbname(dbname),
 	model(shoppingModel(dbname)),
 	newItemView(NULL),
-	editItemView(NULL),
 	buyItemView(NULL),
 	tagFilterView(NULL)
 {
@@ -116,7 +114,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 ShoppingView::~ShoppingView()
 {
 	delete newItemView;
-	delete editItemView;
 	delete buyItemView;
 	delete tagFilterView;
 }
@@ -157,9 +154,10 @@ void ShoppingView::saveState()
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
-
+/*
 	settings.setValue(prefix + "/edititemview",
 			editItemView != NULL && editItemView->isVisible());
+*/
 }
 
 void ShoppingView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
@@ -185,32 +183,26 @@ void ShoppingView::finishedNewItem(int res)
 
 void ShoppingView::editItem()
 {
+	/*
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 
 	if(!editItemView)
 		editItemView = new EditItemView(dbname, model);
 
-	connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
 	editItemView->setCursor(queryView->currentIndex());
 	editItemView->activate();
-}
-
-void ShoppingView::finishedEditItem(int res)
-{
-	Q_UNUSED(res);
-
-	editItemView->disconnect(this, SLOT(finishedEditItem(int)));
+	*/
 }
 
 void ShoppingView::delItem()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 
@@ -231,13 +223,13 @@ void ShoppingView::buyItem()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 	
 	if(shopBox->currentIndex() == -1){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select the shop where you are!"));
+				tr("Please select the shop where you are."));
 		return;
 	}
 

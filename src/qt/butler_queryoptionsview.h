@@ -76,7 +76,9 @@ private:
 	QRadioButton tagOptAllMatch;
 	QRadioButton tagOptAnyMatch;
 
+	FormCheckBox withTagFilter;
 	TagWidget tagsWidget;
+	FormCheckBox withoutTagFilter;
 	TagWidget withoutTagsWidget;
 };
 

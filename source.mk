@@ -82,7 +82,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_config.cpp \
 	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \
-	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
 	$(DIST_DIR)/src/qt/butler_editshopview.cpp \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
 	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
@@ -113,7 +112,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_config.h \
 	$(DIST_DIR)/src/qt/butler_custommodel.h \
 	$(DIST_DIR)/src/qt/butler_customview.h \
-	$(DIST_DIR)/src/qt/butler_edititemview.h \
 	$(DIST_DIR)/src/qt/butler_editshopview.h \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_editwareview.h \

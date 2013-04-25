@@ -26,8 +26,8 @@ SCC TidNextItemButton = QT_TRANSLATE_NOOP("AccountingView", "Next item");
 SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "Bought:");
 SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "On stock:");
 
-SCC TidCategoryEditor = QT_TRANSLATE_NOOP("AccountingView", "Special ware name");
-SCC TidQuantityEditor = QT_TRANSLATE_NOOP("AccountingView", "Quantity");
+SCC TidCategoryEditor = QT_TRANSLATE_NOOP("AccountingView", "Brand or type of ware:");
+SCC TidQuantityEditor = QT_TRANSLATE_NOOP("AccountingView", "Quantity:");
 SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Unit price:");
 SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Gross price:");
 SCC TidShopSelector = QT_TRANSLATE_NOOP("AccountingView", "Business partner:");
@@ -35,9 +35,9 @@ SCC TidWareSelector = QT_TRANSLATE_NOOP("AccountingView", "Common ware name:");
 SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of purchase:");
 SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of upload:");
 SCC TidCommentEditor = QT_TRANSLATE_NOOP("AccountingView", "Comments:");
-SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for wares named '<i>%1</i>' :");
+SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for wares named <i>%1</i> :");
 
-SCC TidMandatoryField = QT_TRANSLATE_NOOP("AccountingView", "Mandatory field.");
+SCC TidMandatoryField = QT_TRANSLATE_NOOP("AccountingView", "mandatory field");
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("AccountingView", "Please fill at least the mandatory fields.");
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is updated.");
@@ -62,6 +62,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	item.bought = true;
 	item.purchased = QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
+	tagsWidget.label.setWordWrap(true);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
@@ -216,8 +217,6 @@ void AccountingView::retranslate()
 
 	doneButton.setText(tr(TidDoneButton));
 	resetButton.setText(tr(TidResetButton));
-	prevButton.setText(tr(TidPrevItemButton));
-	nextButton.setText(tr(TidNextItemButton));
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
 	categoryEditor.label.setText(tr(TidCategoryEditor));
@@ -231,7 +230,7 @@ void AccountingView::retranslate()
 	onStockCheck.label.setText(tr(TidOnStockFormCheckBox));
 	boughtCheck.label.setText(tr(TidBoughtFormCheckBox));
 
-	tagsWidget.label.setText(tr(TidWareTags).arg(ware.name));
+	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 
 	relayout();
 }
@@ -551,7 +550,7 @@ void AccountingView::wareNameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(ware.categories);
 	categoryEditor.box.addItem(lastCat);
 	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
-	tagsWidget.label.setText(tr(TidWareTags).arg(ware.name));
+	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 
 /* We need this for cases when keybaord focus was not used,

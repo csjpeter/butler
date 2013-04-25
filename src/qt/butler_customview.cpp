@@ -8,7 +8,6 @@
 #include <config.h>
 
 #include "butler_customview.h"
-#include "butler_edititemview.h"
 #include "butler_shoppingview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_accountingview.h"
@@ -258,7 +257,7 @@ void CustomView::editItem()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 
@@ -277,7 +276,7 @@ void CustomView::delItem()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 
@@ -298,7 +297,7 @@ void CustomView::shoppingItem()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select item first!"));
+				tr("Please select item first."));
 		return;
 	}
 
@@ -319,7 +318,7 @@ void CustomView::editWare()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select an item first!"));
+				tr("Please select an item first."));
 		return;
 	}
 

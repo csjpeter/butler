@@ -187,7 +187,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_accountingview.opp \
 	tmp/src/qt/butler_application.opp \
 	tmp/src/qt/butler_buyitemview.opp \
-	tmp/src/qt/butler_edititemview.opp \
 	tmp/src/qt/butler_editshopview.opp \
 	tmp/src/qt/butler_edittagview.opp \
 	tmp/src/qt/butler_editwareview.opp \
@@ -219,7 +218,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_accountingview.opp \
 	tmp/src/qt/moc/butler_application.opp \
 	tmp/src/qt/moc/butler_buyitemview.opp \
-	tmp/src/qt/moc/butler_edititemview.opp \
 	tmp/src/qt/moc/butler_editshopview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
 	tmp/src/qt/moc/butler_editwareview.opp \

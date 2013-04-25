@@ -133,7 +133,7 @@ void ShopsView::editShop()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select shop first!"));
+				tr("Please select shop first."));
 		return;
 	}
 
@@ -156,7 +156,7 @@ void ShopsView::delShop()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select shop first!"));
+				tr("Please select shop first."));
 		return;
 	}
 

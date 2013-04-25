@@ -136,7 +136,7 @@ void WaresView::editWare()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select ware first!"));
+				tr("Please select ware first."));
 		return;
 	}
 
@@ -159,7 +159,7 @@ void WaresView::delWare()
 {
 	if(!queryView->currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select ware first!"));
+				tr("Please select ware first."));
 		return;
 	}
 
