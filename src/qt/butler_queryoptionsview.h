@@ -57,7 +57,6 @@ private:
 	Button saveButton;
 	Button delButton;
 	Button resetButton;
-	InfoLabel infoLabel;
 
 	ComboSelector nameEditor;
 	DateTimeEditor startDate;

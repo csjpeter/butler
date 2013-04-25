@@ -61,7 +61,6 @@ private:
 	Button resetButton;
 	Button prevButton;
 	Button nextButton;
-	InfoLabel infoLabel;
 
 	ComboSelector wareEditor;
 	ComboSelector categoryEditor;

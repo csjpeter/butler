@@ -73,7 +73,7 @@
     <message>
         <location filename="../../src/qt/butler_accountingview.cpp" line="38"/>
         <source>Tags for wares named &lt;i&gt;%1&lt;/i&gt; :</source>
-        <translation>A &lt;i&gt;%1&lt;/i&gt; áru/szolgáltatás cimkéi: </translation>
+        <translation>&lt;i&gt;%1&lt;/i&gt; cimkéi: </translation>
     </message>
     <message>
         <source>Tags for wares named &apos;&lt;i&gt;%1&lt;/i&gt; &apos; :</source>
@@ -681,7 +681,10 @@
     <message>
         <location filename="../../src/qt/butler_queryoptionsview.cpp" line="17"/>
         <source>Save</source>
-        <translation>Mentés</translation>
+        <translation variants="yes">
+            <lengthvariant>Mentés</lengthvariant>
+            <lengthvariant>Ment</lengthvariant>
+        </translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_queryoptionsview.cpp" line="18"/>
@@ -694,7 +697,7 @@
     <message>
         <location filename="../../src/qt/butler_queryoptionsview.cpp" line="19"/>
         <source>Delete</source>
-        <translation type="unfinished" variants="yes">
+        <translation variants="yes">
             <lengthvariant>Törlés</lengthvariant>
             <lengthvariant>Töröl</lengthvariant>
         </translation>

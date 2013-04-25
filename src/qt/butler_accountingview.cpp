@@ -35,7 +35,7 @@ SCC TidWareSelector = QT_TRANSLATE_NOOP("AccountingView", "Common ware name:");
 SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of purchase:");
 SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of upload:");
 SCC TidCommentEditor = QT_TRANSLATE_NOOP("AccountingView", "Comments:");
-SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for wares named <i>%1</i> :");
+SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for <i>%1</i> :");
 
 SCC TidMandatoryField = QT_TRANSLATE_NOOP("AccountingView", "mandatory field");
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("AccountingView", "Please fill at least the mandatory fields.");
@@ -215,8 +215,6 @@ void AccountingView::retranslate()
 	else
 		setWindowTitle(tr(TidAccountingWindowTitle));
 
-	doneButton.setText(tr(TidDoneButton));
-	resetButton.setText(tr(TidResetButton));
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
 	categoryEditor.label.setText(tr(TidCategoryEditor));
@@ -246,9 +244,6 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 	toolLayout->addWidget(&resetButton);
 	toolLayout->addWidget(&prevButton);
 	toolLayout->addWidget(&nextButton);
-	toolLayout->addStretch(0);
-	toolLayout->addWidget(&infoLabel, 1);
-	toolLayout->addStretch(0);
 	toolBar.setLayout(toolLayout);
 
 	setToolBar(&toolBar);
@@ -296,6 +291,8 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 void AccountingView::relayout()
 {
 	LayoutState newState = LayoutState::Expanding;
+	doneButton.setText(tr(TidDoneButton));
+	resetButton.setText(tr(TidResetButton));
 	prevButton.setText(tr(TidPrevItemButton));
 	nextButton.setText(tr(TidNextItemButton));
 
@@ -314,6 +311,8 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Medium;
+		doneButton.setText(trMed(TidDoneButton));
+		resetButton.setText(trMed(TidResetButton));
 		prevButton.setText(trMed(TidPrevItemButton));
 		nextButton.setText(trMed(TidNextItemButton));
 		wareEditor.wideLayout();
@@ -329,6 +328,8 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Narrow;
+		doneButton.setText(trShort(TidDoneButton));
+		resetButton.setText(trShort(TidResetButton));
 		prevButton.setText(trShort(TidPrevItemButton));
 		nextButton.setText(trShort(TidNextItemButton));
 		wareEditor.narrowLayout();
@@ -398,8 +399,7 @@ void AccountingView::saveSlot()
 		if(model.item(cursor.row()) != item)
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
-		infoLabel.setText(tr(TidInfoEditSaved));
-		accept();
+		toolBar.infoLabel.setText(tr(TidInfoEditSaved));
 	} else {
 		model.addNew(item);
 
@@ -407,7 +407,7 @@ void AccountingView::saveSlot()
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();
-		infoLabel.setText(tr(TidInfoNewSaved));
+		toolBar.infoLabel.setText(tr(TidInfoNewSaved));
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 	}
 }
@@ -521,9 +521,9 @@ void AccountingView::updateToolButtonStates()
 
 	if(modified){
 		if(!mandatoriesGiven)
-			infoLabel.setText(tr(TidInfoMandatoryFields));
-		else if(infoLabel.text().size())
-			infoLabel.setText("");
+			toolBar.infoLabel.setText(tr(TidInfoMandatoryFields));
+		else if(toolBar.infoLabel.text().size())
+			toolBar.infoLabel.setText("");
 	}
 }
 

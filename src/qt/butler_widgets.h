@@ -814,35 +814,42 @@ public:
 		main.setContentsMargins(0,0,0,0);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
 		scrollArea.setContentsMargins(0,0,0,0);
-		prev.setFocusPolicy(Qt::NoFocus);
-		next.setFocusPolicy(Qt::NoFocus);
+//		prev.setFocusPolicy(Qt::NoFocus);
+//		next.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
-		prev.setText("<");
-		next.setText(">");
+//		prev.setText("<");
+//		next.setText(">");
 
 		connect(&backShortcut, SIGNAL(activated()), &backButton, SLOT(click()));
 		connect(&backButton, SIGNAL(clicked()), parent, SLOT(reject()));
 
-		scrollArea.setFrameStyle(QFrame::NoFrame);
+//		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
 		scrollArea.setWidgetResizable(true);
-		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		scrollArea.setSizePolicy(QSizePolicy(
 				  QSizePolicy::Expanding, QSizePolicy::Preferred));
 
 		QHBoxLayout * hLayout = new QHBoxLayout;
 		hLayout->setContentsMargins(0,0,0,0);
-		hLayout->addWidget(&prev);
+//		hLayout->addWidget(&prev);
 		hLayout->addWidget(&scrollArea);
-		hLayout->addWidget(&next);
+//		hLayout->addWidget(&next);
 		hLayout->addWidget(&backButton);
-		QWidget::setLayout(hLayout);
 
-		connect(&prev, SIGNAL(clicked()), this, SLOT(prevClicked()));
-		connect(&next, SIGNAL(clicked()), this, SLOT(nextClicked()));
-		connect(scrollArea.horizontalScrollBar(), SIGNAL(valueChanged(int)),
-				this, SLOT(scrollValueChanged(int)));
+		QVBoxLayout * vLayout = new QVBoxLayout;
+		vLayout->setSpacing(0);
+		vLayout->setContentsMargins(0,0,0,0);
+		vLayout->addWidget(&infoLabel);
+		vLayout->addLayout(hLayout);
+
+		QWidget::setLayout(vLayout);
+
+//		connect(&prev, SIGNAL(clicked()), this, SLOT(prevClicked()));
+//		connect(&next, SIGNAL(clicked()), this, SLOT(nextClicked()));
+//		connect(scrollArea.horizontalScrollBar(), SIGNAL(valueChanged(int)),
+//				this, SLOT(scrollValueChanged(int)));
 
 		retranslate();
 	}
@@ -858,8 +865,9 @@ public:
 		delete main.layout();
 		DBG("ToolBar::setLayout() 1 scrollarea.sizeHint(): %d",
 				scrollArea.sizeHint().width());
+		layout->setSpacing(0);
 		main.setLayout(layout);
-		relayout();
+//		relayout();
 		DBG("ToolBar::setLayout() 2 scrollarea.sizeHint(): %d",
 				scrollArea.sizeHint().width());
 	}
@@ -875,10 +883,10 @@ public:
 	{
 		backButton.setText(tr(TidBackButtonLabel));
 
-		if(main.layout())
+/*		if(main.layout())
 			relayout();
-	}
-
+*/	}
+/*
 	void relayout()
 	{
 		prev.hide();
@@ -891,7 +899,7 @@ public:
 
 		scrollValueChanged(scrollArea.horizontalScrollBar()->value());
 	}
-
+*/
 	virtual void changeEvent(QEvent * event)
 	{
 		QWidget::changeEvent(event);
@@ -904,11 +912,11 @@ public:
 		if(layout() && (event->size() == event->oldSize()))
 			return;
 		DBG("ToolBar::resizeEvent event->size(): %d", event->size().width());
-		relayout();
+//		relayout();
 	}
 
 private slots:
-	void prevClicked()
+/*	void prevClicked()
 	{
 		QScrollBar * bar = scrollArea.horizontalScrollBar();
 		bar->setValue(bar->value() - bar->singleStep());
@@ -936,9 +944,10 @@ private slots:
 		else
 			prev.show();
 	}
-
+*/
 public:
 	Button backButton;
+	InfoLabel infoLabel;
 
 private:
 	QShortcut backShortcut;
@@ -946,8 +955,8 @@ private:
 	QWidget main;
 
 	KineticScroller scroller;
-	QToolButton prev;
-	QToolButton next;
+//	QToolButton prev;
+//	QToolButton next;
 };
 
 #endif

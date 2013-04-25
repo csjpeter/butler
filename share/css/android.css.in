@@ -155,6 +155,9 @@ QTextEdit QScrollBar, QTextEdit QScrollBar:disable {
 	border-width: 0mm;
 }
 
+ToolBar QScrollBar:vertical { width: 0.5mm; min-height: 10mm; }
+ToolBar QScrollBar:horizontal { height: 0.5mm; min-width: 10mm; }
+
 /* QSpinBox and QDoubleSpinBox */
 
 QAbstractSpinBox, QAbstractSpinBox:no-frame {
