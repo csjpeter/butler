@@ -24,4 +24,6 @@
 	QString trMed(const char * sourceText, const char * disambiguation = 0, int n = -1) { return translationVariant(tr(sourceText, disambiguation, n), TextVariant::Medium); } \
 	QString trLong(const char * sourceText, const char * disambiguation = 0, int n = -1) { return translationVariant(tr(sourceText, disambiguation, n), TextVariant::Long); }
 
+#define SCC static const char*
+
 #endif

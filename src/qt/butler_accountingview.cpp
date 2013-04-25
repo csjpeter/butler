@@ -15,14 +15,32 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
-static const char* TidAccountingWindowTitle =
-		QT_TRANSLATE_NOOP("AccountingView", "Already bought new item");
-static const char* TidEditItemWindowTitle =
-		QT_TRANSLATE_NOOP("AccountingView", "Editing an existing item");
-static const char* TidPrevItemButtonLabel =
-		QT_TRANSLATE_NOOP("AccountingView", "Previous item");
-static const char* TidNextItemButtonLabel =
-		QT_TRANSLATE_NOOP("AccountingView", "Next item");
+SCC TidAccountingWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Already bought new item");
+SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Editing an existing item");
+
+SCC TidDoneButton = QT_TRANSLATE_NOOP("AccountingView", "Done");
+SCC TidResetButton = QT_TRANSLATE_NOOP("AccountingView", "Reset");
+SCC TidPrevItemButton = QT_TRANSLATE_NOOP("AccountingView", "Previous item");
+SCC TidNextItemButton = QT_TRANSLATE_NOOP("AccountingView", "Next item");
+
+SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "Bought:");
+SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "On stock:");
+
+SCC TidCategoryEditor = QT_TRANSLATE_NOOP("AccountingView", "Special ware name");
+SCC TidQuantityEditor = QT_TRANSLATE_NOOP("AccountingView", "Quantity");
+SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Unit price:");
+SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Gross price:");
+SCC TidShopSelector = QT_TRANSLATE_NOOP("AccountingView", "Business partner:");
+SCC TidWareSelector = QT_TRANSLATE_NOOP("AccountingView", "Common ware name:");
+SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of purchase:");
+SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of upload:");
+SCC TidCommentEditor = QT_TRANSLATE_NOOP("AccountingView", "Comments:");
+SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for wares named '<i>%1</i>' :");
+
+SCC TidMandatoryField = QT_TRANSLATE_NOOP("AccountingView", "Mandatory field.");
+SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("AccountingView", "Please fill at least the mandatory fields.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is updated.");
 
 AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
@@ -192,28 +210,28 @@ void AccountingView::resizeEvent(QResizeEvent * event)
 void AccountingView::retranslate()
 {
 	if(cursor.isValid())
-		setWindowTitle(qtTrId(TidEditItemWindowTitle));
+		setWindowTitle(tr(TidEditItemWindowTitle));
 	else
-		setWindowTitle(qtTrId(TidAccountingWindowTitle));
+		setWindowTitle(tr(TidAccountingWindowTitle));
 
-	doneButton.setText(qtTrId(TidDoneButtonLabel));
-	resetButton.setText(qtTrId(TidResetButtonLabel));
-	prevButton.setText(qtTrId(TidPrevItemButtonLabel));
-	nextButton.setText(qtTrId(TidNextItemButtonLabel));
-	wareEditor.label.setText(qtTrId(TidWareSelectorLabel));
-	wareEditor.editor.setPlaceholderText(qtTrId(TidWareSelectorPlaceholder));
-	categoryEditor.label.setText(qtTrId(TidCategoryEditorLabel));
-	quantityEditor.label.setText(qtTrId(TidQuantityEditorLabel));
-	unitPriceEditor.label.setText(qtTrId(TidUnitPriceEditorLabel));
-	grossPriceEditor.label.setText(qtTrId(TidGrossPriceEditorLabel));
-	shopEditor.label.setText(qtTrId(TidShopSelectorLabel));
-	purchaseDateTime.label.setText(qtTrId(TidPurchaseDateTimeEditorLabel));
-	uploadDateTime.label.setText(qtTrId(TidUploadDateTimeEditorLabel));
-	commentEditor.label.setText(qtTrId(TidCommentEditorLabel));
-	onStockCheck.label.setText(qtTrId(TidOnStockFormCheckBoxLabel));
-	boughtCheck.label.setText(qtTrId(TidBoughtFormCheckBoxLabel));
+	doneButton.setText(tr(TidDoneButton));
+	resetButton.setText(tr(TidResetButton));
+	prevButton.setText(tr(TidPrevItemButton));
+	nextButton.setText(tr(TidNextItemButton));
+	wareEditor.label.setText(tr(TidWareSelector));
+	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
+	categoryEditor.label.setText(tr(TidCategoryEditor));
+	quantityEditor.label.setText(tr(TidQuantityEditor));
+	unitPriceEditor.label.setText(tr(TidUnitPriceEditor));
+	grossPriceEditor.label.setText(tr(TidGrossPriceEditor));
+	shopEditor.label.setText(tr(TidShopSelector));
+	purchaseDateTime.label.setText(tr(TidPurchaseDateTimeEditor));
+	uploadDateTime.label.setText(tr(TidUploadDateTimeEditor));
+	commentEditor.label.setText(tr(TidCommentEditor));
+	onStockCheck.label.setText(tr(TidOnStockFormCheckBox));
+	boughtCheck.label.setText(tr(TidBoughtFormCheckBox));
 
-	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel).arg(ware.name));
+	tagsWidget.label.setText(tr(TidWareTags).arg(ware.name));
 
 	relayout();
 }
@@ -279,8 +297,8 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 void AccountingView::relayout()
 {
 	LayoutState newState = LayoutState::Expanding;
-	prevButton.setText(tr(TidPrevItemButtonLabel));
-	nextButton.setText(tr(TidNextItemButtonLabel));
+	prevButton.setText(tr(TidPrevItemButton));
+	nextButton.setText(tr(TidNextItemButton));
 
 /*	if(width() < sizeHint().width())*/{
 		newState = LayoutState::Wide;
@@ -297,8 +315,8 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Medium;
-		prevButton.setText(trMed(TidPrevItemButtonLabel));
-		nextButton.setText(trMed(TidNextItemButtonLabel));
+		prevButton.setText(trMed(TidPrevItemButton));
+		nextButton.setText(trMed(TidNextItemButton));
 		wareEditor.wideLayout();
 		categoryEditor.wideLayout();
 		quantityEditor.narrowLayout();
@@ -312,8 +330,8 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Narrow;
-		prevButton.setText(trShort(TidPrevItemButtonLabel));
-		nextButton.setText(trShort(TidNextItemButtonLabel));
+		prevButton.setText(trShort(TidPrevItemButton));
+		nextButton.setText(trShort(TidNextItemButton));
 		wareEditor.narrowLayout();
 		categoryEditor.narrowLayout();
 		quantityEditor.narrowLayout();
@@ -337,7 +355,7 @@ void AccountingView::setCursor(const QModelIndex& index)
 
 	cursor = index;
 	boughtCheck.show();
-	setWindowTitle(qtTrId(TidEditItemWindowTitle));
+	setWindowTitle(tr(TidEditItemWindowTitle));
 	mapToGui();
 }
 
@@ -381,7 +399,7 @@ void AccountingView::saveSlot()
 		if(model.item(cursor.row()) != item)
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
-		infoLabel.setText(qtTrId(TidItemEditingSavedInfoLabel));
+		infoLabel.setText(tr(TidInfoEditSaved));
 		accept();
 	} else {
 		model.addNew(item);
@@ -390,7 +408,7 @@ void AccountingView::saveSlot()
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();
-		infoLabel.setText(qtTrId(TidAccountingSavedInfoLabel));
+		infoLabel.setText(tr(TidInfoNewSaved));
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 	}
 }
@@ -504,7 +522,7 @@ void AccountingView::updateToolButtonStates()
 
 	if(modified){
 		if(!mandatoriesGiven)
-			infoLabel.setText(qtTrId(TidFillMandatoryFieldsInfoLabel));
+			infoLabel.setText(tr(TidInfoMandatoryFields));
 		else if(infoLabel.text().size())
 			infoLabel.setText("");
 	}
@@ -533,7 +551,7 @@ void AccountingView::wareNameEditFinishedSlot()
 	QString cats = WaresModel::categoriesToString(ware.categories);
 	categoryEditor.box.addItem(lastCat);
 	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
-	tagsWidget.label.setText(qtTrId(TidItemViewTagsWidgetLabel).arg(ware.name));
+	tagsWidget.label.setText(tr(TidWareTags).arg(ware.name));
 }
 
 /* We need this for cases when keybaord focus was not used,

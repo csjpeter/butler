@@ -11,6 +11,15 @@
 #include "butler_config.h"
 #include "butler_statsview.h"
 
+SCC TidWindowTitle	= QT_TRANSLATE_NOOP("StatsView", "Statistics");
+SCC TidItemCount	= QT_TRANSLATE_NOOP("StatsView", "Number of queried items : ");
+SCC TidItemSumQuantity	= QT_TRANSLATE_NOOP("StatsView", "Summary of queried quantites : ");
+SCC TidItemSumPrice	= QT_TRANSLATE_NOOP("StatsView", "Summary of paid prices : ");
+SCC TidAvgUnitPrice	= QT_TRANSLATE_NOOP("StatsView", "Avergae unit price : ");
+SCC TidMinUnitPrice	= QT_TRANSLATE_NOOP("StatsView", "Minimal unit price : ");
+SCC TidMaxUnitPrice	= QT_TRANSLATE_NOOP("StatsView", "Maximal unit price : ");
+SCC TidSqlQueryTime	= QT_TRANSLATE_NOOP("StatsView", "Time taken by the SQL query : ");
+
 StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 	PannView(parent),
 	stat(stat),
@@ -73,15 +82,15 @@ void StatsView::resizeEvent(QResizeEvent * event)
 
 void StatsView::retranslate()
 {
-	setWindowTitle(qtTrId(TidStatsWindowTitle));
+	setWindowTitle(tr(TidWindowTitle));
 
-	itemCountLabel      .setText(qtTrId(TidStatsItemCountLabel      ));
-	itemSumQuantityLabel.setText(qtTrId(TidStatsItemSumQuantityLabel));
-	itemSumPriceLabel   .setText(qtTrId(TidStatsItemSumPriceLabel   ));
-	avgUnitPriceLabel   .setText(qtTrId(TidStatsAvgUnitPriceLabel   ));
-	minUnitPriceLabel   .setText(qtTrId(TidStatsMinUnitPriceLabel   ));
-	maxUnitPriceLabel   .setText(qtTrId(TidStatsMaxUnitPriceLabel   ));
-	timeTakenBySqlQueryLabel.setText(qtTrId(TidStatsTimeTakenBySqlQueryLabel));
+	itemCountLabel.setText(tr(TidItemCount));
+	itemSumQuantityLabel.setText(tr(TidItemSumQuantity));
+	itemSumPriceLabel.setText(tr(TidItemSumPrice));
+	avgUnitPriceLabel.setText(tr(TidAvgUnitPrice));
+	minUnitPriceLabel.setText(tr(TidMinUnitPrice));
+	maxUnitPriceLabel.setText(tr(TidMaxUnitPrice));
+	timeTakenBySqlQueryLabel.setText(tr(TidSqlQueryTime));
 
 	relayout();
 }

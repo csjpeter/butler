@@ -795,6 +795,8 @@ public:
 	QLabel label;
 };
 
+static const char* TidBackButtonLabel = QT_TRANSLATE_NOOP("ToolBar", "Back");
+
 class ToolBar : public QWidget
 {
 private:
@@ -871,7 +873,7 @@ public:
 
 	void retranslate()
 	{
-		backButton.setText(qtTrId(TidBackButtonLabel));
+		backButton.setText(tr(TidBackButtonLabel));
 
 		if(main.layout())
 			relayout();

@@ -11,6 +11,18 @@
 
 csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
+SCC TidItemFieldCommonName	= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
+SCC TidItemFieldCategory	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
+SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
+SCC TidItemFieldIsBought	= QT_TRANSLATE_NOOP("ItemsModel", "Bought");
+SCC TidItemFieldPurchaseDate	= QT_TRANSLATE_NOOP("ItemsModel", "Bought on");
+SCC TidItemFieldShop		= QT_TRANSLATE_NOOP("ItemsModel", "Shop");
+SCC TidItemFieldGrossPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Gross price");
+SCC TidItemFieldQuantity	= QT_TRANSLATE_NOOP("ItemsModel", "Quantity");
+SCC TidItemFieldOnStock		= QT_TRANSLATE_NOOP("ItemsModel", "On stock");
+SCC TidItemFieldComment		= QT_TRANSLATE_NOOP("ItemsModel", "Comment");
+SCC TidItemFieldUnitPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Unit price");
+
 ItemsModel::ItemsModel(Db & db, const WaresModel & wmodel) :
 	db(db),
 	wmodel(wmodel)
@@ -126,37 +138,37 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 
 	switch(section){
 		case Item::Name :
-			return QVariant(qtTrId(TidItemFieldCommonName));
+			return QVariant(tr(TidItemFieldCommonName));
 			break;
 		case Item::Category :
-			return QVariant(qtTrId(TidItemFieldCategory));
+			return QVariant(tr(TidItemFieldCategory));
 			break;
 		case Item::Uploaded :
-			return QVariant(qtTrId(TidItemFieldUploadDate));
+			return QVariant(tr(TidItemFieldUploadDate));
 			break;
 		case Item::Bought :
-			return QVariant(qtTrId(TidItemFieldIsBought));
+			return QVariant(tr(TidItemFieldIsBought));
 			break;
 		case Item::Purchased :
-			return QVariant(qtTrId(TidItemFieldPurchaseDate));
+			return QVariant(tr(TidItemFieldPurchaseDate));
 			break;
 		case Item::Shop :
-			return QVariant(qtTrId(TidItemFieldShop));
+			return QVariant(tr(TidItemFieldShop));
 			break;
 		case Item::Price :
-			return QVariant(qtTrId(TidItemFieldGrossPrice));
+			return QVariant(tr(TidItemFieldGrossPrice));
 			break;
 		case Item::Quantity :
-			return QVariant(qtTrId(TidItemFieldQuantity));
+			return QVariant(tr(TidItemFieldQuantity));
 			break;
 		case Item::OnStock :
-			return QVariant(qtTrId(TidItemFieldOnStock));
+			return QVariant(tr(TidItemFieldOnStock));
 			break;
 		case Item::Comment :
-			return QVariant(qtTrId(TidItemFieldComment));
+			return QVariant(tr(TidItemFieldComment));
 			break;
 		case Item::UnitPrice :
-			return QVariant(qtTrId(TidItemFieldUnitPrice));
+			return QVariant(tr(TidItemFieldUnitPrice));
 			break;
 		default :
 			return QVariant();

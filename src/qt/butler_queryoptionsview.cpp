@@ -11,6 +11,29 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
+SCC TidEditQueryWindowTitle = QT_TRANSLATE_NOOP("QueryOptionsView", "Select and edit query");
+SCC TidQuerySelectorLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Query name:");
+SCC TidShopFilterLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by partner:");
+SCC TidShopSelectorLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Business partner:");
+SCC TidWareFilterLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by ware:");
+SCC TidWareSelectorLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Common ware name:");
+SCC TidQueryButtonLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Query");
+SCC TidSaveButtonLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Save");
+SCC TidResetButtonLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Reset");
+SCC TidDelButtonLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Delete");
+SCC TidQuerySavedInfoLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Query is saved.");
+SCC TidFromDateTimeEditorLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "From:");
+SCC TidTillDateTimeEditorLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Till:");
+//SCC TidWithTags = QT_TRANSLATE_NOOP("QueryOptionsView", "With some or all of these tags:");
+SCC TidWithoutTags = QT_TRANSLATE_NOOP("QueryOptionsView", "Without any of these tags:");
+SCC TidStockOptionsLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Stock option:");
+SCC TidTagOptionsLabel = QT_TRANSLATE_NOOP("QueryOptionsView", "Tags need to match:");
+SCC TidStockOptAllRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all items");
+SCC TidStockOptOnStockRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items on stock");
+SCC TidStockOptUsedUpRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items used up");
+SCC TidTagOptAllMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all need to match");
+SCC TidTagOptAnyMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "any enough to match");
+
 QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
@@ -210,35 +233,35 @@ void QueryOptionsView::resizeEvent(QResizeEvent *event)
 
 void QueryOptionsView::retranslate()
 {
-	setWindowTitle(qtTrId(TidEditQueryWindowTitle));
+	setWindowTitle(tr(TidEditQueryWindowTitle));
 
-	queryButton.setText(qtTrId(TidQueryButtonLabel));
-	resetButton.setText(qtTrId(TidResetButtonLabel));
-	saveButton.setText(qtTrId(TidSaveButtonLabel));
-	delButton.setText(qtTrId(TidDelButtonLabel));
+	queryButton.setText(tr(TidQueryButtonLabel));
+	resetButton.setText(tr(TidResetButtonLabel));
+	saveButton.setText(tr(TidSaveButtonLabel));
+	delButton.setText(tr(TidDelButtonLabel));
 
-	nameEditor.label.setText(qtTrId(TidQuerySelectorLabel));
+	nameEditor.label.setText(tr(TidQuerySelectorLabel));
 
-	startDate.label.setText(qtTrId(TidFromDateTimeEditorLabel));
-	endDate.label.setText(qtTrId(TidTillDateTimeEditorLabel));
+	startDate.label.setText(tr(TidFromDateTimeEditorLabel));
+	endDate.label.setText(tr(TidTillDateTimeEditorLabel));
 
-	wareFilter.label.setText(qtTrId(TidWareFilterLabel));
-	wareSelector.label.setText(qtTrId(TidWareSelectorLabel));
+	wareFilter.label.setText(tr(TidWareFilterLabel));
+	wareSelector.label.setText(tr(TidWareSelectorLabel));
 
-	shopFilter.label.setText(qtTrId(TidShopFilterLabel));
-	shopSelector.label.setText(qtTrId(TidShopSelectorLabel));
+	shopFilter.label.setText(tr(TidShopFilterLabel));
+	shopSelector.label.setText(tr(TidShopSelectorLabel));
 
-	tagsWidget.label.setText("");//qtTrId(TidQueryTagsWidgetLabel));
-	withoutTagsWidget.label.setText(qtTrId(TidQueryWithoutTagsWidgetLabel));
+	tagsWidget.label.setText("");//tr(TidWithTags));
+	withoutTagsWidget.label.setText(tr(TidWithoutTags));
 
-	stockOptions.label.setText(qtTrId(TidStockOptionsLabel));
-	stockOptAll.setText(qtTrId(TidStockOptAllRadioButton));
-	stockOptOnStock.setText(qtTrId(TidStockOptOnStockRadioButton));
-	stockOptUsedUp.setText(qtTrId(TidStockOptUsedUpRadioButton));
+	stockOptions.label.setText(tr(TidStockOptionsLabel));
+	stockOptAll.setText(tr(TidStockOptAllRadioButton));
+	stockOptOnStock.setText(tr(TidStockOptOnStockRadioButton));
+	stockOptUsedUp.setText(tr(TidStockOptUsedUpRadioButton));
 
-	tagOptions.label.setText(qtTrId(TidTagOptionsLabel));
-	tagOptAllMatch.setText(qtTrId(TidTagOptAllMatchRadioButton));
-	tagOptAnyMatch.setText(qtTrId(TidTagOptAnyMatchRadioButton));
+	tagOptions.label.setText(tr(TidTagOptionsLabel));
+	tagOptAllMatch.setText(tr(TidTagOptAllMatchRadioButton));
+	tagOptAnyMatch.setText(tr(TidTagOptAnyMatchRadioButton));
 
 	relayout();
 }
@@ -353,7 +376,7 @@ void QueryOptionsView::saveClickedSlot()
 			qm.update(qm.index(query.name), query);
 	} else
 		qm.addNew(query);
-	infoLabel.setText(qtTrId(TidQuerySavedInfoLabel));
+	infoLabel.setText(tr(TidQuerySavedInfoLabel));
 	updateToolButtonStates();
 }
 

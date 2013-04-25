@@ -16,6 +16,14 @@
 #include "butler_statsview.h"
 #include "butler_config.h"
 
+SCC TidAnaliticsWindowTitle = QT_TRANSLATE_NOOP("CustomView", "Analitics");
+SCC TidEditItemButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Edit item");
+SCC TidDeleteItemButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Delete item");
+SCC TidRefreshItemsButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Refresh items");
+SCC TidShoppingItemButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Add item to shopping list");
+SCC TidFilterItemButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Filter items");
+SCC TidStatsItemButtonLabel = QT_TRANSLATE_NOOP("CustomView", "Statistics");
+
 CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
@@ -64,13 +72,13 @@ CustomView::~CustomView()
 
 void CustomView::retranslate()
 {
-	setWindowTitle(qtTrId(TidAnaliticsWindowTitle));
-	editButton.setText(qtTrId(TidEditItemButtonLabel));
-	delButton.setText(qtTrId(TidDeleteItemButtonLabel));
-	shoppigButton.setText(qtTrId(TidShoppingItemButtonLabel));
-	refreshButton.setText(qtTrId(TidRefreshItemsButtonLabel));
-	filterButton.setText(qtTrId(TidFilterItemButtonLabel));
-	statsButton.setText(qtTrId(TidStatsItemButtonLabel));
+	setWindowTitle(tr(TidAnaliticsWindowTitle));
+	editButton.setText(tr(TidEditItemButtonLabel));
+	delButton.setText(tr(TidDeleteItemButtonLabel));
+	shoppigButton.setText(tr(TidShoppingItemButtonLabel));
+	refreshButton.setText(tr(TidRefreshItemsButtonLabel));
+	filterButton.setText(tr(TidFilterItemButtonLabel));
+	statsButton.setText(tr(TidStatsItemButtonLabel));
 
 	relayout();
 }

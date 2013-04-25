@@ -24,6 +24,17 @@
 
 #include "butler_mainview.h"
 
+SCC TidMainWindowTitle = QT_TRANSLATE_NOOP("MainView", "%1 - main view");
+SCC TidTodoButtonLabel = QT_TRANSLATE_NOOP("MainView", "Todo notes");
+SCC TidShoppingButtonLabel = QT_TRANSLATE_NOOP("MainView", "Shopping list");
+SCC TidAccountingButtonLabel = QT_TRANSLATE_NOOP("MainView", "Accounting");
+SCC TidAnaliticsButtonLabel = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
+SCC TidPartnersButtonLabel = QT_TRANSLATE_NOOP("MainView", "Business partners");
+SCC TidWareButtonLabel = QT_TRANSLATE_NOOP("MainView", "Wares");
+SCC TidTagButtonLabel = QT_TRANSLATE_NOOP("MainView", "Tags");
+SCC TidInfoButtonLabel = QT_TRANSLATE_NOOP("MainView", "Legal informations");
+SCC TidQuitButtonLabel = QT_TRANSLATE_NOOP("MainView", "Quit");
+
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
@@ -80,16 +91,16 @@ MainView::~MainView()
 
 void MainView::retranslate()
 {
-	setWindowTitle(qtTrId(TidMainWindowTitle).arg(PKGNAME));
-	todoButton.setText(qtTrId(TidTodoButtonLabel));
-	shoppingButton.setText(qtTrId(TidShoppingButtonLabel));
-	accountingButton.setText(qtTrId(TidAccountingButtonLabel));
-	analiticsButton.setText(qtTrId(TidAnaliticsButtonLabel));
-	partnersButton.setText(qtTrId(TidPartnersButtonLabel));
-	wareButton.setText(qtTrId(TidWareButtonLabel));
-	tagButton.setText(qtTrId(TidTagButtonLabel));
-	infoButton.setText(qtTrId(TidInfoButtonLabel));
-	quitButton.setText(qtTrId(TidQuitButtonLabel));
+	setWindowTitle(tr(TidMainWindowTitle).arg(PKGNAME));
+	todoButton.setText(tr(TidTodoButtonLabel));
+	shoppingButton.setText(tr(TidShoppingButtonLabel));
+	accountingButton.setText(tr(TidAccountingButtonLabel));
+	analiticsButton.setText(tr(TidAnaliticsButtonLabel));
+	partnersButton.setText(tr(TidPartnersButtonLabel));
+	wareButton.setText(tr(TidWareButtonLabel));
+	tagButton.setText(tr(TidTagButtonLabel));
+	infoButton.setText(tr(TidInfoButtonLabel));
+	quitButton.setText(tr(TidQuitButtonLabel));
 
 	relayout();
 }
