@@ -87,12 +87,12 @@ void CustomView::applyLayout()
 	delete layout();
 
 	HLayout * toolLayout = new HLayout;
-	toolLayout->addWidget(&editButton);
-	toolLayout->addWidget(&delButton);
-	toolLayout->addWidget(&shoppigButton);
-	toolLayout->addWidget(&statsButton);
-	toolLayout->addWidget(&refreshButton);
-	toolLayout->addWidget(&filterButton);
+	toolLayout->addWidget(&editButton, -1, Qt::AlignVCenter);
+	toolLayout->addWidget(&delButton, -1, Qt::AlignVCenter);
+	toolLayout->addWidget(&shoppigButton, -1, Qt::AlignVCenter);
+	toolLayout->addWidget(&statsButton, -1, Qt::AlignVCenter);
+	toolLayout->addWidget(&refreshButton, -1, Qt::AlignVCenter);
+	toolLayout->addWidget(&filterButton, -1, Qt::AlignVCenter);
 	toolLayout->addStretch();
 	toolBar.setLayout(toolLayout);
 	setToolBar(&toolBar);
@@ -106,8 +106,6 @@ void CustomView::applyLayout()
 void CustomView::relayout()
 {
 	LOG("relayout");
-	LayoutState newState = LayoutState::Wide;
-	QSize newSize;
 
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
@@ -116,43 +114,57 @@ void CustomView::relayout()
 		tableView.horizontalHeader()->setResizeMode(
 				Item::Comment, QHeaderView::ResizeToContents);
 
-	switch(newState) {
-		case LayoutState::Expanding :
-		case LayoutState::Wide :
-			editButton.wideLayout();
-			delButton.wideLayout();
-			shoppigButton.wideLayout();
-			refreshButton.wideLayout();
-			filterButton.wideLayout();
-			statsButton.wideLayout();
-			applyLayout();
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case LayoutState::Medium :
-			editButton.mediumLayout();
-			delButton.mediumLayout();
-			refreshButton.mediumLayout();
-			shoppigButton.mediumLayout();
-			filterButton.mediumLayout();
-			statsButton.mediumLayout();
-			applyLayout();
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
-		case LayoutState::Narrow :
-			editButton.narrowLayout();
-			delButton.narrowLayout();
-			shoppigButton.narrowLayout();
-			refreshButton.narrowLayout();
-			filterButton.narrowLayout();
-			statsButton.narrowLayout();
-			applyLayout();
-			if(sizeHint().width() <= width())
-				break;
-			// falling back to a smaller size
+//	LayoutState newState = LayoutState::Wide;
+//	newState = LayoutState::Expanding;
+//	newState = LayoutState::Wide;
+	applyLayout();
+
+	if(width() < sizeHint().width()) {
+//		newState = LayoutState::Medium;
+		applyLayout();
 	}
+
+	if(width() < sizeHint().width()) {
+//		newState = LayoutState::Narrow;
+		applyLayout();
+	}
+
 	updateToolButtonStates();
+}
+
+void CustomView::relayoutToolBar()
+{
+	LOG("relayout toolbar");
+
+//	LayoutState newState = LayoutState::Wide;
+//	newState = LayoutState::Expanding;
+//	newState = LayoutState::Wide;
+	editButton.wideLayout();
+	delButton.wideLayout();
+	shoppigButton.wideLayout();
+	refreshButton.wideLayout();
+	filterButton.wideLayout();
+	statsButton.wideLayout();
+
+	if(toolBar.width() < toolBar.sizeHint().width()) {
+//		newState = LayoutState::Medium;
+		editButton.mediumLayout();
+		delButton.mediumLayout();
+		refreshButton.mediumLayout();
+		shoppigButton.mediumLayout();
+		filterButton.mediumLayout();
+		statsButton.mediumLayout();
+	}
+
+	if(toolBar.width() < toolBar.sizeHint().width()) {
+//		newState = LayoutState::Narrow;
+		editButton.narrowLayout();
+		delButton.narrowLayout();
+		shoppigButton.narrowLayout();
+		refreshButton.narrowLayout();
+		filterButton.narrowLayout();
+		statsButton.narrowLayout();
+	}
 }
 
 void CustomView::changeEvent(QEvent * event)
@@ -374,6 +386,7 @@ void CustomView::updateToolButtonStates()
 		delButton.hide();
 		shoppigButton.hide();
 	}
+	relayoutToolBar();
 }
 
 void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

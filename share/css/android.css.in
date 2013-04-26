@@ -33,9 +33,9 @@ QLabel::pressed:focus {
 }
 
 *:focus, *::pressed:focus, *::indicator:focus, QCheckBox::indicator:focus, QCheckBox::pressed:focus, QCheckBox:focus {
-	border-color: #338833;
+/*	border-color: #338833;
 	border-width: 0.4mm;
-	border-style: solid;
+	border-style: solid;*/
 }
 
 /* Temporary, experimenting */
@@ -127,6 +127,11 @@ QPushButton:pressed {
 	background-color: #444444;
 	border-color: #888888;
 	color: #888888;
+}
+
+CustomView ToolBar QPushButton {
+	margin-top: 3mm;
+	margin-bottom: 3mm;
 }
 
 QToolButton {

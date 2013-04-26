@@ -479,7 +479,7 @@ void QueryOptionsView::saveClickedSlot()
 			qm.update(qm.index(query.name), query);
 	} else
 		qm.addNew(query);
-	toolBar.infoLabel.setText(tr(TidQuerySavedInfo));
+	toolBar.setInfo(tr(TidQuerySavedInfo));
 	updateToolButtonStates();
 }
 
@@ -623,6 +623,6 @@ void QueryOptionsView::updateToolButtonStates()
 	tagsWidget.setVisible(withTagFilter.box.checkState()==Qt::Checked);
 	withoutTagsWidget.setVisible(withoutTagFilter.box.checkState()==Qt::Checked);
 
-	if(modified && toolBar.infoLabel.text().size())
-		toolBar.infoLabel.setText("");
+	if(modified)
+		toolBar.clearInfo();
 }

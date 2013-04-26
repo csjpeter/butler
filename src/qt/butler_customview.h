@@ -34,6 +34,7 @@ private:
 	void retranslate();
 	void applyLayout();
 	void relayout();
+	void relayoutToolBar();
 
 	virtual void changeEvent(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);

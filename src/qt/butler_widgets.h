@@ -805,8 +805,8 @@ private:
 public:
 	ToolBar(PannView * parent) :
 		QWidget(parent),
-		backShortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), &backButton),
 		scrollArea(0),
+		backShortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), &backButton),
 		scroller(&scrollArea)
 	{
 		setFocusPolicy(Qt::NoFocus);
@@ -830,6 +830,8 @@ public:
 //		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		scrollArea.setSizePolicy(QSizePolicy(
 				  QSizePolicy::Expanding, QSizePolicy::Preferred));
+
+		infoLabel.hide();
 
 		QHBoxLayout * hLayout = new QHBoxLayout;
 		hLayout->setContentsMargins(0,0,0,0);
@@ -886,6 +888,7 @@ public:
 /*		if(main.layout())
 			relayout();
 */	}
+
 /*
 	void relayout()
 	{
@@ -907,12 +910,30 @@ public:
 			retranslate();
 	}
 
-	virtual void resizeEvent(QResizeEvent * event)
+/*	virtual void resizeEvent(QResizeEvent * event)
 	{
 		if(layout() && (event->size() == event->oldSize()))
 			return;
 		DBG("ToolBar::resizeEvent event->size(): %d", event->size().width());
-//		relayout();
+		relayout();
+	}*/
+
+public slots:
+	void setInfo(const QString & text)
+	{
+		infoLabel.setText(text);
+		if(text.size())
+			infoLabel.show();
+		else
+			infoLabel.hide();
+	}
+
+	void clearInfo()
+	{
+		if(!infoLabel.text().size())
+			return;
+		infoLabel.setText("");
+		infoLabel.hide();
 	}
 
 private slots:
@@ -945,14 +966,12 @@ private slots:
 			prev.show();
 	}
 */
-public:
-	Button backButton;
-	InfoLabel infoLabel;
-
 private:
-	QShortcut backShortcut;
 	QScrollArea scrollArea;
 	QWidget main;
+	InfoLabel infoLabel;
+	Button backButton;
+	QShortcut backShortcut;
 
 	KineticScroller scroller;
 //	QToolButton prev;

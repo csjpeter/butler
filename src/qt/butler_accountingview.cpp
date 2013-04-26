@@ -399,7 +399,7 @@ void AccountingView::saveSlot()
 		if(model.item(cursor.row()) != item)
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
-		toolBar.infoLabel.setText(tr(TidInfoEditSaved));
+		toolBar.setInfo(tr(TidInfoEditSaved));
 	} else {
 		model.addNew(item);
 
@@ -407,7 +407,7 @@ void AccountingView::saveSlot()
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();
-		toolBar.infoLabel.setText(tr(TidInfoNewSaved));
+		toolBar.setInfo(tr(TidInfoNewSaved));
 		wareEditor.editor.setFocus(Qt::OtherFocusReason);
 	}
 }
@@ -521,9 +521,9 @@ void AccountingView::updateToolButtonStates()
 
 	if(modified){
 		if(!mandatoriesGiven)
-			toolBar.infoLabel.setText(tr(TidInfoMandatoryFields));
-		else if(toolBar.infoLabel.text().size())
-			toolBar.infoLabel.setText("");
+			toolBar.setInfo(tr(TidInfoMandatoryFields));
+		else
+			toolBar.clearInfo();
 	}
 }
 
