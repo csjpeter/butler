@@ -947,6 +947,7 @@ public:
 			for(unsigned i = 0; i < s; i++){
 				ToolWidget & tw = buttons.queryAt(i);
 				tw.expanding();
+				tw.qwidget()->updateGeometry();
 				if(tw.qwidget()->isVisible())
 					showCount++;
 			}
@@ -969,6 +970,9 @@ public:
 
 		if(hideIfEmpty)
 			setVisible(showCount);
+
+		if(showCount)
+			update();
 	}
 
 public:

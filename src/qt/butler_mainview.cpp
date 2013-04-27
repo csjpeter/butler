@@ -191,7 +191,7 @@ void MainView::loadState()
 		openAccountingView();
 	if(settings.value(prefix + "/customview", false).toBool())
 		openCustomView();
-	if(settings.value(prefix + "/shopsview", false).toBool())
+	if(settings.value(prefix + "/partnersview", false).toBool())
 		openPartnersView();
 	if(settings.value(prefix + "/waresview", false).toBool())
 		openWaresView();

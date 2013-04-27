@@ -83,10 +83,10 @@ void PartnersView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
-				Item::Comment, QHeaderView::Stretch);
+				Shop::StoreName, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setResizeMode(
-				Item::Comment, QHeaderView::ResizeToContents);
+				Shop::StoreName, QHeaderView::ResizeToContents);
 
 	applyLayout();
 
@@ -143,11 +143,15 @@ void PartnersView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
+	tableView.loadState(prefix);
+
 	QString name = settings.value(prefix + "/currentitem", "").toString();
 	tableView.selectRow(model.index(name));
 
 	if(settings.value(prefix + "/editshopview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
+
+	updateToolButtonStates();
 }
 
 void PartnersView::saveState()
@@ -220,4 +224,16 @@ void PartnersView::refresh()
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
+}
+
+void PartnersView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
+{
+	model.sort(logicalIndex, order == Qt::AscendingOrder);
+}
+
+void PartnersView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() == previous.isValid())
+		return;
+	updateToolButtonStates();
 }

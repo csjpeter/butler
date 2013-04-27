@@ -45,6 +45,8 @@ private slots:
 	void editShop();
 	void delShop();
 	void refresh();
+	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	const QString & dbname;

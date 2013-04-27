@@ -7,6 +7,12 @@
 
 #include "butler_shopsmodel.h"
 
+SCC TidPartnerFieldName		= QT_TRANSLATE_NOOP("PartnersModel", "Name");
+SCC TidPartnerFieldCity		= QT_TRANSLATE_NOOP("PartnersModel", "City");
+SCC TidPartnerFieldAddress	= QT_TRANSLATE_NOOP("PartnersModel", "Address");
+SCC TidPartnerFieldCompany	= QT_TRANSLATE_NOOP("PartnersModel", "Company");
+SCC TidPartnerFieldStoreName	= QT_TRANSLATE_NOOP("PartnersModel", "Store/Agent");
+
 ShopsModel::ShopsModel(Db & db) :
 	db(db)
 {
@@ -74,23 +80,23 @@ QVariant ShopsModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant();
 
 	if(orientation != Qt::Horizontal)
-		return QVariant("---");
+		return QVariant("");
 
 	switch(section){
 		case Shop::Name :
-			return QVariant("Short name");
+			return QVariant(tr(TidPartnerFieldName));
 			break;
 		case Shop::StoreName :
-			return QVariant("Store name");
+			return QVariant(tr(TidPartnerFieldStoreName));
 			break;
 		case Shop::City :
-			return QVariant("City");
+			return QVariant(tr(TidPartnerFieldCity));
 			break;
 		case Shop::Address :
-			return QVariant("Address");
+			return QVariant(tr(TidPartnerFieldAddress));
 			break;
 		case Shop::Company :
-			return QVariant("Company");
+			return QVariant(tr(TidPartnerFieldCompany));
 			break;
 		default :
 			return QVariant();
