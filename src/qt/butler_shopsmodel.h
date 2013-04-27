@@ -54,6 +54,7 @@ public slots:
 public:
 	int index(const QString &name) const NO_FCLOG;
 	const Shop& shop(int row) NO_FCLOG;
+	const ShopSet & shopSet() const { return shops; };
 	void del(int row);
 	void addNew(Shop &shop);
 	virtual void update(int row, Shop &modified);

@@ -3,33 +3,26 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SHOPSVIEW_H
-#define BUTLER_SHOPSVIEW_H
+#ifndef BUTLER_PARTNERSVIEW_H
+#define BUTLER_PARTNERSVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_pannable.h>
-
 #include <butler_query.h>
-
-#include "butler_databases.h"
+#include <butler_databases.h>
 
 /*forwards*/
-class QLabel;
-class QTableView;
-class QSqlTableModel;
-
 class NewShopView;
 class EditShopView;
 
-class ShopsView : public PannView
+class PartnersView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	ShopsView(const QString & dbname, QWidget * parent = 0);
-	virtual ~ShopsView();
+	PartnersView(const QString & dbname, QWidget * parent = 0);
+	virtual ~PartnersView();
 
 	virtual void loadState();
 	virtual void saveState();
@@ -38,20 +31,31 @@ private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+	virtual void keyPressEvent(QKeyEvent * event);
+
 private slots:
 	void newShop();
-	void finishedNewShop(int);
 	void editShop();
-	void finishedEditShop(int);
 	void delShop();
-	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void refresh();
 
 private:
 	const QString & dbname;
 	ShopsModel & model;
 
-	Pannable<QTableView> queryView;
-	QSqlTableModel *queryTable;
+	ToolButton addButton;
+	ToolButton delButton;
+	ToolButton editButton;
+	ToolButton refreshButton;
+
+	TableView tableView;
 
 	NewShopView *newShopView;
 	EditShopView *editShopView;

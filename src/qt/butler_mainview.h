@@ -14,7 +14,7 @@
 class ShoppingView;
 class AccountingView;
 class CustomView;
-class ShopsView;
+class PartnersView;
 class TagsView;
 class WaresView;
 class QueryOptionsView;
@@ -50,7 +50,7 @@ private slots:
 	void openShoppingView();
 	void openAccountingView();
 	void openCustomView();
-	void openShopsView();
+	void openPartnersView();
 	void openWaresView();
 	void openTagsView();
 	void openQueryOptionsView();
@@ -74,7 +74,7 @@ private:
 	ShoppingView *shoppingView;
 	AccountingView *accountingView;
 	CustomView *customView;
-	ShopsView *shopsView;
+	PartnersView *partnersView;
 	WaresView *waresView;
 	TagsView *tagsView;
 	QueryOptionsView *queryOptionsView;

@@ -34,6 +34,7 @@ private:
 	void retranslate();
 	void applyLayout();
 	void relayout();
+	void updateToolButtonStates();
 
 	virtual void changeEvent(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
@@ -49,7 +50,6 @@ private slots:
 	void applyNewFilter();
 	void statsItems();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
-	void updateToolButtonStates();
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:

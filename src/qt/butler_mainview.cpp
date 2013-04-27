@@ -62,7 +62,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	shoppingView(NULL),
 	accountingView(NULL),
 	customView(NULL),
-	shopsView(NULL),
+	partnersView(NULL),
 	waresView(NULL),
 	tagsView(NULL),
 	queryOptionsView(NULL),
@@ -77,7 +77,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	connect(&accountingButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
 	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
-	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openShopsView()));
+	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
 	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
@@ -93,7 +93,7 @@ MainView::~MainView()
 	delete shoppingView;
 	delete accountingView;
 	delete customView;
-	delete shopsView;
+	delete partnersView;
 	delete tagsView;
 	delete waresView;
 	delete queryOptionsView;
@@ -116,7 +116,7 @@ void MainView::applyLayout()
 	layout->addStretch(0);
 
 //	layout->addWidget(&todoButton);
-	layout->addWidget(&shoppingButton);
+//	layout->addWidget(&shoppingButton);
 	layout->addWidget(&accountingButton);
 	layout->addWidget(&analiticsButton);
 	layout->addWidget(&partnersButton);
@@ -192,7 +192,7 @@ void MainView::loadState()
 	if(settings.value(prefix + "/customview", false).toBool())
 		openCustomView();
 	if(settings.value(prefix + "/shopsview", false).toBool())
-		openShopsView();
+		openPartnersView();
 	if(settings.value(prefix + "/waresview", false).toBool())
 		openWaresView();
 	if(settings.value(prefix + "/tagsview", false).toBool())
@@ -220,8 +220,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = accountingView;
 	else if(activeWindowName == "customView")
 		activeWindow = customView;
-	else if(activeWindowName == "shopsView")
-		activeWindow = shopsView;
+	else if(activeWindowName == "partnersView")
+		activeWindow = partnersView;
 	else if(activeWindowName == "waresView")
 		activeWindow = waresView;
 	else if(activeWindowName == "tagsView")
@@ -244,7 +244,7 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(shoppingView);
 	SAVE_VIEW_STATE(accountingView);
 	SAVE_VIEW_STATE(customView);
-	SAVE_VIEW_STATE(shopsView);
+	SAVE_VIEW_STATE(partnersView);
 	SAVE_VIEW_STATE(tagsView);
 	SAVE_VIEW_STATE(waresView);
 	SAVE_VIEW_STATE(tagsView);
@@ -261,8 +261,8 @@ void MainView::saveState()
 		activeWindowName = "accountingView";
 	else if(activeWindow == customView)
 		activeWindowName = "customView";
-	else if(activeWindow == shopsView)
-		activeWindowName = "shopsView";
+	else if(activeWindow == partnersView)
+		activeWindowName = "partnersView";
 	else if(activeWindow == waresView)
 		activeWindowName = "waresView";
 	else if(activeWindow == tagsView)
@@ -312,11 +312,11 @@ void MainView::openCustomView()
 	}
 }
 
-void MainView::openShopsView()
+void MainView::openPartnersView()
 {
-	if(!shopsView)
-		shopsView = new ShopsView(dbname);
-	shopsView->activate();
+	if(!partnersView)
+		partnersView = new PartnersView(dbname);
+	partnersView->activate();
 }
 
 void MainView::openWaresView()

@@ -12,126 +12,170 @@
 #include "butler_editshopview.h"
 #include "butler_config.h"
 
-ShopsView::ShopsView(const QString & dbname, QWidget * parent) :
+SCC TidContext = "PartnersView";
+
+SCC TidPartnersWindowTitle = QT_TRANSLATE_NOOP("PartnersView", "Business partners");
+SCC TidAddButton = QT_TRANSLATE_NOOP("PartnersView", "Add new partner");
+SCC TidEditButton = QT_TRANSLATE_NOOP("PartnersView", "Edit partner");
+SCC TidDelButton = QT_TRANSLATE_NOOP("PartnersView", "Delete partner");
+SCC TidRefreshButton = QT_TRANSLATE_NOOP("PartnersView", "Refresh partner list");
+
+PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(shopsModel(dbname)),
+	addButton(QIcon(Path::icon("add.png")),
+			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
+	delButton(QIcon(Path::icon("delete.png")),
+			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
+	editButton(QIcon(Path::icon("edit.png")),
+			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
+	refreshButton(QIcon(Path::icon("refresh.png")),
+			TidRefreshButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	newShopView(NULL),
 	editShopView(NULL)
 {
 	setWindowTitle(tr("Shop list"));
 
-	QHBoxLayout * cLayout = new QHBoxLayout;
-	QPushButton * button;
+	tableView.setModel(&model);
 
-	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&New"));
-	connect(button, SIGNAL(clicked()), this, SLOT(newShop()));
-	cLayout->addWidget(button);
+	toolBar.addToolWidget(addButton);
+	toolBar.addToolWidget(editButton);
+	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(refreshButton);
 
-	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	connect(button, SIGNAL(clicked()), this, SLOT(editShop()));
-	cLayout->addWidget(button);
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(newShop()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editShop()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delShop()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refresh()));
 
-	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	connect(button, SIGNAL(clicked()), this, SLOT(delShop()));
-	cLayout->addWidget(button);
+	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
 
-	/* query result list */
-	queryView = new QTableView;
-	queryView->setModel(&model);
-	queryView->verticalHeader()->hide();
-	queryView->horizontalHeader()->setMovable(true);
-	queryView->horizontalHeader()->setSortIndicatorShown(true);
-	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView->horizontalHeader()->setResizeMode(Shop::Name, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(Shop::City, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(Shop::Company, QHeaderView::Stretch);
-	queryView->hideColumn(Shop::StoreName);
-	queryView->hideColumn(Shop::Address);
-	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	connect(queryView->horizontalHeader(),
-			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
-
-	/* making the window layouting */
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->addLayout(cLayout);
-	layout->addWidget(&queryView);
-
-	setLayout(layout);
+	setupView();
+	retranslate();
 	loadState();
 }
 
-ShopsView::~ShopsView()
+PartnersView::~PartnersView()
 {
 	delete newShopView;
 	delete editShopView;
 }
 
-void ShopsView::showEvent(QShowEvent *event)
+void PartnersView::retranslate()
 {
-	PannView::showEvent(event);
+	setWindowTitle(tr(TidPartnersWindowTitle));
+	relayout();
 }
 
-void ShopsView::closeEvent(QCloseEvent *event)
+void PartnersView::applyLayout()
+{
+	delete layout();
+
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addWidget(&tableView);
+
+	setLayout(mainLayout);
+}
+
+void PartnersView::relayout()
+{
+	if(tableView.horizontalHeader()->width() < width())
+		tableView.horizontalHeader()->setResizeMode(
+				Item::Comment, QHeaderView::Stretch);
+	else
+		tableView.horizontalHeader()->setResizeMode(
+				Item::Comment, QHeaderView::ResizeToContents);
+
+	applyLayout();
+
+	updateToolButtonStates();
+}
+
+void PartnersView::updateToolButtonStates()
+{
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+	}
+	toolBar.updateButtons();
+}
+
+void PartnersView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void PartnersView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+
+	relayout();
+}
+
+void PartnersView::keyPressEvent(QKeyEvent * event)
+{
+	qApp->postEvent(&tableView, new QKeyEvent(*event));
+}
+
+void PartnersView::showEvent(QShowEvent *event)
+{
+	PannView::showEvent(event);
+	relayout();
+}
+
+void PartnersView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 	PannView::closeEvent(event);
 }
 
-void ShopsView::loadState()
+void PartnersView::loadState()
 {
-	QString prefix("ShopsView");
+	QString prefix("PartnersView");
 	PannView::loadState(prefix);
 	QSettings settings;
 
 	QString name = settings.value(prefix + "/currentitem", "").toString();
-	queryView->selectRow(model.index(name));
+	tableView.selectRow(model.index(name));
 
 	if(settings.value(prefix + "/editshopview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
-void ShopsView::saveState()
+void PartnersView::saveState()
 {
-	QString prefix("ShopsView");
+	QString prefix("PartnersView");
 	PannView::saveState(prefix);
 	QSettings settings;
 
 	QString shopName;
-	if(queryView->currentIndex().isValid())
-		shopName = model.shop(queryView->currentIndex().row()).name;
+	if(tableView.currentIndex().isValid())
+		shopName = model.shop(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", shopName);
 
 	settings.setValue(prefix + "/editshopview",
 			editShopView != NULL && editShopView->isVisible());
 }
 
-void ShopsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
-{
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
-}
-
-void ShopsView::newShop()
+void PartnersView::newShop()
 {
 	if(!newShopView)
 		newShopView = new NewShopView(dbname);
 
-	connect(newShopView, SIGNAL(finished(int)), this, SLOT(finishedNewShop(int)));
 	newShopView->activate();
 }
 
-void ShopsView::finishedNewShop(int res)
+void PartnersView::editShop()
 {
-	(void)res;
-
-	newShopView->disconnect(this, SLOT(finishedNewShop(int)));
-}
-
-void ShopsView::editShop()
-{
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select shop first."));
 		return;
@@ -140,27 +184,19 @@ void ShopsView::editShop()
 	if(!editShopView)
 		editShopView = new EditShopView(dbname);
 
-	connect(editShopView, SIGNAL(finished(int)), this, SLOT(finishedEditShop(int)));
-	editShopView->setCursor(queryView->currentIndex());
+	editShopView->setCursor(tableView.currentIndex());
 	editShopView->activate();
 }
 
-void ShopsView::finishedEditShop(int res)
+void PartnersView::delShop()
 {
-	Q_UNUSED(res);
-
-	editShopView->disconnect(this, SLOT(finishedEditShop(int)));
-}
-
-void ShopsView::delShop()
-{
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select shop first."));
 		return;
 	}
 
-	int row = queryView->currentIndex().row();
+	int row = tableView.currentIndex().row();
 	const Shop &shop = model.shop(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -170,4 +206,18 @@ void ShopsView::delShop()
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
+}
+
+void PartnersView::refresh()
+{
+	QString name;
+	if(tableView.currentIndex().isValid())
+		name = model.shop(tableView.currentIndex().row()).name;
+
+	model.query();
+
+	if(model.shopSet().has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), 0));
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }

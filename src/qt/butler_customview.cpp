@@ -127,6 +127,20 @@ void CustomView::relayout()
 	updateToolButtonStates();
 }
 
+void CustomView::updateToolButtonStates()
+{
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+		shoppingButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+		shoppingButton.hide();
+	}
+	toolBar.updateButtons();
+}
+
 void CustomView::changeEvent(QEvent * event)
 {
 	QWidget::changeEvent(event);
@@ -233,12 +247,8 @@ void CustomView::editItem()
 		return;
 	}
 
-	if(!editItemView){
+	if(!editItemView)
 		editItemView = new AccountingView(dbname, *model);
-		editItemView->setCursor(tableView.currentIndex());
-		editItemView->loadState();
-		editItemView->activate();
-	}
 
 	editItemView->setCursor(tableView.currentIndex());
 	editItemView->activate();
@@ -333,20 +343,6 @@ void CustomView::statsItems()
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model->sort(logicalIndex, order == Qt::AscendingOrder);
-}
-
-void CustomView::updateToolButtonStates()
-{
-	if(tableView.currentIndex().isValid()){
-		editButton.show();
-		delButton.show();
-		shoppingButton.show();
-	} else {
-		editButton.hide();
-		delButton.hide();
-		shoppingButton.hide();
-	}
-	toolBar.updateButtons();
 }
 
 void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
