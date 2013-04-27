@@ -7,17 +7,9 @@
 #define BUTLER_WARESVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_pannable.h>
-
-#include <butler_query.h>
-
-#include "butler_databases.h"
+#include <butler_databases.h>
 
 /*forwards*/
-class QLabel;
-class QTableView;
-class QSqlTableModel;
-
 class NewWareView;
 class EditWareView;
 
@@ -38,23 +30,36 @@ private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+	virtual void keyPressEvent(QKeyEvent * event);
+
 private slots:
 	void newWare();
-	void finishedNewWare(int);
 	void editWare();
-	void finishedEditWare(int);
 	void delWare();
+	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	const QString & dbname;
 	WaresModel & model;
 
-	Pannable<QTableView> queryView;
-	QSqlTableModel *queryTable;
+	ToolButton addButton;
+	ToolButton delButton;
+	ToolButton editButton;
+	ToolButton refreshButton;
 
-	NewWareView *newWareView;
-	EditWareView *editWareView;
+	TableView tableView;
+
+	NewWareView * newWareView;
+	EditWareView * editWareView;
 };
 
 #endif

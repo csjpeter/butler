@@ -12,57 +12,48 @@
 #include "butler_editwareview.h"
 #include "butler_config.h"
 
+SCC TidContext = "WaresView";
+
+SCC TidWaresWindowTitle = QT_TRANSLATE_NOOP("WaresView", "Ware/Service list");
+SCC TidAddButton = QT_TRANSLATE_NOOP("WaresView", "Add new ware or service");
+SCC TidEditButton = QT_TRANSLATE_NOOP("WaresView", "Edit ware or service");
+SCC TidDelButton = QT_TRANSLATE_NOOP("WaresView", "Delete ware or service");
+SCC TidRefreshButton = QT_TRANSLATE_NOOP("WaresView", "Refresh ware/service list");
+
 WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(waresModel(dbname)),
+	addButton(QIcon(Path::icon("add.png")),
+			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
+	delButton(QIcon(Path::icon("delete.png")),
+			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
+	editButton(QIcon(Path::icon("edit.png")),
+			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
+	refreshButton(QIcon(Path::icon("refresh.png")),
+			TidRefreshButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	newWareView(NULL),
 	editWareView(NULL)
 {
-	setWindowTitle(tr("Ware editor"));
+	setWindowIcon(QIcon(Path::icon("ware.png")));
 
-	QHBoxLayout * cLayout = new QHBoxLayout;
-	QPushButton * button;
+	tableView.setModel(&model);
 
-	button = new QPushButton(QIcon(Path::icon("add.png")), tr("&New"), this);
-	connect(button, SIGNAL(clicked()), this, SLOT(newWare()));
-	cLayout->addWidget(button);
+	toolBar.addToolWidget(addButton);
+	toolBar.addToolWidget(editButton);
+	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(refreshButton);
 
-	button = new QPushButton(QIcon(Path::icon("edit.png")), tr("&Edit"));
-	connect(button, SIGNAL(clicked()), this, SLOT(editWare()));
-	cLayout->addWidget(button);
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(newWare()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editWare()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delWare()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refresh()));
 
-	button = new QPushButton(QIcon(Path::icon("delete.png")), tr("&Delete"));
-	connect(button, SIGNAL(clicked()), this, SLOT(delWare()));
-	cLayout->addWidget(button);
+	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
 
-	/* query result list */
-	queryView = new QTableView;
-	queryView->setModel(&model);
-	queryView->verticalHeader()->hide();
-	queryView->horizontalHeader()->setMovable(true);
-	queryView->horizontalHeader()->setSortIndicatorShown(true);
-	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView->horizontalHeader()->setResizeMode(
-			Ware::Name, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Ware::Unit, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Ware::Categories, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
-			Ware::Tags, QHeaderView::Stretch);
-	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	connect(queryView->horizontalHeader(),
-			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
-
-	/* making the window layouting */
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->addLayout(cLayout);
-	layout->addWidget(&queryView);
-
-	setLayout(layout);
+	setupView();
+	retranslate();
 	loadState();
 }
 
@@ -72,9 +63,72 @@ WaresView::~WaresView()
 	delete editWareView;
 }
 
+void WaresView::retranslate()
+{
+	setWindowTitle(tr(TidWaresWindowTitle));
+	relayout();
+}
+
+void WaresView::applyLayout()
+{
+	delete layout();
+
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addWidget(&tableView);
+
+	setLayout(mainLayout);
+}
+
+void WaresView::relayout()
+{
+	if(tableView.horizontalHeader()->width() < width())
+		tableView.horizontalHeader()->setResizeMode(
+				Ware::Categories, QHeaderView::Stretch);
+	else
+		tableView.horizontalHeader()->setResizeMode(
+				Ware::Categories, QHeaderView::ResizeToContents);
+
+	applyLayout();
+
+	updateToolButtonStates();
+}
+
+void WaresView::updateToolButtonStates()
+{
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+	}
+	toolBar.updateButtons();
+}
+
+void WaresView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void WaresView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+
+	relayout();
+}
+
+void WaresView::keyPressEvent(QKeyEvent * event)
+{
+	qApp->postEvent(&tableView, new QKeyEvent(*event));
+}
+
 void WaresView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
+	relayout();
 }
 
 void WaresView::closeEvent(QCloseEvent *event)
@@ -89,10 +143,14 @@ void WaresView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
-	QString name = settings.value(prefix + "/currentitem", "").toString();
-	queryView->selectRow(model.index(name));
+	tableView.loadState(prefix);
 
-	if(settings.value(prefix + "/editwareview", false).toBool())
+	QString name = settings.value(prefix + "/currentitem", "").toString();
+	int col = settings.value(prefix + "/currentitemCol", "").toInt();
+	if(model.wareSet().has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), col));
+
+	if(settings.value(prefix + "/editWareView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 }
 
@@ -102,18 +160,15 @@ void WaresView::saveState()
 	PannView::saveState(prefix);
 	QSettings settings;
 
-	QString wareName;
-	if(queryView->currentIndex().isValid())
-		wareName = model.ware(queryView->currentIndex().row()).name;
-	settings.setValue(prefix + "/currentitem", wareName);
+	QString name;
+	if(tableView.currentIndex().isValid())
+		name = model.ware(tableView.currentIndex().row()).name;
+	settings.setValue(prefix + "/currentitem", name);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
-	settings.setValue(prefix + "/editwareview",
-			editWareView != NULL && editWareView->isVisible());
-}
+	tableView.saveState(prefix);
 
-void WaresView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
-{
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	SAVE_VIEW_STATE(editWareView);
 }
 
 void WaresView::newWare()
@@ -121,20 +176,12 @@ void WaresView::newWare()
 	if(!newWareView)
 		newWareView = new NewWareView(dbname);
 
-	connect(newWareView, SIGNAL(finished(int)), this, SLOT(finishedNewWare(int)));
 	newWareView->activate();
-}
-
-void WaresView::finishedNewWare(int res)
-{
-	(void)res;
-
-	newWareView->disconnect(this, SLOT(finishedNewWare(int)));
 }
 
 void WaresView::editWare()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select ware first."));
 		return;
@@ -143,27 +190,19 @@ void WaresView::editWare()
 	if(!editWareView)
 		editWareView = new EditWareView(dbname);
 
-	connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
-	editWareView->setCursor(queryView->currentIndex());
+	editWareView->setCursor(tableView.currentIndex());
 	editWareView->activate();
-}
-
-void WaresView::finishedEditWare(int res)
-{
-	Q_UNUSED(res);
-
-	editWareView->disconnect(this, SLOT(finishedEditWare(int)));
 }
 
 void WaresView::delWare()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select ware first."));
 		return;
 	}
 
-	int row = queryView->currentIndex().row();
+	int row = tableView.currentIndex().row();
 	const Ware &ware = model.ware(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -173,4 +212,30 @@ void WaresView::delWare()
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
+}
+
+void WaresView::refresh()
+{
+	QString name;
+	if(tableView.currentIndex().isValid())
+		name = model.ware(tableView.currentIndex().row()).name;
+
+	model.query();
+
+	if(model.wareSet().has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), 0));
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
+}
+
+void WaresView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
+{
+	model.sort(logicalIndex, order == Qt::AscendingOrder);
+}
+
+void WaresView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() == previous.isValid())
+		return;
+	updateToolButtonStates();
 }

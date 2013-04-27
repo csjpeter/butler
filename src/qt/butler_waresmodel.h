@@ -53,6 +53,7 @@ public slots:
 public:
 	int index(const QString &name) const NO_FCLOG;
 	const Ware& ware(int row) const NO_FCLOG;
+	const WareSet & wareSet() const { return wares; };
 	void del(int row);
 	void addNew(Ware &ware);
 	virtual void update(int row, Ware &modified);

@@ -56,8 +56,8 @@ public:
 	enum Fields {
 		Name = 0,
 		Unit,
-		Categories,
 		Tags,
+		Categories,
 		NumOfFields
 	};
 

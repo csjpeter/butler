@@ -36,12 +36,12 @@ public:
 	NewItemView(const QString & dbname, QWidget *parent = 0);
 	virtual ~NewItemView() {}
 
+	void loadState();
+	void saveState();
+
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	void loadState();
-	void saveState();
 
 	void mapToGui();
 	void mapFromGui();

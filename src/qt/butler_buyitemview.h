@@ -41,12 +41,12 @@ public:
 
 	void setItem(unsigned itemRow, unsigned shopRow);
 
+	void loadState();
+	void saveState();
+
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
-
-	void loadState();
-	void saveState();
 	
 	void mapToGui();
 	void mapFromGui();

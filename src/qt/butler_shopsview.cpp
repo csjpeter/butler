@@ -32,10 +32,10 @@ PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
 	refreshButton(QIcon(Path::icon("refresh.png")),
 			TidRefreshButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	newShopView(NULL),
-	editShopView(NULL)
+	newPartnerView(NULL),
+	editPartnerView(NULL)
 {
-	setWindowTitle(tr("Shop list"));
+	setWindowIcon(QIcon(Path::icon("shop.png")));
 
 	tableView.setModel(&model);
 
@@ -59,8 +59,8 @@ PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 
 PartnersView::~PartnersView()
 {
-	delete newShopView;
-	delete editShopView;
+	delete newPartnerView;
+	delete editPartnerView;
 }
 
 void PartnersView::retranslate()
@@ -146,9 +146,11 @@ void PartnersView::loadState()
 	tableView.loadState(prefix);
 
 	QString name = settings.value(prefix + "/currentitem", "").toString();
-	tableView.selectRow(model.index(name));
+	int col = settings.value(prefix + "/currentitemCol", "").toInt();
+	if(model.shopSet().has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), col));
 
-	if(settings.value(prefix + "/editshopview", false).toBool())
+	if(settings.value(prefix + "/editPartnerView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 
 	updateToolButtonStates();
@@ -160,21 +162,23 @@ void PartnersView::saveState()
 	PannView::saveState(prefix);
 	QSettings settings;
 
-	QString shopName;
+	QString name;
 	if(tableView.currentIndex().isValid())
-		shopName = model.shop(tableView.currentIndex().row()).name;
-	settings.setValue(prefix + "/currentitem", shopName);
+		name = model.shop(tableView.currentIndex().row()).name;
+	settings.setValue(prefix + "/currentitem", name);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
-	settings.setValue(prefix + "/editshopview",
-			editShopView != NULL && editShopView->isVisible());
+	tableView.saveState(prefix);
+
+	SAVE_VIEW_STATE(editPartnerView);
 }
 
 void PartnersView::newShop()
 {
-	if(!newShopView)
-		newShopView = new NewShopView(dbname);
+	if(!newPartnerView)
+		newPartnerView = new NewShopView(dbname);
 
-	newShopView->activate();
+	newPartnerView->activate();
 }
 
 void PartnersView::editShop()
@@ -185,11 +189,11 @@ void PartnersView::editShop()
 		return;
 	}
 
-	if(!editShopView)
-		editShopView = new EditShopView(dbname);
+	if(!editPartnerView)
+		editPartnerView = new EditShopView(dbname);
 
-	editShopView->setCursor(tableView.currentIndex());
-	editShopView->activate();
+	editPartnerView->setCursor(tableView.currentIndex());
+	editPartnerView->activate();
 }
 
 void PartnersView::delShop()

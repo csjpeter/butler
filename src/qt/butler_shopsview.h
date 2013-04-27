@@ -7,7 +7,6 @@
 #define BUTLER_PARTNERSVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_query.h>
 #include <butler_databases.h>
 
 /*forwards*/
@@ -59,8 +58,8 @@ private:
 
 	TableView tableView;
 
-	NewShopView *newShopView;
-	EditShopView *editShopView;
+	NewShopView * newPartnerView;
+	EditShopView * editPartnerView;
 };
 
 #endif
