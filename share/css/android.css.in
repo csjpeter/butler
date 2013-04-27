@@ -9,7 +9,8 @@
  * 1, 1.2, 1.4, 1.7, 2.1, 2.5, 3, 3.6, 4.3, 5.2, 6.2, 7.4, 8.9, 10.7 */
 
 * {
-/*	border-width: 0mm;*/
+/*	border-width: 0.05mm;
+	border-color: red;*/
 /*	font-family: "Arial";*/
 /*	border-radius: 1mm;*/
 	background-color: black;
@@ -48,15 +49,28 @@ QLabel::pressed:focus {
 
 /* Scrollbar */
 
-QScrollBar, QScrollBar::up-arrow, QScrollBar::down-arrow, QScrollBar::add-page, QScrollBar::sub-page, QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::down-button, QScrollBar::up-button {
-	border-width: 0mm;
+QScrollBar, \
+QScrollBar::up-arrow, \
+QScrollBar::down-arrow, \
+QScrollBar::add-page, \
+QScrollBar::sub-page, \
+QScrollBar::add-line, \
+QScrollBar::sub-line, \
+QScrollBar::down-button, \
+QScrollBar::up-button, \
+QScrollBar::handle {
+	border: none;
 }
-QScrollBar::handle { background-color: gray;  border: 0.5mm; border-color: black;}
-QScrollBar:vertical { width: 1mm; min-height: 10mm; }
-QScrollBar:horizontal { height: 1mm; min-width: 10mm; }
+QScrollBar:vertical { width: 1mm; }
+QScrollBar:horizontal { height: 1mm; }
+QScrollBar::handle { background-color: #666666; }
+QScrollBar::handle:vertical { min-height: 10mm; }
+QScrollBar::handle:horizontal { min-width: 10mm; }
 QAbstractScrollArea QScrollBar#pannviewscrollbar:vertical { padding-left: 0.5mm; }
 QAbstractScrollArea QScrollBar#pannviewscrollbar:horizontal { padding-top: 0.5mm; }
-/*PannView > QScrollArea { padding: 0.5mm; }*/
+ControlBar QScrollBar:vertical { width: 0.4mm; }
+ControlBar QScrollBar:horizontal { height: 0.4mm; }
+ControlBar QScrollBar::handle:vertical { min-height: 3mm; }
 
 /* Some common interactive rule */
 
@@ -66,12 +80,10 @@ QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRa
 
 QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox {
 	min-width: 30mm;
-/*	width: 30mm;*/
 }
 
 DoubleEditor QLineEdit {
 	min-width: 10mm;
-/*	width: 10mm;*/
 }
 
 QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
@@ -107,16 +119,17 @@ QPushButton {
 	font-size: 3mm;
 	font-weight: bold;
 	border-width: 0.2mm;
-	border-radius: 3mm;
-	padding-right: 3mm;
-	padding-left: 3mm;
+	border-radius: 2.7mm;
+	padding-right: 2.5mm;
+	padding-left: 2.5mm;
 /*	min-width: 16mm;*/
-	min-height: 6mm;
-	max-height: 6mm;
+	min-height: 5.5mm;
+	max-height: 5.5mm;
 	margin: 1mm;
 	border-color: #444444;
 	background-color: #888888;
 	color: black;
+	icon-size: 4mm;
 }
 
 QPushButton:default {
@@ -129,9 +142,12 @@ QPushButton:pressed {
 	color: #888888;
 }
 
-CustomView ToolBar QPushButton {
-	margin-top: 3mm;
-	margin-bottom: 3mm;
+ToolBar ControlBar {
+	min-height: 9mm;
+}
+
+CustomView ToolBar ControlBar {
+	min-height: 12.5mm;
 }
 
 QToolButton {
@@ -158,15 +174,12 @@ QTextEdit {
 }
 
 QTextEdit QScrollBar {
-	min-width: 5mm;
+	min-width: 3mm;
 }
 
 QTextEdit QScrollBar, QTextEdit QScrollBar:disable {
 	border-width: 0mm;
 }
-
-ToolBar QScrollBar:vertical { width: 0.5mm; min-height: 10mm; }
-ToolBar QScrollBar:horizontal { height: 0.5mm; min-width: 10mm; }
 
 /* QSpinBox and QDoubleSpinBox */
 
@@ -192,11 +205,11 @@ QTableView QHeaderView::section:checked {
 	border-color: #444444;
 	border-top-style: none;
 	border-bottom-style: ridge;
-	border-bottom-width: 0.5mm;
+	border-bottom-width: 0.4mm;
 	border-left-style: none;
 /*	border-left-width: 0.5mm;*/
 	border-right-style: dotted;
-	border-right-width: 0.5mm;
+	border-right-width: 0.4mm;
 	background-color: #000000;
 	color: #888888;
 }

@@ -75,15 +75,7 @@ QSize TagWidget::sizeHint() const
 	int lw = label.sizeHint().width();
 	if(w < lw)
 		w = lw;
-/*	int h = label.sizeHint().height();
-	if(btnContainer.size()){
-		QCheckBox & tagBox = btnContainer.queryAt(0);
-		h += tagBox.sizeHint().height() * btnContainer.size();
-	}
-	DBG("width() in SizeHint: %d", width());
-	if(w < width())
-		h = heightForWidth(width());
-	DBG("SizeHint: %d, %d", w, h);*/
+	DBG("SizeHint: %d, %d", w, h);
 	return QSize(w, -1);
 }
 

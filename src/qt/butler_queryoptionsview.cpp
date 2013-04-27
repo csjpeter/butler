@@ -48,7 +48,6 @@ SCC TidQuerySavedInfo = QT_TRANSLATE_NOOP("QueryOptionsView", "Query is saved.")
 QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	toolBar(this),
 	queryButton(TidQueryButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Enter)),
 	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
 	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
@@ -72,8 +71,6 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	toolBar.addToolWidget(saveButton);
 	toolBar.addToolWidget(delButton);
 	toolBar.addToolWidget(resetButton);
-	toolBar.relayout();
-	setToolBar(&toolBar);
 
 	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
 	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveClickedSlot()));
@@ -115,6 +112,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	connect(&withoutTagsWidget, SIGNAL(selectionChanged()),
 			this, SLOT(updateToolButtonStates()));
 
+	setupView();
 	loadState();
 	retranslate();
 }

@@ -8,6 +8,7 @@
 
 #include <butler_item.h>
 #include <butler_tagwidget.h>
+#include <butler_pannview.h>
 
 class AccountingView : public PannView
 {
@@ -56,7 +57,6 @@ private:
 	Item item;
 	Ware ware;
 
-	ToolBar toolBar;
 	Button doneButton;
 	Button resetButton;
 	Button prevButton;

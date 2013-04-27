@@ -29,7 +29,6 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
-	toolBar(this),
 	editButton(QIcon(Path::icon("edit.png")),
 			TidEditItemButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -59,8 +58,6 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	toolBar.addToolWidget(statsButton);
 	toolBar.addToolWidget(refreshButton);
 	toolBar.addToolWidget(filterButton);
-	toolBar.relayout();
-	setToolBar(&toolBar);
 
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
@@ -73,6 +70,7 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
 
+	setupView();
 	retranslate();
 	loadState();
 }

@@ -48,7 +48,6 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	PannView(parent),
 	dbname(dbname),
 	model(model),
-	toolBar(this),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -70,10 +69,10 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 
 	toolBar.addToolWidget(doneButton);
 	toolBar.addToolWidget(resetButton);
-	toolBar.addToolWidget(prevButton);
-	toolBar.addToolWidget(nextButton);
-	toolBar.relayout();
-	setToolBar(&toolBar);
+	footerBar.addToolWidget(prevButton);
+	footerBar.addToolWidget(nextButton);
+	footerBar.expanding = true;
+	footerBar.spacerEnd = false;
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
@@ -111,6 +110,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	connect(&wareEditor.box, SIGNAL(currentIndexChanged(int)),
 			this, SLOT(wareNameEditFinishedSlot(int)));
 
+	setupView();
 	loadState();
 	retranslate();
 }
@@ -503,6 +503,7 @@ void AccountingView::updateToolButtonStates()
 
 	bool mandatoriesGiven = wareEditor.editor.text().size();
 
+	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
 	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
 	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
 	doneButton.setVisible(mandatoriesGiven && modified);
@@ -516,6 +517,7 @@ void AccountingView::updateToolButtonStates()
 	}
 
 	toolBar.updateButtons();
+	footerBar.updateButtons();
 }
 
 void AccountingView::wareNameEditFinishedSlot()

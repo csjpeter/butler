@@ -25,7 +25,6 @@ QLocale locale;
 double pxPerMM = 0;
 double scaleFactor = 1;
 int thresholdScrollDistance = 0;
-ToolBarPosition toolBarPosition = ToolBarPosition::Top;
 
 void save()
 {

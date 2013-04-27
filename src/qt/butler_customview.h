@@ -6,7 +6,7 @@
 #ifndef BUTLER_CUSTOMVIEW_H
 #define BUTLER_CUSTOMVIEW_H
 
-#include <butler_widgets.h>
+#include <butler_pannview.h>
 
 class AccountingView;
 class EditItemView;
@@ -56,7 +56,6 @@ private:
 	const QString & dbname;
 	csjp::Object<CustomModel> model;
 
-	ToolBar toolBar;
 	ToolButton editButton;
 	ToolButton delButton;
 	ToolButton shoppingButton;

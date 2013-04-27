@@ -6,7 +6,7 @@
 #ifndef BUTLER_MAINVIEW_H
 #define BUTLER_MAINVIEW_H
 
-#include <butler_widgets.h>
+#include <butler_pannview.h>
 #include <butler_query.h>
 #include <butler_databases.h>
 

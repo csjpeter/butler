@@ -8,7 +8,7 @@
 
 #include <butler_item.h>
 #include <butler_query.h>
-#include <butler_widgets.h>
+#include <butler_pannview.h>
 
 class StatsView : public PannView
 {
@@ -39,8 +39,6 @@ private slots:
 
 private:
 	const QueryStat & stat;
-
-	ToolBar toolBar;
 
 	Label itemCountLabel;
 	Label itemCountValueLabel;

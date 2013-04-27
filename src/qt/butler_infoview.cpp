@@ -15,14 +15,11 @@
 SCC TidInfoWindowTitle = QT_TRANSLATE_NOOP("InfoView", "License informations");
 
 InfoView::InfoView(QWidget *parent) :
-	PannView(parent),
-	toolBar(this)
+	PannView(parent)
 {
 	setWindowTitle(trLong(TidInfoWindowTitle));
 	setWindowIcon(QIcon(Path::icon("info.png")));
 	setWindowModality(Qt::ApplicationModal);
-
-	setToolBar(&toolBar);
 
 	QString license = QString::fromUtf8(ENDUSER_LICENSE);
 
@@ -32,6 +29,7 @@ InfoView::InfoView(QWidget *parent) :
 	label.setWordWrap(true);
 	layout->addWidget(&label);
 
+	setupView();
 	setLayout(layout);
 	loadState();
 }

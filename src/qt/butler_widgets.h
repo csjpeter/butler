@@ -14,7 +14,8 @@
 #include <config.h>
 
 #include "butler_databases.h"
-#include "butler_pannview.h"
+
+#include <butler_kineticscroller.h>
 
 #define PRIMITIVE_PROPERTY(type, name, reader, writer) \
 	Q_PROPERTY(type name READ reader WRITE writer); \
@@ -175,6 +176,7 @@ public:
 	Label() : QLabel()
 	{
 		setFocusPolicy(Qt::NoFocus);
+		setWordWrap(true);
 	}
 };
 
@@ -851,6 +853,137 @@ public:
 	QLabel label;
 };
 
+class ControlBar : public QScrollArea
+{
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
+public:
+	ControlBar(QWidget * parent = 0) :
+		QScrollArea(parent),
+		expanding(false),
+		spacerBegin(false),
+		spacerEnd(true),
+		hideIfEmpty(true),
+		scroller(this)
+	{
+		setFocusPolicy(Qt::NoFocus);
+		setFocusPolicy(Qt::NoFocus);
+		setContentsMargins(0,0,0,0);
+		main.setContentsMargins(0,0,0,0);
+		main.setFocusPolicy(Qt::NoFocus);
+
+//		setFrameStyle(QFrame::NoFrame);
+		setWidget(&main);
+		setWidgetResizable(true);
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum));
+	}
+	virtual ~ControlBar() {}
+
+	void addToolWidget(ToolWidget & tw)
+	{
+		buttons.add(tw);
+	}
+
+	void showEvent(QShowEvent *event)
+	{
+		QWidget::showEvent(event);
+		bool save = hideIfEmpty;
+		hideIfEmpty = false;
+		updateButtons();
+		hideIfEmpty = save;
+	}
+
+	void resizeEvent(QResizeEvent * event)
+	{
+		if(layout() && (event->size() == event->oldSize()))
+			return;
+		updateButtons();
+	}
+
+	virtual void changeEvent(QEvent * event)
+	{
+		QWidget::changeEvent(event);
+		if(event->type() == QEvent::LanguageChange)
+			updateButtons();
+	}
+
+	void applyLayout()
+	{
+		HLayout * toolLayout = new HLayout;
+		toolLayout->setSpacing(0);
+
+		if(spacerBegin)
+			toolLayout->addStretch(10000);
+
+		unsigned s = buttons.size();
+		for(unsigned i = 0; i < s; i++){
+			toolLayout->addWidget(buttons.queryAt(i).qwidget(),
+					-1, Qt::AlignVCenter | Qt::AlignLeft);
+			if(expanding && i != s-1)
+				toolLayout->addStretch(10000);
+		}
+
+		if(spacerEnd)
+			toolLayout->addStretch(10000);
+
+		delete main.layout();
+		main.setLayout(toolLayout);
+		updateButtons();
+	}
+
+	void relayout()
+	{
+		if(!main.layout())
+			applyLayout();
+	}
+
+	void updateButtons()
+	{
+		unsigned showCount = 0;
+
+		{
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++){
+				ToolWidget & tw = buttons.queryAt(i);
+				tw.expanding();
+				if(tw.qwidget()->isVisible())
+					showCount++;
+			}
+		}
+		if(width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).wide();
+		}
+		if(width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).medium();
+		}
+		if(width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).narrow();
+		}
+
+		if(hideIfEmpty)
+			setVisible(showCount);
+	}
+
+public:
+	bool expanding;
+	bool spacerBegin;
+	bool spacerEnd;
+	bool hideIfEmpty;
+
+private:
+	QWidget main;
+
+	KineticScroller scroller;
+	csjp::SorterReferenceContainer<ToolWidget> buttons;
+};
+
 SCC TidToolBarContext = "ToolBar";
 SCC TidBackButtonLabel = QT_TRANSLATE_NOOP("ToolBar", "Back");
 
@@ -860,51 +993,18 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ToolBar(PannView * parent) :
+	ToolBar(QWidget * parent = 0) :
 		QWidget(parent),
-		scrollArea(0),
 		backButton(TidBackButtonLabel, TidToolBarContext,
-				QKeySequence(Qt::ALT + Qt::Key_Escape)),
-		scroller(&scrollArea)
+				QKeySequence(Qt::ALT + Qt::Key_Escape))
 	{
 		setFocusPolicy(Qt::NoFocus);
-		main.setFocusPolicy(Qt::NoFocus);
-		main.setContentsMargins(0,0,0,0);
-		scrollArea.setFocusPolicy(Qt::NoFocus);
-		scrollArea.setContentsMargins(0,0,0,0);
 		setContentsMargins(0,0,0,0);
-
-		connect(&backButton, SIGNAL(clicked()), parent, SLOT(reject()));
-
-//		scrollArea.setFrameStyle(QFrame::NoFrame);
-		scrollArea.setWidget(&main);
-		scrollArea.setWidgetResizable(true);
-//		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		scrollArea.setSizePolicy(QSizePolicy(
-				  QSizePolicy::Expanding, QSizePolicy::Preferred));
+		ctrlBar.hideIfEmpty = false;
 
 		infoLabel.hide();
-
-		QHBoxLayout * hLayout = new QHBoxLayout;
-		hLayout->setContentsMargins(0,0,0,0);
-		hLayout->addWidget(&scrollArea);
-		hLayout->addWidget(&backButton);
-
-		QVBoxLayout * vLayout = new QVBoxLayout;
-		vLayout->setSpacing(0);
-		vLayout->setContentsMargins(0,0,0,0);
-		vLayout->addWidget(&infoLabel);
-		vLayout->addLayout(hLayout);
-
-		QWidget::setLayout(vLayout);
 	}
 	virtual ~ToolBar() {}
-
-	void addToolWidget(ToolWidget & tw)
-	{
-		buttons.add(tw);
-	}
 
 	void showEvent(QShowEvent *event)
 	{
@@ -922,50 +1022,43 @@ public:
 	virtual void changeEvent(QEvent * event)
 	{
 		QWidget::changeEvent(event);
-		if(event->type() == QEvent::LanguageChange)
-			updateButtons();
+		if(event->type() != QEvent::LanguageChange)
+			return;
+		updateButtons();
 	}
 
-	void relayout()
+	void addToolWidget(ToolWidget & tw)
 	{
-		HLayout * toolLayout = new HLayout;
-		toolLayout->setSpacing(0);
-
-		unsigned s = buttons.size();
-		for(unsigned i = 0; i < s; i++)
-			toolLayout->addWidget(buttons.queryAt(i).qwidget(),
-					-1, Qt::AlignVCenter | Qt::AlignLeft);
-		toolLayout->addStretch(10000);
-
-		delete main.layout();
-		main.setLayout(toolLayout);
-		updateButtons();
+		ctrlBar.addToolWidget(tw);
 	}
 
 	void updateButtons()
 	{
 		backButton.setText(tr(TidBackButtonLabel));
+		ctrlBar.updateButtons();
+	}
 
-		{
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).expanding();
-		}
-		if(scrollArea.width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).wide();
-		}
-		if(scrollArea.width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).medium();
-		}
-		if(scrollArea.width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).narrow();
-		}
+	void applyLayout()
+	{
+		QHBoxLayout * hLayout = new QHBoxLayout;
+		hLayout->setContentsMargins(0,0,0,0);
+		hLayout->addWidget(&ctrlBar);
+		hLayout->addWidget(&backButton);
+
+		QVBoxLayout * vLayout = new QVBoxLayout;
+		vLayout->setSpacing(0);
+		vLayout->setContentsMargins(0,0,0,0);
+		vLayout->addWidget(&infoLabel);
+		vLayout->addLayout(hLayout);
+
+		delete QWidget::layout();
+		QWidget::setLayout(vLayout);
+	}
+
+	void relayout()
+	{
+		ctrlBar.relayout();
+		applyLayout();
 	}
 
 public slots:
@@ -986,14 +1079,10 @@ public slots:
 		infoLabel.hide();
 	}
 
-private:
-	QScrollArea scrollArea;
-	QWidget main;
+public:
 	InfoLabel infoLabel;
+	ControlBar ctrlBar;
 	Button backButton;
-
-	KineticScroller scroller;
-	csjp::SorterReferenceContainer<ToolWidget> buttons;
 };
 
 #endif

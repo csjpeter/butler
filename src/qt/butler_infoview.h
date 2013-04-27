@@ -6,7 +6,7 @@
 #ifndef BUTLER_INFOVIEW_H
 #define BUTLER_INFOVIEW_H
 
-#include <butler_widgets.h>
+#include <butler_pannview.h>
 
 /*forwards*/
 class QLabel;
@@ -29,7 +29,6 @@ private:
 	virtual void closeEvent(QCloseEvent *event);
 
 private:
-	ToolBar toolBar;
 	QLabel label;
 };
 

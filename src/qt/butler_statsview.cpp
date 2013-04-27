@@ -22,12 +22,12 @@ SCC TidSqlQueryTime	= QT_TRANSLATE_NOOP("StatsView", "Time taken by the SQL quer
 
 StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
 	PannView(parent),
-	stat(stat),
-	toolBar(this)
+	stat(stat)
 {
 	setWindowIcon(QIcon(Path::icon("statistics.png")));
 	setWindowModality(Qt::ApplicationModal);
-	
+
+	setupView();
 	retranslate();
 	loadState();
 }
@@ -100,8 +100,6 @@ void StatsView::applyLayout()
 	delete layout();
 
 	VLayout * mainLayout = new VLayout;
-
-	setToolBar(&toolBar);
 
 	QGridLayout * gridLayout = new QGridLayout;
 

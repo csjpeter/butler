@@ -6,10 +6,9 @@
 #ifndef BUTLER_PANNVIEW_H
 #define BUTLER_PANNVIEW_H
 
-#include <QWidget>
-#include <butler_kineticscroller.h>
-
 #include <config.h>
+
+#include <butler_widgets.h>
 
 class PannView : public QWidget
 {
@@ -34,7 +33,9 @@ public:
 		main.setFocusPolicy(Qt::NoFocus);
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
+		vLayout->addWidget(&toolBar);
 		vLayout->addWidget(&scrollArea);
+		vLayout->addWidget(&footerBar);
 		vLayout->setContentsMargins(0,0,0,0);
 		QWidget::setLayout(vLayout);
 
@@ -43,36 +44,11 @@ public:
 	}
 	virtual ~PannView() {}
 
-	void setToolBar(QWidget * wgt)
+	void setupView()
 	{
-		delete QWidget::layout();
-
-		QBoxLayout * layout = 0;
-
-		switch(Config::toolBarPosition){
-			case Config::ToolBarPosition::Top:
-			case Config::ToolBarPosition::Bottom:
-				layout = new QVBoxLayout;
-				layout->setContentsMargins(0,0,0,0);
-				if(Config::toolBarPosition == Config::ToolBarPosition::Top)
-					layout->addWidget(wgt);
-				layout->addWidget(&scrollArea);
-				if(Config::toolBarPosition == Config::ToolBarPosition::Bottom)
-					layout->addWidget(wgt);
-				break;
-			case Config::ToolBarPosition::Left:
-			case Config::ToolBarPosition::Right:
-				layout = new QHBoxLayout;
-				layout->setContentsMargins(0,0,0,0);
-				if(Config::toolBarPosition == Config::ToolBarPosition::Left)
-					layout->addWidget(wgt);
-				layout->addWidget(&scrollArea);
-				if(Config::toolBarPosition == Config::ToolBarPosition::Right)
-					layout->addWidget(wgt);
-				break;
-		}
-
-		QWidget::setLayout(layout);
+		connect(&toolBar.backButton, SIGNAL(clicked()), this, SLOT(reject()));
+		toolBar.relayout();
+		footerBar.relayout();
 	}
 
 	virtual QLayout * layout() const
@@ -168,6 +144,9 @@ signals:
 	void finished(int);
 	void rejected();
 
+public:
+	ToolBar toolBar;
+	ControlBar footerBar;
 private:
 	QScrollArea scrollArea;
 	QWidget main;

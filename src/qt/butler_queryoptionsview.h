@@ -8,6 +8,7 @@
 
 #include <butler_query.h>
 #include <butler_tagwidget.h>
+#include <butler_pannview.h>
 
 class QueryOptionsView : public PannView
 {
@@ -52,7 +53,6 @@ public:
 	Query query;
 
 private:
-	ToolBar toolBar;
 	Button queryButton;
 	Button saveButton;
 	Button delButton;
