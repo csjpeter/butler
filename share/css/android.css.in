@@ -125,7 +125,9 @@ QPushButton {
 /*	min-width: 16mm;*/
 	min-height: 5.5mm;
 	max-height: 5.5mm;
-	margin: 1mm;
+	margin: 0mm;
+	margin-left: 1mm;
+	margin-right: 1mm;
 	border-color: #444444;
 	background-color: #888888;
 	color: black;
