@@ -7,10 +7,6 @@
 #define BUTLER_SHOPPINGVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_pannable.h>
-
-#include <butler_query.h>
-
 #include "butler_databases.h"
 
 /*forwards*/
@@ -59,8 +55,8 @@ private:
 	ShoppingModel & model;
 
 	QComboBox *shopBox;
-	Pannable<QTableView> shopTableView;
-	Pannable<QTableView> queryView;
+	QTableView shopTableView;
+	QTableView queryView;
 	QSqlTableModel *queryTable;
 
 	NewItemView *newItemView;

@@ -54,52 +54,33 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	QLabel *label = new QLabel(tr("Shop (place of buy):"));
 	shopLayout->addWidget(label, 0, 0);
 
-	shopTableView = new QTableView;
-	shopBox = new QComboBox;
-	shopBox->setModel(&shopsModel(dbname));
-	shopBox->setModelColumn(Shop::Name);
-	shopBox->setView(&shopTableView);
-	shopLayout->addWidget(shopBox, 0, 1);
-/*	shopTableView->hideColumn(Shop::StoreName);
-	shopTableView->hideColumn(Shop::City);
-	shopTableView->hideColumn(Shop::Address);
-	shopTableView->hideColumn(Shop::Company);*/
-	shopTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-	shopTableView->verticalHeader()->hide();
-	shopTableView->setAlternatingRowColors(true);
-	shopTableView->setAutoScroll(false);
-	shopTableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-	shopTableView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-	shopTableView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-
 	/* query result list */
-	queryView = new QTableView;
-	queryView->setModel(&model);
-	queryView->verticalHeader()->hide();
-	queryView->horizontalHeader()->setMovable(true);
-	queryView->horizontalHeader()->setSortIndicatorShown(true);
-	queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView->horizontalHeader()->setResizeMode(
+	queryView.setModel(&model);
+	queryView.verticalHeader()->hide();
+	queryView.horizontalHeader()->setMovable(true);
+	queryView.horizontalHeader()->setSortIndicatorShown(true);
+	queryView.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	queryView.horizontalHeader()->setResizeMode(
 			Item::Name, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setResizeMode(
 			Item::Category, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setResizeMode(
 			Item::Quantity, QHeaderView::ResizeToContents);
-	queryView->horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setResizeMode(
 			Item::Comment, QHeaderView::Stretch);
-	queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-	connect(queryView->horizontalHeader(),
+	queryView.setSelectionBehavior(QAbstractItemView::SelectRows);
+	queryView.setSelectionMode(QAbstractItemView::SingleSelection);
+	connect(queryView.horizontalHeader(),
 			SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
 			this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder))
 			);
 
-	queryView->hideColumn(Item::Uploaded);
-	queryView->hideColumn(Item::Price);
-	queryView->hideColumn(Item::Bought);
-	queryView->hideColumn(Item::Shop);
-	queryView->hideColumn(Item::OnStock);
-	queryView->hideColumn(Item::Purchased);
+	queryView.hideColumn(Item::Uploaded);
+	queryView.hideColumn(Item::Price);
+	queryView.hideColumn(Item::Bought);
+	queryView.hideColumn(Item::Shop);
+	queryView.hideColumn(Item::OnStock);
+	queryView.hideColumn(Item::Purchased);
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -136,7 +117,7 @@ void ShoppingView::loadState()
 	QSettings settings;
 
 	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
-	queryView->selectRow(model.index(uploaded));
+	queryView.selectRow(model.index(uploaded));
 
 	if(settings.value(prefix + "/edititemview", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
@@ -149,8 +130,8 @@ void ShoppingView::saveState()
 	QSettings settings;
 
 	QString uploaded;
-	if(queryView->currentIndex().isValid()){
-		const Item &item = model.item(queryView->currentIndex().row());
+	if(queryView.currentIndex().isValid()){
+		const Item &item = model.item(queryView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
@@ -184,7 +165,7 @@ void ShoppingView::finishedNewItem(int res)
 void ShoppingView::editItem()
 {
 	/*
-	if(!queryView->currentIndex().isValid()){
+	if(!queryView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select item first."));
 		return;
@@ -193,20 +174,20 @@ void ShoppingView::editItem()
 	if(!editItemView)
 		editItemView = new EditItemView(dbname, model);
 
-	editItemView->setCursor(queryView->currentIndex());
+	editItemView->setCursor(queryView.currentIndex());
 	editItemView->activate();
 	*/
 }
 
 void ShoppingView::delItem()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!queryView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select item first."));
 		return;
 	}
 
-	int row = queryView->currentIndex().row();
+	int row = queryView.currentIndex().row();
 	const Item &item = model.item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -221,7 +202,7 @@ void ShoppingView::delItem()
 
 void ShoppingView::buyItem()
 {
-	if(!queryView->currentIndex().isValid()){
+	if(!queryView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
 				tr("Please select item first."));
 		return;
@@ -237,7 +218,7 @@ void ShoppingView::buyItem()
 		buyItemView = new BuyItemView(dbname);
 
 	connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
-	buyItemView->setItem(queryView->currentIndex().row(), shopBox->currentIndex());
+	buyItemView->setItem(queryView.currentIndex().row(), shopBox->currentIndex());
 	buyItemView->activate();
 }
 
