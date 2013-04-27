@@ -6,22 +6,8 @@
 #ifndef BUTLER_NEWTAGVIEW_H
 #define BUTLER_NEWTAGVIEW_H
 
-#include <butler_pannview.h>
-
-/*forwards*/
-class QLineEdit;
-class QTextEdit;
-class QDateTimeEdit;
-class QPushButton;
-class QLabel;
-class QScrollArea;
-class QListView;
-class QDataWidgetMapper;
-class QModelIndex;
-
 #include <butler_tag.h>
-
-#include "butler_databases.h"
+#include <butler_pannview.h>
 
 class NewTagView : public PannView
 {

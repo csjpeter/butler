@@ -192,7 +192,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_editwareview.opp \
 	tmp/src/qt/butler_newitemview.opp \
 	tmp/src/qt/butler_newshopview.opp \
-	tmp/src/qt/butler_newtagview.opp \
 	tmp/src/qt/butler_newwareview.opp \
 	tmp/src/qt/butler_queryoptionsview.opp \
 	tmp/src/qt/butler_shoppingview.opp \
@@ -223,7 +222,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_editwareview.opp \
 	tmp/src/qt/moc/butler_newitemview.opp \
 	tmp/src/qt/moc/butler_newshopview.opp \
-	tmp/src/qt/moc/butler_newtagview.opp \
 	tmp/src/qt/moc/butler_newwareview.opp \
 	tmp/src/qt/moc/butler_queryoptionsview.opp \
 	tmp/src/qt/moc/butler_shoppingview.opp \
@@ -232,7 +230,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \
 	tmp/src/qt/moc/butler_waresview.opp \
-	tmp/src/qt/moc/butler_pannable.opp \
 	tmp/src/qt/moc/butler_pannview.opp \
 	tmp/src/qt/moc/butler_widgets.opp \
 	tmp/src/qt/butler_kineticscroller.opp \

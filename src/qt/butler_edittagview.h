@@ -6,23 +6,8 @@
 #ifndef BUTLER_EDITTAGVIEW_H
 #define BUTLER_EDITTAGVIEW_H
 
-#include <butler_pannview.h>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
-
 #include <butler_tag.h>
-
-#include "butler_databases.h"
-
-/*forwards*/
-class QLineEdit;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QLabel;
-class QScrollArea;
-class QListView;
+#include <butler_pannview.h>
 
 class EditTagView : public PannView
 {
@@ -46,23 +31,32 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
+	void saveSlot();
+	void resetSlot();
 
 private:
-	Tag tag;
 	const QString & dbname;
 	TagsModel & model;
 	QModelIndex cursor;
+	Tag tag;
 
-	QLineEdit *nameEditor;
-	QLineEdit *descEditor;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
+	InputEditor nameEditor;
+	InputEditor descEditor;
 };
 
 #endif

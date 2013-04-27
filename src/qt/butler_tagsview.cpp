@@ -8,7 +8,6 @@
 #include <config.h>
 
 #include "butler_tagsview.h"
-#include "butler_newtagview.h"
 #include "butler_edittagview.h"
 
 SCC TidContext = "TagsView";
@@ -173,7 +172,7 @@ void TagsView::saveState()
 void TagsView::newTag()
 {
 	if(!newTagView)
-		newTagView = new NewTagView(dbname);
+		newTagView = new EditTagView(dbname);
 
 	newTagView->activate();
 }

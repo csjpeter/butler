@@ -358,6 +358,48 @@ private:
 	bool justFocusedIn;
 };
 
+class InputEditor : public QWidget
+{
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
+public:
+	InputEditor(QWidget * parent = 0) :
+		QWidget(parent)
+	{
+		setFocusPolicy(Qt::NoFocus);
+		label.setFocusPolicy(Qt::NoFocus);
+
+		setContentsMargins(0,0,0,0);
+		wideLayout();
+	}
+
+	virtual ~InputEditor() {}
+
+	void narrowLayout()
+	{
+		VLayout * newLayout = new VLayout;
+		newLayout->addWidget(&label, -1, Qt::AlignBottom);
+		newLayout->addWidget(&editor);
+		newLayout->setSpacing(1);
+		delete layout();
+		setLayout(newLayout);
+	}
+
+	void wideLayout()
+	{
+		HLayout * newLayout = new HLayout;
+		newLayout->addWidget(&label, 1, Qt::AlignTop);
+		newLayout->addWidget(&editor, 4);
+		delete layout();
+		setLayout(newLayout);
+	}
+
+public:
+	QLabel label;
+	LineEditor editor;
+};
+
 class DoubleEditor : public QWidget
 {
 private:

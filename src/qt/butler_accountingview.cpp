@@ -244,10 +244,8 @@ void AccountingView::retranslate()
 	relayout();
 }
 
-void AccountingView::applyLayout(LayoutState state, bool test)
+void AccountingView::applyLayout(bool test)
 {
-	(void)state;
-
 	HLayout * hlayout = new HLayout;
 	hlayout->addWidget(&grossPriceEditor);
 	hlayout->addStretch();
@@ -291,10 +289,7 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 
 void AccountingView::relayout()
 {
-	LayoutState newState = LayoutState::Expanding;
-
-/*	if(width() < sizeHint().width())*/{
-		newState = LayoutState::Wide;
+	{
 		wareEditor.wideLayout();
 		categoryEditor.wideLayout();
 		quantityEditor.wideLayout();
@@ -304,10 +299,9 @@ void AccountingView::relayout()
 		purchaseDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
-		applyLayout(newState, true);
+		applyLayout( true);
 	}
 	if(width() < sizeHint().width()){
-		newState = LayoutState::Medium;
 		wareEditor.wideLayout();
 		categoryEditor.wideLayout();
 		quantityEditor.narrowLayout();
@@ -317,10 +311,9 @@ void AccountingView::relayout()
 		purchaseDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
-		applyLayout(newState, true);
+		applyLayout(true);
 	}
 	if(width() < sizeHint().width()){
-		newState = LayoutState::Narrow;
 		wareEditor.narrowLayout();
 		categoryEditor.narrowLayout();
 		quantityEditor.narrowLayout();
@@ -330,11 +323,48 @@ void AccountingView::relayout()
 		purchaseDateTime.narrowLayout();
 		uploadDateTime.narrowLayout();
 		commentEditor.narrowLayout();
-		applyLayout(newState, true);
+		applyLayout(true);
 	}
 
-	applyLayout(newState);
+	applyLayout();
 	updateToolButtonStates();
+}
+
+void AccountingView::updateToolButtonStates()
+{
+	bool modified = !(
+			item.shop == shopEditor.text() &&
+			item.name == wareEditor.text() &&
+			item.category == categoryEditor.text() &&
+			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
+			item.comment == commentEditor.edit.toPlainText() &&
+			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
+			fabs(item.price - grossPriceEditor.value()) < 0.01 &&
+			item.purchased == purchaseDateTime.edit.dateTime() &&
+			item.onStock == (onStockCheck.box.checkState() == Qt::Checked)
+			);
+
+	/* tag states might have changed for ware */
+	if(tagsWidget.selectedTags() != ware.tags)
+		modified = true;
+
+	bool mandatoriesGiven = wareEditor.editor.text().size();
+
+	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
+	doneButton.setVisible(mandatoriesGiven && modified);
+	resetButton.setVisible(modified);
+
+	if(modified){
+		if(!mandatoriesGiven)
+			toolBar.setInfo(tr(TidInfoMandatoryFields));
+		else
+			toolBar.clearInfo();
+	}
+
+	toolBar.updateButtons();
+	footerBar.updateButtons();
 }
 
 void AccountingView::setCursor(const QModelIndex& index)
@@ -481,43 +511,6 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 	}
 
 	updateToolButtonStates();
-}
-
-void AccountingView::updateToolButtonStates()
-{
-	bool modified = !(
-			item.shop == shopEditor.text() &&
-			item.name == wareEditor.text() &&
-			item.category == categoryEditor.text() &&
-			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
-			item.comment == commentEditor.edit.toPlainText() &&
-			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
-			fabs(item.price - grossPriceEditor.value()) < 0.01 &&
-			item.purchased == purchaseDateTime.edit.dateTime() &&
-			item.onStock == (onStockCheck.box.checkState() == Qt::Checked)
-			);
-
-	/* tag states might have changed for ware */
-	if(tagsWidget.selectedTags() != ware.tags)
-		modified = true;
-
-	bool mandatoriesGiven = wareEditor.editor.text().size();
-
-	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
-	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
-	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
-	doneButton.setVisible(mandatoriesGiven && modified);
-	resetButton.setVisible(modified);
-
-	if(modified){
-		if(!mandatoriesGiven)
-			toolBar.setInfo(tr(TidInfoMandatoryFields));
-		else
-			toolBar.clearInfo();
-	}
-
-	toolBar.updateButtons();
-	footerBar.updateButtons();
 }
 
 void AccountingView::wareNameEditFinishedSlot()

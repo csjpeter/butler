@@ -37,8 +37,9 @@ private:
 
 private slots:
 	void retranslate();
-	void applyLayout(LayoutState state, bool test = false);
+	void applyLayout(bool test = false);
 	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
 	void saveSlot();
@@ -46,7 +47,6 @@ private slots:
 	void quantityValueChangedSlot(double q);
 	void unitPriceValueChangedSlot(double q);
 	void grossPriceValueChangedSlot(double q);
-	void updateToolButtonStates();
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
 

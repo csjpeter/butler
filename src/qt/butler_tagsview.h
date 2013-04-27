@@ -58,7 +58,7 @@ private:
 
 	TableView tableView;
 
-	NewTagView * newTagView;
+	EditTagView * newTagView;
 	EditTagView * editTagView;
 };
 

@@ -91,7 +91,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_infoview.cpp \
 	$(DIST_DIR)/src/qt/butler_newitemview.cpp \
 	$(DIST_DIR)/src/qt/butler_newshopview.cpp \
-	$(DIST_DIR)/src/qt/butler_newtagview.cpp \
 	$(DIST_DIR)/src/qt/butler_newwareview.cpp \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.cpp \
 	$(DIST_DIR)/src/qt/butler_shoppingmodel.cpp \
@@ -121,7 +120,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_infoview.h \
 	$(DIST_DIR)/src/qt/butler_newitemview.h \
 	$(DIST_DIR)/src/qt/butler_newshopview.h \
-	$(DIST_DIR)/src/qt/butler_newtagview.h \
 	$(DIST_DIR)/src/qt/butler_newwareview.h \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.h \
 	$(DIST_DIR)/src/qt/butler_shoppingmodel.h \
@@ -138,7 +136,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
-	$(DIST_DIR)/src/qt/butler_pannable.h \
 	$(DIST_DIR)/src/qt/butler_pannview.h \
 	$(DIST_DIR)/src/qt/butler_widgets.h \
 	$(DIST_DIR)/src/qt/butler_statsview.cpp \
