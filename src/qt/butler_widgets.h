@@ -39,6 +39,7 @@ enum class LayoutState {
 class ToolWidget
 {
 public:
+	virtual ~ToolWidget(){}
 	virtual void narrow() = 0;
 	virtual void medium() = 0;
 	virtual void wide() = 0;
