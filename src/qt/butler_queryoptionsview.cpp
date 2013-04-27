@@ -11,6 +11,8 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
+SCC TidContext = "QueryOptionsView";
+
 SCC TidEditQueryWindowTitle = QT_TRANSLATE_NOOP("QueryOptionsView", "Select and edit query");
 
 SCC TidQueryButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Query");
@@ -47,10 +49,10 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	toolBar(this),
-	queryButton(QKeySequence(Qt::ALT + Qt::Key_Enter)),
-	saveButton(QKeySequence(QKeySequence::Save)),
-	delButton(QKeySequence(QKeySequence::Delete)),
-	resetButton(QKeySequence(QKeySequence::Refresh)),
+	queryButton(TidQueryButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Enter)),
+	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
+	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
+	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queriesModel(dbname), Query::Name),
 	wareSelector(&waresModel(dbname), Ware::Name),
 	shopSelector(&shopsModel(dbname), Shop::Name),
@@ -65,6 +67,13 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 
 	tagOptions.group.addButton(&tagOptAllMatch);
 	tagOptions.group.addButton(&tagOptAnyMatch);
+
+	toolBar.addToolWidget(queryButton);
+	toolBar.addToolWidget(saveButton);
+	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(resetButton);
+	toolBar.relayout();
+	setToolBar(&toolBar);
 
 	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
 	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveClickedSlot()));
@@ -306,15 +315,6 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 {
 	delete layout();
 
-	HLayout * toolLayout = new HLayout;
-	toolLayout->addWidget(&queryButton);
-	toolLayout->addWidget(&saveButton);
-	toolLayout->addWidget(&delButton);
-	toolLayout->addWidget(&resetButton);
-	toolBar.setLayout(toolLayout);
-
-	setToolBar(&toolBar);
-
 	HLayout * filterLayout = 0;
 	if(state == LayoutState::Wide){
 		filterLayout = new HLayout;
@@ -425,10 +425,6 @@ void QueryOptionsView::relayout()
 	shopSelector.wideLayout();
 	stockOptions.wideLayout();
 	tagOptions.wideLayout();
-	resetButton.setText(tr(TidResetButton));
-	saveButton.setText(tr(TidSaveButton));
-	queryButton.setText(tr(TidQueryButton));
-	delButton.setText(tr(TidDelButton));
 	wareFilter.label.setText(tr(TidWareFilter));
 	applyLayout(newState, true);
 
@@ -441,10 +437,6 @@ void QueryOptionsView::relayout()
 		shopSelector.wideLayout();
 		stockOptions.mediumLayout();
 		tagOptions.mediumLayout();
-		resetButton.setText(trMed(TidResetButton));
-		saveButton.setText(trMed(TidSaveButton));
-		queryButton.setText(trMed(TidQueryButton));
-		delButton.setText(trMed(TidDelButton));
 		wareFilter.label.setText(trShort(TidWareFilter));
 		applyLayout(newState, true);
 	}
@@ -457,10 +449,6 @@ void QueryOptionsView::relayout()
 		shopSelector.narrowLayout();
 		stockOptions.narrowLayout();
 		tagOptions.narrowLayout();
-		resetButton.setText(trShort(TidResetButton));
-		saveButton.setText(trShort(TidSaveButton));
-		queryButton.setText(trShort(TidQueryButton));
-		delButton.setText(trShort(TidDelButton));
 		wareFilter.label.setText(trShort(TidWareFilter));
 		applyLayout(newState, true);
 	}
@@ -625,4 +613,6 @@ void QueryOptionsView::updateToolButtonStates()
 
 	if(modified)
 		toolBar.clearInfo();
+
+	toolBar.updateButtons();
 }

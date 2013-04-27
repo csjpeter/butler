@@ -10,33 +10,27 @@
 
 #include "butler_infoview.h"
 
+//SCC TidContext = "InfoView";
+
+SCC TidInfoWindowTitle = QT_TRANSLATE_NOOP("InfoView", "License informations");
+
 InfoView::InfoView(QWidget *parent) :
 	PannView(parent),
-	label(0)
+	toolBar(this)
 {
-	setWindowTitle(tr("About this software"));
+	setWindowTitle(trLong(TidInfoWindowTitle));
 	setWindowIcon(QIcon(Path::icon("info.png")));
 	setWindowModality(Qt::ApplicationModal);
+
+	setToolBar(&toolBar);
 
 	QString license = QString::fromUtf8(ENDUSER_LICENSE);
 
 	QVBoxLayout * layout = new QVBoxLayout;
 
-	label = new QLabel(license);
-	label->setWordWrap(true);
-	layout->addWidget(label);
-
-	QHBoxLayout * hLayout = new QHBoxLayout;
-
-	hLayout->addStretch(0);
-
-	QPushButton * button = new QPushButton(tr("Close"));
-	connect(button, SIGNAL(clicked()), this, SLOT(accept()));
-	hLayout->addWidget(button);
-
-	hLayout->addStretch(0);
-
-	layout->addLayout(hLayout);
+	label.setText(license);
+	label.setWordWrap(true);
+	layout->addWidget(&label);
 
 	setLayout(layout);
 	loadState();

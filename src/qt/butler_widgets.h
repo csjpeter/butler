@@ -9,6 +9,8 @@
 #include <QtGui>
 #include <QString>
 
+#include <csjp_sorter_reference_container.h>
+
 #include <config.h>
 
 #include "butler_databases.h"
@@ -32,6 +34,16 @@ enum class LayoutState {
 	Medium,
 	Wide,
 	Expanding
+};
+
+class ToolWidget
+{
+public:
+	virtual void narrow() = 0;
+	virtual void medium() = 0;
+	virtual void wide() = 0;
+	virtual void expanding() = 0;
+	virtual QWidget * qwidget() = 0;
 };
 
 class TableView : public QTableView
@@ -179,16 +191,22 @@ public:
 	}
 };
 
-class Button : public QPushButton
+class Button : public QPushButton, public ToolWidget
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	Button(const QKeySequence & seq = QKeySequence(), QWidget * parent = 0) :
+	Button(		const char * textId,
+			const char * textIdContext,
+			const QKeySequence & seq = QKeySequence(),
+			QWidget * parent = 0) :
 		QPushButton(parent),
+		textId(textId),
+		textIdContext(textIdContext),
 		shortcut(seq, this)
 	{
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 		setAutoDefault(false);
 		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
@@ -202,20 +220,49 @@ public:
 		}
 		QPushButton::focusInEvent(event);
 	}
+
+	virtual void narrow()
+	{
+		setText(trShort(textId, textIdContext));
+	}
+
+	virtual void medium()
+	{
+		setText(trMed(textId, textIdContext));
+	}
+
+	virtual void wide()
+	{
+		setText(trLong(textId, textIdContext));
+	}
+
+	virtual void expanding()
+	{
+		setText(trLong(textId, textIdContext));
+	}
+
+	virtual QWidget * qwidget() { return this; }
+
 public:
+	const char * textId;
+	const char * textIdContext;
 	QShortcut shortcut;
 };
 
-class ToolButton : public QToolButton
+class ToolButton : public QToolButton, public ToolWidget
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
 	ToolButton(	const QIcon & icon,
+			const char * textId,
+			const char * textIdContext,
 			const QKeySequence & seq = QKeySequence(),
 			QWidget * parent = 0) :
 		QToolButton(parent),
+		textId(textId),
+		textIdContext(textIdContext),
 		shortcut(seq, this)
 	{
 		setIcon(icon);
@@ -232,30 +279,38 @@ public:
 		QToolButton::focusInEvent(event);
 	}
 public:
-	void narrowLayout()
+	virtual void narrow()
 	{
+		setText(trShort(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonIconOnly);
 		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 	}
 
-	void mediumLayout()
+	virtual void medium()
 	{
+		setText(trMed(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 	}
 
-	void wideLayout()
+	virtual void wide()
 	{
+		setText(trLong(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 	}
 
-	void expandingLayout()
+	virtual void expanding()
 	{
+		setText(trLong(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 	}
 
+	virtual QWidget * qwidget() { return this; }
+
+	const char * textId;
+	const char * textIdContext;
 	QShortcut shortcut;
 };
 
@@ -795,7 +850,8 @@ public:
 	QLabel label;
 };
 
-static const char* TidBackButtonLabel = QT_TRANSLATE_NOOP("ToolBar", "Back");
+SCC TidToolBarContext = "ToolBar";
+SCC TidBackButtonLabel = QT_TRANSLATE_NOOP("ToolBar", "Back");
 
 class ToolBar : public QWidget
 {
@@ -806,7 +862,8 @@ public:
 	ToolBar(PannView * parent) :
 		QWidget(parent),
 		scrollArea(0),
-		backShortcut(QKeySequence(Qt::ALT + Qt::Key_Escape), &backButton),
+		backButton(TidBackButtonLabel, TidToolBarContext,
+				QKeySequence(Qt::ALT + Qt::Key_Escape)),
 		scroller(&scrollArea)
 	{
 		setFocusPolicy(Qt::NoFocus);
@@ -814,13 +871,8 @@ public:
 		main.setContentsMargins(0,0,0,0);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
 		scrollArea.setContentsMargins(0,0,0,0);
-//		prev.setFocusPolicy(Qt::NoFocus);
-//		next.setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
-//		prev.setText("<");
-//		next.setText(">");
 
-		connect(&backShortcut, SIGNAL(activated()), &backButton, SLOT(click()));
 		connect(&backButton, SIGNAL(clicked()), parent, SLOT(reject()));
 
 //		scrollArea.setFrameStyle(QFrame::NoFrame);
@@ -835,9 +887,7 @@ public:
 
 		QHBoxLayout * hLayout = new QHBoxLayout;
 		hLayout->setContentsMargins(0,0,0,0);
-//		hLayout->addWidget(&prev);
 		hLayout->addWidget(&scrollArea);
-//		hLayout->addWidget(&next);
 		hLayout->addWidget(&backButton);
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
@@ -847,76 +897,75 @@ public:
 		vLayout->addLayout(hLayout);
 
 		QWidget::setLayout(vLayout);
-
-//		connect(&prev, SIGNAL(clicked()), this, SLOT(prevClicked()));
-//		connect(&next, SIGNAL(clicked()), this, SLOT(nextClicked()));
-//		connect(scrollArea.horizontalScrollBar(), SIGNAL(valueChanged(int)),
-//				this, SLOT(scrollValueChanged(int)));
-
-		retranslate();
 	}
 	virtual ~ToolBar() {}
 
-	virtual QLayout * layout() const
+	void addToolWidget(ToolWidget & tw)
 	{
-		return main.layout();
+		buttons.add(tw);
 	}
 
-	virtual void setLayout(QLayout * layout)
+	void showEvent(QShowEvent *event)
 	{
-		delete main.layout();
-		DBG("ToolBar::setLayout() 1 scrollarea.sizeHint(): %d",
-				scrollArea.sizeHint().width());
-		layout->setSpacing(0);
-		main.setLayout(layout);
-//		relayout();
-		DBG("ToolBar::setLayout() 2 scrollarea.sizeHint(): %d",
-				scrollArea.sizeHint().width());
+		QWidget::showEvent(event);
+		updateButtons();
 	}
 
-	virtual QSize sizeHint() const
+	void resizeEvent(QResizeEvent * event)
 	{
-		QSize hint = main.sizeHint();
-		hint.setWidth(hint.width() + backButton.sizeHint().width());
-		return hint;
-	}
-
-	void retranslate()
-	{
-		backButton.setText(tr(TidBackButtonLabel));
-
-/*		if(main.layout())
-			relayout();
-*/	}
-
-/*
-	void relayout()
-	{
-		prev.hide();
-		next.hide();
-
-		DBG("ToolBar::relayout() main-hint-width: %d, backbutton-hint-width: %d, width: %d"
-				, main.sizeHint().width(), backButton.sizeHint().width(), width());
-		if(main.sizeHint().width() + backButton.sizeHint().width() <= width())
+		if(layout() && (event->size() == event->oldSize()))
 			return;
-
-		scrollValueChanged(scrollArea.horizontalScrollBar()->value());
+		updateButtons();
 	}
-*/
+
 	virtual void changeEvent(QEvent * event)
 	{
 		QWidget::changeEvent(event);
 		if(event->type() == QEvent::LanguageChange)
-			retranslate();
+			updateButtons();
 	}
 
-/*	virtual void resizeEvent(QResizeEvent * event)
+	void relayout()
 	{
-		if(layout() && (event->size() == event->oldSize()))
-			return;
-		DBG("ToolBar::resizeEvent event->size(): %d", event->size().width());
-		relayout();
-	}*/
+		HLayout * toolLayout = new HLayout;
+		toolLayout->setSpacing(0);
+
+		unsigned s = buttons.size();
+		for(unsigned i = 0; i < s; i++)
+			toolLayout->addWidget(buttons.queryAt(i).qwidget(),
+					-1, Qt::AlignVCenter | Qt::AlignLeft);
+		toolLayout->addStretch(10000);
+
+		delete main.layout();
+		main.setLayout(toolLayout);
+		updateButtons();
+	}
+
+	void updateButtons()
+	{
+		backButton.setText(tr(TidBackButtonLabel));
+
+		{
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).expanding();
+		}
+		if(scrollArea.width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).wide();
+		}
+		if(scrollArea.width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).medium();
+		}
+		if(scrollArea.width() < main.sizeHint().width()) {
+			unsigned s = buttons.size();
+			for(unsigned i = 0; i < s; i++)
+				buttons.queryAt(i).narrow();
+		}
+	}
 
 public slots:
 	void setInfo(const QString & text)
@@ -936,46 +985,14 @@ public slots:
 		infoLabel.hide();
 	}
 
-private slots:
-/*	void prevClicked()
-	{
-		QScrollBar * bar = scrollArea.horizontalScrollBar();
-		bar->setValue(bar->value() - bar->singleStep());
-	}
-
-	void nextClicked()
-	{
-		QScrollBar * bar = scrollArea.horizontalScrollBar();
-		bar->setValue(bar->value() + bar->singleStep());
-	}
-
-	void scrollValueChanged(int newValue)
-	{
-		QScrollBar * bar = scrollArea.horizontalScrollBar();
-
-		DBG("min: %d, max: %d, value: %d, newValue: %d",
-				bar->minimum(), bar->maximum(), bar->value(), newValue);
-
-		if(bar->maximum() <= newValue)
-			next.hide();
-		else
-			next.show();
-		if(newValue <= bar->minimum())
-			prev.hide();
-		else
-			prev.show();
-	}
-*/
 private:
 	QScrollArea scrollArea;
 	QWidget main;
 	InfoLabel infoLabel;
 	Button backButton;
-	QShortcut backShortcut;
 
 	KineticScroller scroller;
-//	QToolButton prev;
-//	QToolButton next;
+	csjp::SorterReferenceContainer<ToolWidget> buttons;
 };
 
 #endif

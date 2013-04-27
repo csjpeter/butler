@@ -34,7 +34,6 @@ private:
 	void retranslate();
 	void applyLayout();
 	void relayout();
-	void relayoutToolBar();
 
 	virtual void changeEvent(QEvent * event);
 	virtual void resizeEvent(QResizeEvent * event);
@@ -60,7 +59,7 @@ private:
 	ToolBar toolBar;
 	ToolButton editButton;
 	ToolButton delButton;
-	ToolButton shoppigButton;
+	ToolButton shoppingButton;
 	ToolButton statsButton;
 	ToolButton refreshButton;
 	ToolButton filterButton;

@@ -15,6 +15,8 @@
 #include "butler_waresmodel.h"
 #include "butler_shopsmodel.h"
 
+SCC TidContext = "AccountingView";
+
 SCC TidAccountingWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Already bought new item");
 SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Editing an existing item");
 
@@ -47,8 +49,10 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	dbname(dbname),
 	model(model),
 	toolBar(this),
-	doneButton(QKeySequence(Qt::ALT + Qt::Key_Return)),
-	resetButton(QKeySequence(QKeySequence::Refresh)),
+	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
+	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
+	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	shopEditor(&shopsModel(dbname), Shop::Name),
 	tagsWidget(dbname),
@@ -63,6 +67,13 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	item.purchased = QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
 	tagsWidget.label.setWordWrap(true);
+
+	toolBar.addToolWidget(doneButton);
+	toolBar.addToolWidget(resetButton);
+	toolBar.addToolWidget(prevButton);
+	toolBar.addToolWidget(nextButton);
+	toolBar.relayout();
+	setToolBar(&toolBar);
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
@@ -237,17 +248,6 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 {
 	(void)state;
 
-	delete layout();
-
-	HLayout * toolLayout = new HLayout;
-	toolLayout->addWidget(&doneButton);
-	toolLayout->addWidget(&resetButton);
-	toolLayout->addWidget(&prevButton);
-	toolLayout->addWidget(&nextButton);
-	toolBar.setLayout(toolLayout);
-
-	setToolBar(&toolBar);
-
 	HLayout * hlayout = new HLayout;
 	hlayout->addWidget(&grossPriceEditor);
 	hlayout->addStretch();
@@ -284,6 +284,7 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 		mainLayout->addStretch(0);
 	}
 
+	delete layout();
 	setLayout(mainLayout);
 	updateGeometry();
 }
@@ -291,10 +292,6 @@ void AccountingView::applyLayout(LayoutState state, bool test)
 void AccountingView::relayout()
 {
 	LayoutState newState = LayoutState::Expanding;
-	doneButton.setText(tr(TidDoneButton));
-	resetButton.setText(tr(TidResetButton));
-	prevButton.setText(tr(TidPrevItemButton));
-	nextButton.setText(tr(TidNextItemButton));
 
 /*	if(width() < sizeHint().width())*/{
 		newState = LayoutState::Wide;
@@ -311,10 +308,6 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Medium;
-		doneButton.setText(trMed(TidDoneButton));
-		resetButton.setText(trMed(TidResetButton));
-		prevButton.setText(trMed(TidPrevItemButton));
-		nextButton.setText(trMed(TidNextItemButton));
 		wareEditor.wideLayout();
 		categoryEditor.wideLayout();
 		quantityEditor.narrowLayout();
@@ -328,10 +321,6 @@ void AccountingView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		newState = LayoutState::Narrow;
-		doneButton.setText(trShort(TidDoneButton));
-		resetButton.setText(trShort(TidResetButton));
-		prevButton.setText(trShort(TidPrevItemButton));
-		nextButton.setText(trShort(TidNextItemButton));
 		wareEditor.narrowLayout();
 		categoryEditor.narrowLayout();
 		quantityEditor.narrowLayout();
@@ -525,6 +514,8 @@ void AccountingView::updateToolButtonStates()
 		else
 			toolBar.clearInfo();
 	}
+
+	toolBar.updateButtons();
 }
 
 void AccountingView::wareNameEditFinishedSlot()

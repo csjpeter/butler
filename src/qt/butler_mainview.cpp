@@ -24,30 +24,41 @@
 
 #include "butler_mainview.h"
 
+SCC TidContext = "MainView";
+
 SCC TidMainWindowTitle = QT_TRANSLATE_NOOP("MainView", "%1 - main view");
-SCC TidTodoButtonLabel = QT_TRANSLATE_NOOP("MainView", "Todo notes");
-SCC TidShoppingButtonLabel = QT_TRANSLATE_NOOP("MainView", "Shopping list");
-SCC TidAccountingButtonLabel = QT_TRANSLATE_NOOP("MainView", "Accounting");
-SCC TidAnaliticsButtonLabel = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
-SCC TidPartnersButtonLabel = QT_TRANSLATE_NOOP("MainView", "Business partners");
-SCC TidWareButtonLabel = QT_TRANSLATE_NOOP("MainView", "Wares");
-SCC TidTagButtonLabel = QT_TRANSLATE_NOOP("MainView", "Tags");
-SCC TidInfoButtonLabel = QT_TRANSLATE_NOOP("MainView", "Legal informations");
-SCC TidQuitButtonLabel = QT_TRANSLATE_NOOP("MainView", "Quit");
+SCC TidTodoButton = QT_TRANSLATE_NOOP("MainView", "Todo notes");
+SCC TidShoppingButton = QT_TRANSLATE_NOOP("MainView", "Shopping list");
+SCC TidAccountingButton = QT_TRANSLATE_NOOP("MainView", "Accounting");
+SCC TidAnaliticsButton = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
+SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Business partners");
+SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
+SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
+SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
+SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
 
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(customModel(dbname)),
-	todoButton(QIcon(Path::icon("list.png")), QKeySequence(Qt::Key_F1)),
-	shoppingButton(QIcon(Path::icon("shop.png")), QKeySequence(Qt::Key_F2)),
-	accountingButton(QIcon(Path::icon("accounting.png")), QKeySequence(Qt::Key_F3)),
-	analiticsButton(QIcon(Path::icon("analitics.png")), QKeySequence(Qt::Key_F4)),
-	partnersButton(QIcon(Path::icon("partner.png")), QKeySequence(Qt::Key_F5)),
-	wareButton(QIcon(Path::icon("ware.png")), QKeySequence(Qt::Key_F6)),
-	tagButton(QIcon(Path::icon("tag.png")), QKeySequence(Qt::Key_F7)),
-	infoButton(QIcon(Path::icon("info.png")), QKeySequence(Qt::Key_F8)),
-	quitButton(QIcon(Path::icon("delete.png")), QKeySequence(Qt::Key_F9)),
+	todoButton(QIcon(Path::icon("list.png")),
+			TidTodoButton, TidContext, QKeySequence(Qt::Key_F1)),
+	shoppingButton(QIcon(Path::icon("shop.png")),
+			TidShoppingButton, TidContext, QKeySequence(Qt::Key_F2)),
+	accountingButton(QIcon(Path::icon("accounting.png")),
+			TidAccountingButton, TidContext, QKeySequence(Qt::Key_F3)),
+	analiticsButton(QIcon(Path::icon("analitics.png")),
+			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F4)),
+	partnersButton(QIcon(Path::icon("partner.png")),
+			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F5)),
+	wareButton(QIcon(Path::icon("ware.png")),
+			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
+	tagButton(QIcon(Path::icon("tag.png")),
+			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
+	infoButton(QIcon(Path::icon("info.png")),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F8)),
+	quitButton(QIcon(Path::icon("delete.png")),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F9)),
 	shoppingView(NULL),
 	accountingView(NULL),
 	customView(NULL),
@@ -92,15 +103,6 @@ MainView::~MainView()
 void MainView::retranslate()
 {
 	setWindowTitle(tr(TidMainWindowTitle).arg(PKGNAME));
-	todoButton.setText(tr(TidTodoButtonLabel));
-	shoppingButton.setText(tr(TidShoppingButtonLabel));
-	accountingButton.setText(tr(TidAccountingButtonLabel));
-	analiticsButton.setText(tr(TidAnaliticsButtonLabel));
-	partnersButton.setText(tr(TidPartnersButtonLabel));
-	wareButton.setText(tr(TidWareButtonLabel));
-	tagButton.setText(tr(TidTagButtonLabel));
-	infoButton.setText(tr(TidInfoButtonLabel));
-	quitButton.setText(tr(TidQuitButtonLabel));
 
 	relayout();
 }
@@ -134,15 +136,15 @@ void MainView::applyLayout()
 
 void MainView::relayout()
 {
-	todoButton.expandingLayout();
-	shoppingButton.expandingLayout();
-	accountingButton.expandingLayout();
-	analiticsButton.expandingLayout();
-	partnersButton.expandingLayout();
-	wareButton.expandingLayout();
-	tagButton.expandingLayout();
-	infoButton.expandingLayout();
-	quitButton.expandingLayout();
+	todoButton.expanding();
+	shoppingButton.expanding();
+	accountingButton.expanding();
+	analiticsButton.expanding();
+	partnersButton.expanding();
+	wareButton.expanding();
+	tagButton.expanding();
+	infoButton.expanding();
+	quitButton.expanding();
 
 	applyLayout();
 }
