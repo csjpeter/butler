@@ -22,8 +22,8 @@ SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Editing an exi
 
 SCC TidDoneButton = QT_TRANSLATE_NOOP("AccountingView", "Done");
 SCC TidResetButton = QT_TRANSLATE_NOOP("AccountingView", "Reset");
-SCC TidPrevItemButton = QT_TRANSLATE_NOOP("AccountingView", "Previous item");
-SCC TidNextItemButton = QT_TRANSLATE_NOOP("AccountingView", "Next item");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("AccountingView", "Previous item");
+SCC TidNextButton = QT_TRANSLATE_NOOP("AccountingView", "Next item");
 
 SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "Bought:");
 SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "On stock:");
@@ -50,8 +50,8 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	model(model),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
-	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
+	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&waresModel(dbname), Ware::Name),
 	shopEditor(&partnersModel(dbname), Shop::Name),
 	tagsWidget(dbname),

@@ -6,25 +6,9 @@
 #ifndef BUTLER_EDITWAREVIEW_H
 #define BUTLER_EDITWAREVIEW_H
 
-#include <butler_pannview.h>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
-
 #include <butler_ware.h>
-
-#include "butler_databases.h"
-
-/*forwards*/
-class QLineEdit;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QLabel;
-class QScrollArea;
-class QListView;
-
-class TagWidget;
+#include <butler_pannview.h>
+#include <butler_tagwidget.h>
 
 class EditWareView : public PannView
 {
@@ -48,27 +32,34 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout(bool test = false);
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
-	void closeSlot();
+	void saveSlot();
+	void resetSlot();
 
 private:
-	Ware ware;
 	const QString & dbname;
 	WaresModel & model;
 	QModelIndex cursor;
+	Ware ware;
 
-	QLineEdit *nameEditor;
-	QLineEdit *unitEditor;
-	QLineEdit *categoriesEditor;
-	TagWidget *tagsSelector;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
-	QPushButton *closeButton;
+	InputEditor nameEditor;
+	InputEditor unitEditor;
+	InputEditor categoriesEditor;
+	TagWidget tagsWidget;
 };
 
 #endif

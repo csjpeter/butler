@@ -11,91 +11,72 @@
 #include "butler_tagsmodel.h"
 #include "butler_tagwidget.h"
 
+SCC TidContext = "EditWareView";
+
+SCC TidNewWareWindowTitle = QT_TRANSLATE_NOOP("EditWareView", "Add new ware");
+SCC TidEditWareWindowTitle = QT_TRANSLATE_NOOP("EditWareView", "Editing a ware");
+
+SCC TidDoneButton = QT_TRANSLATE_NOOP("EditWareView", "Done");
+SCC TidResetButton = QT_TRANSLATE_NOOP("EditWareView", "Reset");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditWareView", "Previous ware");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditWareView", "Next ware");
+
+SCC TidWareName = QT_TRANSLATE_NOOP("EditWareView", "Ware name:");
+SCC TidWareUnit = QT_TRANSLATE_NOOP("EditWareView", "Unit:");
+SCC TidWareCategories = QT_TRANSLATE_NOOP("EditWareView", "Categories:");
+SCC TidWareTags = QT_TRANSLATE_NOOP("EditWareView", "Tags:");
+
+SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditWareView", "Please fill the ware name field.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditWareView", "Ware is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditWareView", "Ware is updated.");
+
 EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(waresModel(dbname))
+	model(waresModel(dbname)),
+	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
+	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
+	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
+	tagsWidget(dbname)
 {
 	setWindowModality(Qt::ApplicationModal);
-	setWindowTitle(tr("Edit ware details"));
 
-	QLabel *label = NULL;
-	QHBoxLayout *hbox;
+	ENSURE(!cursor.isValid(), csjp::LogicError);
 
-	QVBoxLayout *layout = new QVBoxLayout;
-	
-	QGridLayout *gridLayout = new QGridLayout;
-	gridLayout->setColumnStretch(1, 1);
-	layout->addLayout(gridLayout);
+	toolBar.addToolWidget(doneButton);
+	toolBar.addToolWidget(resetButton);
+	footerBar.addToolWidget(prevButton);
+	footerBar.addToolWidget(nextButton);
+	footerBar.expanding = true;
+	footerBar.spacerEnd = false;
 
-	/* ware name */
-	label = new QLabel(tr("Name :"));
-	gridLayout->addWidget(label, 0, 0, 1, 1);
-	nameEditor = new QLineEdit;
-	gridLayout->addWidget(nameEditor, 0, 1, 1, 3);
+	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
 
-	/* unit */
-	label = new QLabel(tr("Unit :"));
-	gridLayout->addWidget(label, 1, 0, 1, 1);
-	unitEditor = new QLineEdit;
-	gridLayout->addWidget(unitEditor, 1, 1, 1, 3);
+	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&unitEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&categoriesEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&tagsWidget, SIGNAL(selectionChanged()),
+			this, SLOT(updateToolButtonStates()));
 
-	/* categories */
-	label = new QLabel(tr("Categories :"));
-	gridLayout->addWidget(label, 2, 0, 1, 1);
-	categoriesEditor = new QLineEdit;
-	gridLayout->addWidget(categoriesEditor, 2, 1, 1, 3);
-
-	/* tags */
-	label = new QLabel(tr("Tags :"));
-	gridLayout->addWidget(label, 3, 0, 1, 4);
-	tagsSelector = new TagWidget(dbname);
-	gridLayout->addWidget(tagsSelector, 4, 0, 1, 4);
-
-	/* buttons: prev, save, next, close */
-	hbox = new QHBoxLayout;
-	layout->addLayout(hbox);
-
-	prevButton = new QPushButton;
-	prevButton->setText(tr("Prev"));
-	prevButton->setAutoDefault(false);
-	hbox->addWidget(prevButton);
-
-	saveButton = new QPushButton;
-	saveButton->setText(tr("Save"));
-	saveButton->setAutoDefault(false);
-	hbox->addWidget(saveButton);
-
-	nextButton = new QPushButton;
-	nextButton->setText(tr("Next"));
-	nextButton->setAutoDefault(false);
-	hbox->addWidget(nextButton);
-	
-	closeButton = new QPushButton;
-	closeButton->setText(tr("&Close"));
-	closeButton->setAutoDefault(true);
-	layout->addWidget(closeButton);
-
-	/* restore last state */
+	setupView();
 	loadState();
-
-	setLayout(layout);
-
-	connect(prevButton, SIGNAL(clicked()),
-			this, SLOT(prevClickedSlot()));
-	connect(nextButton, SIGNAL(clicked()),
-			this, SLOT(nextClickedSlot()));
-	connect(saveButton, SIGNAL(clicked()),
-			this, SLOT(saveSlot()));
-	connect(closeButton, SIGNAL(clicked()),
-			this, SLOT(closeSlot()));
+	retranslate();
 }
 
 void EditWareView::showEvent(QShowEvent *event)
 {
 	mapToGui();
-	
+
 	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
 }
 
 void EditWareView::closeEvent(QCloseEvent *event)
@@ -107,49 +88,143 @@ void EditWareView::closeEvent(QCloseEvent *event)
 
 void EditWareView::loadState()
 {
-	QSettings settings;
-	QPoint pos = settings.value("editwareview/position", QPoint()).toPoint();
-	QSize size = settings.value("editwareview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
-	else
-		adjustSize();
-	move(pos);
+	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
+	PannView::loadState(prefix);
 }
 
 void EditWareView::saveState()
 {
-	QSettings settings;
-	settings.setValue("editwareview/position", pos());
-	settings.setValue("editwareview/size", size());
+	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
+	PannView::saveState(prefix);
 }
 
 void EditWareView::mapToGui()
 {
-	ware = Ware(model.ware(cursor.row()));
+	if(cursor.isValid())
+		ware = Ware(model.ware(cursor.row()));
 
-	nameEditor->setText(ware.name);
-	unitEditor->setText(ware.unit);
-	categoriesEditor->setText(WaresModel::categoriesToString(ware.categories));
-	tagsSelector->setTags(ware.tags);
+	nameEditor.editor.setText(ware.name);
+	unitEditor.editor.setText(ware.unit);
+	categoriesEditor.editor.setText(WaresModel::categoriesToString(ware.categories));
+	tagsWidget.setTags(ware.tags);
+
+	updateToolButtonStates();
 }
 
 void EditWareView::mapFromGui()
 {
-	ware.name = nameEditor->text();
-	ware.unit = unitEditor->text();
-	WaresModel::stringToCategories(categoriesEditor->text(), ware.categories);
-	ware.tags = tagsSelector->selectedTags();
+	ware.name = nameEditor.editor.text();
+	ware.unit = unitEditor.editor.text();
+	WaresModel::stringToCategories(categoriesEditor.editor.text(), ware.categories);
+	ware.tags = tagsWidget.selectedTags();
+}
+
+void EditWareView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditWareView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+void EditWareView::retranslate()
+{
+	if(cursor.isValid())
+		setWindowTitle(tr(TidEditWareWindowTitle));
+	else
+		setWindowTitle(tr(TidNewWareWindowTitle));
+
+	nameEditor.label.setText(tr(TidWareName));
+	unitEditor.label.setText(tr(TidWareUnit));
+	categoriesEditor.label.setText(tr(TidWareCategories));
+	tagsWidget.label.setText(tr(TidWareTags));
+
+	relayout();
+}
+
+void EditWareView::applyLayout(bool test)
+{
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&nameEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&unitEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&categoriesEditor);
+	mainLayout->addStretch(0);
+	if(!test){
+		mainLayout->addWidget(&tagsWidget);
+		mainLayout->addStretch(0);
+	}
+
+	delete layout();
+	setLayout(mainLayout);
+	updateGeometry();
+}
+
+void EditWareView::relayout()
+{
+	{
+		nameEditor.wideLayout();
+		unitEditor.wideLayout();
+		categoriesEditor.wideLayout();
+		applyLayout(true);
+	}
+	if(width() < sizeHint().width()){
+		nameEditor.narrowLayout();
+		unitEditor.narrowLayout();
+		categoriesEditor.narrowLayout();
+		applyLayout(true);
+	}
+
+	applyLayout();
+	updateToolButtonStates();
+}
+
+void EditWareView::updateToolButtonStates()
+{
+	CategoryNameSet categories;
+	WaresModel::stringToCategories(categoriesEditor.editor.text(), categories);
+	bool modified = !(
+			ware.name == nameEditor.editor.text() &&
+			ware.unit == unitEditor.editor.text() &&
+			ware.categories == categories &&
+			ware.tags == tagsWidget.selectedTags()
+			);
+
+	bool mandatoriesGiven = nameEditor.editor.text().size();
+
+	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
+	doneButton.setVisible(mandatoriesGiven && modified);
+	resetButton.setVisible(modified);
+
+	if(modified){
+		if(!mandatoriesGiven)
+			toolBar.setInfo(tr(TidInfoMandatoryFields));
+		else
+			toolBar.clearInfo();
+	}
+
+	toolBar.updateButtons();
+	footerBar.updateButtons();
 }
 
 void EditWareView::setCursor(const QModelIndex& index)
 {
+	ENSURE(index.isValid(), csjp::LogicError);
 	ENSURE(index.model() == &model, csjp::LogicError);
 
 	cursor = index;
+	setWindowTitle(tr(TidEditWareWindowTitle));
 	mapToGui();
-	prevButton->setEnabled(cursor.row() > 0);
-	nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
 }
 
 void EditWareView::prevClickedSlot()
@@ -170,10 +245,23 @@ void EditWareView::nextClickedSlot()
 void EditWareView::saveSlot()
 {
 	mapFromGui();
-	model.update(cursor.row(), ware);
+
+	if(cursor.isValid()){
+		if(model.ware(cursor.row()) != ware)
+			model.update(cursor.row(), ware);
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(ware);
+
+		ware = Ware();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
 }
 
-void EditWareView::closeSlot()
+void EditWareView::resetSlot()
 {
-	accept();
+	mapToGui();
 }

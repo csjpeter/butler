@@ -58,7 +58,7 @@ private:
 
 	TableView tableView;
 
-	NewWareView * newWareView;
+	EditWareView * newWareView;
 	EditWareView * editWareView;
 };
 

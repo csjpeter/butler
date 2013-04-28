@@ -7,6 +7,11 @@
 
 #include "butler_waresmodel.h"
 
+SCC TidWareFieldName = QT_TRANSLATE_NOOP("WaresModel", "Name");
+SCC TidWareFieldUnit = QT_TRANSLATE_NOOP("WaresModel", "Unit");
+SCC TidWareFieldCategories = QT_TRANSLATE_NOOP("WaresModel", "Categories");
+SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
+
 WaresModel::WaresModel(Db & db) :
 	db(db)
 {
@@ -77,16 +82,16 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 
 	switch(section){
 		case Ware::Name :
-			return QVariant("Name");
+			return QVariant(tr(TidWareFieldName));
 			break;
 		case Ware::Unit :
-			return QVariant("Unit");
+			return QVariant(tr(TidWareFieldUnit));
 			break;
 		case Ware::Categories :
-			return QVariant("Categories");
+			return QVariant(tr(TidWareFieldCategories));
 			break;
 		case Ware::Tags :
-			return QVariant("Tags");
+			return QVariant(tr(TidWareFieldTags));
 			break;
 		default :
 			return QVariant();

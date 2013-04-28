@@ -7,6 +7,10 @@
 
 #include "butler_queriesmodel.h"
 
+SCC TidQueryFieldName = QT_TRANSLATE_NOOP("QueriesModel", "Name");
+SCC TidQueryFieldStartDate = QT_TRANSLATE_NOOP("QueriesModel", "From date");
+SCC TidQueryFieldEndDate = QT_TRANSLATE_NOOP("QueriesModel", "Till date");
+
 QueriesModel::QueriesModel(Db & db) :
 	db(db)
 {
@@ -74,13 +78,13 @@ QVariant QueriesModel::headerData(int section, Qt::Orientation orientation, int 
 
 	switch(section){
 		case Query::Name :
-			return QVariant("Name");
+			return QVariant(tr(TidQueryFieldName));
 			break;
 		case Query::StartDate :
-			return QVariant("Start date");
+			return QVariant(tr(TidQueryFieldStartDate));
 			break;
 		case Query::EndDate :
-			return QVariant("End date");
+			return QVariant(tr(TidQueryFieldEndDate));
 			break;
 		default :
 			return QVariant();

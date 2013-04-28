@@ -174,7 +174,7 @@ void WaresView::saveState()
 void WaresView::newWare()
 {
 	if(!newWareView)
-		newWareView = new NewWareView(dbname);
+		newWareView = new EditWareView(dbname);
 
 	newWareView->activate();
 }

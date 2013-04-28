@@ -17,8 +17,8 @@ SCC TidEditTagWindowTitle = QT_TRANSLATE_NOOP("EditTagView", "Editing a tag");
 
 SCC TidDoneButton = QT_TRANSLATE_NOOP("EditTagView", "Done");
 SCC TidResetButton = QT_TRANSLATE_NOOP("EditTagView", "Reset");
-SCC TidPrevItemButton = QT_TRANSLATE_NOOP("EditTagView", "Previous tag");
-SCC TidNextItemButton = QT_TRANSLATE_NOOP("EditTagView", "Next tag");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditTagView", "Previous tag");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditTagView", "Next tag");
 
 SCC TidTagName = QT_TRANSLATE_NOOP("EditTagView", "Tag name:");
 SCC TidTagDescription = QT_TRANSLATE_NOOP("EditTagView", "Description:");
@@ -33,8 +33,8 @@ EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
 	model(tagsModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
-	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
+	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
 {
 	setWindowModality(Qt::ApplicationModal);
 

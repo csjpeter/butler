@@ -7,6 +7,8 @@
 
 #include "butler_warecategoriesmodel.h"
 
+SCC TidCategoryFieldName = QT_TRANSLATE_NOOP("WareCategoriesModel", "Brand/Type");
+
 WareCategoriesModel::WareCategoriesModel(CategoryNameSet & cat) :
 	categories(cat)
 {
@@ -67,7 +69,7 @@ QVariant WareCategoriesModel::headerData(int section, Qt::Orientation orientatio
 
 	switch(section){
 		case 0 :
-			return QVariant(tr("Category name"));
+			return QVariant(tr(TidCategoryFieldName));
 			break;
 		default :
 			return QVariant();

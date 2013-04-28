@@ -16,8 +16,8 @@ SCC TidEditPartnerWindowTitle = QT_TRANSLATE_NOOP("EditPartnerView", "Editing a 
 
 SCC TidDoneButton = QT_TRANSLATE_NOOP("EditPartnerView", "Done");
 SCC TidResetButton = QT_TRANSLATE_NOOP("EditPartnerView", "Reset");
-SCC TidPrevItemButton = QT_TRANSLATE_NOOP("EditPartnerView", "Previous partner");
-SCC TidNextItemButton = QT_TRANSLATE_NOOP("EditPartnerView", "Next partner");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditPartnerView", "Previous partner");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditPartnerView", "Next partner");
 
 SCC TidPartnerName = QT_TRANSLATE_NOOP("EditPartnerView", "Partner name:");
 SCC TidPartnerStoreName = QT_TRANSLATE_NOOP("EditPartnerView", "Store name:");
@@ -35,8 +35,8 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 	model(partnersModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
-	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
+	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
 {
 	setWindowModality(Qt::ApplicationModal);
 
