@@ -10,12 +10,6 @@
 #include "butler_databases.h"
 
 /*forwards*/
-class QComboBox;
-class QLabel;
-class QTableView;
-class QSqlTableModel;
-class QAbstractItemView;
-
 class NewItemView;
 class EditItemView;
 class QueryOptionsView;
