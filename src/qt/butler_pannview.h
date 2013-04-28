@@ -24,17 +24,27 @@ public:
 	{
 		setAttribute(Qt::WA_QuitOnClose, false);
 		setFocusPolicy(Qt::NoFocus);
+		main.setFocusPolicy(Qt::NoFocus);
+
 		scrollArea.horizontalScrollBar()->setObjectName("pannviewscrollbar");
 		scrollArea.verticalScrollBar()->setObjectName("pannviewscrollbar");
 		scrollArea.setFrameStyle(QFrame::NoFrame);
 		scrollArea.setWidget(&main);
 		scrollArea.setWidgetResizable(true);
 		scrollArea.setFocusPolicy(Qt::NoFocus);
-		main.setFocusPolicy(Qt::NoFocus);
+//		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		connect(scrollArea.verticalScrollBar(), SIGNAL(rangeChanged(int, int)),
+				this, SLOT(verticalScrollBarRangeChanged()));
+
+		QHBoxLayout * hLayout = new QHBoxLayout;
+		hLayout->setContentsMargins(0,0,0,0);
+		hLayout->addWidget(scrollArea.verticalScrollBar());
+		hLayout->addWidget(&scrollArea);
 
 		QVBoxLayout * vLayout = new QVBoxLayout;
 		vLayout->addWidget(&toolBar);
-		vLayout->addWidget(&scrollArea);
+		vLayout->addLayout(hLayout);
 		vLayout->addWidget(&footerBar);
 		vLayout->setContentsMargins(0,0,0,0);
 		QWidget::setLayout(vLayout);
@@ -75,6 +85,7 @@ public:
 	virtual void showEvent(QShowEvent *event)
 	{
 		QWidget::showEvent(event);
+		verticalScrollBarRangeChanged();
 	}
 
 	virtual void closeEvent(QCloseEvent *event)
@@ -127,6 +138,14 @@ public:
 		QSettings settings;
 		settings.setValue(prefix + "/position", pos());
 		settings.setValue(prefix + "/size", size());
+	}
+
+private slots:
+	void verticalScrollBarRangeChanged()
+	{
+		scrollArea.verticalScrollBar()->setVisible(
+				scrollArea.verticalScrollBar()->minimum() <
+				scrollArea.verticalScrollBar()->maximum());
 	}
 
 public slots:
