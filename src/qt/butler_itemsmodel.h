@@ -12,9 +12,7 @@
 
 #include <csjp_reference_container.h>
 
-#include <butler_item.h>
 #include <butler_item_set.h>
-
 #include <butler_db.h>
 
 #include <butler_config.h>

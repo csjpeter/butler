@@ -9,154 +9,237 @@
 #include "butler_editshopview.h"
 #include "butler_shopsmodel.h"
 
-EditShopView::EditShopView(const QString & dbname, QWidget * parent) :
+SCC TidContext = "EditPartnerView";
+
+SCC TidNewPartnerWindowTitle = QT_TRANSLATE_NOOP("EditPartnerView", "Add new partner");
+SCC TidEditPartnerWindowTitle = QT_TRANSLATE_NOOP("EditPartnerView", "Editing a partner");
+
+SCC TidDoneButton = QT_TRANSLATE_NOOP("EditPartnerView", "Done");
+SCC TidResetButton = QT_TRANSLATE_NOOP("EditPartnerView", "Reset");
+SCC TidPrevItemButton = QT_TRANSLATE_NOOP("EditPartnerView", "Previous partner");
+SCC TidNextItemButton = QT_TRANSLATE_NOOP("EditPartnerView", "Next partner");
+
+SCC TidPartnerName = QT_TRANSLATE_NOOP("EditPartnerView", "Partner name:");
+SCC TidPartnerStoreName = QT_TRANSLATE_NOOP("EditPartnerView", "Store name:");
+SCC TidPartnerCity = QT_TRANSLATE_NOOP("EditPartnerView", "City:");
+SCC TidPartnerAddress = QT_TRANSLATE_NOOP("EditPartnerView", "Address:");
+SCC TidPartnerCompany = QT_TRANSLATE_NOOP("EditPartnerView", "Company:");
+
+SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditPartnerView", "Please fill the partner name field.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is updated.");
+
+EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(shopsModel(dbname))
+	model(partnersModel(dbname)),
+	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
+	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
+	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
+	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
 {
 	setWindowModality(Qt::ApplicationModal);
-	setWindowTitle(tr("Edit shop details"));
 
-	QLabel *label = NULL;
-	QHBoxLayout *hbox;
+	ENSURE(!cursor.isValid(), csjp::LogicError);
 
-	QVBoxLayout *layout = new QVBoxLayout;
-	
-	QGridLayout *gridLayout = new QGridLayout;
-	gridLayout->setColumnStretch(1, 1);
-	layout->addLayout(gridLayout);
+	toolBar.addToolWidget(doneButton);
+	toolBar.addToolWidget(resetButton);
+	footerBar.addToolWidget(prevButton);
+	footerBar.addToolWidget(nextButton);
+	footerBar.expanding = true;
+	footerBar.spacerEnd = false;
 
-	/* short name on the top */
-	label = new QLabel(tr("Short name :"));
-	gridLayout->addWidget(label, 0, 0, 1, 1);
-	nameEditor = new QLineEdit;
-	gridLayout->addWidget(nameEditor, 0, 1, 1, 2);
+	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
 
-	/* store name */
-	label = new QLabel(tr("Store name :"));
-	gridLayout->addWidget(label, 1, 0, 1, 1);
-	storeNameEditor = new QLineEdit;
-	gridLayout->addWidget(storeNameEditor, 1, 1, 1, 2);
+	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&storeNameEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&cityEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&addressEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&companyEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
 
-	/* city */
-	label = new QLabel(tr("City :"));
-	gridLayout->addWidget(label, 2, 0, 1, 1);
-	cityEditor = new QLineEdit;
-	gridLayout->addWidget(cityEditor, 2, 1, 1, 2);
-
-	/* address */
-	label = new QLabel(tr("Address :"));
-	gridLayout->addWidget(label, 3, 0, 1, 1);
-	addressEditor = new QLineEdit;
-	gridLayout->addWidget(addressEditor, 3, 1, 1, 2);
-
-	/* company */
-	label = new QLabel(tr("Company :"));
-	gridLayout->addWidget(label, 4, 0, 1, 1);
-	companyEditor = new QLineEdit;
-	gridLayout->addWidget(companyEditor, 4, 1, 1, 2);
-
-	/* buttons: prev, save, next */
-	hbox = new QHBoxLayout;
-	layout->addLayout(hbox);
-
-	prevButton = new QPushButton;
-	prevButton->setText(tr("Prev"));
-	prevButton->setAutoDefault(false);
-	hbox->addWidget(prevButton);
-
-	saveButton = new QPushButton;
-	saveButton->setText(tr("Save"));
-	saveButton->setAutoDefault(false);
-	hbox->addWidget(saveButton);
-
-	nextButton = new QPushButton;
-	nextButton->setText(tr("Next"));
-	nextButton->setAutoDefault(false);
-	hbox->addWidget(nextButton);
-
-	setLayout(layout);
-
-	/* restore last state */
+	setupView();
 	loadState();
-
-	connect(prevButton, SIGNAL(clicked()),
-			this, SLOT(prevClickedSlot()));
-	connect(nextButton, SIGNAL(clicked()),
-			this, SLOT(nextClickedSlot()));
-	connect(saveButton, SIGNAL(clicked()),
-			this, SLOT(saveSlot()));
+	retranslate();
 }
 
-void EditShopView::showEvent(QShowEvent *event)
+void EditPartnerView::showEvent(QShowEvent *event)
 {
+	mapToGui();
+
 	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
 }
 
-void EditShopView::closeEvent(QCloseEvent *event)
+void EditPartnerView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 
 	PannView::closeEvent(event);
 }
 
-void EditShopView::loadState()
+void EditPartnerView::loadState()
 {
-	QSettings settings;
-	QPoint pos = settings.value("editshopview/position", QPoint()).toPoint();
-	QSize size = settings.value("editshopview/size", QSize()).toSize();
-	if(size.isValid())
-		resize(size);
+	QString prefix(cursor.isValid() ? "EditPartnerView" : "NewPartnerView");
+	PannView::loadState(prefix);
+}
+
+void EditPartnerView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditPartnerView" : "NewPartnerView");
+	PannView::saveState(prefix);
+}
+
+void EditPartnerView::mapToGui()
+{
+	if(cursor.isValid())
+		partner = Shop(model.partner(cursor.row()));
+
+	nameEditor.editor.setText(partner.name);
+	storeNameEditor.editor.setText(partner.storeName);
+	cityEditor.editor.setText(partner.city);
+	addressEditor.editor.setText(partner.address);
+	companyEditor.editor.setText(partner.company);
+
+	updateToolButtonStates();
+}
+
+void EditPartnerView::mapFromGui()
+{
+	partner.name = nameEditor.editor.text();
+	partner.storeName = storeNameEditor.editor.text();
+	partner.city = cityEditor.editor.text();
+	partner.address = addressEditor.editor.text();
+	partner.company = companyEditor.editor.text();
+}
+
+void EditPartnerView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditPartnerView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+void EditPartnerView::retranslate()
+{
+	if(cursor.isValid())
+		setWindowTitle(tr(TidEditPartnerWindowTitle));
 	else
-		adjustSize();
-	move(pos);
+		setWindowTitle(tr(TidNewPartnerWindowTitle));
+
+	nameEditor.label.setText(tr(TidPartnerName));
+	storeNameEditor.label.setText(tr(TidPartnerStoreName));
+	cityEditor.label.setText(tr(TidPartnerCity));
+	addressEditor.label.setText(tr(TidPartnerAddress));
+	companyEditor.label.setText(tr(TidPartnerCompany));
+
+	relayout();
 }
 
-void EditShopView::saveState()
+void EditPartnerView::applyLayout()
 {
-	QSettings settings;
-	settings.setValue("editshopview/position", pos());
-	settings.setValue("editshopview/size", size());
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&nameEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&cityEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&addressEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&companyEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&storeNameEditor);
+	mainLayout->addStretch(0);
+
+	delete layout();
+	setLayout(mainLayout);
+	updateGeometry();
 }
 
-void EditShopView::mapToGui()
+void EditPartnerView::relayout()
 {
-	shop = Shop(model.shop(cursor.row()));
+	{
+		nameEditor.wideLayout();
+		storeNameEditor.wideLayout();
+		cityEditor.wideLayout();
+		addressEditor.wideLayout();
+		companyEditor.wideLayout();
+		applyLayout();
+	}
+	if(width() < sizeHint().width()){
+		nameEditor.narrowLayout();
+		storeNameEditor.narrowLayout();
+		cityEditor.narrowLayout();
+		addressEditor.narrowLayout();
+		companyEditor.narrowLayout();
+		applyLayout();
+	}
 
-	nameEditor->setText(shop.name);
-	storeNameEditor->setText(shop.storeName);
-	cityEditor->setText(shop.city);
-	addressEditor->setText(shop.address);
-	companyEditor->setText(shop.company);
+	updateToolButtonStates();
 }
 
-void EditShopView::mapFromGui()
+void EditPartnerView::updateToolButtonStates()
 {
-	shop.name = nameEditor->text();
-	shop.storeName = storeNameEditor->text();
-	shop.city = cityEditor->text();
-	shop.address = addressEditor->text();
-	shop.company = companyEditor->text();
+	bool modified = !(
+			partner.name == nameEditor.editor.text() &&
+			partner.storeName == storeNameEditor.editor.text() &&
+			partner.city == cityEditor.editor.text() &&
+			partner.address == addressEditor.editor.text() &&
+			partner.company == companyEditor.editor.text()
+			);
+
+	bool mandatoriesGiven = nameEditor.editor.text().size();
+
+	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
+	prevButton.setVisible(!modified && cursor.isValid() && 0 < cursor.row());
+	nextButton.setVisible(!modified && cursor.isValid() && cursor.row() < model.rowCount()-1);
+	doneButton.setVisible(mandatoriesGiven && modified);
+	resetButton.setVisible(modified);
+
+	if(modified){
+		if(!mandatoriesGiven)
+			toolBar.setInfo(tr(TidInfoMandatoryFields));
+		else
+			toolBar.clearInfo();
+	}
+
+	toolBar.updateButtons();
+	footerBar.updateButtons();
 }
 
-void EditShopView::setCursor(const QModelIndex& index)
+void EditPartnerView::setCursor(const QModelIndex& index)
 {
+	ENSURE(index.isValid(), csjp::LogicError);
 	ENSURE(index.model() == &model, csjp::LogicError);
 
 	cursor = index;
+	setWindowTitle(tr(TidEditPartnerWindowTitle));
 	mapToGui();
-	prevButton->setEnabled(cursor.row() > 0);
-	nextButton->setEnabled(cursor.row() < model.rowCount() - 1);
 }
 
-void EditShopView::prevClickedSlot()
+void EditPartnerView::prevClickedSlot()
 {
 	int col = cursor.column();
 	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
 	setCursor(model.index(row, col));
 }
 
-void EditShopView::nextClickedSlot()
+void EditPartnerView::nextClickedSlot()
 {
 	int col = cursor.column();
 	int row = (cursor.row() < model.rowCount() - 1) ?
@@ -164,9 +247,26 @@ void EditShopView::nextClickedSlot()
 	setCursor(model.index(row, col));
 }
 
-void EditShopView::saveSlot()
+void EditPartnerView::saveSlot()
 {
 	mapFromGui();
-	model.update(cursor.row(), shop);
-	accept();
+
+	if(cursor.isValid()){
+		if(model.partner(cursor.row()) != partner)
+			model.update(cursor.row(), partner);
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(partner);
+
+		partner = Shop();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditPartnerView::resetSlot()
+{
+	mapToGui();
 }

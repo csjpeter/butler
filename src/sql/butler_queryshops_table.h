@@ -24,13 +24,13 @@ private:
 public:
 	void check(QStringList &tables);
 
-	void insert(const Query &q, const QString &shopName);
-	void del(const Query &q, const QString &shopName);
+	void insert(const Query &q, const QString &partnerName);
+	void del(const Query &q, const QString &partnerName);
 
 	void insert(const Query &q);
 	void update(const Query &orig, const Query &modified);
 	void del(const Query &q);
-	void query(const Query &q, ShopNameSet &shops);
+	void query(const Query &q, ShopNameSet &partners);
 
 private:
 	SqlConnection &sql;

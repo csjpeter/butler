@@ -54,7 +54,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queriesModel(dbname), Query::Name),
 	wareSelector(&waresModel(dbname), Ware::Name),
-	shopSelector(&shopsModel(dbname), Shop::Name),
+	partnerSelector(&partnersModel(dbname), Shop::Name),
 	tagsWidget(dbname),
 	withoutTagsWidget(dbname)
 {
@@ -78,7 +78,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetClickedSlot()));
 
 	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
-	connect(&shopFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
+	connect(&partnerFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
 	connect(&withTagFilter.box, SIGNAL(stateChanged(int)),
 			this, SLOT(layoutContentChangeSlot()));
 	connect(&withoutTagFilter.box, SIGNAL(stateChanged(int)),
@@ -96,7 +96,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&wareSelector.box, SIGNAL(currentIndexChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&shopSelector.box, SIGNAL(currentIndexChanged(const QString &)),
+	connect(&partnerSelector.box, SIGNAL(currentIndexChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&stockOptAll, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 	connect(&stockOptOnStock, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
@@ -164,19 +164,19 @@ void QueryOptionsView::mapToGui()
 	} else
 		wareFilter.box.setChecked(false);
 
-	if(query.shops.size()){
-		ShopsModel &sm = shopsModel(dbname);
-		int row = sm.index(query.shops.queryAt(0));
+	if(query.partners.size()){
+		PartnersModel &sm = partnersModel(dbname);
+		int row = sm.index(query.partners.queryAt(0));
 		if(0 <= row){
-			shopFilter.box.blockSignals(true);
-			shopFilter.box.setChecked(true);
-			shopFilter.box.blockSignals(false);
-			shopSelector.box.setCurrentIndex(row);
+			partnerFilter.box.blockSignals(true);
+			partnerFilter.box.setChecked(true);
+			partnerFilter.box.blockSignals(false);
+			partnerSelector.box.setCurrentIndex(row);
 		}
 	} else {
-		shopFilter.box.blockSignals(true);
-		shopFilter.box.setChecked(false);
-		shopFilter.box.blockSignals(false);
+		partnerFilter.box.blockSignals(true);
+		partnerFilter.box.setChecked(false);
+		partnerFilter.box.blockSignals(false);
 	}
 
 	if(query.stockOption == Query::StockOptions::AllBoughtItem)
@@ -229,12 +229,12 @@ void QueryOptionsView::mapFromGui()
 			query.wares.add(new QString(wm.ware(i).name.trimmed()));
 	}
 	
-	query.shops.clear();
-	if(shopFilter.box.isChecked()){
-		int i = shopSelector.box.currentIndex();
-		ShopsModel &sm = shopsModel(dbname);
+	query.partners.clear();
+	if(partnerFilter.box.isChecked()){
+		int i = partnerSelector.box.currentIndex();
+		PartnersModel &sm = partnersModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.shops.add(new QString(sm.shop(i).name.trimmed()));
+			query.partners.add(new QString(sm.partner(i).name.trimmed()));
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
@@ -288,8 +288,8 @@ void QueryOptionsView::retranslate()
 
 	wareSelector.label.setText(tr(TidWareSelector));
 
-	shopFilter.label.setText(tr(TidShopFilter));
-	shopSelector.label.setText(tr(TidShopSelector));
+	partnerFilter.label.setText(tr(TidShopFilter));
+	partnerSelector.label.setText(tr(TidShopSelector));
 
 	withTagFilter.label.setText(tr(TidWithTagFilter));
 	tagsWidget.label.setText("");//tr(TidWithTags));
@@ -318,7 +318,7 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 		filterLayout = new HLayout;
 		filterLayout->addWidget(&wareFilter);
 		filterLayout->addStretch(0);
-		filterLayout->addWidget(&shopFilter);
+		filterLayout->addWidget(&partnerFilter);
 		filterLayout->addStretch(0);
 		filterLayout->addWidget(&withTagFilter);
 		filterLayout->addStretch(0);
@@ -331,7 +331,7 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 		filter1Layout = new HLayout;
 		filter1Layout->addWidget(&wareFilter);
 		filter1Layout->addStretch(0);
-		filter1Layout->addWidget(&shopFilter);
+		filter1Layout->addWidget(&partnerFilter);
 		filter1Layout->addStretch(0);
 	}
 
@@ -382,10 +382,10 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 	mainLayout->addWidget(&wareSelector);
 	if(state == LayoutState::Narrow){
 		mainLayout->addStretch(0);
-		mainLayout->addWidget(&shopFilter);
+		mainLayout->addWidget(&partnerFilter);
 	}
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&shopSelector);
+	mainLayout->addWidget(&partnerSelector);
 	if(state == LayoutState::Medium){
 		mainLayout->addStretch(0);
 		mainLayout->addLayout(filter2Layout);
@@ -420,7 +420,7 @@ void QueryOptionsView::relayout()
 	startDate.wideLayout();
 	endDate.wideLayout();
 	wareSelector.wideLayout();
-	shopSelector.wideLayout();
+	partnerSelector.wideLayout();
 	stockOptions.wideLayout();
 	tagOptions.wideLayout();
 	wareFilter.label.setText(tr(TidWareFilter));
@@ -432,7 +432,7 @@ void QueryOptionsView::relayout()
 		startDate.wideLayout();
 		endDate.wideLayout();
 		wareSelector.wideLayout();
-		shopSelector.wideLayout();
+		partnerSelector.wideLayout();
 		stockOptions.mediumLayout();
 		tagOptions.mediumLayout();
 		wareFilter.label.setText(trShort(TidWareFilter));
@@ -444,7 +444,7 @@ void QueryOptionsView::relayout()
 		startDate.narrowLayout();
 		endDate.narrowLayout();
 		wareSelector.narrowLayout();
-		shopSelector.narrowLayout();
+		partnerSelector.narrowLayout();
 		stockOptions.narrowLayout();
 		tagOptions.narrowLayout();
 		wareFilter.label.setText(trShort(TidWareFilter));
@@ -532,7 +532,7 @@ void QueryOptionsView::updateToolButtonStates()
 //			query.endDate == endDate.edit.dateTime() &&
 
 			((bool)(query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
-			((bool)(query.shops.size()) ==(shopFilter.box.checkState()==Qt::Checked)) &&
+			((bool)(query.partners.size()) ==(partnerFilter.box.checkState()==Qt::Checked)) &&
 			((bool)(query.withTags.size()) ==(withTagFilter.box.checkState()==Qt::Checked)) &&
 			((bool)(query.withoutTags.size()) ==(withoutTagFilter.box.checkState()==Qt::Checked)) &&
 
@@ -544,8 +544,8 @@ void QueryOptionsView::updateToolButtonStates()
 			if(query.wares.queryAt(0) != wareSelector.box.currentText())
 				modified = true;
 	if(!modified)
-		if(query.shops.size() && (shopFilter.box.checkState()==Qt::Checked))
-			if(query.shops.queryAt(0) != shopSelector.box.currentText())
+		if(query.partners.size() && (partnerFilter.box.checkState()==Qt::Checked))
+			if(query.partners.queryAt(0) != partnerSelector.box.currentText())
 				modified = true;
 	if(!modified)
 		if(query.withTags.size() && (withTagFilter.box.checkState()==Qt::Checked))
@@ -604,7 +604,7 @@ void QueryOptionsView::updateToolButtonStates()
 	resetButton.setVisible(modified);
 
 	wareSelector.setVisible(wareFilter.box.checkState()==Qt::Checked);
-	shopSelector.setVisible(shopFilter.box.checkState()==Qt::Checked);
+	partnerSelector.setVisible(partnerFilter.box.checkState()==Qt::Checked);
 	tagOptions.setVisible(withTagFilter.box.checkState()==Qt::Checked);
 	tagsWidget.setVisible(withTagFilter.box.checkState()==Qt::Checked);
 	withoutTagsWidget.setVisible(withoutTagFilter.box.checkState()==Qt::Checked);

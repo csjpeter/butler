@@ -8,14 +8,10 @@
 
 #include <QAbstractItemModel>
 #include <QAbstractTableModel>
-#include <QList>
 #include <QModelIndex>
 
-#include <butler_query.h>
 #include <butler_query_set.h>
-#include <butler_tag.h>
 #include <butler_tag_set.h>
-
 #include <butler_db.h>
 
 #include <butler_config.h>

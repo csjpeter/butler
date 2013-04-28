@@ -10,8 +10,7 @@
 #include <butler_databases.h>
 
 /*forwards*/
-class NewShopView;
-class EditShopView;
+class EditPartnerView;
 
 class PartnersView : public PannView
 {
@@ -49,7 +48,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	ShopsModel & model;
+	PartnersModel & model;
 
 	ToolButton addButton;
 	ToolButton delButton;
@@ -58,8 +57,8 @@ private:
 
 	TableView tableView;
 
-	NewShopView * newPartnerView;
-	EditShopView * editPartnerView;
+	EditPartnerView * newPartnerView;
+	EditPartnerView * editPartnerView;
 };
 
 #endif

@@ -53,7 +53,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	prevButton(TidPrevItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextItemButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&waresModel(dbname), Ware::Name),
-	shopEditor(&shopsModel(dbname), Shop::Name),
+	shopEditor(&partnersModel(dbname), Shop::Name),
 	tagsWidget(dbname),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
@@ -398,7 +398,7 @@ void AccountingView::saveSlot()
 	mapFromGui();
 
 	/* Add shop if not yet known. */
-	ShopsModel &sm = shopsModel(dbname);
+	PartnersModel &sm = partnersModel(dbname);
 	int i = sm.index(shopEditor.text());
 	if(i == -1){
 		Shop shop;

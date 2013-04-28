@@ -27,7 +27,7 @@ const DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 csjp::Object<CustomModel> customModel(const QString & dbname);
 ShoppingModel & shoppingModel(const QString & dbname);
 TagsModel & tagsModel(const QString & dbname);
-ShopsModel & shopsModel(const QString & dbname);
+PartnersModel & partnersModel(const QString & dbname);
 WaresModel & waresModel(const QString & dbname);
 QueriesModel & queriesModel(const QString & dbname);
 

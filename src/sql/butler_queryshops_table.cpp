@@ -47,7 +47,7 @@ void QueryShopsTable::check(QStringList &tables)
 			"Incompatible table QueryShops in the openend database.");
 }
 
-void QueryShopsTable::insert(const Query &q, const QString &shopName)
+void QueryShopsTable::insert(const Query &q, const QString &partnerName)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
@@ -56,11 +56,11 @@ void QueryShopsTable::insert(const Query &q, const QString &shopName)
 				"VALUES (?, ?)");
 
 	insertQuery.bindValue(0, q.name);
-	insertQuery.bindValue(1, shopName);
+	insertQuery.bindValue(1, partnerName);
 	insertQuery.exec();
 }
 
-void QueryShopsTable::del(const Query &q, const QString &shopName)
+void QueryShopsTable::del(const Query &q, const QString &partnerName)
 {
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
@@ -69,37 +69,37 @@ void QueryShopsTable::del(const Query &q, const QString &shopName)
 				"query_name = ? AND shop = ?");
 
 	deleteQuery.bindValue(0, q.name);
-	deleteQuery.bindValue(1, shopName);
+	deleteQuery.bindValue(1, partnerName);
 	deleteQuery.exec();
 }
 
 void QueryShopsTable::insert(const Query &q)
 {
-	unsigned i, s = q.shops.size();
+	unsigned i, s = q.partners.size();
 	for(i=0; i<s; i++){
-		const QString &t = q.shops.queryAt(i);
+		const QString &t = q.partners.queryAt(i);
 		insert(q, t);
 	}
 }
 
 void QueryShopsTable::update(const Query &orig, const Query &modified)
 {
-	unsigned i, s = modified.shops.size();
+	unsigned i, s = modified.partners.size();
 	for(i=0; i<s; i++){
-		const QString &mTag = modified.shops.queryAt(i);
-		if(!orig.shops.has(mTag))
+		const QString &mTag = modified.partners.queryAt(i);
+		if(!orig.partners.has(mTag))
 			insert(modified, mTag);
 	}
 
-	s = orig.shops.size();
+	s = orig.partners.size();
 	for(i=0; i<s; i++){
-		const QString &oTag = orig.shops.queryAt(i);
-		if(!modified.shops.has(oTag))
+		const QString &oTag = orig.partners.queryAt(i);
+		if(!modified.partners.has(oTag))
 			del(orig, oTag);
 	}
 }
 
-void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
+void QueryShopsTable::query(const Query &q, ShopNameSet &partners)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
@@ -109,14 +109,14 @@ void QueryShopsTable::query(const Query &q, ShopNameSet &shops)
 	selectQuery.bindValue(0, q.name);
 	selectQuery.exec();
 
-	shops.clear();
+	partners.clear();
 
-	int shopNo = selectQuery.colIndex("shop");
+	int partnerNo = selectQuery.colIndex("shop");
 
-	DBG("----- Query shops query result:");
+	DBG("----- Query partners query result:");
 	while (selectQuery.next()) {
 		DBG("Next row");
-		shops.add(new QString(selectQuery.value(shopNo).toString()));
+		partners.add(new QString(selectQuery.value(partnerNo).toString()));
 	}
 	DBG("-----");
 }

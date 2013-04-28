@@ -11,12 +11,11 @@
 #include <QModelIndex>
 
 #include <butler_shop_set.h>
-
 #include <butler_db.h>
 
 #include <butler_config.h>
 
-class ShopsModel :
+class PartnersModel :
 	public QAbstractTableModel
 {
 private:
@@ -24,8 +23,8 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	ShopsModel(Db & db);
-	virtual ~ShopsModel();
+	PartnersModel(Db & db);
+	virtual ~PartnersModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -53,17 +52,17 @@ public slots:
 
 public:
 	int index(const QString &name) const NO_FCLOG;
-	const Shop& shop(int row) NO_FCLOG;
-	const ShopSet & shopSet() const { return shops; };
+	const Shop& partner(int row) NO_FCLOG;
+	const ShopSet & partnerSet() const { return partners; };
 	void del(int row);
-	void addNew(Shop &shop);
+	void addNew(Shop &partner);
 	virtual void update(int row, Shop &modified);
 	void query();
 	void sort(int column, bool ascending);
 
 protected:
 	Db & db;
-	ShopSet shops;
+	ShopSet partners;
 };
 
 #endif

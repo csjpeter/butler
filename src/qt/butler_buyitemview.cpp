@@ -64,7 +64,7 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	label = new QLabel(tr("Shop (place of buy):"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
 	shopBox = new QComboBox;
-	shopBox->setModel(&shopsModel(dbname));
+	shopBox->setModel(&partnersModel(dbname));
 	shopBox->setModelColumn(Shop::Name);
 	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
 
@@ -161,11 +161,11 @@ void BuyItemView::mapToGui()
 
 void BuyItemView::mapFromGui()
 {
-	ShopsModel &sm = shopsModel(dbname);
+	PartnersModel &pm = partnersModel(dbname);
 	item.purchased = purchaseDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();
-	item.shop = sm.shop(shopBox->currentIndex()).name;
+	item.shop = pm.partner(shopBox->currentIndex()).name;
 }
 
 void BuyItemView::buy()

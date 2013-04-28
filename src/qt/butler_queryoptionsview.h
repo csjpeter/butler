@@ -63,8 +63,8 @@ private:
 	DateTimeEditor endDate;
 	Selector wareSelector;
 	FormCheckBox wareFilter;
-	Selector shopSelector;
-	FormCheckBox shopFilter;
+	Selector partnerSelector;
+	FormCheckBox partnerFilter;
 
 	ButtonGroup stockOptions;
 	QRadioButton stockOptAll;

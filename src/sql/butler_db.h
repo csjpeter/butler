@@ -25,12 +25,12 @@ public:
 		tag(sql),
 		query(sql, tag),
 		ware(sql, tag),
-		shop(sql),
+		partner(sql),
 		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
 		tag.check(tables);
-		shop.check(tables);
+		partner.check(tables);
 		ware.check(tables);
 		item.check(tables);
 		query.check(tables);
@@ -44,7 +44,7 @@ public:
 	TagDb tag;
 	QueryDb query;
 	WareDb ware;
-	ShopDb shop;
+	ShopDb partner;
 	ItemDb item;
 };
 

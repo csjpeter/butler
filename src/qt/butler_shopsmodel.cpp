@@ -13,30 +13,30 @@ SCC TidPartnerFieldAddress	= QT_TRANSLATE_NOOP("PartnersModel", "Address");
 SCC TidPartnerFieldCompany	= QT_TRANSLATE_NOOP("PartnersModel", "Company");
 SCC TidPartnerFieldStoreName	= QT_TRANSLATE_NOOP("PartnersModel", "Store/Agent");
 
-ShopsModel::ShopsModel(Db & db) :
+PartnersModel::PartnersModel(Db & db) :
 	db(db)
 {
 	query();
 }
 
-ShopsModel::~ShopsModel()
+PartnersModel::~PartnersModel()
 {
 }
 
-QModelIndex ShopsModel::index(int row, int column, const QModelIndex & parent) const
+QModelIndex PartnersModel::index(int row, int column, const QModelIndex & parent) const
 {
 	return QAbstractTableModel::index(row, column, parent);
 }
 
-Qt::ItemFlags ShopsModel::flags(const QModelIndex & index) const
+Qt::ItemFlags PartnersModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)shops.size() && index.column() < Shop::NumOfFields){
+	if(index.row() < (int)partners.size() && index.column() < Shop::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
 }
 
-QVariant ShopsModel::data(const QModelIndex & index, int role) const 
+QVariant PartnersModel::data(const QModelIndex & index, int role) const 
 {
 	if(!index.isValid())
 		return QVariant();
@@ -47,24 +47,24 @@ QVariant ShopsModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
 		return QVariant();
 
-	if((int)shops.size() <= index.row())
+	if((int)partners.size() <= index.row())
 		return QVariant();
 
 	switch(index.column()){
 		case Shop::Name :
-			return QVariant(shops.queryAt(index.row()).name);
+			return QVariant(partners.queryAt(index.row()).name);
 			break;
 		case Shop::StoreName :
-			return QVariant(shops.queryAt(index.row()).storeName);
+			return QVariant(partners.queryAt(index.row()).storeName);
 			break;
 		case Shop::City :
-			return QVariant(shops.queryAt(index.row()).city);
+			return QVariant(partners.queryAt(index.row()).city);
 			break;
 		case Shop::Address :
-			return QVariant(shops.queryAt(index.row()).address);
+			return QVariant(partners.queryAt(index.row()).address);
 			break;
 		case Shop::Company :
-			return QVariant(shops.queryAt(index.row()).company);
+			return QVariant(partners.queryAt(index.row()).company);
 			break;
 		default :
 			return QVariant();
@@ -73,7 +73,7 @@ QVariant ShopsModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
-QVariant ShopsModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant PartnersModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
 	if(role != Qt::DisplayRole)
@@ -105,7 +105,7 @@ QVariant ShopsModel::headerData(int section, Qt::Orientation orientation, int ro
 	return QVariant();
 }
 
-bool ShopsModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool PartnersModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if(!index.isValid())
 		return false;
@@ -116,11 +116,11 @@ bool ShopsModel::setData(const QModelIndex & index, const QVariant & value, int 
 	if(role != Qt::EditRole)
 		return false;
 
-	if((int)shops.size() <= index.row())
+	if((int)partners.size() <= index.row())
 		return false;
 
 	int row = index.row();
-	Shop modified(shops.queryAt(row));
+	Shop modified(partners.queryAt(row));
 
 	switch(index.column()){
 		case Shop::Name :
@@ -151,7 +151,7 @@ bool ShopsModel::setData(const QModelIndex & index, const QVariant & value, int 
 	return true;
 }
 
-bool ShopsModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
+bool PartnersModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
 {
 	(void)section;
 	(void)orientation;
@@ -162,21 +162,21 @@ bool ShopsModel::setHeaderData(int section, Qt::Orientation orientation, const Q
 	return false;
 }
 
-int ShopsModel::rowCount(const QModelIndex & parent) const
+int PartnersModel::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return shops.size();
+	return partners.size();
 }
 
-int ShopsModel::columnCount(const QModelIndex & parent) const
+int PartnersModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
 	return Shop::NumOfFields;
 }
 
-bool ShopsModel::removeRows(
+bool PartnersModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
 	try {
@@ -189,7 +189,7 @@ bool ShopsModel::removeRows(
 	return true;
 }
 
-bool ShopsModel::insertRows(
+bool PartnersModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
 	try {
@@ -202,31 +202,31 @@ bool ShopsModel::insertRows(
 	return true;
 }
 
-void ShopsModel::sort(int column, Qt::SortOrder order)
+void PartnersModel::sort(int column, Qt::SortOrder order)
 {
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int ShopsModel::index(const QString &name) const
+int PartnersModel::index(const QString &name) const
 {
-	if(shops.has(name))
-		return shops.index(name);
+	if(partners.has(name))
+		return partners.index(name);
 	else
 		return -1;
 }
 
-const Shop& ShopsModel::shop(int row)
+const Shop& PartnersModel::partner(int row)
 {
-	return shops.queryAt(row);
+	return partners.queryAt(row);
 }
 
-void ShopsModel::del(int row)
+void PartnersModel::del(int row)
 {
-	Shop &shop = shops.queryAt(row);
-	db.shop.del(shop);
+	Shop &partner = partners.queryAt(row);
+	db.partner.del(partner);
 	try {
 		beginRemoveRows(QModelIndex(), row, row);
-		shops.removeAt(row);
+		partners.removeAt(row);
 		endRemoveRows();
 	} catch (...) {
 		endRemoveRows();
@@ -234,12 +234,12 @@ void ShopsModel::del(int row)
 	}
 }
 
-void ShopsModel::addNew(Shop &shop)
+void PartnersModel::addNew(Shop &partner)
 {
-	db.shop.insert(shop);
+	db.partner.insert(partner);
 	try {
-		beginInsertRows(QModelIndex(), shops.size(), shops.size());
-		shops.add(new Shop(shop));
+		beginInsertRows(QModelIndex(), partners.size(), partners.size());
+		partners.add(new Shop(partner));
 		endInsertRows();
 	} catch (...) {
 		endInsertRows();
@@ -247,19 +247,19 @@ void ShopsModel::addNew(Shop &shop)
 	}
 }
 
-void ShopsModel::update(int row, Shop &modified)
+void PartnersModel::update(int row, Shop &modified)
 {
-	Shop &orig = shops.queryAt(row);
-	db.shop.update(orig, modified);
+	Shop &orig = partners.queryAt(row);
+	db.partner.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Shop::NumOfFields-1));
 }
 
-void ShopsModel::query()
+void PartnersModel::query()
 {
 	try {
 		beginResetModel();
-		db.shop.query(shops);
+		db.partner.query(partners);
 		endResetModel();
 	} catch (...) {
 		endResetModel();
@@ -267,16 +267,16 @@ void ShopsModel::query()
 	}
 }
 
-void ShopsModel::sort(int column, bool ascending)
+void PartnersModel::sort(int column, bool ascending)
 {
-	if(shops.ascending == ascending && shops.ordering == column)
+	if(partners.ascending == ascending && partners.ordering == column)
 		return;
 
 	try {
 		beginResetModel();
-		shops.ascending = ascending;
-		shops.ordering = static_cast<Shop::Fields>(column);
-		shops.sort();
+		partners.ascending = ascending;
+		partners.ordering = static_cast<Shop::Fields>(column);
+		partners.sort();
 		endResetModel();
 	} catch (...) {
 		endResetModel();

@@ -82,7 +82,7 @@ void QueryDb::query(QuerySet &qs)
 			/* queryTagsTable.query(q, q.withoutTags); */
 			queryTagsTable.query(q, q.withTags);
 			queryWaresTable.query(q, q.wares);
-			queryShopsTable.query(q, q.shops);
+			queryShopsTable.query(q, q.partners);
 		}
 		sql.commit();
 	} catch (...) {

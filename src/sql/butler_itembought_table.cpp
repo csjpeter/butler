@@ -170,7 +170,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	}
 
 	{
-		unsigned i, s = q.shops.size();
+		unsigned i, s = q.partners.size();
 		QString scmd;
 		if(!filter.isEmpty())
 			scmd += " AND ( ";
@@ -178,7 +178,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 			if(0 < i)
 				scmd += " OR";
 			scmd += " Shops.name = '";
-			scmd += q.shops.queryAt(i).replace("'", "''");
+			scmd += q.partners.queryAt(i).replace("'", "''");
 			scmd += "'";
 		}
 		scmd.append(")");

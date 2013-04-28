@@ -8,7 +8,6 @@
 #include <config.h>
 
 #include "butler_shopsview.h"
-#include "butler_newshopview.h"
 #include "butler_editshopview.h"
 #include "butler_config.h"
 
@@ -23,7 +22,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("PartnersView", "Refresh partner list")
 PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(shopsModel(dbname)),
+	model(partnersModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -35,7 +34,7 @@ PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 	newPartnerView(NULL),
 	editPartnerView(NULL)
 {
-	setWindowIcon(QIcon(Path::icon("shop.png")));
+	setWindowIcon(QIcon(Path::icon("partner.png")));
 
 	tableView.setModel(&model);
 
@@ -147,7 +146,7 @@ void PartnersView::loadState()
 
 	QString name = settings.value(prefix + "/currentitem", "").toString();
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.shopSet().has(name))
+	if(model.partnerSet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editPartnerView", false).toBool())
@@ -164,7 +163,7 @@ void PartnersView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.shop(tableView.currentIndex().row()).name;
+		name = model.partner(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -176,7 +175,7 @@ void PartnersView::saveState()
 void PartnersView::newShop()
 {
 	if(!newPartnerView)
-		newPartnerView = new NewShopView(dbname);
+		newPartnerView = new EditPartnerView(dbname);
 
 	newPartnerView->activate();
 }
@@ -185,12 +184,12 @@ void PartnersView::editShop()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select shop first."));
+				tr("Please select partner first."));
 		return;
 	}
 
 	if(!editPartnerView)
-		editPartnerView = new EditShopView(dbname);
+		editPartnerView = new EditPartnerView(dbname);
 
 	editPartnerView->setCursor(tableView.currentIndex());
 	editPartnerView->activate();
@@ -200,16 +199,16 @@ void PartnersView::delShop()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select shop first."));
+				tr("Please select partner first."));
 		return;
 	}
 
 	int row = tableView.currentIndex().row();
-	const Shop &shop = model.shop(row);
+	const Shop &partner = model.partner(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Deleting a shop"),
-			tr("Shall we delete this shop: ") + shop.name,
+			tr("Deleting a partner"),
+			tr("Shall we delete this partner: ") + partner.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
@@ -220,11 +219,11 @@ void PartnersView::refresh()
 {
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.shop(tableView.currentIndex().row()).name;
+		name = model.partner(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.shopSet().has(name))
+	if(model.partnerSet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());

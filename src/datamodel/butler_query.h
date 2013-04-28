@@ -50,7 +50,7 @@ public:
 	TagNameSet withTags;
 	TagNameSet withoutTags;
 	WareNameSet wares;
-	ShopNameSet shops;
+	ShopNameSet partners;
 	
 	enum Fields {
 		Name = 0,

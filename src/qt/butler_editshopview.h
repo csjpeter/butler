@@ -6,33 +6,18 @@
 #ifndef BUTLER_EDITSHOPVIEW_H
 #define BUTLER_EDITSHOPVIEW_H
 
-#include <butler_pannview.h>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
-
 #include <butler_shop.h>
+#include <butler_pannview.h>
 
-#include "butler_databases.h"
-
-/*forwards*/
-class QLineEdit;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QLabel;
-class QScrollArea;
-class QListView;
-
-class EditShopView : public PannView
+class EditPartnerView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	EditShopView(const QString & dbname, QWidget * parent = 0);
-	virtual ~EditShopView() {}
+	EditPartnerView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditPartnerView() {}
 
 	void setCursor(const QModelIndex& index);
 
@@ -46,26 +31,35 @@ private:
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
+	void saveSlot();
+	void resetSlot();
 
 private:
-	Shop shop;
 	const QString & dbname;
-	ShopsModel & model;
+	PartnersModel & model;
 	QModelIndex cursor;
+	Shop partner;
 
-	QLineEdit *nameEditor;
-	QLineEdit *storeNameEditor;
-	QLineEdit *cityEditor;
-	QLineEdit *addressEditor;
-	QLineEdit *companyEditor;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
+	InputEditor nameEditor;
+	InputEditor storeNameEditor;
+	InputEditor cityEditor;
+	InputEditor addressEditor;
+	InputEditor companyEditor;
 };
 
 #endif

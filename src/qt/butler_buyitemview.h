@@ -27,7 +27,7 @@ class FlowLayout;
 class TagSet;
 class NumPad;
 class ItemsModel;
-class ShopsModel;
+class PartnersModel;
 
 class BuyItemView : public PannView
 {

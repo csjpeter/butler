@@ -7,6 +7,9 @@
 
 #include "butler_tagsmodel.h"
 
+SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
+SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
+
 TagsModel::TagsModel(Db & db) :
 	db(db)
 {
@@ -73,10 +76,10 @@ QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int rol
 
 	switch(section){
 		case Tag::Name :
-			return QVariant("Tag name");
+			return QVariant(tr(TidTagFieldName));
 			break;
 		case Tag::Description :
-			return QVariant("Description");
+			return QVariant(tr(TidTagFieldDescription));
 			break;
 		default :
 			return QVariant();

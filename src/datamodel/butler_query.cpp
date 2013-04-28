@@ -48,7 +48,7 @@ bool Query::isEqual(const Query &qo) const
 			withTags != qo.withTags ||
 			withoutTags != qo.withoutTags ||
 			wares != qo.wares ||
-			shops != qo.shops)
+			partners != qo.partners)
 		return false;
 	return true;
 }
@@ -78,7 +78,7 @@ void Query::equal(const Query &qo)
 	withTags.copy(qo.withTags);
 	withoutTags.copy(qo.withoutTags);
 	wares.copy(qo.wares);
-	shops.copy(qo.shops);
+	partners.copy(qo.partners);
 }
 
 bool operator==(const Query &a, const Query &b)
