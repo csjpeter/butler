@@ -6,6 +6,8 @@
 #ifndef BUTLER_SHOPPINGVIEW_H
 #define BUTLER_SHOPPINGVIEW_H
 
+#include <QSqlTableModel>
+
 #include <butler_pannview.h>
 #include "butler_databases.h"
 
