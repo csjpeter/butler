@@ -8,7 +8,6 @@
 #include <config.h>
 
 #include "butler_waresview.h"
-#include "butler_newwareview.h"
 #include "butler_editwareview.h"
 #include "butler_config.h"
 
