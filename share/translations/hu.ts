@@ -435,7 +435,7 @@
         <source>Next ware</source>
         <translation variants="yes">
             <lengthvariant>Következő áru/szolgáltatás</lengthvariant>
-            <lengthvariant>Köveetkező</lengthvariant>
+            <lengthvariant>Következő</lengthvariant>
         </translation>
     </message>
     <message>
