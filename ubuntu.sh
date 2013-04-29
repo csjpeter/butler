@@ -95,7 +95,7 @@ case "${CMD}" in
 	(pump)
 		shift
 		config ${DISTRIB_CODENAME} || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} pump make $@ || exit $?
+		exec_in_dir ${DISTRIB_CODENAME} pump make CXX=distcc $@ || exit $?
 	;;
 	(*)
 		config ${DISTRIB_CODENAME} || exit $?
