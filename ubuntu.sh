@@ -92,6 +92,11 @@ case "${CMD}" in
 		release quantal amd64
 		release quantal i386
 	;;
+	(pump)
+		shift
+		config ${DISTRIB_CODENAME} || exit $?
+		exec_in_dir ${DISTRIB_CODENAME} pump make $@ || exit $?
+	;;
 	(*)
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
