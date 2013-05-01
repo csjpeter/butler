@@ -127,7 +127,7 @@ void AccountingView::showEvent(QShowEvent *event)
 		uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
 
 	PannView::showEvent(event);
-	wareEditor.editor.setFocus(Qt::OtherFocusReason);
+	grossPriceEditor.editor.setFocus(Qt::OtherFocusReason);
 	relayout();
 }
 
@@ -436,7 +436,7 @@ void AccountingView::saveSlot()
 		ware = Ware();
 		mapToGui();
 		toolBar.setInfo(tr(TidInfoNewSaved));
-		wareEditor.editor.setFocus(Qt::OtherFocusReason);
+		grossPriceEditor.editor.setFocus(Qt::OtherFocusReason);
 	}
 }
 

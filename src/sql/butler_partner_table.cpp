@@ -54,8 +54,8 @@ void PartnerTable::insert(const Partner &s)
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO Partners "
-				"(name, store_name, country, city, postal_code, "
-				"address, company) "
+				"(name, country, city, postal_code, "
+				"address, company, store_name) "
 				"VALUES(?, ?, ?, ?, ?, ?, ?)");
 
 	insertQuery.bindValue(0, s.name);
