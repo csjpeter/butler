@@ -15,6 +15,7 @@ class ShoppingView;
 class AccountingView;
 class CustomView;
 class PartnersView;
+class CompanyView;
 class TagsView;
 class WaresView;
 class QueryOptionsView;
@@ -51,6 +52,7 @@ private slots:
 	void openAccountingView();
 	void openCustomView();
 	void openPartnersView();
+	void openCompanyView();
 	void openWaresView();
 	void openTagsView();
 	void openQueryOptionsView();
@@ -65,6 +67,7 @@ private:
 	ToolButton accountingButton;
 	ToolButton analiticsButton;
 	ToolButton partnersButton;
+	ToolButton companyButton;
 	ToolButton wareButton;
 	ToolButton tagButton;
 	ToolButton infoButton;
@@ -75,6 +78,7 @@ private:
 	AccountingView *accountingView;
 	CustomView *customView;
 	PartnersView *partnersView;
+	CompanyView *companyView;
 	WaresView *waresView;
 	TagsView *tagsView;
 	QueryOptionsView *queryOptionsView;

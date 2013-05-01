@@ -33,7 +33,7 @@ void ItemBoughtTable::check(QStringList &tables)
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
 				  "purchased DATE NOT NULL, "
 				  "price REAL NOT NULL DEFAULT 0 CHECK(0 <= price), "
-				  "shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
+				  "partner VARCHAR(64) NOT NULL REFERENCES Partners(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
 				  "on_stock INT NOT NULL DEFAULT 0 CHECK(on_stock = 0 OR on_stock = 1)"
 				  ")"
@@ -43,7 +43,7 @@ void ItemBoughtTable::check(QStringList &tables)
 	if(		!table.contains("uploaded") ||
 			!table.contains("purchased") ||
 			!table.contains("price") ||
-			!table.contains("shop") ||
+			!table.contains("partner") ||
 			!table.contains("on_stock")
 	  )
 		throw DbIncompatibleTableError(
@@ -56,13 +56,13 @@ void ItemBoughtTable::insert(const Item &i)
 	if(!insertQuery.isPrepared())
 		insertQuery.prepare("INSERT INTO ItemsBought "
 				"(uploaded, purchased, "
-				"price, shop, on_stock) "
+				"price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
 
 	insertQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(1, i.purchased.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	insertQuery.bindValue(2, i.price);
-	insertQuery.bindValue(3, i.shop);
+	insertQuery.bindValue(3, i.partner);
 	insertQuery.bindValue(4, i.onStock ? 1 : 0);
 	insertQuery.exec();
 }
@@ -79,13 +79,13 @@ void ItemBoughtTable::update(const Item &orig, const Item &modified)
 		updateQuery.prepare("UPDATE ItemsBought SET "
 				"purchased = ?, "
 				"price = ?, "
-				"shop = ?, "
+				"partner = ?, "
 				"on_stock = ? "
 				"WHERE uploaded = ?");
 
 	updateQuery.bindValue(0, modified.purchased.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.bindValue(1, modified.price);
-	updateQuery.bindValue(2, modified.shop);
+	updateQuery.bindValue(2, modified.partner);
 	updateQuery.bindValue(3, modified.onStock ? 1 : 0);
 	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	updateQuery.exec();
@@ -110,7 +110,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	QString cmd("SELECT * FROM ItemsBought"
 			" LEFT JOIN Items ON ItemsBought.uploaded = Items.uploaded"
 			" LEFT JOIN WareTags ON Items.name = WareTags.name"
-			" LEFT JOIN Shops ON ItemsBought.shop = Shops.name");
+			" LEFT JOIN Partners ON ItemsBought.partner = Partners.name");
 	
 	QString filter;
 
@@ -177,7 +177,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		for(i=0; i<s; i++){
 			if(0 < i)
 				scmd += " OR";
-			scmd += " Shops.name = '";
+			scmd += " Partners.name = '";
 			scmd += q.partners.queryAt(i).replace("'", "''");
 			scmd += "'";
 		}
@@ -228,7 +228,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	int commentNo = sqlQuery.colIndex("comment");
 	int quantityNo = sqlQuery.colIndex("quantity");
 	int priceNo = sqlQuery.colIndex("price");
-	int shopNo = sqlQuery.colIndex("shop");
+	int partnerNo = sqlQuery.colIndex("partner");
 	int onStockNo = sqlQuery.colIndex("on_stock");
 
 	/* statistics */
@@ -260,7 +260,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 
 		item->quantity = sqlQuery.value(quantityNo).toDouble();
 		item->price = sqlQuery.value(priceNo).toDouble();
-		item->shop = sqlQuery.value(shopNo).toString();
+		item->partner = sqlQuery.value(partnerNo).toString();
 		item->onStock = sqlQuery.value(onStockNo).toBool();
 
 		item->bought = true;

@@ -50,8 +50,8 @@ private:
 	const QString & dbname;
 	ShoppingModel & model;
 
-	QComboBox *shopBox;
-	QTableView shopTableView;
+	QComboBox *partnerBox;
+	QTableView partnerTableView;
 	QTableView queryView;
 	QSqlTableModel *queryTable;
 

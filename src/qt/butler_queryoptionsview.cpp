@@ -9,7 +9,7 @@
 #include "butler_queryoptionsview.h"
 #include "butler_tagwidget.h"
 #include "butler_waresmodel.h"
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 
 SCC TidContext = "QueryOptionsView";
 
@@ -21,8 +21,8 @@ SCC TidResetButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Reset");
 SCC TidDelButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Delete");
 
 SCC TidQuerySelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Query name:");
-SCC TidShopFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by partner:");
-SCC TidShopSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Business partner:");
+SCC TidPartnerFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by partner:");
+SCC TidPartnerSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Business partner:");
 SCC TidWareFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by ware:");
 SCC TidWareSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Common ware name:");
 
@@ -54,7 +54,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queriesModel(dbname), Query::Name),
 	wareSelector(&waresModel(dbname), Ware::Name),
-	partnerSelector(&partnersModel(dbname), Shop::Name),
+	partnerSelector(&partnersModel(dbname), Partner::Name),
 	tagsWidget(dbname),
 	withoutTagsWidget(dbname)
 {
@@ -288,8 +288,8 @@ void QueryOptionsView::retranslate()
 
 	wareSelector.label.setText(tr(TidWareSelector));
 
-	partnerFilter.label.setText(tr(TidShopFilter));
-	partnerSelector.label.setText(tr(TidShopSelector));
+	partnerFilter.label.setText(tr(TidPartnerFilter));
+	partnerSelector.label.setText(tr(TidPartnerSelector));
 
 	withTagFilter.label.setText(tr(TidWithTagFilter));
 	tagsWidget.label.setText("");//tr(TidWithTags));

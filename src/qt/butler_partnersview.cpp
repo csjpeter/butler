@@ -7,8 +7,8 @@
 
 #include <config.h>
 
-#include "butler_shopsview.h"
-#include "butler_editshopview.h"
+#include "butler_partnersview.h"
+#include "butler_editpartnerview.h"
 #include "butler_config.h"
 
 SCC TidContext = "PartnersView";
@@ -43,9 +43,9 @@ PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 	toolBar.addToolWidget(delButton);
 	toolBar.addToolWidget(refreshButton);
 
-	connect(&addButton, SIGNAL(clicked()), this, SLOT(newShop()));
-	connect(&editButton, SIGNAL(clicked()), this, SLOT(editShop()));
-	connect(&delButton, SIGNAL(clicked()), this, SLOT(delShop()));
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(newPartner()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editPartner()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delPartner()));
 	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refresh()));
 
 	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
@@ -82,10 +82,10 @@ void PartnersView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
-				Shop::StoreName, QHeaderView::Stretch);
+				Partner::StoreName, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setResizeMode(
-				Shop::StoreName, QHeaderView::ResizeToContents);
+				Partner::StoreName, QHeaderView::ResizeToContents);
 
 	applyLayout();
 
@@ -172,7 +172,7 @@ void PartnersView::saveState()
 	SAVE_VIEW_STATE(editPartnerView);
 }
 
-void PartnersView::newShop()
+void PartnersView::newPartner()
 {
 	if(!newPartnerView)
 		newPartnerView = new EditPartnerView(dbname);
@@ -180,7 +180,7 @@ void PartnersView::newShop()
 	newPartnerView->activate();
 }
 
-void PartnersView::editShop()
+void PartnersView::editPartner()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -195,7 +195,7 @@ void PartnersView::editShop()
 	editPartnerView->activate();
 }
 
-void PartnersView::delShop()
+void PartnersView::delPartner()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -204,7 +204,7 @@ void PartnersView::delShop()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Shop &partner = model.partner(row);
+	const Partner &partner = model.partner(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a partner"),

@@ -58,10 +58,10 @@ bool CustomModel::queryFilter(const Item &modified)
 void CustomModel::addShoppingItem(int row)
 {
 	const Item &i = item(row);
-	Item shopItem;
-	shopItem.uploaded = QDateTime::currentDateTime();
-	shopItem.name = i.name;
-	shopItem.category = i.category;
-	db.item.insert(shopItem);
-	itemChange(db, shopItem);
+	Item shoppingItem;
+	shoppingItem.uploaded = QDateTime::currentDateTime();
+	shoppingItem.name = i.name;
+	shoppingItem.category = i.category;
+	db.item.insert(shoppingItem);
+	itemChange(db, shoppingItem);
 }

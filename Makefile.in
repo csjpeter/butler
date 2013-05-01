@@ -106,20 +106,9 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 #
 
 TEST_BINARIES=\
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-dbifc@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-item@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-item_set@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-query@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-query_set@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-shop@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-shop_set@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-tag@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-tag_set@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-ware@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-datamodel-ware_set@EXEC_POSTFIX@ \
 	tmp/bin/test-@PKGNAME_BASE@-sql-item@EXEC_POSTFIX@ \
 	tmp/bin/test-@PKGNAME_BASE@-sql-query@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-sql-shop@EXEC_POSTFIX@ \
+	tmp/bin/test-@PKGNAME_BASE@-sql-partner@EXEC_POSTFIX@ \
 	tmp/bin/test-@PKGNAME_BASE@-sql-tag@EXEC_POSTFIX@ \
 	tmp/bin/test-@PKGNAME_BASE@-sql-ware@EXEC_POSTFIX@
 
@@ -132,8 +121,10 @@ DATAMODEL_OBJECTS= \
 	tmp/src/datamodel/butler_item_set.opp \
 	tmp/src/datamodel/butler_query.opp \
 	tmp/src/datamodel/butler_query_set.opp \
-	tmp/src/datamodel/butler_shop.opp \
-	tmp/src/datamodel/butler_shop_set.opp \
+	tmp/src/datamodel/butler_partner.opp \
+	tmp/src/datamodel/butler_partner_set.opp \
+	tmp/src/datamodel/butler_company.opp \
+	tmp/src/datamodel/butler_company_set.opp \
 	tmp/src/datamodel/butler_tag.opp \
 	tmp/src/datamodel/butler_tag_set.opp \
 	tmp/src/datamodel/butler_ware.opp \
@@ -153,11 +144,13 @@ SQL_OBJECTS= \
 	tmp/src/sql/butler_item_db.opp \
 	tmp/src/sql/butler_queries_table.opp \
 	tmp/src/sql/butler_queries_db.opp \
-	tmp/src/sql/butler_queryshops_table.opp \
+	tmp/src/sql/butler_querypartners_table.opp \
 	tmp/src/sql/butler_querytags_table.opp \
 	tmp/src/sql/butler_querywares_table.opp \
-	tmp/src/sql/butler_shop_table.opp \
-	tmp/src/sql/butler_shop_db.opp \
+	tmp/src/sql/butler_partner_table.opp \
+	tmp/src/sql/butler_partner_db.opp \
+	tmp/src/sql/butler_company_table.opp \
+	tmp/src/sql/butler_company_db.opp \
 	tmp/src/sql/butler_tag_table.opp \
 	tmp/src/sql/butler_tag_db.opp \
 	tmp/src/sql/butler_warecategories_table.opp \
@@ -176,7 +169,10 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_mainview.opp \
 	tmp/src/qt/butler_infoview.opp \
 	tmp/src/qt/butler_tagsmodel.opp \
-	tmp/src/qt/butler_shopsmodel.opp \
+	tmp/src/qt/butler_partnersmodel.opp \
+	tmp/src/qt/moc/butler_partnersmodel.opp \
+	tmp/src/qt/butler_companymodel.opp \
+	tmp/src/qt/moc/butler_companymodel.opp \
 	tmp/src/qt/butler_waresmodel.opp \
 	tmp/src/qt/butler_warecategoriesmodel.opp \
 	tmp/src/qt/butler_itemsmodel.opp \
@@ -187,13 +183,15 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_accountingview.opp \
 	tmp/src/qt/butler_application.opp \
 	tmp/src/qt/butler_buyitemview.opp \
-	tmp/src/qt/butler_editshopview.opp \
+	tmp/src/qt/butler_editpartnerview.opp \
+	tmp/src/qt/butler_editcompanyview.opp \
 	tmp/src/qt/butler_edittagview.opp \
 	tmp/src/qt/butler_editwareview.opp \
 	tmp/src/qt/butler_newitemview.opp \
 	tmp/src/qt/butler_queryoptionsview.opp \
 	tmp/src/qt/butler_shoppingview.opp \
-	tmp/src/qt/butler_shopsview.opp \
+	tmp/src/qt/butler_partnersview.opp \
+	tmp/src/qt/butler_companyview.opp \
 	tmp/src/qt/butler_tagfilterview.opp \
 	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
@@ -204,7 +202,6 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_mainview.opp \
 	tmp/src/qt/moc/butler_infoview.opp \
 	tmp/src/qt/moc/butler_tagsmodel.opp \
-	tmp/src/qt/moc/butler_shopsmodel.opp \
 	tmp/src/qt/moc/butler_waresmodel.opp \
 	tmp/src/qt/moc/butler_warecategoriesmodel.opp \
 	tmp/src/qt/moc/butler_itemsmodel.opp \
@@ -215,13 +212,15 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_accountingview.opp \
 	tmp/src/qt/moc/butler_application.opp \
 	tmp/src/qt/moc/butler_buyitemview.opp \
-	tmp/src/qt/moc/butler_editshopview.opp \
+	tmp/src/qt/moc/butler_editpartnerview.opp \
+	tmp/src/qt/moc/butler_editcompanyview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
 	tmp/src/qt/moc/butler_editwareview.opp \
 	tmp/src/qt/moc/butler_newitemview.opp \
 	tmp/src/qt/moc/butler_queryoptionsview.opp \
 	tmp/src/qt/moc/butler_shoppingview.opp \
-	tmp/src/qt/moc/butler_shopsview.opp \
+	tmp/src/qt/moc/butler_partnersview.opp \
+	tmp/src/qt/moc/butler_companyview.opp \
 	tmp/src/qt/moc/butler_tagfilterview.opp \
 	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \
@@ -246,7 +245,6 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/delete.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/edit.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/query.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shop.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shopping.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tag.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/trash.png \
@@ -260,6 +258,7 @@ BUTLER_IMAGES=\
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/right.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tick.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/partner.png \
+	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/company.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/refresh.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/statistics.png \
 	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowdown.png \

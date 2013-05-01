@@ -69,7 +69,7 @@ private:
 	PriceEditor grossPriceEditor;
 	FormCheckBox onStockCheck;
 	FormCheckBox boughtCheck;
-	ComboSelector shopEditor;
+	ComboSelector partnerEditor;
 	DateTimeEditor purchaseDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;

@@ -3,21 +3,21 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_EDITSHOPVIEW_H
-#define BUTLER_EDITSHOPVIEW_H
+#ifndef BUTLER_EDITCOMPANYVIEW_H
+#define BUTLER_EDITCOMPANYVIEW_H
 
-#include <butler_shop.h>
+#include <butler_company.h>
 #include <butler_pannview.h>
 
-class EditPartnerView : public PannView
+class EditCompanyView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	EditPartnerView(const QString & dbname, QWidget * parent = 0);
-	virtual ~EditPartnerView() {}
+	EditCompanyView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditCompanyView() {}
 
 	void setCursor(const QModelIndex& index);
 
@@ -46,9 +46,9 @@ private slots:
 
 private:
 	const QString & dbname;
-	PartnersModel & model;
+	CompanyModel & model;
 	QModelIndex cursor;
-	Shop partner;
+	Company company;
 
 	Button doneButton;
 	Button resetButton;
@@ -56,10 +56,11 @@ private:
 	Button nextButton;
 
 	InputEditor nameEditor;
-	InputEditor storeNameEditor;
+	InputEditor countryEditor;
 	InputEditor cityEditor;
+	InputEditor postalCodeEditor;
 	InputEditor addressEditor;
-	InputEditor companyEditor;
+	InputEditor taxIdEditor;
 };
 
 #endif

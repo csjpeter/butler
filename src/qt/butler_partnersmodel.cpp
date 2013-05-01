@@ -5,10 +5,12 @@
 
 #include <QtGui>
 
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 
 SCC TidPartnerFieldName		= QT_TRANSLATE_NOOP("PartnersModel", "Name");
+SCC TidPartnerFieldCountry	= QT_TRANSLATE_NOOP("PartnersModel", "Country");
 SCC TidPartnerFieldCity		= QT_TRANSLATE_NOOP("PartnersModel", "City");
+SCC TidPartnerFieldPostalCode	= QT_TRANSLATE_NOOP("PartnersModel", "Postal code");
 SCC TidPartnerFieldAddress	= QT_TRANSLATE_NOOP("PartnersModel", "Address");
 SCC TidPartnerFieldCompany	= QT_TRANSLATE_NOOP("PartnersModel", "Company");
 SCC TidPartnerFieldStoreName	= QT_TRANSLATE_NOOP("PartnersModel", "Store/Agent");
@@ -30,7 +32,7 @@ QModelIndex PartnersModel::index(int row, int column, const QModelIndex & parent
 
 Qt::ItemFlags PartnersModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)partners.size() && index.column() < Shop::NumOfFields){
+	if(index.row() < (int)partners.size() && index.column() < Partner::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
@@ -51,20 +53,26 @@ QVariant PartnersModel::data(const QModelIndex & index, int role) const
 		return QVariant();
 
 	switch(index.column()){
-		case Shop::Name :
+		case Partner::Name :
 			return QVariant(partners.queryAt(index.row()).name);
 			break;
-		case Shop::StoreName :
-			return QVariant(partners.queryAt(index.row()).storeName);
+		case Partner::Country :
+			return QVariant(partners.queryAt(index.row()).country);
 			break;
-		case Shop::City :
+		case Partner::City :
 			return QVariant(partners.queryAt(index.row()).city);
 			break;
-		case Shop::Address :
+		case Partner::PostalCode :
+			return QVariant(partners.queryAt(index.row()).postalCode);
+			break;
+		case Partner::Address :
 			return QVariant(partners.queryAt(index.row()).address);
 			break;
-		case Shop::Company :
+		case Partner::Company :
 			return QVariant(partners.queryAt(index.row()).company);
+			break;
+		case Partner::StoreName :
+			return QVariant(partners.queryAt(index.row()).storeName);
 			break;
 		default :
 			return QVariant();
@@ -83,20 +91,26 @@ QVariant PartnersModel::headerData(int section, Qt::Orientation orientation, int
 		return QVariant("");
 
 	switch(section){
-		case Shop::Name :
+		case Partner::Name :
 			return QVariant(tr(TidPartnerFieldName));
 			break;
-		case Shop::StoreName :
-			return QVariant(tr(TidPartnerFieldStoreName));
+		case Partner::Country :
+			return QVariant(tr(TidPartnerFieldCountry));
 			break;
-		case Shop::City :
+		case Partner::City :
 			return QVariant(tr(TidPartnerFieldCity));
 			break;
-		case Shop::Address :
+		case Partner::PostalCode :
+			return QVariant(tr(TidPartnerFieldPostalCode));
+			break;
+		case Partner::Address :
 			return QVariant(tr(TidPartnerFieldAddress));
 			break;
-		case Shop::Company :
+		case Partner::Company :
 			return QVariant(tr(TidPartnerFieldCompany));
+			break;
+		case Partner::StoreName :
+			return QVariant(tr(TidPartnerFieldStoreName));
 			break;
 		default :
 			return QVariant();
@@ -120,27 +134,35 @@ bool PartnersModel::setData(const QModelIndex & index, const QVariant & value, i
 		return false;
 
 	int row = index.row();
-	Shop modified(partners.queryAt(row));
+	Partner modified(partners.queryAt(row));
 
 	switch(index.column()){
-		case Shop::Name :
+		case Partner::Name :
 			modified.name = value.toString();
 			update(row, modified);
 			break;
-		case Shop::StoreName :
-			modified.storeName = value.toString();
+		case Partner::Country :
+			modified.country = value.toString();
 			update(row, modified);
 			break;
-		case Shop::City :
+		case Partner::City :
 			modified.city = value.toString();
 			update(row, modified);
 			break;
-		case Shop::Address :
+		case Partner::PostalCode :
+			modified.postalCode = value.toString();
+			update(row, modified);
+			break;
+		case Partner::Address :
 			modified.address = value.toString();
 			update(row, modified);
 			break;
-		case Shop::Company :
+		case Partner::Company :
 			modified.company = value.toString();
+			update(row, modified);
+			break;
+		case Partner::StoreName :
+			modified.storeName = value.toString();
 			update(row, modified);
 			break;
 		default :
@@ -173,7 +195,7 @@ int PartnersModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return Shop::NumOfFields;
+	return Partner::NumOfFields;
 }
 
 bool PartnersModel::removeRows(
@@ -215,14 +237,14 @@ int PartnersModel::index(const QString &name) const
 		return -1;
 }
 
-const Shop& PartnersModel::partner(int row)
+const Partner& PartnersModel::partner(int row)
 {
 	return partners.queryAt(row);
 }
 
 void PartnersModel::del(int row)
 {
-	Shop &partner = partners.queryAt(row);
+	Partner &partner = partners.queryAt(row);
 	db.partner.del(partner);
 	try {
 		beginRemoveRows(QModelIndex(), row, row);
@@ -234,12 +256,12 @@ void PartnersModel::del(int row)
 	}
 }
 
-void PartnersModel::addNew(Shop &partner)
+void PartnersModel::addNew(Partner &partner)
 {
 	db.partner.insert(partner);
 	try {
 		beginInsertRows(QModelIndex(), partners.size(), partners.size());
-		partners.add(new Shop(partner));
+		partners.add(new Partner(partner));
 		endInsertRows();
 	} catch (...) {
 		endInsertRows();
@@ -247,12 +269,12 @@ void PartnersModel::addNew(Shop &partner)
 	}
 }
 
-void PartnersModel::update(int row, Shop &modified)
+void PartnersModel::update(int row, Partner &modified)
 {
-	Shop &orig = partners.queryAt(row);
+	Partner &orig = partners.queryAt(row);
 	db.partner.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, Shop::NumOfFields-1));
+	dataChanged(index(row, 0), index(row, Partner::NumOfFields-1));
 }
 
 void PartnersModel::query()
@@ -275,7 +297,7 @@ void PartnersModel::sort(int column, bool ascending)
 	try {
 		beginResetModel();
 		partners.ascending = ascending;
-		partners.ordering = static_cast<Shop::Fields>(column);
+		partners.ordering = static_cast<Partner::Fields>(column);
 		partners.sort();
 		endResetModel();
 	} catch (...) {

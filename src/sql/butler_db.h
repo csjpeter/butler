@@ -11,7 +11,8 @@
 #include <butler_queries_db.h>
 #include <butler_item_db.h>
 #include <butler_ware_db.h>
-#include <butler_shop_db.h>
+#include <butler_partner_db.h>
+#include <butler_company_db.h>
 #include <butler_db.h>
 
 class Private;
@@ -26,11 +27,13 @@ public:
 		query(sql, tag),
 		ware(sql, tag),
 		partner(sql),
+		company(sql),
 		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
 		tag.check(tables);
 		partner.check(tables);
+		company.check(tables);
 		ware.check(tables);
 		item.check(tables);
 		query.check(tables);
@@ -44,7 +47,8 @@ public:
 	TagDb tag;
 	QueryDb query;
 	WareDb ware;
-	ShopDb partner;
+	PartnerDb partner;
+	CompanyDb company;
 	ItemDb item;
 };
 

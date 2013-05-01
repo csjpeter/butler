@@ -3,26 +3,29 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_shop_set.h"
+#include "butler_partner_set.h"
 
-int ShopSet::compare(const Shop &a, const Shop &b) const
+int PartnerSet::compare(const Partner &a, const Partner &b) const
 {
 	bool ret;
 
 	switch(ordering) {
-		case Shop::Name :
+		case Partner::Name :
 			ret = QString::localeAwareCompare(a.name, b.name) < 0;
 			break;
-		case Shop::StoreName :
+		case Partner::StoreName :
 			ret = QString::localeAwareCompare(a.storeName, b.storeName) < 0;
 			break;
-		case Shop::City :
+		case Partner::City :
 			ret = QString::localeAwareCompare(a.city, b.city) < 0;
 			break;
-		case Shop::Address :
+		case Partner::PostalCode :
+			ret = QString::localeAwareCompare(a.postalCode, b.postalCode) < 0;
+			break;
+		case Partner::Address :
 			ret = QString::localeAwareCompare(a.address, b.address) < 0;
 			break;
-		case Shop::Company :
+		case Partner::Company :
 			ret = QString::localeAwareCompare(a.company, b.company) < 0;
 			break;
 		default:

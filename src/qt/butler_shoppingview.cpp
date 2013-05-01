@@ -12,7 +12,7 @@
 #include "butler_buyitemview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_tagfilterview.h"
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 #include "butler_config.h"
 
 ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
@@ -48,11 +48,11 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
 	cLayout->addWidget(button);
 
-	/* shop selector */
-	QGridLayout *shopLayout = new QGridLayout;
+	/* partner selector */
+	QGridLayout *partnerLayout = new QGridLayout;
 
-	QLabel *label = new QLabel(tr("Shop (place of buy):"));
-	shopLayout->addWidget(label, 0, 0);
+	QLabel *label = new QLabel(tr("Partner (place of buy):"));
+	partnerLayout->addWidget(label, 0, 0);
 
 	/* query result list */
 	queryView.setModel(&model);
@@ -78,14 +78,14 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	queryView.hideColumn(Item::Uploaded);
 	queryView.hideColumn(Item::Price);
 	queryView.hideColumn(Item::Bought);
-	queryView.hideColumn(Item::Shop);
+	queryView.hideColumn(Item::Partner);
 	queryView.hideColumn(Item::OnStock);
 	queryView.hideColumn(Item::Purchased);
 
 	/* making the window layouting */
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->addLayout(cLayout);
-	layout->addLayout(shopLayout);
+	layout->addLayout(partnerLayout);
 	layout->addWidget(&queryView);
 
 	setLayout(layout);
@@ -208,9 +208,9 @@ void ShoppingView::buyItem()
 		return;
 	}
 	
-	if(shopBox->currentIndex() == -1){
+	if(partnerBox->currentIndex() == -1){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select the shop where you are."));
+				tr("Please select partner."));
 		return;
 	}
 
@@ -218,7 +218,7 @@ void ShoppingView::buyItem()
 		buyItemView = new BuyItemView(dbname);
 
 	connect(buyItemView, SIGNAL(finished(int)), this, SLOT(finishedBuyItem(int)));
-	buyItemView->setItem(queryView.currentIndex().row(), shopBox->currentIndex());
+	buyItemView->setItem(queryView.currentIndex().row(), partnerBox->currentIndex());
 	buyItemView->activate();
 }
 

@@ -34,8 +34,8 @@ int ItemSet::compare(const Item &a, const Item &b) const
 		case Item::Purchased :
 			ret = a.purchased < b.purchased;
 			break;
-		case Item::Shop :
-			ret = QString::localeAwareCompare(a.shop, b.shop) < 0;
+		case Item::Partner :
+			ret = QString::localeAwareCompare(a.partner, b.partner) < 0;
 			break;
 		case Item::Price :
 			ret = a.price < b.price;

@@ -3,28 +3,28 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include "butler_shop_db.h"
+#include "butler_partner_db.h"
 
-ShopDb::ShopDb(SqlConnection &_sql) :
+PartnerDb::PartnerDb(SqlConnection &_sql) :
 	sql(_sql),
-	shopTable(_sql)
+	partnerTable(_sql)
 {
 }
 
-ShopDb::~ShopDb()
+PartnerDb::~PartnerDb()
 {
 }
 
-void ShopDb::check(QStringList &tables)
+void PartnerDb::check(QStringList &tables)
 {
-	shopTable.check(tables);
+	partnerTable.check(tables);
 }
 
-void ShopDb::insert(const Shop &s)
+void PartnerDb::insert(const Partner &s)
 {
 	sql.transaction();
 	try {
-		shopTable.insert(s);
+		partnerTable.insert(s);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
@@ -32,11 +32,11 @@ void ShopDb::insert(const Shop &s)
 	}
 }
 
-void ShopDb::update(const Shop &orig, const Shop &modified)
+void PartnerDb::update(const Partner &orig, const Partner &modified)
 {
 	sql.transaction();
 	try {
-		shopTable.update(orig, modified);
+		partnerTable.update(orig, modified);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
@@ -44,11 +44,11 @@ void ShopDb::update(const Shop &orig, const Shop &modified)
 	}
 }
 
-void ShopDb::del(const Shop &s)
+void PartnerDb::del(const Partner &s)
 {
 	sql.transaction();
 	try {
-		shopTable.del(s);
+		partnerTable.del(s);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
@@ -56,11 +56,11 @@ void ShopDb::del(const Shop &s)
 	}
 }
 
-void ShopDb::query(ShopSet &ss)
+void PartnerDb::query(PartnerSet &ss)
 {
 	sql.transaction();
 	try {
-		shopTable.query(ss);
+		partnerTable.query(ss);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();

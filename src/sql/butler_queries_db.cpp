@@ -11,7 +11,7 @@ QueryDb::QueryDb(SqlConnection &_sql, TagDb &tagDb) :
 	queryTable(_sql),
 	queryTagsTable(_sql),
 	queryWaresTable(_sql),
-	queryShopsTable(_sql)
+	queryPartnersTable(_sql)
 {
 }
 
@@ -24,7 +24,7 @@ void QueryDb::check(QStringList &tables)
 	queryTable.check(tables);
 	queryTagsTable.check(tables);
 	queryWaresTable.check(tables);
-	queryShopsTable.check(tables);
+	queryPartnersTable.check(tables);
 }
 
 void QueryDb::insert(const Query &q)
@@ -34,7 +34,7 @@ void QueryDb::insert(const Query &q)
 		queryTable.insert(q);
 		queryTagsTable.insert(q);
 		queryWaresTable.insert(q);
-		queryShopsTable.insert(q);
+		queryPartnersTable.insert(q);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
@@ -49,7 +49,7 @@ void QueryDb::update(const Query &orig, const Query &modified)
 		queryTable.update(orig, modified);
 		queryTagsTable.update(orig, modified);
 		queryWaresTable.update(orig, modified);
-		queryShopsTable.update(orig, modified);
+		queryPartnersTable.update(orig, modified);
 		sql.commit();
 	} catch (...) {
 		sql.rollback();
@@ -82,7 +82,7 @@ void QueryDb::query(QuerySet &qs)
 			/* queryTagsTable.query(q, q.withoutTags); */
 			queryTagsTable.query(q, q.withTags);
 			queryWaresTable.query(q, q.wares);
-			queryShopsTable.query(q, q.partners);
+			queryPartnersTable.query(q, q.partners);
 		}
 		sql.commit();
 	} catch (...) {

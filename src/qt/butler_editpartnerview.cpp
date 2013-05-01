@@ -6,8 +6,8 @@
 #include <QtGui>
 
 #include "butler_config.h"
-#include "butler_editshopview.h"
-#include "butler_shopsmodel.h"
+#include "butler_editpartnerview.h"
+#include "butler_partnersmodel.h"
 
 SCC TidContext = "EditPartnerView";
 
@@ -20,10 +20,12 @@ SCC TidPrevButton = QT_TRANSLATE_NOOP("EditPartnerView", "Previous partner");
 SCC TidNextButton = QT_TRANSLATE_NOOP("EditPartnerView", "Next partner");
 
 SCC TidPartnerName = QT_TRANSLATE_NOOP("EditPartnerView", "Partner name:");
-SCC TidPartnerStoreName = QT_TRANSLATE_NOOP("EditPartnerView", "Store name:");
+SCC TidPartnerCountry = QT_TRANSLATE_NOOP("EditPartnerView", "Country:");
 SCC TidPartnerCity = QT_TRANSLATE_NOOP("EditPartnerView", "City:");
+SCC TidPartnerPostalCode = QT_TRANSLATE_NOOP("EditPartnerView", "Postal code:");
 SCC TidPartnerAddress = QT_TRANSLATE_NOOP("EditPartnerView", "Address:");
 SCC TidPartnerCompany = QT_TRANSLATE_NOOP("EditPartnerView", "Company:");
+SCC TidPartnerStoreName = QT_TRANSLATE_NOOP("EditPartnerView", "Store name:");
 
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditPartnerView", "Please fill the partner name field.");
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is saved, you may add another.");
@@ -36,7 +38,8 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
-	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
+	companyEditor(&companyModel(dbname), Company::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -58,11 +61,15 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&storeNameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
+	connect(&countryEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
 	connect(&cityEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&postalCodeEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&addressEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&companyEditor.editor, SIGNAL(textChanged(const QString &)),
+	connect(&companyEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
@@ -101,13 +108,15 @@ void EditPartnerView::saveState()
 void EditPartnerView::mapToGui()
 {
 	if(cursor.isValid())
-		partner = Shop(model.partner(cursor.row()));
+		partner = Partner(model.partner(cursor.row()));
 
 	nameEditor.editor.setText(partner.name);
 	storeNameEditor.editor.setText(partner.storeName);
+	countryEditor.editor.setText(partner.country);
 	cityEditor.editor.setText(partner.city);
+	postalCodeEditor.editor.setText(partner.postalCode);
 	addressEditor.editor.setText(partner.address);
-	companyEditor.editor.setText(partner.company);
+	companyEditor.setText(partner.company);
 
 	updateToolButtonStates();
 }
@@ -116,9 +125,11 @@ void EditPartnerView::mapFromGui()
 {
 	partner.name = nameEditor.editor.text();
 	partner.storeName = storeNameEditor.editor.text();
+	partner.country = countryEditor.editor.text();
 	partner.city = cityEditor.editor.text();
+	partner.postalCode = postalCodeEditor.editor.text();
 	partner.address = addressEditor.editor.text();
-	partner.company = companyEditor.editor.text();
+	partner.company = companyEditor.text();
 }
 
 void EditPartnerView::changeEvent(QEvent * event)
@@ -144,7 +155,9 @@ void EditPartnerView::retranslate()
 
 	nameEditor.label.setText(tr(TidPartnerName));
 	storeNameEditor.label.setText(tr(TidPartnerStoreName));
+	countryEditor.label.setText(tr(TidPartnerCountry));
 	cityEditor.label.setText(tr(TidPartnerCity));
+	postalCodeEditor.label.setText(tr(TidPartnerPostalCode));
 	addressEditor.label.setText(tr(TidPartnerAddress));
 	companyEditor.label.setText(tr(TidPartnerCompany));
 
@@ -157,7 +170,11 @@ void EditPartnerView::applyLayout()
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&nameEditor);
 	mainLayout->addStretch(0);
+	mainLayout->addWidget(&countryEditor);
+	mainLayout->addStretch(0);
 	mainLayout->addWidget(&cityEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&postalCodeEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&addressEditor);
 	mainLayout->addStretch(0);
@@ -176,7 +193,9 @@ void EditPartnerView::relayout()
 	{
 		nameEditor.wideLayout();
 		storeNameEditor.wideLayout();
+		countryEditor.wideLayout();
 		cityEditor.wideLayout();
+		postalCodeEditor.wideLayout();
 		addressEditor.wideLayout();
 		companyEditor.wideLayout();
 		applyLayout();
@@ -184,7 +203,9 @@ void EditPartnerView::relayout()
 	if(width() < sizeHint().width()){
 		nameEditor.narrowLayout();
 		storeNameEditor.narrowLayout();
+		countryEditor.narrowLayout();
 		cityEditor.narrowLayout();
+		postalCodeEditor.narrowLayout();
 		addressEditor.narrowLayout();
 		companyEditor.narrowLayout();
 		applyLayout();
@@ -197,10 +218,12 @@ void EditPartnerView::updateToolButtonStates()
 {
 	bool modified = !(
 			partner.name == nameEditor.editor.text() &&
-			partner.storeName == storeNameEditor.editor.text() &&
+			partner.country == countryEditor.editor.text() &&
 			partner.city == cityEditor.editor.text() &&
+			partner.postalCode == postalCodeEditor.editor.text() &&
 			partner.address == addressEditor.editor.text() &&
-			partner.company == companyEditor.editor.text()
+			partner.company == companyEditor.text() &&
+			partner.storeName == storeNameEditor.editor.text()
 			);
 
 	bool mandatoriesGiven = nameEditor.editor.text().size();
@@ -251,6 +274,15 @@ void EditPartnerView::saveSlot()
 {
 	mapFromGui();
 
+	/* Add company if not yet known. */
+	CompanyModel &cm = companyModel(dbname);
+	int i = cm.index(companyEditor.text());
+	if(i == -1){
+		Company company;
+		company.name = companyEditor.text();
+		cm.addNew(company);
+	}
+
 	if(cursor.isValid()){
 		if(model.partner(cursor.row()) != partner)
 			model.update(cursor.row(), partner);
@@ -259,7 +291,7 @@ void EditPartnerView::saveSlot()
 	} else {
 		model.addNew(partner);
 
-		partner = Shop();
+		partner = Partner();
 		mapToGui();
 		toolBar.setInfo(tr(TidInfoNewSaved));
 		nameEditor.editor.setFocus(Qt::OtherFocusReason);

@@ -52,10 +52,10 @@ void TestItem::insert()
 //	q.startDate = QDateTime(QDate(2000, 1, 1));
 //	q.endDate = QDateTime(QDate::currentDate().addDays(1));
 	
-	/* we will need shop for inserting bought item */
-	ShopSet ss;
-	Shop s("myshop");
-	VERIFY(db.shop().insert(s));
+	/* we will need partner for inserting bought item */
+	PartnerSet ss;
+	Partner s("mypartner");
+	VERIFY(db.partner().insert(s));
 
 	Item i("test item");
 	ItemSet is;
@@ -94,7 +94,7 @@ void TestItem::insert()
 	i.bought = true;
 
 	/* Item having negative price should be rejected. */
-	i.shop = "myshop";
+	i.partner = "mypartner";
 	i.price = -1;
 	VERIFY(!db.item().insert(i));
 	
@@ -102,10 +102,10 @@ void TestItem::insert()
 	i.price = 0;
 	VERIFY(!db.item().insert(i));
 
-	/* Item with unregistered shop should be rejected. */
-	i.shop = "nonmyshop";
+	/* Item with unregistered partner should be rejected. */
+	i.partner = "nonmypartner";
 	VERIFY(!db.item().insert(i));
-	i.shop = "myshop";
+	i.partner = "mypartner";
 
 	/* Bought item should be accepted on stock. */
 	i.purchased = QDateTime::currentDateTime();
@@ -121,8 +121,8 @@ void TestItem::insert()
 	VERIFY(db.item().query(q, stat, is));
 	VERIFY(is.size() == 0);
 
-	VERIFY(db.shop().del(s));
-	VERIFY(db.shop().query(ss));
+	VERIFY(db.partner().del(s));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
 	VERIFY(db.close());
@@ -143,10 +143,10 @@ void TestItem::update()
 	q.startDate = QDateTime(QDate(2000, 1, 1));
 	q.endDate = QDateTime(QDate::currentDate().addDays(1));
 
-	/* we will need shop for inserting bought item */
-	ShopSet ss;
-	Shop s("myshop");
-	VERIFY(db.shop().insert(s));
+	/* we will need partner for inserting bought item */
+	PartnerSet ss;
+	Partner s("mypartner");
+	VERIFY(db.partner().insert(s));
 
 	/* Lets update an inserted item. */
 	Item i("orig name");
@@ -167,7 +167,7 @@ void TestItem::update()
 	iu.bought = true;
 	iu.purchased = QDateTime::currentDateTime();
 	iu.price = 1;
-	iu.shop = "myshop";
+	iu.partner = "mypartner";
 	iu.quantity = 2;
 	iu.onStock = true;
 	iu.comment = "comment";
@@ -182,8 +182,8 @@ void TestItem::update()
 	VERIFY(db.item().query(q, stat, is));
 	VERIFY(is.size() == 0);
 
-	VERIFY(db.shop().del(s));
-	VERIFY(db.shop().query(ss));
+	VERIFY(db.partner().del(s));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
 	VERIFY(db.close());

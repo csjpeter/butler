@@ -8,7 +8,7 @@
 
 #include <butler_querytags_table.h>
 #include <butler_querywares_table.h>
-#include <butler_queryshops_table.h>
+#include <butler_querypartners_table.h>
 #include <butler_queries_table.h>
 #include <butler_tag_db.h>
 
@@ -34,7 +34,7 @@ private:
 	QueryTable queryTable;
 	QueryTagsTable queryTagsTable;
 	QueryWaresTable queryWaresTable;
-	QueryShopsTable queryShopsTable;
+	QueryPartnersTable queryPartnersTable;
 };
 
 #endif

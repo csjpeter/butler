@@ -44,7 +44,7 @@ public:
 	QDateTime purchased; /* item considered bought if valid,
 				default value should suggested by
 				gui but editable */
-	QString shop;
+	QString partner;
 	double price; /* price of gross piece/amount quantity
 		      expected price if not yet bought;
 		      should set to 0 when bought to notify
@@ -59,7 +59,7 @@ public:
 		Quantity,
 		Bought,
 		Purchased,
-		Shop,
+		Partner,
 		Price,
 		OnStock,
 		UnitPrice, /* virtual field (computed) */

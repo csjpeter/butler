@@ -39,7 +39,7 @@ public:
 	BuyItemView(const QString & dbname, QWidget *parent = 0);
 	virtual ~BuyItemView();
 
-	void setItem(unsigned itemRow, unsigned shopRow);
+	void setItem(unsigned itemRow, unsigned partnerRow);
 
 	void loadState();
 	void saveState();
@@ -61,7 +61,7 @@ private:
 	const QString & dbname;
 	ShoppingModel & model;
 	unsigned itemCursor;
-	unsigned shopCursor;
+	unsigned partnerCursor;
 	Item item;
 
 	NumPad *numpad;
@@ -71,7 +71,7 @@ private:
 	QDoubleSpinBox *unitPriceEditor;
 	QDoubleSpinBox *grossPriceEditor;
 	QDateTimeEdit *purchaseDateTime;
-	QComboBox *shopBox;
+	QComboBox *partnerBox;
 
 	QPushButton *buyButton;
 

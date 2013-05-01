@@ -12,47 +12,47 @@
 
 #include <butler_query.h>
 
-#include "butler_queryshops_table.h"
+#include "butler_querypartners_table.h"
 
-QueryShopsTable::QueryShopsTable(SqlConnection &_sql) :
+QueryPartnersTable::QueryPartnersTable(SqlConnection &_sql) :
 	sql(_sql)
 {
 }
 
-QueryShopsTable::~QueryShopsTable()
+QueryPartnersTable::~QueryPartnersTable()
 {
 }
 
 
-void QueryShopsTable::check(QStringList &tables)
+void QueryPartnersTable::check(QStringList &tables)
 {
-	if(!tables.contains("QueryShops")){
-		sql.exec("CREATE TABLE QueryShops ("
+	if(!tables.contains("QueryPartners")){
+		sql.exec("CREATE TABLE QueryPartners ("
 				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "shop VARCHAR(64) NOT NULL REFERENCES Shops(name) "
+				  "partner VARCHAR(64) NOT NULL REFERENCES Partners(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
-				  "UNIQUE (query_name, shop)"
+				  "UNIQUE (query_name, partner)"
 				  ")"
 			    );
-		sql.exec("CREATE INDEX QueryShopsQueryNameIndex ON QueryShops(query_name)");
-		sql.exec("CREATE INDEX QueryShopsTagIndex ON QueryShops(shop)");
+		sql.exec("CREATE INDEX QueryPartnersQueryNameIndex ON QueryPartners(query_name)");
+		sql.exec("CREATE INDEX QueryPartnersTagIndex ON QueryPartners(partner)");
 	}
 
-	QSqlRecord table = sql.record("QueryShops");
+	QSqlRecord table = sql.record("QueryPartners");
 	if(		!table.contains("query_name") ||
-			!table.contains("shop")
+			!table.contains("partner")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table QueryShops in the openend database.");
+			"Incompatible table QueryPartners in the openend database.");
 }
 
-void QueryShopsTable::insert(const Query &q, const QString &partnerName)
+void QueryPartnersTable::insert(const Query &q, const QString &partnerName)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO QueryShops "
-				"(query_name, shop) "
+		insertQuery.prepare("INSERT INTO QueryPartners "
+				"(query_name, partner) "
 				"VALUES (?, ?)");
 
 	insertQuery.bindValue(0, q.name);
@@ -60,20 +60,20 @@ void QueryShopsTable::insert(const Query &q, const QString &partnerName)
 	insertQuery.exec();
 }
 
-void QueryShopsTable::del(const Query &q, const QString &partnerName)
+void QueryPartnersTable::del(const Query &q, const QString &partnerName)
 {
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM QueryShops WHERE "
-				"query_name = ? AND shop = ?");
+				"DELETE FROM QueryPartners WHERE "
+				"query_name = ? AND partner = ?");
 
 	deleteQuery.bindValue(0, q.name);
 	deleteQuery.bindValue(1, partnerName);
 	deleteQuery.exec();
 }
 
-void QueryShopsTable::insert(const Query &q)
+void QueryPartnersTable::insert(const Query &q)
 {
 	unsigned i, s = q.partners.size();
 	for(i=0; i<s; i++){
@@ -82,7 +82,7 @@ void QueryShopsTable::insert(const Query &q)
 	}
 }
 
-void QueryShopsTable::update(const Query &orig, const Query &modified)
+void QueryPartnersTable::update(const Query &orig, const Query &modified)
 {
 	unsigned i, s = modified.partners.size();
 	for(i=0; i<s; i++){
@@ -99,11 +99,11 @@ void QueryShopsTable::update(const Query &orig, const Query &modified)
 	}
 }
 
-void QueryShopsTable::query(const Query &q, ShopNameSet &partners)
+void QueryPartnersTable::query(const Query &q, PartnerNameSet &partners)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT query_name, shop FROM QueryShops "
+		selectQuery.prepare("SELECT query_name, partner FROM QueryPartners "
 				"WHERE query_name = ?");
 
 	selectQuery.bindValue(0, q.name);
@@ -111,7 +111,7 @@ void QueryShopsTable::query(const Query &q, ShopNameSet &partners)
 
 	partners.clear();
 
-	int partnerNo = selectQuery.colIndex("shop");
+	int partnerNo = selectQuery.colIndex("partner");
 
 	DBG("----- Query partners query result:");
 	while (selectQuery.next()) {

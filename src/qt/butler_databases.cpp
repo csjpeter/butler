@@ -14,6 +14,7 @@ public:
 		shoppingModel(0),
 		tagsModel(0),
 		partnersModel(0),
+		companyModel(0),
 		waresModel(0),
 		queriesModel(0)
 	{
@@ -28,6 +29,7 @@ public:
 		delete shoppingModel;
 		delete tagsModel;
 		delete partnersModel;
+		delete companyModel;
 		delete waresModel;
 		delete database;
 		delete desc;
@@ -89,6 +91,13 @@ public:
 		return *partnersModel;
 	}
 
+	CompanyModel & company()
+	{
+		if(!companyModel)
+			companyModel = new CompanyModel(db());
+		return *companyModel;
+	}
+
 	WaresModel & wares()
 	{
 		if(!waresModel)
@@ -109,6 +118,7 @@ private:
 	ShoppingModel * shoppingModel;
 	TagsModel * tagsModel;
 	PartnersModel * partnersModel;
+	CompanyModel * companyModel;
 	WaresModel * waresModel;
 	QueriesModel * queriesModel;
 
@@ -176,6 +186,11 @@ TagsModel & tagsModel(const QString & dbname)
 PartnersModel & partnersModel(const QString & dbname)
 {
 	return databases.query(dbname).partners();
+}
+
+CompanyModel & companyModel(const QString & dbname)
+{
+	return databases.query(dbname).company();
 }
 
 WaresModel & waresModel(const QString & dbname)

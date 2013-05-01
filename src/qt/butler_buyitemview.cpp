@@ -10,7 +10,7 @@
 #include "butler_buyitemview.h"
 #include "butler_itemsmodel.h"
 #include "butler_waresmodel.h"
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 
 BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
@@ -61,12 +61,12 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
 	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 3);
 
-	label = new QLabel(tr("Shop (place of buy):"));
+	label = new QLabel(tr("Partner:"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
-	shopBox = new QComboBox;
-	shopBox->setModel(&partnersModel(dbname));
-	shopBox->setModelColumn(Shop::Name);
-	gridLayout->addWidget(shopBox, 8, 1, 1, 3);
+	partnerBox = new QComboBox;
+	partnerBox->setModel(&partnersModel(dbname));
+	partnerBox->setModelColumn(Partner::Name);
+	gridLayout->addWidget(partnerBox, 8, 1, 1, 3);
 
 	buyButton = new QPushButton(tr("Mark bought"));
 	gridLayout->addWidget(buyButton, 10, 3, 1, 1);
@@ -122,11 +122,11 @@ void BuyItemView::saveState()
 	settings.setValue("buyitemview/size", size());
 }
 
-void BuyItemView::setItem(unsigned itemRow, unsigned shopRow)
+void BuyItemView::setItem(unsigned itemRow, unsigned partnerRow)
 {
 	item = Item(model.item(itemRow));
 	itemCursor = itemRow;
-	shopCursor = shopRow;
+	partnerCursor = partnerRow;
 }
 
 void BuyItemView::mapToGui()
@@ -146,7 +146,7 @@ void BuyItemView::mapToGui()
 	grossPriceEditor->setValue(item.price);
 	grossPriceEditor->blockSignals(false);
 
-	shopBox->setCurrentIndex(shopCursor);
+	partnerBox->setCurrentIndex(partnerCursor);
 	purchaseDateTime->setDateTime(QDateTime::currentDateTime());
 	
 	WaresModel &wm = waresModel(dbname);
@@ -165,7 +165,7 @@ void BuyItemView::mapFromGui()
 	item.purchased = purchaseDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();
-	item.shop = pm.partner(shopBox->currentIndex()).name;
+	item.partner = pm.partner(partnerBox->currentIndex()).name;
 }
 
 void BuyItemView::buy()

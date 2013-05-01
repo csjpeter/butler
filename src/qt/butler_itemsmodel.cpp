@@ -16,7 +16,7 @@ SCC TidItemFieldCategory	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
 SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
 SCC TidItemFieldIsBought	= QT_TRANSLATE_NOOP("ItemsModel", "Bought");
 SCC TidItemFieldPurchaseDate	= QT_TRANSLATE_NOOP("ItemsModel", "Bought on");
-SCC TidItemFieldShop		= QT_TRANSLATE_NOOP("ItemsModel", "Shop");
+SCC TidItemFieldPartner		= QT_TRANSLATE_NOOP("ItemsModel", "Partner");
 SCC TidItemFieldGrossPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Gross price");
 SCC TidItemFieldQuantity	= QT_TRANSLATE_NOOP("ItemsModel", "Quantity");
 SCC TidItemFieldOnStock		= QT_TRANSLATE_NOOP("ItemsModel", "On stock");
@@ -91,8 +91,8 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		case Item::Purchased :
 			return QVariant(items.queryAt(index.row()).purchased);
 			break;
-		case Item::Shop :
-			return QVariant(items.queryAt(index.row()).shop);
+		case Item::Partner :
+			return QVariant(items.queryAt(index.row()).partner);
 			break;
 		case Item::Price :
 			return QVariant(items.queryAt(index.row()).price);
@@ -152,8 +152,8 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Item::Purchased :
 			return QVariant(tr(TidItemFieldPurchaseDate));
 			break;
-		case Item::Shop :
-			return QVariant(tr(TidItemFieldShop));
+		case Item::Partner :
+			return QVariant(tr(TidItemFieldPartner));
 			break;
 		case Item::Price :
 			return QVariant(tr(TidItemFieldGrossPrice));
@@ -211,8 +211,8 @@ bool ItemsModel::setData(const QModelIndex & index, const QVariant & value, int 
 			modified.purchased = value.toDateTime();
 			update(row, modified);
 			break;
-		case Item::Shop :
-			modified.shop = value.toString();
+		case Item::Partner :
+			modified.partner = value.toString();
 			update(row, modified);
 			break;
 		case Item::Price :

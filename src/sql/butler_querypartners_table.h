@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_QUERYSHOPS_TABLE_H
-#define BUTLER_QUERYSHOPS_TABLE_H
+#ifndef BUTLER_QUERYPARTNERS_TABLE_H
+#define BUTLER_QUERYPARTNERS_TABLE_H
 
 #include <QObject>
 #include <QStringList>
@@ -13,13 +13,13 @@
 #include <butler_sql_connection.h>
 #include <butler_sqlquery.h>
 
-class QueryShopsTable
+class QueryPartnersTable
 {
 public:
-	QueryShopsTable(SqlConnection &_sql);
-	virtual ~QueryShopsTable();
+	QueryPartnersTable(SqlConnection &_sql);
+	virtual ~QueryPartnersTable();
 private:
-	QueryShopsTable();
+	QueryPartnersTable();
 
 public:
 	void check(QStringList &tables);
@@ -30,7 +30,7 @@ public:
 	void insert(const Query &q);
 	void update(const Query &orig, const Query &modified);
 	void del(const Query &q);
-	void query(const Query &q, ShopNameSet &partners);
+	void query(const Query &q, PartnerNameSet &partners);
 
 private:
 	SqlConnection &sql;

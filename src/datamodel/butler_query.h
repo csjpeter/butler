@@ -11,7 +11,7 @@
 
 #include <butler_tag_set.h>
 #include <butler_ware_set.h>
-#include <butler_shop_set.h>
+#include <butler_partner_set.h>
 
 class Query
 {
@@ -50,7 +50,7 @@ public:
 	TagNameSet withTags;
 	TagNameSet withoutTags;
 	WareNameSet wares;
-	ShopNameSet partners;
+	PartnerNameSet partners;
 	
 	enum Fields {
 		Name = 0,

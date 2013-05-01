@@ -4,8 +4,10 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_item_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_query.cpp \
 	$(DIST_DIR)/src/datamodel/butler_query_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_shop.cpp \
-	$(DIST_DIR)/src/datamodel/butler_shop_set.cpp \
+	$(DIST_DIR)/src/datamodel/butler_partner.cpp \
+	$(DIST_DIR)/src/datamodel/butler_partner_set.cpp \
+	$(DIST_DIR)/src/datamodel/butler_company.cpp \
+	$(DIST_DIR)/src/datamodel/butler_company_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_tag.cpp \
 	$(DIST_DIR)/src/datamodel/butler_tag_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_ware.cpp \
@@ -14,23 +16,15 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_item_set.h \
 	$(DIST_DIR)/src/datamodel/butler_query.h \
 	$(DIST_DIR)/src/datamodel/butler_query_set.h \
-	$(DIST_DIR)/src/datamodel/butler_shop.h \
-	$(DIST_DIR)/src/datamodel/butler_shop_set.h \
+	$(DIST_DIR)/src/datamodel/butler_partner.h \
+	$(DIST_DIR)/src/datamodel/butler_partner_set.h \
+	$(DIST_DIR)/src/datamodel/butler_company.h \
+	$(DIST_DIR)/src/datamodel/butler_company_set.h \
 	$(DIST_DIR)/src/datamodel/butler_tag.h \
 	$(DIST_DIR)/src/datamodel/butler_tag_set.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
-	$(DIST_DIR)/src/datamodel/test/item.cpp \
-	$(DIST_DIR)/src/datamodel/test/item_set.cpp \
-	$(DIST_DIR)/src/datamodel/test/query.cpp \
-	$(DIST_DIR)/src/datamodel/test/query_set.cpp \
-	$(DIST_DIR)/src/datamodel/test/shop.cpp \
-	$(DIST_DIR)/src/datamodel/test/shop_set.cpp \
-	$(DIST_DIR)/src/datamodel/test/tag.cpp \
-	$(DIST_DIR)/src/datamodel/test/tag_set.cpp \
-	$(DIST_DIR)/src/datamodel/test/ware.cpp \
-	$(DIST_DIR)/src/datamodel/test/ware_set.cpp \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.cpp \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
 	$(DIST_DIR)/src/sql/butler_sqlquery.cpp \
@@ -40,11 +34,13 @@ source: \
 	$(DIST_DIR)/src/sql/butler_item_db.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_table.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
-	$(DIST_DIR)/src/sql/butler_queryshops_table.cpp \
+	$(DIST_DIR)/src/sql/butler_querypartners_table.cpp \
 	$(DIST_DIR)/src/sql/butler_querytags_table.cpp \
 	$(DIST_DIR)/src/sql/butler_querywares_table.cpp \
-	$(DIST_DIR)/src/sql/butler_shop_table.cpp \
-	$(DIST_DIR)/src/sql/butler_shop_db.cpp \
+	$(DIST_DIR)/src/sql/butler_partner_table.cpp \
+	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
+	$(DIST_DIR)/src/sql/butler_company_table.cpp \
+	$(DIST_DIR)/src/sql/butler_company_db.cpp \
 	$(DIST_DIR)/src/sql/butler_tag_table.cpp \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
 	$(DIST_DIR)/src/sql/butler_warecategories_table.cpp \
@@ -60,11 +56,13 @@ source: \
 	$(DIST_DIR)/src/sql/butler_item_db.h \
 	$(DIST_DIR)/src/sql/butler_queries_table.h \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \
-	$(DIST_DIR)/src/sql/butler_queryshops_table.h \
+	$(DIST_DIR)/src/sql/butler_querypartners_table.h \
 	$(DIST_DIR)/src/sql/butler_querytags_table.h \
 	$(DIST_DIR)/src/sql/butler_querywares_table.h \
-	$(DIST_DIR)/src/sql/butler_shop_table.h \
-	$(DIST_DIR)/src/sql/butler_shop_db.h \
+	$(DIST_DIR)/src/sql/butler_partner_table.h \
+	$(DIST_DIR)/src/sql/butler_partner_db.h \
+	$(DIST_DIR)/src/sql/butler_company_table.h \
+	$(DIST_DIR)/src/sql/butler_company_db.h \
 	$(DIST_DIR)/src/sql/butler_tag_table.h \
 	$(DIST_DIR)/src/sql/butler_tag_db.h \
 	$(DIST_DIR)/src/sql/butler_warecategories_table.h \
@@ -73,7 +71,7 @@ source: \
 	$(DIST_DIR)/src/sql/butler_waretags_table.h \
 	$(DIST_DIR)/src/sql/test/item.cpp \
 	$(DIST_DIR)/src/sql/test/query.cpp \
-	$(DIST_DIR)/src/sql/test/shop.cpp \
+	$(DIST_DIR)/src/sql/test/partner.cpp \
 	$(DIST_DIR)/src/sql/test/tag.cpp \
 	$(DIST_DIR)/src/sql/test/ware.cpp \
 	$(DIST_DIR)/src/qt/butler_accountingview.cpp \
@@ -82,7 +80,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_config.cpp \
 	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \
-	$(DIST_DIR)/src/qt/butler_editshopview.cpp \
+	$(DIST_DIR)/src/qt/butler_editpartnerview.cpp \
+	$(DIST_DIR)/src/qt/butler_editcompanyview.cpp \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
 	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
@@ -93,8 +92,10 @@ source: \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.cpp \
 	$(DIST_DIR)/src/qt/butler_shoppingmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
-	$(DIST_DIR)/src/qt/butler_shopsmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_shopsview.cpp \
+	$(DIST_DIR)/src/qt/butler_partnersmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_partnersview.cpp \
+	$(DIST_DIR)/src/qt/butler_companymodel.cpp \
+	$(DIST_DIR)/src/qt/butler_companyview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagfilterview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
@@ -109,7 +110,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_config.h \
 	$(DIST_DIR)/src/qt/butler_custommodel.h \
 	$(DIST_DIR)/src/qt/butler_customview.h \
-	$(DIST_DIR)/src/qt/butler_editshopview.h \
+	$(DIST_DIR)/src/qt/butler_editpartnerview.h \
+	$(DIST_DIR)/src/qt/butler_editcompanyview.h \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_editwareview.h \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.h \
@@ -120,8 +122,10 @@ source: \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.h \
 	$(DIST_DIR)/src/qt/butler_shoppingmodel.h \
 	$(DIST_DIR)/src/qt/butler_shoppingview.h \
-	$(DIST_DIR)/src/qt/butler_shopsmodel.h \
-	$(DIST_DIR)/src/qt/butler_shopsview.h \
+	$(DIST_DIR)/src/qt/butler_partnersmodel.h \
+	$(DIST_DIR)/src/qt/butler_partnersview.h \
+	$(DIST_DIR)/src/qt/butler_companymodel.h \
+	$(DIST_DIR)/src/qt/butler_companyview.h \
 	$(DIST_DIR)/src/qt/butler_tagfilterview.h \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
 	$(DIST_DIR)/src/qt/butler_tagsview.h \
@@ -147,7 +151,6 @@ source: \
 	$(DIST_DIR)/share/icons/delete.png \
 	$(DIST_DIR)/share/icons/edit.png \
 	$(DIST_DIR)/share/icons/query.png \
-	$(DIST_DIR)/share/icons/shop.png \
 	$(DIST_DIR)/share/icons/shopping.png \
 	$(DIST_DIR)/share/icons/tag.png \
 	$(DIST_DIR)/share/icons/trash.png \
@@ -161,6 +164,7 @@ source: \
 	$(DIST_DIR)/share/icons/right.png \
 	$(DIST_DIR)/share/icons/tick.png \
 	$(DIST_DIR)/share/icons/partner.png \
+	$(DIST_DIR)/share/icons/company.png \
 	$(DIST_DIR)/share/icons/refresh.png \
 	$(DIST_DIR)/share/icons/statistics.png \
 	$(DIST_DIR)/share/icons/comboarrowdown.png \

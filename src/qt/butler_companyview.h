@@ -3,24 +3,24 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_PARTNERSVIEW_H
-#define BUTLER_PARTNERSVIEW_H
+#ifndef BUTLER_COMPANYVIEW_H
+#define BUTLER_COMPANYVIEW_H
 
 #include <butler_pannview.h>
 #include <butler_databases.h>
 
 /*forwards*/
-class EditPartnerView;
+class EditCompanyView;
 
-class PartnersView : public PannView
+class CompanyView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	PartnersView(const QString & dbname, QWidget * parent = 0);
-	virtual ~PartnersView();
+	CompanyView(const QString & dbname, QWidget * parent = 0);
+	virtual ~CompanyView();
 
 	virtual void loadState();
 	virtual void saveState();
@@ -39,16 +39,16 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void newShop();
-	void editShop();
-	void delShop();
+	void newCompany();
+	void editCompany();
+	void delCompany();
 	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	const QString & dbname;
-	PartnersModel & model;
+	CompanyModel & model;
 
 	ToolButton addButton;
 	ToolButton delButton;
@@ -57,8 +57,8 @@ private:
 
 	TableView tableView;
 
-	EditPartnerView * newPartnerView;
-	EditPartnerView * editPartnerView;
+	EditCompanyView * newCompanyView;
+	EditCompanyView * editCompanyView;
 };
 
 #endif

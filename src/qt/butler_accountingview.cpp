@@ -13,7 +13,7 @@
 #include "butler_itemsmodel.h"
 #include "butler_tagsmodel.h"
 #include "butler_waresmodel.h"
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 
 SCC TidContext = "AccountingView";
 
@@ -32,7 +32,7 @@ SCC TidCategoryEditor = QT_TRANSLATE_NOOP("AccountingView", "Brand or type of wa
 SCC TidQuantityEditor = QT_TRANSLATE_NOOP("AccountingView", "Quantity:");
 SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Unit price:");
 SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Gross price:");
-SCC TidShopSelector = QT_TRANSLATE_NOOP("AccountingView", "Business partner:");
+SCC TidPartnerSelector = QT_TRANSLATE_NOOP("AccountingView", "Business partner:");
 SCC TidWareSelector = QT_TRANSLATE_NOOP("AccountingView", "Common ware name:");
 SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of purchase:");
 SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of upload:");
@@ -53,7 +53,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&waresModel(dbname), Ware::Name),
-	shopEditor(&partnersModel(dbname), Shop::Name),
+	partnerEditor(&partnersModel(dbname), Partner::Name),
 	tagsWidget(dbname),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
@@ -89,7 +89,7 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 			this, SLOT(updateToolButtonStates()));
 	connect(&boughtCheck.box, SIGNAL(stateChanged(int)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&shopEditor.box, SIGNAL(editTextChanged(const QString &)),
+	connect(&partnerEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&purchaseDateTime.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
 			this, SLOT(updateToolButtonStates()));
@@ -153,7 +153,7 @@ void AccountingView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.item(cursor.row()));
-		shopEditor.setText(item.shop);
+		partnerEditor.setText(item.partner);
 	}
 
 	uploadDateTime.edit.setDateTime(item.uploaded);
@@ -187,7 +187,7 @@ void AccountingView::mapFromGui()
 {
 	item.uploaded = uploadDateTime.edit.dateTime();
 
-	item.shop = shopEditor.text();
+	item.partner = partnerEditor.text();
 	item.name = wareEditor.text();
 	item.category = categoryEditor.text();
 	item.quantity = quantityEditor.value();
@@ -232,7 +232,7 @@ void AccountingView::retranslate()
 	quantityEditor.label.setText(tr(TidQuantityEditor));
 	unitPriceEditor.label.setText(tr(TidUnitPriceEditor));
 	grossPriceEditor.label.setText(tr(TidGrossPriceEditor));
-	shopEditor.label.setText(tr(TidShopSelector));
+	partnerEditor.label.setText(tr(TidPartnerSelector));
 	purchaseDateTime.label.setText(tr(TidPurchaseDateTimeEditor));
 	uploadDateTime.label.setText(tr(TidUploadDateTimeEditor));
 	commentEditor.label.setText(tr(TidCommentEditor));
@@ -269,7 +269,7 @@ void AccountingView::applyLayout(bool test)
 	mainLayout->addStretch(0);
 	mainLayout->addLayout(h2layout);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&shopEditor);
+	mainLayout->addWidget(&partnerEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&purchaseDateTime);
 	mainLayout->addStretch(0);
@@ -295,7 +295,7 @@ void AccountingView::relayout()
 		quantityEditor.wideLayout();
 		unitPriceEditor.wideLayout();
 		grossPriceEditor.wideLayout();
-		shopEditor.wideLayout();
+		partnerEditor.wideLayout();
 		purchaseDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
@@ -307,7 +307,7 @@ void AccountingView::relayout()
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
-		shopEditor.wideLayout();
+		partnerEditor.wideLayout();
 		purchaseDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
@@ -319,7 +319,7 @@ void AccountingView::relayout()
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
-		shopEditor.narrowLayout();
+		partnerEditor.narrowLayout();
 		purchaseDateTime.narrowLayout();
 		uploadDateTime.narrowLayout();
 		commentEditor.narrowLayout();
@@ -333,7 +333,7 @@ void AccountingView::relayout()
 void AccountingView::updateToolButtonStates()
 {
 	bool modified = !(
-			item.shop == shopEditor.text() &&
+			item.partner == partnerEditor.text() &&
 			item.name == wareEditor.text() &&
 			item.category == categoryEditor.text() &&
 			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
@@ -397,13 +397,22 @@ void AccountingView::saveSlot()
 {
 	mapFromGui();
 
-	/* Add shop if not yet known. */
+	/* Add partner if not yet known. */
 	PartnersModel &sm = partnersModel(dbname);
-	int i = sm.index(shopEditor.text());
+	int i = sm.index(partnerEditor.text());
 	if(i == -1){
-		Shop shop;
-		shop.name = shopEditor.text();
-		sm.addNew(shop);
+		Partner partner;
+		partner.name = partnerEditor.text();
+		partner.company = partnerEditor.text();
+		/* Add company if not yet known. */
+		CompanyModel &cm = companyModel(dbname);
+		int i = cm.index(partner.company);
+		if(i == -1){
+			Company company;
+			company.name = partner.company;
+			cm.addNew(company);
+		}
+		sm.addNew(partner);
 	}
 
 	/* Add/update ware if neccessary. */

@@ -3,19 +3,19 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_SHOPSMODEL_H
-#define BUTLER_SHOPSMODEL_H
+#ifndef BUTLER_COMPANYMODEL_H
+#define BUTLER_COMPANYMODEL_H
 
 #include <QAbstractItemModel>
 #include <QAbstractTableModel>
 #include <QModelIndex>
 
-#include <butler_shop_set.h>
+#include <butler_company_set.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
 
-class PartnersModel :
+class CompanyModel :
 	public QAbstractTableModel
 {
 private:
@@ -23,8 +23,8 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	PartnersModel(Db & db);
-	virtual ~PartnersModel();
+	CompanyModel(Db & db);
+	virtual ~CompanyModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -52,17 +52,17 @@ public slots:
 
 public:
 	int index(const QString &name) const NO_FCLOG;
-	const Shop& partner(int row) NO_FCLOG;
-	const ShopSet & partnerSet() const { return partners; };
+	const Company& company(int row) NO_FCLOG;
+	const CompanySet & companySet() const { return companys; };
 	void del(int row);
-	void addNew(Shop &partner);
-	virtual void update(int row, Shop &modified);
+	void addNew(Company &company);
+	virtual void update(int row, Company &modified);
 	void query();
 	void sort(int column, bool ascending);
 
 protected:
 	Db & db;
-	ShopSet partners;
+	CompanySet companys;
 };
 
 #endif

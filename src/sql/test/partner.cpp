@@ -11,7 +11,7 @@
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
-class TestShop : public QObject
+class TestPartner : public QObject
 {
 public:
 	void initTestCase();
@@ -21,7 +21,7 @@ public:
 };
 
 
-void TestShop::initTestCase()
+void TestPartner::initTestCase()
 {
 	QFile f(DB_FILE);
 	if(f.exists())
@@ -34,7 +34,7 @@ void TestShop::initTestCase()
 	VERIFY(db.create());
 }
 
-void TestShop::insert()
+void TestPartner::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
@@ -44,8 +44,8 @@ void TestShop::insert()
 	VERIFY(db.connect());
 	VERIFY(db.open());
 
-	Shop s;
-	ShopSet ss;
+	Partner s;
+	PartnerSet ss;
 
 	s.name = "western tesco";
 	s.storeName = "number xy";
@@ -53,21 +53,21 @@ void TestShop::insert()
 	s.address = "postal code, street and number";
 	s.company = "tesco";
 
-	/* put a shop in db and read it back */
-	VERIFY(db.shop().insert(s));
-	VERIFY(db.shop().query(ss));
+	/* put a partner in db and read it back */
+	VERIFY(db.partner().insert(s));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 1);
 	VERIFY(ss.queryAt(0) == s);
 
 	/* Lets clean up */
-	VERIFY(db.shop().del(s));
-	VERIFY(db.shop().query(ss));
+	VERIFY(db.partner().del(s));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
 	VERIFY(db.close());
 }
 
-void TestShop::update()
+void TestPartner::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
@@ -78,10 +78,10 @@ void TestShop::update()
 	VERIFY(db.open());
 
 
-	Shop s, su;
-	ShopSet ss;
+	Partner s, su;
+	PartnerSet ss;
 
-	VERIFY(db.shop().insert(s));
+	VERIFY(db.partner().insert(s));
 
 	/* These fields must be updated */
 	su.name = "western tesco";
@@ -90,24 +90,24 @@ void TestShop::update()
 	su.address = "postal code, street and number";
 	su.company = "tesco";
 
-	VERIFY(db.shop().update(s, su));
+	VERIFY(db.partner().update(s, su));
 
-	VERIFY(db.shop().query(ss));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 1);
 	VERIFY(su == ss.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.shop().del(su));
-	VERIFY(db.shop().query(ss));
+	VERIFY(db.partner().del(su));
+	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
 	VERIFY(db.close());
 }
 
-TEST_INIT(Shop)
+TEST_INIT(Partner)
 
 	TEST_RUN(insert);
 	TEST_RUN(update);
 
-TEST_FINISH(Shop)
+TEST_FINISH(Partner)
 

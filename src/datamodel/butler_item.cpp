@@ -15,7 +15,7 @@ Item::Item() :
 	comment(""),
 	bought(false),
 	purchased(QDate(0,0,0), QTime(0,0,0)),
-	shop(""),
+	partner(""),
 	price(0),
 	onStock(false)
 {
@@ -29,7 +29,7 @@ Item::Item(const QString &_name) :
 	comment(""),
 	bought(false),
 	purchased(QDate(0,0,0), QTime(0,0,0)),
-	shop(""),
+	partner(""),
 	price(0),
 	onStock(false)
 {
@@ -56,7 +56,7 @@ bool Item::isEqual(const Item &i) const
 			category != i.category ||
 			uploaded.toString() != i.uploaded.toString() ||
 			purchased.toString() != i.purchased.toString() ||
-			shop != i.shop ||
+			partner != i.partner ||
 			price != i.price ||
 			quantity != i.quantity ||
 			onStock != i.onStock ||
@@ -90,7 +90,7 @@ void Item::copy(const Item &i)
 
 	bought = i.bought;
 	purchased = i.purchased;
-	shop = i.shop;
+	partner = i.partner;
 	price = i.price;
 	onStock = i.onStock;
 }

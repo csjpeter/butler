@@ -6,7 +6,7 @@
 #include <QtGui>
 
 #include "butler_shoppingmodel.h"
-#include "butler_shopsmodel.h"
+#include "butler_partnersmodel.h"
 
 ShoppingModel::ShoppingModel(Db & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
