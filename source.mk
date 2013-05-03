@@ -74,7 +74,7 @@ source: \
 	$(DIST_DIR)/src/sql/test/partner.cpp \
 	$(DIST_DIR)/src/sql/test/tag.cpp \
 	$(DIST_DIR)/src/sql/test/ware.cpp \
-	$(DIST_DIR)/src/qt/butler_accountingview.cpp \
+	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
 	$(DIST_DIR)/src/qt/butler_application.cpp \
 	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
 	$(DIST_DIR)/src/qt/butler_config.cpp \
@@ -104,7 +104,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_waresview.cpp \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_accountingview.h \
+	$(DIST_DIR)/src/qt/butler_edititemview.h \
 	$(DIST_DIR)/src/qt/butler_application.h \
 	$(DIST_DIR)/src/qt/butler_buyitemview.h \
 	$(DIST_DIR)/src/qt/butler_config.h \

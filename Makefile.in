@@ -180,7 +180,7 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/butler_shoppingmodel.opp \
 	tmp/src/qt/butler_queriesmodel.opp \
 	tmp/src/qt/butler_customview.opp \
-	tmp/src/qt/butler_accountingview.opp \
+	tmp/src/qt/butler_edititemview.opp \
 	tmp/src/qt/butler_application.opp \
 	tmp/src/qt/butler_buyitemview.opp \
 	tmp/src/qt/butler_editpartnerview.opp \
@@ -209,14 +209,14 @@ BUTLERQT_OBJECTS= \
 	tmp/src/qt/moc/butler_shoppingmodel.opp \
 	tmp/src/qt/moc/butler_queriesmodel.opp \
 	tmp/src/qt/moc/butler_customview.opp \
-	tmp/src/qt/moc/butler_accountingview.opp \
+	tmp/src/qt/moc/butler_newitemview.opp \
 	tmp/src/qt/moc/butler_application.opp \
 	tmp/src/qt/moc/butler_buyitemview.opp \
 	tmp/src/qt/moc/butler_editpartnerview.opp \
 	tmp/src/qt/moc/butler_editcompanyview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
 	tmp/src/qt/moc/butler_editwareview.opp \
-	tmp/src/qt/moc/butler_newitemview.opp \
+	tmp/src/qt/moc/butler_edititemview.opp \
 	tmp/src/qt/moc/butler_queryoptionsview.opp \
 	tmp/src/qt/moc/butler_shoppingview.opp \
 	tmp/src/qt/moc/butler_partnersview.opp \

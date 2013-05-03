@@ -9,42 +9,42 @@
 #include <QtGui>
 
 #include "butler_config.h"
-#include "butler_accountingview.h"
+#include "butler_edititemview.h"
 #include "butler_itemsmodel.h"
 #include "butler_tagsmodel.h"
 #include "butler_waresmodel.h"
 #include "butler_partnersmodel.h"
 
-SCC TidContext = "AccountingView";
+SCC TidContext = "EditItemView";
 
-SCC TidAccountingWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Already bought new item");
-SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("AccountingView", "Editing an existing item");
+SCC TidNewItemWindowTitle = QT_TRANSLATE_NOOP("EditItemView", "Already bought new item");
+SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("EditItemView", "Editing an existing item");
 
-SCC TidDoneButton = QT_TRANSLATE_NOOP("AccountingView", "Done");
-SCC TidResetButton = QT_TRANSLATE_NOOP("AccountingView", "Reset");
-SCC TidPrevButton = QT_TRANSLATE_NOOP("AccountingView", "Previous item");
-SCC TidNextButton = QT_TRANSLATE_NOOP("AccountingView", "Next item");
+SCC TidDoneButton = QT_TRANSLATE_NOOP("EditItemView", "Done");
+SCC TidResetButton = QT_TRANSLATE_NOOP("EditItemView", "Reset");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditItemView", "Previous item");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditItemView", "Next item");
 
-SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "Bought:");
-SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("AccountingView", "On stock:");
+SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "Bought:");
+SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "On stock:");
 
-SCC TidCategoryEditor = QT_TRANSLATE_NOOP("AccountingView", "Brand or type of ware:");
-SCC TidQuantityEditor = QT_TRANSLATE_NOOP("AccountingView", "Quantity:");
-SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Unit price:");
-SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("AccountingView", "Gross price:");
-SCC TidPartnerSelector = QT_TRANSLATE_NOOP("AccountingView", "Business partner:");
-SCC TidWareSelector = QT_TRANSLATE_NOOP("AccountingView", "Common ware name:");
-SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of purchase:");
-SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("AccountingView", "Date of upload:");
-SCC TidCommentEditor = QT_TRANSLATE_NOOP("AccountingView", "Comments:");
-SCC TidWareTags = QT_TRANSLATE_NOOP("AccountingView", "Tags for <i>%1</i> :");
+SCC TidCategoryEditor = QT_TRANSLATE_NOOP("EditItemView", "Brand or type of ware:");
+SCC TidQuantityEditor = QT_TRANSLATE_NOOP("EditItemView", "Quantity:");
+SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Unit price:");
+SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Gross price:");
+SCC TidPartnerSelector = QT_TRANSLATE_NOOP("EditItemView", "Business partner:");
+SCC TidWareSelector = QT_TRANSLATE_NOOP("EditItemView", "Common ware name:");
+SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("EditItemView", "Date of purchase:");
+SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("EditItemView", "Date of upload:");
+SCC TidCommentEditor = QT_TRANSLATE_NOOP("EditItemView", "Comments:");
+SCC TidWareTags = QT_TRANSLATE_NOOP("EditItemView", "Tags for <i>%1</i> :");
 
-SCC TidMandatoryField = QT_TRANSLATE_NOOP("AccountingView", "mandatory field");
-SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("AccountingView", "Please fill at least the mandatory fields.");
-SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is saved, you may add another.");
-SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("AccountingView", "Item is updated.");
+SCC TidMandatoryField = QT_TRANSLATE_NOOP("EditItemView", "mandatory field");
+SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditItemView", "Please fill at least the mandatory fields.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is updated.");
 
-AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent) :
+EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model),
@@ -115,11 +115,11 @@ AccountingView::AccountingView(const QString & dbname, ItemsModel & model, QWidg
 	retranslate();
 }
 
-AccountingView::~AccountingView()
+EditItemView::~EditItemView()
 {
 }
 
-void AccountingView::showEvent(QShowEvent *event)
+void EditItemView::showEvent(QShowEvent *event)
 {
 	lastWareName.clear();
 	mapToGui();
@@ -131,25 +131,25 @@ void AccountingView::showEvent(QShowEvent *event)
 	relayout();
 }
 
-void AccountingView::closeEvent(QCloseEvent *event)
+void EditItemView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 	PannView::closeEvent(event);
 }
 
-void AccountingView::loadState()
+void EditItemView::loadState()
 {
-	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
+	QString prefix(cursor.isValid() ? "EditItemView" : "EditItemView");
 	PannView::loadState(prefix);
 }
 
-void AccountingView::saveState()
+void EditItemView::saveState()
 {
-	QString prefix(cursor.isValid() ? "EditItemView" : "AccountingView");
+	QString prefix(cursor.isValid() ? "EditItemView" : "EditItemView");
 	PannView::saveState(prefix);
 }
 
-void AccountingView::mapToGui()
+void EditItemView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.item(cursor.row()));
@@ -183,7 +183,7 @@ void AccountingView::mapToGui()
 	updateToolButtonStates();
 }
 
-void AccountingView::mapFromGui()
+void EditItemView::mapFromGui()
 {
 	item.uploaded = uploadDateTime.edit.dateTime();
 
@@ -205,26 +205,26 @@ void AccountingView::mapFromGui()
 		ware.categories.add(new QString(categoryEditor.text()));
 }
 
-void AccountingView::changeEvent(QEvent * event)
+void EditItemView::changeEvent(QEvent * event)
 {
 	PannView::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
 }
 
-void AccountingView::resizeEvent(QResizeEvent * event)
+void EditItemView::resizeEvent(QResizeEvent * event)
 {
 	if(layout() && (event->size() == event->oldSize()))
 		return;
 	relayout();
 }
 
-void AccountingView::retranslate()
+void EditItemView::retranslate()
 {
 	if(cursor.isValid())
 		setWindowTitle(tr(TidEditItemWindowTitle));
 	else
-		setWindowTitle(tr(TidAccountingWindowTitle));
+		setWindowTitle(tr(TidNewItemWindowTitle));
 
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
@@ -244,7 +244,7 @@ void AccountingView::retranslate()
 	relayout();
 }
 
-void AccountingView::applyLayout(bool test)
+void EditItemView::applyLayout(bool test)
 {
 	HLayout * hlayout = new HLayout;
 	hlayout->addWidget(&grossPriceEditor);
@@ -287,7 +287,7 @@ void AccountingView::applyLayout(bool test)
 	updateGeometry();
 }
 
-void AccountingView::relayout()
+void EditItemView::relayout()
 {
 	{
 		wareEditor.wideLayout();
@@ -330,7 +330,7 @@ void AccountingView::relayout()
 	updateToolButtonStates();
 }
 
-void AccountingView::updateToolButtonStates()
+void EditItemView::updateToolButtonStates()
 {
 	bool modified = !(
 			item.partner == partnerEditor.text() &&
@@ -367,7 +367,7 @@ void AccountingView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void AccountingView::setCursor(const QModelIndex& index)
+void EditItemView::setCursor(const QModelIndex& index)
 {
 	ENSURE(index.isValid(), csjp::LogicError);
 	ENSURE(index.model() == &model, csjp::LogicError);
@@ -378,14 +378,14 @@ void AccountingView::setCursor(const QModelIndex& index)
 	mapToGui();
 }
 
-void AccountingView::prevClickedSlot()
+void EditItemView::prevClickedSlot()
 {
 	int col = cursor.column();
 	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
 	setCursor(model.index(row, col));
 }
 
-void AccountingView::nextClickedSlot()
+void EditItemView::nextClickedSlot()
 {
 	int col = cursor.column();
 	int row = (cursor.row() < model.rowCount() - 1) ?
@@ -393,7 +393,7 @@ void AccountingView::nextClickedSlot()
 	setCursor(model.index(row, col));
 }
 
-void AccountingView::saveSlot()
+void EditItemView::saveSlot()
 {
 	mapFromGui();
 
@@ -440,13 +440,13 @@ void AccountingView::saveSlot()
 	}
 }
 
-void AccountingView::resetSlot()
+void EditItemView::resetSlot()
 {
 	mapToGui();
 	tagsWidget.setTags(ware.tags);
 }
 
-void AccountingView::quantityValueChangedSlot(double q)
+void EditItemView::quantityValueChangedSlot(double q)
 {
 	if(lastNumEdited != &quantityEditor){
 		lastLastNumEdited = lastNumEdited;
@@ -471,7 +471,7 @@ void AccountingView::quantityValueChangedSlot(double q)
 	updateToolButtonStates();
 }
 
-void AccountingView::unitPriceValueChangedSlot(double u)
+void EditItemView::unitPriceValueChangedSlot(double u)
 {
 	if(lastNumEdited != &unitPriceEditor){
 		lastLastNumEdited = lastNumEdited;
@@ -496,7 +496,7 @@ void AccountingView::unitPriceValueChangedSlot(double u)
 	updateToolButtonStates();
 }
 
-void AccountingView::grossPriceValueChangedSlot(double g)
+void EditItemView::grossPriceValueChangedSlot(double g)
 {
 	if(lastNumEdited != &grossPriceEditor){
 		lastLastNumEdited = lastNumEdited;
@@ -522,7 +522,7 @@ void AccountingView::grossPriceValueChangedSlot(double g)
 	updateToolButtonStates();
 }
 
-void AccountingView::wareNameEditFinishedSlot()
+void EditItemView::wareNameEditFinishedSlot()
 {
 	if(wareEditor.editor.text() == lastWareName)
 		return;
@@ -550,7 +550,7 @@ void AccountingView::wareNameEditFinishedSlot()
 
 /* We need this for cases when keybaord focus was not used,
  * just a mouse selection from the drop down popup. */
-void AccountingView::wareNameEditFinishedSlot(int)
+void EditItemView::wareNameEditFinishedSlot(int)
 {
 	wareNameEditFinishedSlot();
 }

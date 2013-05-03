@@ -12,7 +12,7 @@
 
 /*forwards*/
 class ShoppingView;
-class AccountingView;
+class EditItemView;
 class CustomView;
 class PartnersView;
 class CompanyView;
@@ -49,7 +49,7 @@ private slots:
 	void activateSavedActiveWindow();
 	void openTodoView();
 	void openShoppingView();
-	void openAccountingView();
+	void openEditItemView();
 	void openCustomView();
 	void openPartnersView();
 	void openCompanyView();
@@ -64,7 +64,7 @@ private:
 
 	ToolButton todoButton;
 	ToolButton shoppingButton;
-	ToolButton accountingButton;
+	ToolButton newItemButton;
 	ToolButton analiticsButton;
 	ToolButton partnersButton;
 	ToolButton companyButton;
@@ -75,7 +75,7 @@ private:
 
 //	TodoView *todoView;
 	ShoppingView *shoppingView;
-	AccountingView *accountingView;
+	EditItemView *newItemView;
 	CustomView *customView;
 	PartnersView *partnersView;
 	CompanyView *companyView;

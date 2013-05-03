@@ -3,22 +3,22 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_ACCOUNTINGVIEW_H
-#define BUTLER_ACCOUNTINGVIEW_H
+#ifndef BUTLER_EDITITEMVIEW_H
+#define BUTLER_EDITITEMVIEW_H
 
 #include <butler_item.h>
 #include <butler_tagwidget.h>
 #include <butler_pannview.h>
 
-class AccountingView : public PannView
+class EditItemView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	AccountingView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
-	virtual ~AccountingView();
+	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
+	virtual ~EditItemView();
 
 	void setCursor(const QModelIndex& index);
 

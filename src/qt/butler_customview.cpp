@@ -10,7 +10,7 @@
 #include "butler_customview.h"
 #include "butler_shoppingview.h"
 #include "butler_queryoptionsview.h"
-#include "butler_accountingview.h"
+#include "butler_edititemview.h"
 #include "butler_editwareview.h"
 #include "butler_statsview.h"
 #include "butler_config.h"
@@ -41,7 +41,6 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 			TidRefreshItemsButton, TidContext, QKeySequence(QKeySequence::Refresh)),/*F5*/
 	filterButton(QIcon(Path::icon("query.png")),
 			TidFilterItemButton, TidContext, QKeySequence(Qt::Key_F6)),
-	accountingView(NULL),
 	editItemView(NULL),
 	queryOptsView(NULL),
 	editWareView(NULL),
@@ -77,7 +76,6 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 
 CustomView::~CustomView()
 {
-	delete accountingView;
 	delete editItemView;
 	delete queryOptsView;
 	delete editWareView;
@@ -248,7 +246,7 @@ void CustomView::editItem()
 	}
 
 	if(!editItemView)
-		editItemView = new AccountingView(dbname, *model);
+		editItemView = new EditItemView(dbname, *model);
 
 	editItemView->setCursor(tableView.currentIndex());
 	editItemView->activate();

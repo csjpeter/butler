@@ -12,7 +12,7 @@
 #include "butler_databases.h"
 
 #include "butler_shoppingview.h"
-#include "butler_accountingview.h"
+#include "butler_edititemview.h"
 #include "butler_partnersview.h"
 #include "butler_companyview.h"
 #include "butler_tagsview.h"
@@ -30,7 +30,7 @@ SCC TidContext = "MainView";
 SCC TidMainWindowTitle = QT_TRANSLATE_NOOP("MainView", "%1 - main view");
 SCC TidTodoButton = QT_TRANSLATE_NOOP("MainView", "Todo notes");
 SCC TidShoppingButton = QT_TRANSLATE_NOOP("MainView", "Shopping list");
-SCC TidAccountingButton = QT_TRANSLATE_NOOP("MainView", "Accounting");
+SCC TidNewItemButton = QT_TRANSLATE_NOOP("MainView", "Expense/Income");
 SCC TidAnaliticsButton = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
 SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
 SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
@@ -47,8 +47,8 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 			TidTodoButton, TidContext, QKeySequence(Qt::Key_F1)),
 	shoppingButton(QIcon(Path::icon("shopping.png")),
 			TidShoppingButton, TidContext, QKeySequence(Qt::Key_F2)),
-	accountingButton(QIcon(Path::icon("accounting.png")),
-			TidAccountingButton, TidContext, QKeySequence(Qt::Key_F3)),
+	newItemButton(QIcon(Path::icon("accounting.png")),
+			TidNewItemButton, TidContext, QKeySequence(Qt::Key_F3)),
 	analiticsButton(QIcon(Path::icon("analitics.png")),
 			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F4)),
 	partnersButton(QIcon(Path::icon("partner.png")),
@@ -64,7 +64,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	quitButton(QIcon(Path::icon("delete.png")),
 			TidQuitButton, TidContext, QKeySequence(Qt::Key_F9)),
 	shoppingView(NULL),
-	accountingView(NULL),
+	newItemView(NULL),
 	customView(NULL),
 	partnersView(NULL),
 	companyView(NULL),
@@ -80,7 +80,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 
 //	connect(&todoButton, SIGNAL(clicked()), this, SLOT(openTodoView()));
 	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
-	connect(&accountingButton, SIGNAL(clicked()), this, SLOT(openAccountingView()));
+	connect(&newItemButton, SIGNAL(clicked()), this, SLOT(openEditItemView()));
 	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
 	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
 	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
@@ -97,7 +97,7 @@ MainView::~MainView()
 {
 //	delete todoView;
 	delete shoppingView;
-	delete accountingView;
+	delete newItemView;
 	delete customView;
 	delete partnersView;
 	delete companyView;
@@ -124,7 +124,7 @@ void MainView::applyLayout()
 
 //	layout->addWidget(&todoButton);
 //	layout->addWidget(&shoppingButton);
-	layout->addWidget(&accountingButton);
+	layout->addWidget(&newItemButton);
 	layout->addWidget(&analiticsButton);
 	layout->addWidget(&wareButton);
 	layout->addWidget(&tagButton);
@@ -146,7 +146,7 @@ void MainView::relayout()
 {
 	todoButton.expanding();
 	shoppingButton.expanding();
-	accountingButton.expanding();
+	newItemButton.expanding();
 	analiticsButton.expanding();
 	partnersButton.expanding();
 	companyButton.expanding();
@@ -196,8 +196,8 @@ void MainView::loadState()
 //		openTodoView();
 	if(settings.value(prefix + "/shoppingview", false).toBool())
 		openShoppingView();
-	if(settings.value(prefix + "/accountingview", false).toBool())
-		openAccountingView();
+	if(settings.value(prefix + "/newitemview", false).toBool())
+		openEditItemView();
 	if(settings.value(prefix + "/customview", false).toBool())
 		openCustomView();
 	if(settings.value(prefix + "/partnersview", false).toBool())
@@ -227,8 +227,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = this;
 	else if(activeWindowName == "shoppingView")
 		activeWindow = shoppingView;
-	else if(activeWindowName == "accountingView")
-		activeWindow = accountingView;
+	else if(activeWindowName == "newItemView")
+		activeWindow = newItemView;
 	else if(activeWindowName == "customView")
 		activeWindow = customView;
 	else if(activeWindowName == "partnersView")
@@ -255,7 +255,7 @@ void MainView::saveState()
 
 //	SAVE_VIEW_STATE(todoView);
 	SAVE_VIEW_STATE(shoppingView);
-	SAVE_VIEW_STATE(accountingView);
+	SAVE_VIEW_STATE(newItemView);
 	SAVE_VIEW_STATE(customView);
 	SAVE_VIEW_STATE(partnersView);
 	SAVE_VIEW_STATE(companyView);
@@ -271,8 +271,8 @@ void MainView::saveState()
 		activeWindowName = "mainView";
 	else if(activeWindow == shoppingView)
 		activeWindowName = "shoppingView";
-	else if(activeWindow == accountingView)
-		activeWindowName = "accountingView";
+	else if(activeWindow == newItemView)
+		activeWindowName = "newItemView";
 	else if(activeWindow == customView)
 		activeWindowName = "customView";
 	else if(activeWindow == partnersView)
@@ -306,11 +306,11 @@ void MainView::openShoppingView()
 	shoppingView->activate();
 }
 
-void MainView::openAccountingView()
+void MainView::openEditItemView()
 {
-	if(!accountingView)
-		accountingView = new AccountingView(dbname, *model);
-	accountingView->activate();
+	if(!newItemView)
+		newItemView = new EditItemView(dbname, *model);
+	newItemView->activate();
 }
 
 void MainView::openCustomView()
