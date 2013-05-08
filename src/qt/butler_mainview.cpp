@@ -39,6 +39,10 @@ SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
 SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
 SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
 
+/* Search for images using google:
+https://www.googleapis.com/customsearch/v1?key=AIzaSyBz1WwkrfA8UursvLiUqRTJ2nC5bytMHQk&fileType=jpg&fileType=ong&cr=hu&searchType=image&cx=007625690417709007201:tyovxvdl-ek&q=tolnatej
+*/
+
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),

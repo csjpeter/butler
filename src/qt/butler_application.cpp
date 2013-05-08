@@ -104,7 +104,9 @@ void Application::pixelPerMM()
 	double qtHeightMM = qApp->desktop()->heightMM();
 	LOG("Qt given Horiz length in mm: %.2f, Vertic length in mm: %.2f", qtWidthMM, qtHeightMM);
 
-	Config::scaleFactor = 1.0/* + widthMM / 200.0 / 20.0*/;
+	double base = 1000 * 1000;
+	Config::scaleFactor = log( (widthMM * heightMM) / (50.0 * 60.0) * base ) / log(base);
+	LOG("Computed scaleFactor: %.2f", Config::scaleFactor);
 }
 
 /* Init the styleshhet */
