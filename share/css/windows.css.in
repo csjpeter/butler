@@ -1,15 +1,6 @@
 /* MainView specials */
 
-MainView QPushButton {
-	font-size: 12pt;
-	text-align: left;
-	padding: 1ex;
-	padding-right: 1em;
-	padding-left: 1em;
-	icon-size: 32px;
-}
-
-QToolButton {
-	icon-size: 32px;
-	font-size: 8pt;
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
+	font-weight: bold;
 }

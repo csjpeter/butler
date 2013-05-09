@@ -1,6 +1,6 @@
 /* MainView specials */
-
-MainView QPushButton {
+/*
+MainView QToolButton {
 	font-size: 3.6mm;
 	text-align: left;
 	padding: 2mm;
@@ -8,24 +8,16 @@ MainView QPushButton {
 	padding-left: 5mm;
 	icon-size: 10mm;
 }
-
-QToolButton {
-	icon-size: 10mm;
-	font-size: 2.5mm;
-}
-
-InfoLabel {
-	color: #887700;
-	font-size: 3mm;
+*/
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
 	font-weight: bold;
 }
-
+/*
 *[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
 	background-color: #ffffdd;
-/*	background-color: #bbbb44;*/
 }
 
-/*
 Selector[mandatory="false"] {
 	background-color: #cc4444;
 }
