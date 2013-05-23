@@ -116,7 +116,7 @@ TEST_BINARIES=\
 # temporary files
 #
 
-DATAMODEL_OBJECTS= \
+DATAMODEL_OBJECTS+= \
 	tmp/src/datamodel/butler_item.opp \
 	tmp/src/datamodel/butler_item_set.opp \
 	tmp/src/datamodel/butler_query.opp \
@@ -134,7 +134,7 @@ DATAMODEL_INCLUDES=-Isrc/datamodel
 
 STATIC_LIBDATAMODEL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-datamodel.a
 
-SQL_OBJECTS= \
+SQL_OBJECTS+= \
 	tmp/src/sql/butler_database_descriptor.opp \
 	tmp/src/sql/butler_sql_connection.opp \
 	tmp/src/sql/butler_sqlquery.opp \
@@ -162,7 +162,7 @@ SQL_INCLUDES=-Isrc/sql
 
 STATIC_LIBSQL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-sql.a
 
-BUTLERQT_OBJECTS= \
+BUTLERQT_OBJECTS+= \
 	tmp/src/qt/main.opp \
 	tmp/src/qt/butler_config.opp \
 	tmp/src/qt/butler_databases.opp \
@@ -236,61 +236,48 @@ BUTLERQT_INCLUDES=-Isrc/qt
 
 .PRECIOUS: $(BUTLERQT_OBJECTS)
 
-BUTLER_IMAGES=\
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/copyright \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/accounting.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/analitics.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/add.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/buy.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/delete.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/edit.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/query.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/shopping.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tag.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/trash.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/cancel.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ok.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/ware.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/info.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/warning.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/list.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/left.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/right.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/tick.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/partner.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/company.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/refresh.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/statistics.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowdown.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/comboarrowup.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/calendar.png \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/butler.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png \
-	@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico
+BUTLER_IMAGES+=\
+	$(ICONS_DIR)/copyright \
+	$(ICONS_DIR)/accounting.png \
+	$(ICONS_DIR)/analitics.png \
+	$(ICONS_DIR)/add.png \
+	$(ICONS_DIR)/buy.png \
+	$(ICONS_DIR)/delete.png \
+	$(ICONS_DIR)/edit.png \
+	$(ICONS_DIR)/query.png \
+	$(ICONS_DIR)/shopping.png \
+	$(ICONS_DIR)/tag.png \
+	$(ICONS_DIR)/trash.png \
+	$(ICONS_DIR)/cancel.png \
+	$(ICONS_DIR)/ok.png \
+	$(ICONS_DIR)/ware.png \
+	$(ICONS_DIR)/info.png \
+	$(ICONS_DIR)/warning.png \
+	$(ICONS_DIR)/list.png \
+	$(ICONS_DIR)/left.png \
+	$(ICONS_DIR)/right.png \
+	$(ICONS_DIR)/tick.png \
+	$(ICONS_DIR)/partner.png \
+	$(ICONS_DIR)/company.png \
+	$(ICONS_DIR)/refresh.png \
+	$(ICONS_DIR)/statistics.png \
+	$(ICONS_DIR)/comboarrowdown.png \
+	$(ICONS_DIR)/comboarrowup.png \
+	$(ICONS_DIR)/calendar.png \
+	$(ICONS_DIR)/butler.png
 
 #
 # main rules
 #
 
-all: \
-	build
-
 build: \
 	$(STATIC_LIBDATAMODEL) \
 	$(STATIC_LIBSQL) \
 	$(BUTLER_IMAGES) \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/application.css \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/en.qm \
-	@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/hu.qm \
-	@TCROOT@@APPS_DIR@/@PKGNAME_BASE@.desktop \
-	@TCROOT@@MAN_DIR@/man1/@PKGNAME_BASE@.1 \
-	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
-	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@ \
-	@TCROOT@@PREFIX@bin/@PKGNAME_BASE@-dbg@EXEC_POSTFIX@ \
-	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so \
-	@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so
-
-#	$(TEST_BINARIES)
+	$(BUILD_DEPS) \
+	$(CSS_DIR)/application.css \
+	$(TRANSLATIONS_DIR)/en.qm \
+	$(TRANSLATIONS_DIR)/hu.qm
 
 clean:
 	test "x" = "x$(shell find . | grep \\~$$)" || rm $(shell find . | grep \\~$$)
@@ -362,24 +349,12 @@ $(STATIC_LIBSQL): \
 	$(LINK_STATIC)
 	$(RANLIB) $@
 
-@TCROOT@@PREFIX@bin/@PKGNAME_BASE@-dbg@EXEC_POSTFIX@: \
-		tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp $< $@
-
 tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBDATAMODEL) \
 		$(STATIC_LIBSQL)
 	test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
-
-tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
-		$(BUTLERQT_OBJECTS) \
-		$(STATIC_LIBDATAMODEL) \
-		$(STATIC_LIBSQL)
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(LINK_DYNAMIC)
 
 @TCROOT@tmp/bin/test-@PKGNAME_BASE@-datamodel-% : \
 		tmp/src/datamodel/test/%.opp \
@@ -394,42 +369,22 @@ tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 
-@TCROOT@@APPS_DIR@/@PKGNAME_BASE@.desktop: \
-		@PRJNAME@.desktop
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp $< $@
-
-@TCROOT@@MAN_DIR@/man1/@PKGNAME_BASE@.1: \
-		@PRJNAME@.man
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp $< $@
-
-@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.png: \
-		share/icons/butler.png
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp $< $@
-
-@TCROOT@@PREFIX@share/pixmaps/@PKGNAME_BASE@.ico: \
-		share/icons/butler.png
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	icotool -c -o $@ $<
-
-@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/%.png: \
+$(ICONS_DIR)/%.png: \
 		share/icons/%.png
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 
-@TCROOT@@PREFIX@share/@PKGNAME_BASE@/css/%.css: \
+$(CSS_DIR)/%.css: \
 		share/css/%.css
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 
-@TCROOT@@PREFIX@share/@PKGNAME_BASE@/translations/%.qm: \
+$(TRANSLATIONS_DIR)/%.qm: \
 		share/translations/%.qm
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@
 
-@TCROOT@@PREFIX@share/@PKGNAME_BASE@/icons/copyright: \
+$(ICONS_DIR)/copyright: \
 		share/icons/copyright
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $< $@

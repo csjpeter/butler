@@ -31,7 +31,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	--prefix=butler0.1 \
 	--gnu-source \
 	--static \
-	--ldflags=\"-static-libgcc -static-libstdc++\" \
+	--ldflags=\\\"-static-libgcc -static-libstdc++\\\" \
 	--ldflags=-Wl,-subsystem,windows \
 	--stlcompatible || exit $?
 
