@@ -34,14 +34,18 @@ $(DIST_DIR)/debian/$(PKGNAME)-dbg.install.in: debian/dbg.install.in
 	./generator.$(PACKAGING).sh debian/dbg.install.in > $@
 
 debian: \
-	$(DIST_DIR)/debian/copyright \
-	$(DIST_DIR)/debian/changelog \
-	$(DIST_DIR)/debian/control \
-	$(DIST_DIR)/debian/rules \
-	$(DIST_DIR)/debian/compat \
-	$(DIST_DIR)/debian/source/format \
-	$(DIST_DIR)/debian/$(PKGNAME).install.in \
-	$(DIST_DIR)/debian/$(PKGNAME)-dbg.install.in
+		$(DIST_DIR)/debian/copyright \
+		$(DIST_DIR)/debian/changelog \
+		$(DIST_DIR)/debian/control \
+		$(DIST_DIR)/debian/rules \
+		$(DIST_DIR)/debian/compat \
+		$(DIST_DIR)/debian/source/format \
+		$(DIST_DIR)/debian/$(PKGNAME).install.in \
+		$(DIST_DIR)/debian/$(PKGNAME)-dbg.install.in \
+		$(DIST_DIR)/doxyfile.in \
+		$(DIST_DIR)/butler.desktop.in \
+		$(DIST_DIR)/butler.man.in
+	@true
 
 $(DIST_DIR)/nsis/$(PKGNAME).nsi.in: nsis/install.nsi.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -52,8 +56,9 @@ $(DIST_DIR)/nsis/license.txt.in: enduser-license.in
 	./generator.$(PACKAGING).sh enduser-license.in > $@
 
 windows: \
-	$(DIST_DIR)/nsis/$(PKGNAME).nsi.in \
-	$(DIST_DIR)/nsis/license.txt.in
+		$(DIST_DIR)/nsis/$(PKGNAME).nsi.in \
+		$(DIST_DIR)/nsis/license.txt.in
+	@true
 
 $(DIST_DIR)/android/%.xml: android/%.xml.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -68,17 +73,29 @@ $(DIST_DIR)/android/src/org/kde/necessitas/%: android/src/org/kde/necessitas/%
 	cp $+ $@
 
 # http://developer.android.com/guide/topics/manifest/manifest-intro.html
+# $(DIST_DIR)/android/build-apk.sh.in
 android: \
-	$(DIST_DIR)/android/build-apk.sh.in \
-	$(DIST_DIR)/android/AndroidManifest.xml \
-	$(DIST_DIR)/android/res/values/strings.xml \
-	$(DIST_DIR)/android/build.xml \
-	$(DIST_DIR)/android/res/values/libs.xml \
-	$(DIST_DIR)/android/debug.keystore \
-	$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtActivity.java \
-	$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtApplication.java \
-	$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
-	$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistro.aidl
+		$(DIST_DIR)/android/AndroidManifest.xml \
+		$(DIST_DIR)/android/res/values/strings.xml \
+		$(DIST_DIR)/android/build.xml \
+		$(DIST_DIR)/android/res/values/libs.xml \
+		$(DIST_DIR)/android/debug.keystore \
+		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtActivity.java \
+		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtApplication.java \
+		$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
+		$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistro.aidl \
+		$(DIST_DIR)/android/project.properties \
+		$(DIST_DIR)/android/local.properties
+	@true
+
+$(DIST_DIR)/android/project.properties:
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	echo "target=android-8" > $@
+#	echo "target=$(ANDROID_SDK_API)" > $@
+
+$(DIST_DIR)/android/local.properties:
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	echo "sdk.dir=$(ANDROID_SDK_HOME)" > $@
 
 $(DIST_DIR)/configure: configure.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -286,13 +303,11 @@ source: \
 	$(DIST_DIR)/config \
 	$(DIST_DIR)/configure \
 	$(DIST_DIR)/Makefile.in \
-	$(DIST_DIR)/doxyfile.in \
-	$(DIST_DIR)/butler.desktop.in \
-	$(DIST_DIR)/butler.man.in \
 	$(DIST_DIR)/src/config.h.in \
 	$(DIST_DIR)/source-license \
 	$(DIST_DIR)/enduser-license \
 	$(DIST_DIR)/share/translations/en.qm \
 	$(DIST_DIR)/share/translations/hu.qm \
 	$(DIST_DIR)/share/css/application.css.in
+	@true
 

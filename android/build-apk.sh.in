@@ -1,28 +1,8 @@
 #!/bin/bash
 
-function exec_in_dir ()
-{
-	pushd $1 > /dev/null || exit $?
-	shift
-	$@
-	let RET=$?
-	popd > /dev/null
-	return ${RET}
-}
-
 SDK_API=$1
 ARCH=$2
 shift 2
-
-make $@ || exit $?
-
-test -d android/lib/armeabi || { mkdir -p android/libs/armeabi || exit $? ; }
-cp @TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so android/libs/armeabi/ || exit $?
-
-echo "target=${SDK_API}" > android/project.properties
-echo "sdk.dir=${ANDROID_SDK_HOME}" > android/local.properties
-
-exec_in_dir android ant debug || exit $?
 
 #AAPT=${ANDROID_SDK_HOME}/platform-tools/aapt
 #DEX=${ANDROID_SDK_HOME}/platform-tools/dx

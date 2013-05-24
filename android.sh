@@ -52,8 +52,7 @@ function config ()
 	exec_in_dir ${DIST} ./configure || exit $?
 }
 
-SDK_API=android-8
-API=android-9
+export ANDROID_SDK_API=android-8
 ARCH=arm
 
 CMD=$1
@@ -61,12 +60,12 @@ CMD=$1
 case "${CMD}" in
 	(debian)
 		shift
-		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { export ANDROID_SDK_API=$1 ; shift ; }
 		test "x$1" = "x" || { ARCH=$1 ; shift ; }
-		DIST=${DISTRIB_CODENAME}-x-${API}-${ARCH}
+		DIST=${DISTRIB_CODENAME}-x-${ANDROID_SDK_API}-${ARCH}
 
-		config ${API} ${ARCH} ${DIST} \
-			--target=${API}-${ARCH} \
+		config ${ANDROID_SDK_API} ${ARCH} ${DIST} \
+			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=debian || exit $?
 		exec_in_dir ${DIST} debuild \
 			--no-tgz-check \
@@ -76,26 +75,26 @@ case "${CMD}" in
 	;;
 	(apk)
 		shift
-		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { export ANDROID_SDK_API=$1 ; shift ; }
 		test "x$1" = "x" || { ARCH=$1 ; shift ; }
-		DIST=${API}-${ARCH}
+		DIST=${ANDROID_SDK_API}-${ARCH}
 
 		#rm -fr ${DIST}/android # force cleanup ant files
-		config ${API} ${ARCH} ${DIST} \
-			--host=${API}-${ARCH} \
-			--target=${API}-${ARCH} \
+		config ${ANDROID_SDK_API} ${ARCH} ${DIST} \
+			--host=${ANDROID_SDK_API}-${ARCH} \
+			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} android/build-apk.sh ${SDK_API} ${ARCH} $@ || exit $?
+		exec_in_dir ${DIST} make $@ || exit $?
+		exec_in_dir ${DIST}/android ant debug || exit $?
 	;;
 	(*)
-		shift
-		test "x$1" = "x" || { API=$1 ; shift ; }
+		test "x$1" = "x" || { export ANDROID_SDK_API=$1 ; shift ; }
 		test "x$1" = "x" || { ARCH=$1 ; shift ; }
-		DIST=${API}-${ARCH}
+		DIST=${ANDROID_SDK_API}-${ARCH}
 
-		config ${API} ${ARCH} ${DIST} \
-			--host=${API}-${ARCH} \
-			--target=${API}-${ARCH} \
+		config ${ANDROID_SDK_API} ${ARCH} ${DIST} \
+			--host=${ANDROID_SDK_API}-${ARCH} \
+			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
 		exec_in_dir ${DIST} make $@ || exit $?
 	;;

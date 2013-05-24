@@ -7,15 +7,13 @@ BUTLER_IMAGES+=\
 	android/res/drawable/icon.png
 
 BUILD_DEPS+=\
-	@TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so \
-	@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so
+	android/libs/armeabi/lib@PKGNAME_BASE@.so
 
-tmp/@TCROOT@@PREFIX@lib/armeabi/lib@PKGNAME_BASE@.so: \
-		$(BUTLERQT_OBJECTS) \
-		$(STATIC_LIBDATAMODEL) \
-		$(STATIC_LIBSQL)
+android/libs/armeabi/%: \
+		tmp/@TCROOT@@PREFIX@lib/lib@PKGNAME_BASE@.so
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(LINK_DYNAMIC)
+	cp $^ $@
+	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
 
 android/res/drawable/icon.png: \
 		share/icons/butler.png

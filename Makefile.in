@@ -349,6 +349,13 @@ $(STATIC_LIBSQL): \
 	$(LINK_STATIC)
 	$(RANLIB) $@
 
+tmp/@TCROOT@@PREFIX@lib/lib@PKGNAME_BASE@.so: \
+		$(BUTLERQT_OBJECTS) \
+		$(STATIC_LIBDATAMODEL) \
+		$(STATIC_LIBSQL)
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(LINK_DYNAMIC)
+
 tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBDATAMODEL) \
