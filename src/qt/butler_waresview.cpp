@@ -150,7 +150,7 @@ void WaresView::loadState()
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editWareView", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
+		QTimer::singleShot(0, this, SLOT(editWare()));
 }
 
 void WaresView::saveState()

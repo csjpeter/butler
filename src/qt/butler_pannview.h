@@ -154,9 +154,9 @@ public slots:
 		QWidget::show(); raise(); activateWindow();
 //		setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
 	}
-	void accept() { emit this->accepted(); emit this->finished(1); close(); }
-	void reject() { emit this->rejected(); emit this->finished(0); close(); }
-	void done(int result) { emit this->finished(result); close(); }
+	void accept() { this->accepted(); this->finished(1); close(); }
+	void reject() { this->rejected(); this->finished(0); close(); }
+	void done(int result) { this->finished(result); close(); }
 
 signals:
 	void accepted();

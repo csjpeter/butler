@@ -910,15 +910,14 @@ public:
 		scroller(this)
 	{
 		setFocusPolicy(Qt::NoFocus);
-		setFocusPolicy(Qt::NoFocus);
 		setContentsMargins(0,0,0,0);
 		main.setContentsMargins(0,0,0,0);
 		main.setFocusPolicy(Qt::NoFocus);
 
-//		setFrameStyle(QFrame::NoFrame);
+		setFrameStyle(QFrame::NoFrame);
 		setWidget(&main);
 		setWidgetResizable(true);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum));
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 	}
 	virtual ~ControlBar() {}
 
