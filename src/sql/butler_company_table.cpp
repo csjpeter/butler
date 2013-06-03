@@ -23,8 +23,8 @@ CompanyTable::~CompanyTable()
 
 void CompanyTable::check(QStringList &tables)
 {
-	if(!tables.contains("Company"))
-		sql.exec("CREATE TABLE Company ("
+	if(!tables.contains("company"))
+		sql.exec("CREATE TABLE company ("
 				"name VARCHAR(64) NOT NULL PRIMARY KEY, "
 				"country VARCHAR(64) NOT NULL, "
 				"city VARCHAR(64) NOT NULL, "
@@ -34,7 +34,7 @@ void CompanyTable::check(QStringList &tables)
 				")"
 			       );
 
-	QSqlRecord table = sql.record("Company");
+	QSqlRecord table = sql.record("company");
 	if(		!table.contains("name") ||
 			!table.contains("country") ||
 			!table.contains("city") ||
@@ -43,14 +43,14 @@ void CompanyTable::check(QStringList &tables)
 			!table.contains("tax_id")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table Company in the openend database.");
+			"Incompatible table company in the openend database.");
 }
 
 void CompanyTable::insert(const Company &s)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Company "
+		insertQuery.prepare("INSERT INTO company "
 				"(name, country, city, postal_code, "
 				"address, tax_id) "
 				"VALUES(?, ?, ?, ?, ?, ?)");
@@ -68,7 +68,7 @@ void CompanyTable::update(const Company &orig, const Company &modified)
 {
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Company SET "
+		updateQuery.prepare("UPDATE company SET "
 				"name = ?, "
 				"country = ?, "
 				"city = ?, "
@@ -92,7 +92,7 @@ void CompanyTable::del(const Company &s)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM Company WHERE "
+				"DELETE FROM company WHERE "
 				"name = ?");
 
 	deleteQuery.bindValue(0, s.name);
@@ -103,7 +103,7 @@ void CompanyTable::query(CompanySet& ss)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM Company");
+		selectQuery.prepare("SELECT * FROM company");
 
 	selectQuery.exec();
 
@@ -116,7 +116,7 @@ void CompanyTable::query(CompanySet& ss)
 	int addressNo = selectQuery.colIndex("address");
 	int taxIdNo = selectQuery.colIndex("tax_id");
 
-	DBG("----- Company query result:");
+	DBG("----- company query result:");
 	while(selectQuery.next()) {
 		Company *s = new Company();
 		s->name = selectQuery.value(nameNo).toString();

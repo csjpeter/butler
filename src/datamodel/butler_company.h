@@ -36,6 +36,7 @@ public:
 	QString postalCode;	/* 2040 */
 	QString address;	/* Kinizsi út 1-3. */
 	QString taxId;		/* 10307078-2-44 */
+	QString icon;		/* base64 representation of an image */
 	
 	enum Fields {
 		Name = 0,
@@ -44,6 +45,7 @@ public:
 		PostalCode,
 		Address,
 		TaxId,
+		Icon,
 		NumOfFields
 	};
 

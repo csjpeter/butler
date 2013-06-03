@@ -35,7 +35,7 @@ void QueryTagsTable::check(QStringList &tables)
 				  ")"
 			    );
 		sql.exec("CREATE INDEX query_tags_query_name_index ON query_tags(query_name)");
-		sql.exec("CREATE INDEX query_tags_query_name_index ON query_tags(tag)");
+		sql.exec("CREATE INDEX query_tags_query_tag_index ON query_tags(tag)");
 	}
 
 	QSqlRecord table = sql.record("query_tags");

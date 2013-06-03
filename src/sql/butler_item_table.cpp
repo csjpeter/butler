@@ -25,7 +25,7 @@ void ItemTable::check(QStringList &tables)
 {
 	if(!tables.contains("items"))
 		sql.exec("CREATE TABLE items ("
-				"uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
+				"uploaded TIMESTAMP NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
 				"name VARCHAR(256) NOT NULL, "
 				"category VARCHAR(256) NOT NULL, "
 				"quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
@@ -55,7 +55,7 @@ void ItemTable::insert(const Item &i)
 
 	insertQuery.bindValue(0, i.name);
 	insertQuery.bindValue(1, i.category);
-	insertQuery.bindValue(2, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	insertQuery.bindValue(2, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	insertQuery.bindValue(3, i.quantity);
 	insertQuery.bindValue(4, i.comment);
 	insertQuery.exec();
@@ -81,7 +81,7 @@ void ItemTable::update(const Item &orig, const Item &modified)
 	updateQuery.bindValue(1, modified.category);
 	updateQuery.bindValue(2, modified.quantity);
 	updateQuery.bindValue(3, modified.comment);
-	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	updateQuery.exec();
 }
 
@@ -93,7 +93,7 @@ void ItemTable::del(const Item &i)
 				"DELETE FROM items WHERE "
 				"uploaded = ?");
 
-	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	deleteQuery.exec();
 }
 
@@ -103,7 +103,7 @@ void ItemTable::query(Item& item)
 	if(!selectQuery.isPrepared())
 		selectQuery.prepare("SELECT * FROM items WHERE uploaded = ?");
 
-	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	selectQuery.exec();
 
 	int nameNo = selectQuery.colIndex("name");
@@ -128,7 +128,7 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	/* assemble command */
 	QString cmd("SELECT * FROM items"
 			" LEFT JOIN items_bought ON items.uploaded = items_bought.uploaded"
-			" LEFT JOIN WareTags ON items.name = WareTags.name"
+			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
 			" WHERE items_bought.uploaded IS NULL");
 	{
 		unsigned i, s = tags.size();

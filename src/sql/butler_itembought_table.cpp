@@ -29,9 +29,9 @@ void ItemBoughtTable::check(QStringList &tables)
 {
 	if(!tables.contains("items_bought"))
 		sql.exec("CREATE TABLE items_bought ("
-				  "uploaded DATE NOT NULL REFERENCES Items(uploaded) "
+				  "uploaded TIMESTAMP NOT NULL REFERENCES Items(uploaded) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "purchased DATE NOT NULL, "
+				  "purchased TIMESTAMP NOT NULL, "
 				  "price REAL NOT NULL DEFAULT 0 CHECK(0 <= price), "
 				  "partner VARCHAR(64) NOT NULL REFERENCES partners(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
@@ -59,8 +59,8 @@ void ItemBoughtTable::insert(const Item &i)
 				"price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
 
-	insertQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
-	insertQuery.bindValue(1, i.purchased.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	insertQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	insertQuery.bindValue(1, i.purchased.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	insertQuery.bindValue(2, i.price);
 	insertQuery.bindValue(3, i.partner);
 	insertQuery.bindValue(4, i.onStock ? 1 : 0);
@@ -83,11 +83,11 @@ void ItemBoughtTable::update(const Item &orig, const Item &modified)
 				"on_stock = ? "
 				"WHERE uploaded = ?");
 
-	updateQuery.bindValue(0, modified.purchased.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	updateQuery.bindValue(0, modified.purchased.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	updateQuery.bindValue(1, modified.price);
 	updateQuery.bindValue(2, modified.partner);
 	updateQuery.bindValue(3, modified.onStock ? 1 : 0);
-	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	updateQuery.exec();
 }
 
@@ -97,7 +97,7 @@ void ItemBoughtTable::del(const Item &i)
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
 
-	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
+	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	deleteQuery.exec();
 }
 
@@ -108,9 +108,9 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 
 	/* assemble command */
 	QString cmd("SELECT * FROM items_bought"
-			" LEFT JOIN Items ON items_bought.uploaded = Items.uploaded"
-			" LEFT JOIN WareTags ON Items.name = WareTags.name"
-			" LEFT JOIN Partners ON items_bought.partner = Partners.name");
+			" LEFT JOIN items ON items_bought.uploaded = items.uploaded"
+			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
+			" LEFT JOIN partners ON items_bought.partner = partners.name");
 	
 	QString filter;
 
@@ -127,12 +127,12 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	if(q.startDate.isValid()){
 		if(!filter.isEmpty())
 			filter += " AND";
-		filter +=  " '" + QDateTime(q.startDate).toUTC().toString("yyyy-MM-ddThh:mm:ss") + "' < purchased";
+		filter +=  " '" + QDateTime(q.startDate).toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' < purchased";
 	}
 	if(q.endDate.isValid()){
 		if(!filter.isEmpty())
 			filter += " AND";
-		filter +=  " purchased < '" + QDateTime(q.endDate).toUTC().toString("yyyy-MM-ddThh:mm:ss") + "'";
+		filter +=  " purchased < '" + QDateTime(q.endDate).toUTC().toString("yyyy-MM-dd hh:mm:ss") + "'";
 	}
 
 	{
@@ -191,7 +191,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		QString tcmd;
 		if(!filter.isEmpty())
 			tcmd += " AND";
-		tcmd += " Items.name NOT IN(SELECT name FROM WareTags WHERE ";
+		tcmd += " Items.name NOT IN(SELECT name FROM ware_tags WHERE ";
 		for(i=0; i<s; i++){
 			if(0 < i)
 				tcmd += " OR";
@@ -209,7 +209,7 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 		cmd += filter;
 	}
 	
-	cmd += " GROUP BY Items.uploaded";
+	cmd += " GROUP BY items.uploaded";
 
 	if(q.tagOption == Query::TagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";

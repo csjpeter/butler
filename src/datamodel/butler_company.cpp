@@ -11,7 +11,8 @@ Company::Company() :
 	city(""),
 	postalCode(""),
 	address(""),
-	taxId("")
+	taxId(""),
+	icon("")
 {
 }
 
@@ -20,7 +21,8 @@ Company::Company(const QString &_name) :
 	country(""),
 	postalCode(""),
 	address(""),
-	taxId("")
+	taxId(""),
+	icon("")
 {
 }
 
@@ -46,7 +48,8 @@ bool Company::isEqual(const Company &s) const
 			city != s.city ||
 			postalCode != s.postalCode ||
 			address != s.address ||
-			taxId != s.taxId)
+			taxId != s.taxId ||
+			icon != s.icon)
 		return false;
 	return true;
 }
@@ -74,6 +77,7 @@ void Company::copy(const Company &s)
 	postalCode = s.postalCode;
 	address = s.address;
 	taxId = s.taxId;
+	icon = s.icon;
 }
 
 bool operator==(const Company &a, const Company &b)

@@ -432,6 +432,7 @@ void EditItemView::saveSlot()
 		model.addNew(item);
 
 		item = Item();
+		item.bought = true;
 		item.uploaded = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();

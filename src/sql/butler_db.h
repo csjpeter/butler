@@ -26,15 +26,15 @@ public:
 		tag(sql),
 		query(sql, tag),
 		ware(sql, tag),
-		partner(sql),
 		company(sql),
+		partner(sql),
 		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
 		LOG("Tables: %s", C_STR(tables.join(", ")));
 		tag.check(tables);
-		partner.check(tables);
 		company.check(tables);
+		partner.check(tables);
 		ware.check(tables);
 		item.check(tables);
 		query.check(tables);
@@ -48,8 +48,8 @@ public:
 	TagDb tag;
 	QueryDb query;
 	WareDb ware;
-	PartnerDb partner;
 	CompanyDb company;
+	PartnerDb partner;
 	ItemDb item;
 };
 
