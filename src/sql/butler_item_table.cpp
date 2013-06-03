@@ -101,7 +101,9 @@ void ItemTable::query(Item& item)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM items WHERE uploaded = ?");
+		selectQuery.prepare("SELECT "
+				"items.name, items.category, items.comment, items.quantity "
+				"FROM items WHERE uploaded = ?");
 
 	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
 	selectQuery.exec();
@@ -126,7 +128,13 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
-	QString cmd("SELECT * FROM items"
+	QString cmd("SELECT "
+			" MAX(items.uploaded) AS uploaded,"
+			" MAX(items.name) AS name,"
+			" MAX(items.category) AS category,"
+			" MAX(items.comment) AS comment,"
+			" MAX(items.quantity) AS quantity"
+			" FROM items"
 			" LEFT JOIN items_bought ON items.uploaded = items_bought.uploaded"
 			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
 			" WHERE items_bought.uploaded IS NULL");

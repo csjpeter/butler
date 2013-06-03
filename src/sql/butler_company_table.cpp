@@ -103,7 +103,9 @@ void CompanyTable::query(CompanySet& ss)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM company");
+		selectQuery.prepare("SELECT"
+				" name, country, city, postal_code, address, tax_id"
+				" FROM company");
 
 	selectQuery.exec();
 

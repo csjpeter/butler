@@ -107,7 +107,17 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
-	QString cmd("SELECT * FROM items_bought"
+	QString cmd("SELECT"
+			" MAX(items.uploaded) AS uploaded,"
+			" MAX(items_bought.purchased) AS purchased,"
+			" MAX(items.name) AS name,"
+			" MAX(items.category) AS category,"
+			" MAX(items.comment) AS comment,"
+			" MAX(items.quantity) AS quantity,"
+			" MAX(items_bought.price) AS price,"
+			" MAX(items_bought.partner) AS partner,"
+			" MAX(items_bought.on_stock) AS on_stock"
+			" FROM items_bought"
 			" LEFT JOIN items ON items_bought.uploaded = items.uploaded"
 			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
 			" LEFT JOIN partners ON items_bought.partner = partners.name");

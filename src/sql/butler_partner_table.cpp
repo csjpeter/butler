@@ -109,7 +109,9 @@ void PartnerTable::query(PartnerSet& ss)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM partners");
+		selectQuery.prepare("SELECT "
+				"name, country, city, postal_code, address, company, store_name "
+				"FROM partners");
 
 	selectQuery.exec();
 
