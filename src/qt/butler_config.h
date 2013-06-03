@@ -14,11 +14,15 @@
 
 namespace Config {
 	extern QString dbFileName;
-	extern const char * defaultDbName;
+	extern QString defaultDbName;
 	extern QLocale locale;
 	extern double pxPerMM;
 	extern double scaleFactor;
 	extern int thresholdScrollDistance; /* Kinetic scroll, threshold for scroll. */
+	extern QString psqlHost;
+	extern QString psqlUsername;
+	extern QString psqlPassword;
+	extern unsigned psqlPort;
 
 	void save();
 	void load();

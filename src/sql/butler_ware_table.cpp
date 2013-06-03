@@ -23,27 +23,27 @@ WareTable::~WareTable()
 
 void WareTable::check(QStringList &tables)
 {
-	if(!tables.contains("Wares"))
+	if(!tables.contains("wares"))
 		sql.exec(
-				  "CREATE TABLE Wares ("
+				  "CREATE TABLE wares ("
 				  "name VARCHAR(64) NOT NULL PRIMARY KEY, "
 				  "unit VARCHAR(16) NOT NULL DEFAULT '' "
 				  ")"
 				  );
 
-	QSqlRecord table = sql.record("Wares");
+	QSqlRecord table = sql.record("wares");
 	if(		!table.contains("name") ||
 			!table.contains("unit")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table Wares in the openend database.");
+			"Incompatible table wares in the openend database.");
 }
 
 void WareTable::insert(const Ware &w)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Wares "
+		insertQuery.prepare("INSERT INTO wares "
 				"(name, unit) "
 				"VALUES(?, ?)");
 
@@ -60,7 +60,7 @@ void WareTable::update(const Ware &orig, const Ware &modified)
 	 * network traffic. */
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Wares SET "
+		updateQuery.prepare("UPDATE wares SET "
 				"name = ?, "
 				"unit = ? "
 				"WHERE name = ?");
@@ -76,7 +76,7 @@ void WareTable::del(const Ware &ware)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM Wares WHERE "
+				"DELETE FROM wares WHERE "
 				"name = ?");
 
 	deleteQuery.bindValue(0, ware.name);
@@ -87,7 +87,7 @@ void WareTable::query(WareSet &wares)
 {
 	SqlQuery selectAllQuery(sql);
 	if(!selectAllQuery.isPrepared())
-		selectAllQuery.prepare("SELECT name, unit FROM Wares");
+		selectAllQuery.prepare("SELECT name, unit FROM wares");
 
 	selectAllQuery.exec();
 

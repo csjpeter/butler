@@ -11,6 +11,8 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
+#define DEBUG
+
 #include "butler_sql_connection.h"
 
 #ifdef DEBUG
@@ -24,7 +26,7 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 	ENSURE(!db.isValid(), csjp::LogicError);
 
 #ifdef DEBUG
-       DBG("Available drivers: %s", C_STR((QSqlDatabase::drivers().join(", "))));
+	DBG("Available drivers: %s", C_STR((QSqlDatabase::drivers().join(", "))));
 #endif
 
 	if(!QSqlDatabase::contains(dbDesc.name)){
@@ -45,6 +47,13 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 		throw DbError("Failed to set database name to %s.\nError: %s",
 				C_STR(dbDesc.databaseName),
 				C_STR(dbErrorString()));
+
+	if(dbDesc.driver != "QSQLITE"){
+		db.setHostName(dbDesc.host);
+		db.setUserName(dbDesc.username);
+		db.setPassword(dbDesc.password);
+		db.setPort(dbDesc.port);
+	}
 
 #ifdef DEBUG
 	listAvailableFeatures(db, dbDesc);
@@ -138,7 +147,7 @@ void SqlConnection::exec(const QString &query)
 
 	DBG("%s", C_STR(query));
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
+		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
 				C_STR(query),
 				C_STR(dbErrorString()));
 }

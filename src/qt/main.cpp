@@ -18,7 +18,7 @@ int main(int argc, char *args[])
 {
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins"); 
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
 
 #ifdef DEBUG
@@ -75,7 +75,6 @@ int main(int argc, char *args[])
 		Path::initRootPath(args[0]);
 		app.setWindowIcon(QIcon(Path::icon("butler.png")));
 
-		app.initLocalDb();
 		app.loadTranslation();
 		app.loadTranslation("hu");
 		app.pixelPerMM();
@@ -83,6 +82,11 @@ int main(int argc, char *args[])
 		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
 		app.loadCSS();
 		Config::load();
+
+		LOG("Library paths: %s", C_STR(qApp->libraryPaths().join(", ")));
+
+		app.initLocalDb();
+		app.initDefaultPostgreDb();
 
 		/* Show main view and run the app */
 		app.mainView().show();

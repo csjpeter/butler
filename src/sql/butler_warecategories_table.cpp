@@ -24,33 +24,33 @@ WareCategoriesTable::~WareCategoriesTable()
 
 void WareCategoriesTable::check(QStringList &tables)
 {
-	if(!tables.contains("WareCategories")){
-		sql.exec("CREATE TABLE WareCategories ("
-				  "name VARCHAR(64) NOT NULL REFERENCES Wares(name) "
+	if(!tables.contains("ware_categories")){
+		sql.exec("CREATE TABLE ware_categories ("
+				  "name VARCHAR(64) NOT NULL REFERENCES wares(name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
 				  "category VARCHAR(32) NOT NULL, "
 				  "UNIQUE (name, category) "
 				  ")"
 			    );
-		sql.exec("CREATE INDEX WareCategoriesNameIndex "
-				"ON WareCategories(name)");
-		sql.exec("CREATE INDEX WareCategoriesCategoryIndex "
-				"ON WareCategories(category)");
+		sql.exec("CREATE INDEX ware_categories_name_index "
+				"ON ware_categories(name)");
+		sql.exec("CREATE INDEX ware_categories_category_index "
+				"ON ware_categories(category)");
 	}
 
-	QSqlRecord table = sql.record("WareCategories");
+	QSqlRecord table = sql.record("ware_categories");
 	if(		!table.contains("name") ||
 			!table.contains("category")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table WareCategories in the openend database.");
+			"Incompatible table ware_categories in the openend database.");
 }
 
 void WareCategoriesTable::insert(const Ware &ware, const QString &category)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO WareCategories "
+		insertQuery.prepare("INSERT INTO ware_categories "
 				"(name, category) "
 				"VALUES(?, ?)");
 
@@ -64,7 +64,7 @@ void WareCategoriesTable::del(const Ware &ware, const QString &category)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM WareCategories WHERE "
+				"DELETE FROM ware_categories WHERE "
 				"name = ? AND "
 				"category = ?");
 
@@ -108,7 +108,7 @@ void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT category FROM WareCategories "
+		selectQuery.prepare("SELECT category FROM ware_categories "
 				"WHERE name = ?");
 
 	selectQuery.bindValue(0, ware.name);

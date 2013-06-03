@@ -27,19 +27,19 @@ ItemBoughtTable::~ItemBoughtTable()
 
 void ItemBoughtTable::check(QStringList &tables)
 {
-	if(!tables.contains("ItemsBought"))
-		sql.exec("CREATE TABLE ItemsBought ("
+	if(!tables.contains("items_bought"))
+		sql.exec("CREATE TABLE items_bought ("
 				  "uploaded DATE NOT NULL REFERENCES Items(uploaded) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
 				  "purchased DATE NOT NULL, "
 				  "price REAL NOT NULL DEFAULT 0 CHECK(0 <= price), "
-				  "partner VARCHAR(64) NOT NULL REFERENCES Partners(name) "
+				  "partner VARCHAR(64) NOT NULL REFERENCES partners(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
 				  "on_stock INT NOT NULL DEFAULT 0 CHECK(on_stock = 0 OR on_stock = 1)"
 				  ")"
 			    );
 
-	QSqlRecord table = sql.record("ItemsBought");
+	QSqlRecord table = sql.record("items_bought");
 	if(		!table.contains("uploaded") ||
 			!table.contains("purchased") ||
 			!table.contains("price") ||
@@ -47,14 +47,14 @@ void ItemBoughtTable::check(QStringList &tables)
 			!table.contains("on_stock")
 	  )
 		throw DbIncompatibleTableError(
-				"Incompatible table ItemsBought in the openend database.");
+				"Incompatible table items_bought in the openend database.");
 }
 
 void ItemBoughtTable::insert(const Item &i)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO ItemsBought "
+		insertQuery.prepare("INSERT INTO items_bought "
 				"(uploaded, purchased, "
 				"price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
@@ -76,7 +76,7 @@ void ItemBoughtTable::update(const Item &orig, const Item &modified)
 		throw DbLogicError("The modified item is a different item than the original.");
 
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE ItemsBought SET "
+		updateQuery.prepare("UPDATE items_bought SET "
 				"purchased = ?, "
 				"price = ?, "
 				"partner = ?, "
@@ -95,7 +95,7 @@ void ItemBoughtTable::del(const Item &i)
 {
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
-		deleteQuery.prepare("DELETE FROM ItemsBought WHERE uploaded = ?");
+		deleteQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	deleteQuery.exec();
@@ -107,10 +107,10 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
-	QString cmd("SELECT * FROM ItemsBought"
-			" LEFT JOIN Items ON ItemsBought.uploaded = Items.uploaded"
+	QString cmd("SELECT * FROM items_bought"
+			" LEFT JOIN Items ON items_bought.uploaded = Items.uploaded"
 			" LEFT JOIN WareTags ON Items.name = WareTags.name"
-			" LEFT JOIN Partners ON ItemsBought.partner = Partners.name");
+			" LEFT JOIN Partners ON items_bought.partner = Partners.name");
 	
 	QString filter;
 
@@ -290,5 +290,5 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 }
 
 /*
-select * from (select Items.uploaded as id, Items.name as ware, Items.category as category, ItemsBought.purchased as bought, ItemsBought.price as price from Items left join ItemsBought on Items.uploaded = ItemsBought.uploaded left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < ItemsBought.purchased and ItemsBought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.uploaded);
+select * from (select Items.uploaded as id, Items.name as ware, Items.category as category, items_bought.purchased as bought, items_bought.price as price from Items left join items_bought on Items.uploaded = items_bought.uploaded left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < items_bought.purchased and items_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.uploaded);
 */

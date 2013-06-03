@@ -25,8 +25,8 @@ QueryTable::~QueryTable()
 
 void QueryTable::check(QStringList &tables)
 {
-	if(!tables.contains("Queries"))
-		sql.exec("CREATE TABLE Queries ("
+	if(!tables.contains("queries"))
+		sql.exec("CREATE TABLE queries ("
 				  "query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
 				  "stock_option INTEGER NOT NULL, "
 				  "tag_option INTEGER NOT NULL, "
@@ -35,7 +35,7 @@ void QueryTable::check(QStringList &tables)
 				  ")"
 			    );
 
-	QSqlRecord table = sql.record("Queries");
+	QSqlRecord table = sql.record("queries");
 	if(		!table.contains("query_name") ||
 			!table.contains("stock_option") ||
 			!table.contains("tag_option") ||
@@ -43,14 +43,14 @@ void QueryTable::check(QStringList &tables)
 			!table.contains("end_date")
 	  )
 		throw DbIncompatibleTableError(
-				"Incompatible table Queries in the openend database.");
+				"Incompatible table queries in the openend database.");
 }
 
 void QueryTable::insert(const Query &q)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Queries "
+		insertQuery.prepare("INSERT INTO queries "
 			"(query_name, stock_option, tag_option, start_date, end_date) "
 			"VALUES (?, ?, ?, ?, ?)");
 
@@ -66,7 +66,7 @@ void QueryTable::update(const Query &orig, const Query &modified)
 {
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Queries SET "
+		updateQuery.prepare("UPDATE queries SET "
 				"query_name = ?, "
 				"stock_option = ?, "
 				"tag_option = ?, "
@@ -88,7 +88,7 @@ void QueryTable::del(const Query &q)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM Queries WHERE "
+				"DELETE FROM queries WHERE "
 				"query_name = ?");
 
 	deleteQuery.bindValue(0, q.name);
@@ -101,7 +101,7 @@ void QueryTable::query(QuerySet &queries)
 	if(!selectAllQuery.isPrepared())
 		selectAllQuery.prepare("SELECT "
 			"query_name, stock_option, tag_option, start_date, end_date "
-			"FROM Queries");
+			"FROM queries");
 
 	selectAllQuery.exec();
 

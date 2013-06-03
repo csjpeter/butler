@@ -23,32 +23,32 @@ WareTagsTable::~WareTagsTable()
 
 void WareTagsTable::check(QStringList &tables)
 {
-	if(!tables.contains("WareTags")){
-		sql.exec("CREATE TABLE WareTags ("
-				"name VARCHAR(64) NOT NULL REFERENCES Wares(name) "
+	if(!tables.contains("ware_tags")){
+		sql.exec("CREATE TABLE ware_tags ("
+				"name VARCHAR(64) NOT NULL REFERENCES wares(name) "
 				"ON DELETE CASCADE ON UPDATE CASCADE, "
-				"tag VARCHAR(64) NOT NULL REFERENCES Tags(name) "
+				"tag VARCHAR(64) NOT NULL REFERENCES tags(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				"UNIQUE (name, tag) "
 				")"
 				);
-		sql.exec("CREATE INDEX WareTagsNameIndex ON WareTags(name)");
-		sql.exec("CREATE INDEX WareTagsTagIndex ON WareTags(tag)");
+		sql.exec("CREATE INDEX ware_tags_name_index ON ware_tags(name)");
+		sql.exec("CREATE INDEX ware_tags_tag_index ON ware_tags(tag)");
 	}
 
-	QSqlRecord table = sql.record("WareTags");
+	QSqlRecord table = sql.record("ware_tags");
 	if(		!table.contains("name") ||
 			!table.contains("tag")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table WareTags in the openend database.");
+			"Incompatible table ware_tags in the openend database.");
 }
 
 void WareTagsTable::insert(const Ware &ware, const QString &tag)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO WareTags "
+		insertQuery.prepare("INSERT INTO ware_tags "
 				"(name, tag) "
 				"VALUES(?, ?)");
 
@@ -62,7 +62,7 @@ void WareTagsTable::del(const Ware &ware, const QString &tag)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM WareTags WHERE "
+				"DELETE FROM ware_tags WHERE "
 				"name = ? AND "
 				"tag = ?");
 
@@ -96,7 +96,7 @@ void WareTagsTable::update(const Ware &orig, const Ware &modified)
 		const QString &tag = orig.tags.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
-		 * (If Wares table is updated already.) */
+		 * (If wares table is updated already.) */
 		if(!modified.tags.has(tag))
 			del(modified, tag);
 	}
@@ -106,7 +106,7 @@ void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT tag FROM WareTags "
+		selectQuery.prepare("SELECT tag FROM ware_tags "
 				"WHERE name = ?");
 
 	selectQuery.bindValue(0, ware.name);

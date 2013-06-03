@@ -25,32 +25,32 @@ QueryTagsTable::~QueryTagsTable()
 
 void QueryTagsTable::check(QStringList &tables)
 {
-	if(!tables.contains("QueryTags")){
-		sql.exec("CREATE TABLE QueryTags ("
-				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
+	if(!tables.contains("query_tags")){
+		sql.exec("CREATE TABLE query_tags ("
+				  "query_name VARCHAR(64) NOT NULL REFERENCES queries(query_name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "tag VARCHAR(64) NOT NULL REFERENCES Tags(name) "
+				  "tag VARCHAR(64) NOT NULL REFERENCES tags(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
 				  "UNIQUE (query_name, tag)"
 				  ")"
 			    );
-		sql.exec("CREATE INDEX QueryTagsQueryNameIndex ON QueryTags(query_name)");
-		sql.exec("CREATE INDEX QueryTagsTagIndex ON QueryTags(tag)");
+		sql.exec("CREATE INDEX query_tags_query_name_index ON query_tags(query_name)");
+		sql.exec("CREATE INDEX query_tags_query_name_index ON query_tags(tag)");
 	}
 
-	QSqlRecord table = sql.record("QueryTags");
+	QSqlRecord table = sql.record("query_tags");
 	if(		!table.contains("query_name") ||
 			!table.contains("tag")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table QueryTags in the openend database.");
+			"Incompatible table query_tags in the openend database.");
 }
 
 void QueryTagsTable::insert(const Query &q, const QString &tagName)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO QueryTags "
+		insertQuery.prepare("INSERT INTO query_tags "
 				"(query_name, tag) "
 				"VALUES (?, ?)");
 
@@ -64,7 +64,7 @@ void QueryTagsTable::del(const Query &q, const QString &tagName)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM QueryTags WHERE "
+				"DELETE FROM query_tags WHERE "
 				"query_name = ? AND tag = ?");
 
 	deleteQuery.bindValue(0, q.name);
@@ -102,7 +102,7 @@ void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT query_name, tag FROM QueryTags "
+		selectQuery.prepare("SELECT query_name, tag FROM query_tags "
 				"WHERE query_name = ?");
 
 	selectQuery.bindValue(0, q.name);

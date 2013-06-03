@@ -20,11 +20,15 @@ static QString rootDir;
 namespace Config {
 
 QString dbFileName;
-const char * defaultDbName = "localdb";
+QString defaultDbName;
 QLocale locale;
 double pxPerMM = 0;
 double scaleFactor = 1;
 int thresholdScrollDistance = 0;
+QString psqlHost;
+QString psqlUsername;
+QString psqlPassword;
+unsigned psqlPort = 0;
 
 void save()
 {
@@ -32,6 +36,15 @@ void save()
 	QSettings settings;
 
 	settings.setValue(prefix + "/locale", locale.bcp47Name());
+
+	settings.setValue(prefix + "/dbfile", dbFileName);
+
+	settings.setValue(prefix + "/psql-host", psqlHost);
+	settings.setValue(prefix + "/psql-user", psqlUsername);
+	settings.setValue(prefix + "/psql-pwd", psqlPassword);
+	settings.setValue(prefix + "/psql-port", psqlPort);
+
+	settings.setValue(prefix + "/defaultDbName", defaultDbName);
 }
 
 void load()
@@ -42,6 +55,38 @@ void load()
 	QString l = settings.value(prefix + "/locale", "").toString();
 	if(l.size())
 		locale = QLocale(l);
+
+	if(dbFileName.isEmpty())
+		dbFileName = settings.value(prefix + "/dbfile", QString()).toString();
+	if(dbFileName.isEmpty()){
+		QDir dir(QDir::homePath());
+
+		if(!dir.exists(".butler"))
+			dir.mkdir(".butler");
+		Config::dbFileName = QDir::toNativeSeparators(
+				QDir::homePath() + QString("/.butler/db.sqlite")
+				);
+	}
+
+	psqlHost = settings.value(prefix + "/psql-host", QString()).toString();
+	if(psqlHost.isEmpty())
+		psqlHost = "localhost";
+
+	psqlUsername = settings.value(prefix + "/psql-user", QString()).toString();
+	if(psqlUsername.isEmpty())
+		psqlUsername = "username";
+
+	psqlPassword = settings.value(prefix + "/psql-pwd", QString()).toString();
+	if(psqlPassword.isEmpty())
+		psqlPassword = "password";
+
+	psqlPort = settings.value(prefix + "/psql-port", QString()).toInt();
+	if(psqlPort < 1)
+		psqlPort = 5432;
+
+	defaultDbName = settings.value(prefix + "/defaultDbName", QString()).toString();
+	if(defaultDbName.isEmpty())
+		defaultDbName = "localdb";
 }
 
 const QString & dateTimeFormat()

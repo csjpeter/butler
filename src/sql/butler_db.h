@@ -31,6 +31,7 @@ public:
 		item(sql, tag)
 	{
 		QStringList tables = sql.tables();
+		LOG("Tables: %s", C_STR(tables.join(", ")));
 		tag.check(tables);
 		partner.check(tables);
 		company.check(tables);

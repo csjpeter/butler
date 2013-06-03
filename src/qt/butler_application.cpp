@@ -38,25 +38,26 @@ MainView & Application::mainView()
 /* Init the local database */
 void Application::initLocalDb()
 {
-	if(Config::dbFileName == ""){
-		QSettings settings;
-		Config::dbFileName = settings.value("mainview/dbfile", QString()).toString();
-	}
-	if(Config::dbFileName == ""){
-		QDir dir(QDir::homePath());
-
-		if(!dir.exists(".butler"))
-			dir.mkdir(".butler");
-		Config::dbFileName = QDir::toNativeSeparators(
-				QDir::homePath() + QString("/.butler/db.sqlite")
-				);
-	}
 	csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
-	sqlitedb->name = Config::defaultDbName;
+	sqlitedb->name = "localdb";
 	sqlitedb->driver = "QSQLITE";
 	sqlitedb->databaseName = QDir::toNativeSeparators(Config::dbFileName);
-	LOG("Db file path: %s", C_STR(sqlitedb->databaseName));
+	LOG("Sqlite db file path: %s", C_STR(sqlitedb->databaseName));
 	registerDatabase(sqlitedb);
+}
+
+/* Init default postgre database */
+void Application::initDefaultPostgreDb()
+{
+	csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
+	dbDesc->name = "postgredb";
+	dbDesc->driver = "QPSQL";
+	dbDesc->databaseName = "butler";
+	dbDesc->host = Config::psqlHost;
+	dbDesc->username = Config::psqlUsername;
+	dbDesc->password = Config::psqlPassword;
+	dbDesc->port = Config::psqlPort;
+	registerDatabase(dbDesc);
 }
 
 void Application::loadTranslation(const char * langCode)

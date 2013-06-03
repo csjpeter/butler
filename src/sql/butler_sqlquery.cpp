@@ -37,7 +37,7 @@ void SqlQuery::exec(const QString &query)
 
 	LOG("%s", C_STR(query));
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%s\nDatabaase reports error: %s",
+		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
 				C_STR(query),
 				C_STR(sql.dbErrorString()));
 }

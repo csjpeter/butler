@@ -25,32 +25,32 @@ QueryWaresTable::~QueryWaresTable()
 
 void QueryWaresTable::check(QStringList &tables)
 {
-	if(!tables.contains("QueryWares")){
-		sql.exec("CREATE TABLE QueryWares ("
-				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
+	if(!tables.contains("query_wares")){
+		sql.exec("CREATE TABLE query_wares ("
+				  "query_name VARCHAR(64) NOT NULL REFERENCES queries(query_name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "ware VARCHAR(64) NOT NULL REFERENCES Wares(name) "
+				  "ware VARCHAR(64) NOT NULL REFERENCES wares(name) "
 				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
 				  "UNIQUE (query_name, ware)"
 				  ")"
 			    );
-		sql.exec("CREATE INDEX QueryWaresQueryNameIndex ON QueryWares(query_name)");
-		sql.exec("CREATE INDEX QueryWaresTagIndex ON QueryWares(ware)");
+		sql.exec("CREATE INDEX query_wares_query_name_index ON query_wares(query_name)");
+		sql.exec("CREATE INDEX query_wares_tag_index ON query_wares(ware)");
 	}
 
-	QSqlRecord table = sql.record("QueryWares");
+	QSqlRecord table = sql.record("query_wares");
 	if(		!table.contains("query_name") ||
 			!table.contains("ware")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table QueryWares in the openend database.");
+			"Incompatible table query_wares in the openend database.");
 }
 
 void QueryWaresTable::insert(const Query &q, const QString &wareName)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO QueryWares "
+		insertQuery.prepare("INSERT INTO query_wares "
 				"(query_name, ware) "
 				"VALUES (?, ?)");
 
@@ -64,7 +64,7 @@ void QueryWaresTable::del(const Query &q, const QString &wareName)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM QueryWares WHERE "
+				"DELETE FROM query_wares WHERE "
 				"query_name = ? AND ware = ?");
 
 	deleteQuery.bindValue(0, q.name);
@@ -102,7 +102,7 @@ void QueryWaresTable::query(const Query &q, WareNameSet &wares)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT query_name, ware FROM QueryWares "
+		selectQuery.prepare("SELECT query_name, ware FROM query_wares "
 				"WHERE query_name = ?");
 
 	selectQuery.bindValue(0, q.name);

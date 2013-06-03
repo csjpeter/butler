@@ -23,26 +23,26 @@ TagTable::~TagTable()
 
 void TagTable::check(QStringList &tables)
 {
-	if(!tables.contains("Tags"))
-		sql.exec(	"CREATE TABLE Tags ("
+	if(!tables.contains("tags"))
+		sql.exec(	"CREATE TABLE tags ("
 				"name VARCHAR(64) PRIMARY KEY, "
-				"desc TEXT NOT NULL DEFAULT ''"
+				"description TEXT NOT NULL DEFAULT ''"
 				")"
 				);
 
-	QSqlRecord table = sql.record("Tags");
+	QSqlRecord table = sql.record("tags");
 	if(	!table.contains("name") ||
-		!table.contains("desc")
+		!table.contains("description")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table Tags in the openend database.");
+			"Incompatible table tags in the openend database.");
 }
 
 void TagTable::insert(const Tag &t)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Tags (name, desc) VALUES (?, ?)");
+		insertQuery.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
 
 	insertQuery.bindValue(0, t.name);
 	insertQuery.bindValue(1, t.description);
@@ -53,7 +53,7 @@ void TagTable::update(const Tag &orig, const Tag &modified)
 {
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Tags SET name = ?, desc = ?"
+		updateQuery.prepare("UPDATE tags SET name = ?, description = ?"
 				" WHERE name = ?");
 
 	updateQuery.bindValue(0, modified.name);
@@ -66,7 +66,7 @@ void TagTable::del(const Tag &t)
 {
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
-		deleteQuery.prepare("DELETE FROM Tags WHERE name = ?");
+		deleteQuery.prepare("DELETE FROM tags WHERE name = ?");
 
 	deleteQuery.bindValue(0, t.name);
 	deleteQuery.exec();
@@ -76,20 +76,20 @@ void TagTable::query(TagSet &tags)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT name, desc FROM Tags");
+		selectQuery.prepare("SELECT name, description FROM tags");
 
 	selectQuery.exec();
 
 	tags.clear();
 	
 	int nameNo = selectQuery.colIndex("name");
-	int descNo = selectQuery.colIndex("desc");
+	int descriptionNo = selectQuery.colIndex("description");
 
 	DBG("----- Reading all tags from db:");
 	while (selectQuery.next()) {
 		DBG("Next row");
 		Tag *tag = new Tag(selectQuery.value(nameNo).toString());
-		tag->description = selectQuery.value(descNo).toString();
+		tag->description = selectQuery.value(descriptionNo).toString();
 		tags.add(tag);
 	}
 	DBG("-----");

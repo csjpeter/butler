@@ -23,20 +23,20 @@ PartnerTable::~PartnerTable()
 
 void PartnerTable::check(QStringList &tables)
 {
-	if(!tables.contains("Partners"))
-		sql.exec("CREATE TABLE Partners ("
+	if(!tables.contains("partners"))
+		sql.exec("CREATE TABLE partners ("
 				"name VARCHAR(64) NOT NULL PRIMARY KEY, "
 				"country VARCHAR(64) NOT NULL, "
 				"city VARCHAR(64) NOT NULL, "
 				"postal_code VARCHAR(32) NOT NULL, "
 				"address VARCHAR(256) NOT NULL, "
-				"company VARCHAR(64) NOT NULL REFERENCES Company(name) "
+				"company VARCHAR(64) NOT NULL REFERENCES company(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				"store_name VARCHAR(256) NOT NULL "
 				")"
 			       );
 
-	QSqlRecord table = sql.record("Partners");
+	QSqlRecord table = sql.record("partners");
 	if(		!table.contains("name") ||
 			!table.contains("country") ||
 			!table.contains("city") ||
@@ -46,14 +46,14 @@ void PartnerTable::check(QStringList &tables)
 			!table.contains("store_name")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table Partners in the openend database.");
+			"Incompatible table partners in the openend database.");
 }
 
 void PartnerTable::insert(const Partner &s)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Partners "
+		insertQuery.prepare("INSERT INTO partners "
 				"(name, country, city, postal_code, "
 				"address, company, store_name) "
 				"VALUES(?, ?, ?, ?, ?, ?, ?)");
@@ -72,7 +72,7 @@ void PartnerTable::update(const Partner &orig, const Partner &modified)
 {
 	SqlQuery updateQuery(sql);
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Partners SET "
+		updateQuery.prepare("UPDATE partners SET "
 				"name = ?, "
 				"country = ?, "
 				"city = ?, "
@@ -98,7 +98,7 @@ void PartnerTable::del(const Partner &s)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM Partners WHERE "
+				"DELETE FROM partners WHERE "
 				"name = ?");
 
 	deleteQuery.bindValue(0, s.name);
@@ -109,7 +109,7 @@ void PartnerTable::query(PartnerSet& ss)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM Partners");
+		selectQuery.prepare("SELECT * FROM partners");
 
 	selectQuery.exec();
 

@@ -23,6 +23,7 @@ public:
 	virtual ~Application();
 
 	void initLocalDb();
+	void initDefaultPostgreDb();
 	void loadTranslation(const char * langCode = NULL);
 	void pixelPerMM();
 	void loadCSS();

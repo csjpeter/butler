@@ -23,8 +23,8 @@ ItemTable::~ItemTable()
 
 void ItemTable::check(QStringList &tables)
 {
-	if(!tables.contains("Items"))
-		sql.exec("CREATE TABLE Items ("
+	if(!tables.contains("items"))
+		sql.exec("CREATE TABLE items ("
 				"uploaded DATE NOT NULL PRIMARY KEY CHECK('1970-01-01T00:00:00' < uploaded), "
 				"name VARCHAR(256) NOT NULL, "
 				"category VARCHAR(256) NOT NULL, "
@@ -33,7 +33,7 @@ void ItemTable::check(QStringList &tables)
 				")"
 				);
 
-	QSqlRecord table = sql.record("Items");
+	QSqlRecord table = sql.record("items");
 	if(		!table.contains("name") ||
 			!table.contains("category") ||
 			!table.contains("uploaded") ||
@@ -41,14 +41,14 @@ void ItemTable::check(QStringList &tables)
 			!table.contains("comment")
 	  )
 		throw DbIncompatibleTableError(
-				"Incompatible table Items in the openend database.");
+				"Incompatible table items in the openend database.");
 }
 
 void ItemTable::insert(const Item &i)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO Items "
+		insertQuery.prepare("INSERT INTO items "
 				"(name, category, uploaded, "
 				"quantity, comment) "
 				"VALUES(?, ?, ?, ?, ?)");
@@ -70,7 +70,7 @@ void ItemTable::update(const Item &orig, const Item &modified)
 		throw DbLogicError("The modified item is a different item than the original.");
 
 	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE Items SET "
+		updateQuery.prepare("UPDATE items SET "
 				"name = ?, "
 				"category = ?, "
 				"quantity = ?, "
@@ -90,7 +90,7 @@ void ItemTable::del(const Item &i)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM Items WHERE "
+				"DELETE FROM items WHERE "
 				"uploaded = ?");
 
 	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
@@ -101,7 +101,7 @@ void ItemTable::query(Item& item)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT * FROM Items WHERE uploaded = ?");
+		selectQuery.prepare("SELECT * FROM items WHERE uploaded = ?");
 
 	selectQuery.bindValue(0, item.uploaded.toUTC().toString("yyyy-MM-ddThh:mm:ss"));
 	selectQuery.exec();
@@ -126,10 +126,10 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
-	QString cmd("SELECT * FROM Items"
-			" LEFT JOIN ItemsBought ON Items.uploaded = ItemsBought.uploaded"
-			" LEFT JOIN WareTags ON Items.name = WareTags.name"
-			" WHERE ItemsBought.uploaded IS NULL");
+	QString cmd("SELECT * FROM items"
+			" LEFT JOIN items_bought ON items.uploaded = items_bought.uploaded"
+			" LEFT JOIN WareTags ON items.name = WareTags.name"
+			" WHERE items_bought.uploaded IS NULL");
 	{
 		unsigned i, s = tags.size();
 		if(s)
@@ -145,7 +145,7 @@ void ItemTable::query(const TagNameSet &tags, ItemSet &items)
 			cmd += ")";
 	}
 	
-	cmd += " GROUP BY Items.uploaded ORDER BY Items.uploaded DESC";
+	cmd += " GROUP BY items.uploaded ORDER BY items.uploaded DESC";
 
 	sqlQuery.exec(cmd);
 

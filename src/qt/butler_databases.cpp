@@ -50,7 +50,7 @@ private:
 		if(database)
 			return *database;
 
-		if(desc->driver == "QSQLITE") {
+		if(desc->driver == "QSQLITE" || desc->driver == "QPSQL") {
 			database = new Db(*desc);
 		} else
 			throw DbError("Driver '%s' is not yet supported.", C_STR(desc->driver));

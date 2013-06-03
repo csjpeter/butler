@@ -26,8 +26,8 @@ QueryPartnersTable::~QueryPartnersTable()
 
 void QueryPartnersTable::check(QStringList &tables)
 {
-	if(!tables.contains("QueryPartners")){
-		sql.exec("CREATE TABLE QueryPartners ("
+	if(!tables.contains("query_partners")){
+		sql.exec("CREATE TABLE query_partners ("
 				  "query_name VARCHAR(64) NOT NULL REFERENCES Queries(query_name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
 				  "partner VARCHAR(64) NOT NULL REFERENCES Partners(name) "
@@ -35,23 +35,23 @@ void QueryPartnersTable::check(QStringList &tables)
 				  "UNIQUE (query_name, partner)"
 				  ")"
 			    );
-		sql.exec("CREATE INDEX QueryPartnersQueryNameIndex ON QueryPartners(query_name)");
-		sql.exec("CREATE INDEX QueryPartnersTagIndex ON QueryPartners(partner)");
+		sql.exec("CREATE INDEX query_partners_query_name_index ON query_partners(query_name)");
+		sql.exec("CREATE INDEX query_partners_tag_index ON query_partners(partner)");
 	}
 
-	QSqlRecord table = sql.record("QueryPartners");
+	QSqlRecord table = sql.record("query_partners");
 	if(		!table.contains("query_name") ||
 			!table.contains("partner")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table QueryPartners in the openend database.");
+			"Incompatible table query_partners in the openend database.");
 }
 
 void QueryPartnersTable::insert(const Query &q, const QString &partnerName)
 {
 	SqlQuery insertQuery(sql);
 	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO QueryPartners "
+		insertQuery.prepare("INSERT INTO query_partners "
 				"(query_name, partner) "
 				"VALUES (?, ?)");
 
@@ -65,7 +65,7 @@ void QueryPartnersTable::del(const Query &q, const QString &partnerName)
 	SqlQuery deleteQuery(sql);
 	if(!deleteQuery.isPrepared())
 		deleteQuery.prepare(
-				"DELETE FROM QueryPartners WHERE "
+				"DELETE FROM query_partners WHERE "
 				"query_name = ? AND partner = ?");
 
 	deleteQuery.bindValue(0, q.name);
@@ -103,7 +103,7 @@ void QueryPartnersTable::query(const Query &q, PartnerNameSet &partners)
 {
 	SqlQuery selectQuery(sql);
 	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT query_name, partner FROM QueryPartners "
+		selectQuery.prepare("SELECT query_name, partner FROM query_partners "
 				"WHERE query_name = ?");
 
 	selectQuery.bindValue(0, q.name);
