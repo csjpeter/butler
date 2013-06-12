@@ -5,6 +5,7 @@
 #export LIBS="-lgnurx"
 
 source /etc/lsb-release
+source config
 
 function exec_in_dir ()
 {
@@ -28,7 +29,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	-- \
 	--relative-path \
 	--target=i686-pc-mingw32 \
-	--prefix=butler0.1 \
+	--prefix=${PKGNAME_BASE} \
 	--gnu-source \
 	--static \
 	--ldflags=\\\"-static-libgcc -static-libstdc++\\\" \

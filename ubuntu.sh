@@ -14,6 +14,7 @@ lenny=5.0
 etch=4.0
 
 source /etc/lsb-release
+source config
 
 function exec_in_dir ()
 {
@@ -38,7 +39,7 @@ function config ()
 		--debug \
 		--relative-path \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
-		--prefix=opt/butler0.1 \
+		--prefix=opt/${PKGNAME_BASE} \
 		--appsdir=usr/share/applications \
 		--fpic \
 		--gnu-source || exit $?
