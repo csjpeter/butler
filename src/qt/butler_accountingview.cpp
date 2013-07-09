@@ -424,6 +424,7 @@ void AccountingView::saveSlot()
 
 		item = Item();
 		item.uploaded = QDateTime::currentDateTime();
+		item.bought = true;
 		ware = Ware();
 		mapToGui();
 		toolBar.setInfo(tr(TidInfoNewSaved));
