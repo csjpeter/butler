@@ -77,7 +77,7 @@ int main(int argc, char *args[])
 
 		app.initLocalDb();
 		app.loadTranslation();
-		app.loadTranslation("hu");
+//		app.loadTranslation("hu");
 		app.pixelPerMM();
 		Config::thresholdScrollDistance = Config::pxPerMM * 2;
 		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
