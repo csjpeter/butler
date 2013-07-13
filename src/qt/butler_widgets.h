@@ -209,7 +209,7 @@ public:
 		textIdContext(textIdContext),
 		shortcut(seq, this)
 	{
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 		setAutoDefault(false);
 		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
 	}
@@ -286,28 +286,28 @@ public:
 	{
 		setText(trShort(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonIconOnly);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 	}
 
 	virtual void medium()
 	{
 		setText(trMed(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 	}
 
 	virtual void wide()
 	{
 		setText(trLong(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 	}
 
 	virtual void expanding()
 	{
 		setText(trLong(textId, textIdContext));
 		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 	}
 
 	virtual QWidget * qwidget() { return this; }
@@ -326,6 +326,7 @@ public:
 	LineEditor() : QLineEdit(),
 		justFocusedIn(true)
 	{
+//		setAttribute(Qt::WA_InputMethodEnabled, false);
 	}
 
 	virtual void focusInEvent(QFocusEvent * e)
@@ -414,7 +415,8 @@ public:
 		label.setFocusPolicy(Qt::NoFocus);
 		resetRegexp();
 		editor.setValidator(&validator);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+		editor.setInputMethodHints(Qt::ImhFormattedNumbersOnly);
+		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 		connect(&editor, SIGNAL(textChanged(const QString &)),
 				this, SLOT(textChangedSlot(const QString &)));
 
@@ -903,6 +905,7 @@ private:
 public:
 	ControlBar(QWidget * parent = 0) :
 		QScrollArea(parent),
+		updatingButtons(false),
 		expanding(false),
 		spacerBegin(false),
 		spacerEnd(true),
@@ -939,6 +942,8 @@ public:
 	{
 		if(layout() && (event->size() == event->oldSize()))
 			return;
+		int h = main.minimumSizeHint().height() +horizontalScrollBar()->height();
+		setMinimumHeight(0 < h ? h : 0);
 		updateButtons();
 	}
 
@@ -981,6 +986,10 @@ public:
 
 	void updateButtons()
 	{
+		if(updatingButtons)
+			return;
+		updatingButtons = true;
+
 		unsigned showCount = 0;
 
 		{
@@ -1014,9 +1023,12 @@ public:
 
 		if(showCount)
 			update();
+
+		updatingButtons = false;
 	}
 
 public:
+	bool updatingButtons;
 	bool expanding;
 	bool spacerBegin;
 	bool spacerEnd;

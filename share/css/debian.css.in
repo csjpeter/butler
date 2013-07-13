@@ -25,3 +25,22 @@ Selector[mandatory="true"] {
 	background-color: #44cc44;
 }
 */
+/*
+ControlBar QScrollBar, \
+ControlBar QScrollBar::up-arrow, \
+ControlBar QScrollBar::down-arrow, \
+ControlBar QScrollBar::add-page, \
+ControlBar QScrollBar::sub-page, \
+ControlBar QScrollBar::add-line, \
+ControlBar QScrollBar::sub-line, \
+ControlBar QScrollBar::down-button, \
+ControlBar QScrollBar::up-button, \
+ControlBar QScrollBar::handle {
+	border: 1mm black;
+}*/
+/*ControlBar QScrollBar::handle { background-color: #666666; }
+ControlBar QScrollBar::handle:horizontal { min-width: 1mm; }*/
+ControlBar QScrollBar:vertical { width: 1.5mm; }
+ControlBar QScrollBar:horizontal { height: 1.5mm; }
+/*ControlBar QScrollBar::handle:vertical { min-height: 3mm; }*/
+

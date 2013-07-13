@@ -294,6 +294,10 @@ void ItemBoughtTable::query(const Query &q, QueryStat &stat, ItemSet &items)
 	}
 
 	stat.avgPrice = sumPrice / sumQuantity;
+	if(!stat.itemCount){
+		stat.cheapestUnitPrice = NAN;
+		stat.mostExpUnitPrice = NAN;
+	}
 
 	DBG("-----");
 //	stat.queryTime = stopper - csjp::Time::unixTime();

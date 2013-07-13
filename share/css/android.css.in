@@ -143,7 +143,7 @@ QPushButton:pressed {
 	border-color: #888888;
 	color: #888888;
 }
-
+/*
 ToolBar ControlBar {
 	min-height: 9mm;
 }
@@ -151,7 +151,7 @@ ToolBar ControlBar {
 CustomView ToolBar ControlBar {
 	min-height: 12.5mm;
 }
-
+*/
 QToolButton {
 	font-size: 2.1mm;
 	border-width: 0mm;

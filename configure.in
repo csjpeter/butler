@@ -190,17 +190,17 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)" || exit $?
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)" || exit $?
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.1)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.2)" || exit $?
 echo "${CONFIG}" | grep staticbuild > /dev/null && {
 #	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)" || exit $?
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)" || exit $?
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)" || exit $?
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.1)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.2)" || exit $?
 } || {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)" || exit $?
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.2)" || exit $?
 }
 
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
