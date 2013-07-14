@@ -6,6 +6,7 @@
 #ifndef BUTLER_WARE_H
 #define BUTLER_WARE_H
 
+#include <QDate>
 #include <QString>
 
 #include <csjp_sorter_owner_container.h>
@@ -49,6 +50,7 @@ public:
 
 public:
 	QString name;
+	QDateTime lastModified; /* non editable */
 	QString unit;
 	CategoryNameSet categories;
 	TagNameSet tags;
@@ -58,6 +60,7 @@ public:
 		Unit,
 		Tags,
 		Categories,
+		LastModified,
 		NumOfFields
 	};
 

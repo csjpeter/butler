@@ -7,12 +7,14 @@
 
 Ware::Ware() :
 	name(""),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	unit("")
 {
 }
 
 Ware::Ware(const QString &_name) :
 	name(_name),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	unit("")
 {
 }
@@ -32,12 +34,13 @@ Ware& Ware::operator=(const Ware &i)
 	return *this;
 }
 
-bool Ware::isEqual(const Ware &i) const
+bool Ware::isEqual(const Ware &w) const
 {
-	if(		name != i.name ||
-			unit != i.unit ||
-			categories != i.categories ||
-			tags != i.tags)
+	if(		name != w.name ||
+			lastModified.toString() != w.lastModified.toString() ||
+			unit != w.unit ||
+			categories != w.categories ||
+			tags != w.tags)
 		return false;
 	return true;
 }
@@ -57,12 +60,13 @@ bool Ware::isMore(const QString &s) const
 	return 0 < QString::localeAwareCompare(name, s);
 }
 
-void Ware::copy(const Ware &i)
+void Ware::copy(const Ware &w)
 {
-	name = i.name;
-	unit = i.unit;
-	categories.copy(i.categories);
-	tags.copy(i.tags);
+	name = w.name;
+	lastModified = w.lastModified;
+	unit = w.unit;
+	categories.copy(w.categories);
+	tags.copy(w.tags);
 }
 
 bool operator==(const Ware &a, const Ware &b)

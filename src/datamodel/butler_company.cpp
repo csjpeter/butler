@@ -7,6 +7,7 @@
 
 Company::Company() :
 	name(""),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	country(""),
 	city(""),
 	postalCode(""),
@@ -18,6 +19,7 @@ Company::Company() :
 
 Company::Company(const QString &_name) :
 	name(_name),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	country(""),
 	postalCode(""),
 	address(""),
@@ -44,6 +46,7 @@ Company& Company::operator=(const Company &s)
 bool Company::isEqual(const Company &s) const
 {
 	if(		name != s.name ||
+			lastModified.toString() != s.lastModified.toString() ||
 			country != s.country ||
 			city != s.city ||
 			postalCode != s.postalCode ||
@@ -72,6 +75,7 @@ bool Company::isMore(const QString &s) const
 void Company::copy(const Company &s)
 {
 	name = s.name;
+	lastModified = s.lastModified;
 	country = s.country;
 	city = s.city;
 	postalCode = s.postalCode;

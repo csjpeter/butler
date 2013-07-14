@@ -7,6 +7,7 @@
 
 Partner::Partner() :
 	name(""),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	country(""),
 	city(""),
 	postalCode(""),
@@ -18,6 +19,7 @@ Partner::Partner() :
 
 Partner::Partner(const QString &_name) :
 	name(_name),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	country(""),
 	city(""),
 	postalCode(""),
@@ -45,6 +47,7 @@ Partner& Partner::operator=(const Partner &s)
 bool Partner::isEqual(const Partner &s) const
 {
 	if(		name != s.name ||
+			lastModified.toString() != s.lastModified.toString() ||
 			country != s.country ||
 			city != s.city ||
 			postalCode != s.postalCode ||
@@ -73,6 +76,7 @@ bool Partner::isMore(const QString &s) const
 void Partner::copy(const Partner &s)
 {
 	name = s.name;
+	lastModified = s.lastModified;
 	country = s.country;
 	city = s.city;
 	postalCode = s.postalCode;

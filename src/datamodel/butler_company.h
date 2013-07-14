@@ -6,6 +6,7 @@
 #ifndef BUTLER_COMPANY_H
 #define BUTLER_COMPANY_H
 
+#include <QDate>
 #include <QString>
 
 #include <butler_tag_set.h>
@@ -31,6 +32,7 @@ public:
 
 public:
 	QString name;		/* Tesco Global Áruházak ZRt. */
+	QDateTime lastModified; /* non editable */
 	QString country;	/* Magyarország */
 	QString city;		/* Budaörs */
 	QString postalCode;	/* 2040 */
@@ -46,6 +48,7 @@ public:
 		Address,
 		TaxId,
 		Icon,
+		LastModified,
 		NumOfFields
 	};
 

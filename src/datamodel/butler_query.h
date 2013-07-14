@@ -43,6 +43,7 @@ public:
 
 public:
 	QString name;
+	QDateTime lastModified; /* non editable */
 	QDateTime startDate;
 	QDateTime endDate;
 	enum StockOptions stockOption;
@@ -56,6 +57,7 @@ public:
 		Name = 0,
 		StartDate,
 		EndDate,
+		LastModified,
 		NumOfFields
 	};
 

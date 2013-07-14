@@ -7,6 +7,7 @@
 
 Query::Query() :
 	name(""),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	startDate(QDate(1900, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
 	stockOption(StockOptions::AllBoughtItem),
@@ -16,6 +17,7 @@ Query::Query() :
 
 Query::Query(const QString & name) :
 	name(name),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	startDate(QDate(1900, 1, 1)),
 	endDate(QDateTime::currentDateTime()),
 	stockOption(StockOptions::AllBoughtItem),
@@ -41,8 +43,9 @@ Query& Query::operator=(const Query& qo)
 bool Query::isEqual(const Query &qo) const
 {
 	if(		name != qo.name ||
-			startDate != qo.startDate ||
-			endDate != qo.endDate ||
+			lastModified.toString() != qo.lastModified.toString() ||
+			startDate.toString() != qo.startDate.toString() ||
+			endDate.toString() != qo.endDate.toString() ||
 			stockOption != qo.stockOption ||
 			tagOption != qo.tagOption ||
 			withTags != qo.withTags ||
@@ -71,6 +74,7 @@ bool Query::isMore(const QString &s) const
 void Query::equal(const Query &qo)
 {
 	name = qo.name;
+	lastModified = qo.lastModified;
 	startDate = qo.startDate;
 	endDate = qo.endDate;
 	stockOption = qo.stockOption;

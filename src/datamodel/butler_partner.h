@@ -6,6 +6,7 @@
 #ifndef BUTLER_PARTNER_H
 #define BUTLER_PARTNER_H
 
+#include <QDate>
 #include <QString>
 
 #include <butler_tag_set.h>
@@ -31,6 +32,7 @@ public:
 
 public:
 	QString name;		/* kertvárosi tesco */
+	QDateTime lastModified; /* non editable */
 	QString country;	/* Magyarország */
 	QString city;		/* Pécs */
 	QString postalCode;	/* 7631 */
@@ -46,6 +48,7 @@ public:
 		Address,
 		Company,
 		StoreName,
+		LastModified,
 		NumOfFields
 	};
 

@@ -7,11 +7,13 @@
 
 Tag::Tag() :
 	name(""),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	description("")
 {
 }
 
 Tag::Tag(const QString &_name) :
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	description("")
 {
 	name = _name;
@@ -34,8 +36,11 @@ Tag& Tag::operator=(const Tag& tag)
 
 bool Tag::isEqual(const Tag &t) const
 {
-	return (name == t.name) &&
-		(description == t.description);
+	if(		name != t.name ||
+			lastModified.toString() != t.lastModified.toString() ||
+			description != t.description)
+		return false;
+	return true;
 }
 		
 bool Tag::isLess(const Tag &t) const
@@ -56,6 +61,7 @@ bool Tag::isMore(const QString &s) const
 void Tag::equal(const Tag &tag)
 {
 	name = tag.name;
+	lastModified = tag.lastModified;
 	description = tag.description;
 }
 

@@ -20,6 +20,7 @@ namespace Config {
 	extern double scaleFactor;
 	extern int thresholdScrollDistance; /* Kinetic scroll, threshold for scroll. */
 	extern QString psqlHost;
+	extern QString psqlButlerDbName;
 	extern QString psqlUsername;
 	extern QString psqlPassword;
 	extern unsigned psqlPort;

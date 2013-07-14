@@ -26,6 +26,7 @@ double pxPerMM = 0;
 double scaleFactor = 1;
 int thresholdScrollDistance = 0;
 QString psqlHost;
+QString psqlButlerDbName;
 QString psqlUsername;
 QString psqlPassword;
 unsigned psqlPort = 0;
@@ -40,6 +41,7 @@ void save()
 	settings.setValue(prefix + "/dbfile", dbFileName);
 
 	settings.setValue(prefix + "/psql-host", psqlHost);
+	settings.setValue(prefix + "/psql-dbname", psqlButlerDbName);
 	settings.setValue(prefix + "/psql-user", psqlUsername);
 	settings.setValue(prefix + "/psql-pwd", psqlPassword);
 	settings.setValue(prefix + "/psql-port", psqlPort);
@@ -71,6 +73,10 @@ void load()
 	psqlHost = settings.value(prefix + "/psql-host", QString()).toString();
 	if(psqlHost.isEmpty())
 		psqlHost = "localhost";
+
+	psqlButlerDbName = settings.value(prefix + "/psql-dbname", QString()).toString();
+	if(psqlButlerDbName.isEmpty())
+		psqlButlerDbName = "butler-db";
 
 	psqlUsername = settings.value(prefix + "/psql-user", QString()).toString();
 	if(psqlUsername.isEmpty())

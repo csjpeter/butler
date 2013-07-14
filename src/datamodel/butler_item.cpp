@@ -9,6 +9,7 @@
 
 Item::Item() :
 	uploaded(QDate(0,0,0), QTime(0,0,0)),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	name(""),
 	category(),
 	quantity(1),
@@ -23,6 +24,7 @@ Item::Item() :
 
 Item::Item(const QString &_name) :
 	uploaded(QDate(0,0,0), QTime(0,0,0)),
+	lastModified(QDate(0,0,0), QTime(0,0,0)),
 	name(_name),
 	category(""),
 	quantity(1),
@@ -55,6 +57,7 @@ bool Item::isEqual(const Item &i) const
 	if(		name != i.name ||
 			category != i.category ||
 			uploaded.toString() != i.uploaded.toString() ||
+			lastModified.toString() != i.lastModified.toString() ||
 			purchased.toString() != i.purchased.toString() ||
 			partner != i.partner ||
 			price != i.price ||
@@ -83,6 +86,7 @@ bool Item::isMore(const QDateTime &dt) const
 void Item::copy(const Item &i)
 {
 	uploaded = i.uploaded;
+	lastModified = i.lastModified;
 	name = i.name;
 	category = i.category;
 	quantity = i.quantity;

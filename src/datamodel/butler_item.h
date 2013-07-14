@@ -34,6 +34,7 @@ public:
 
 public:
 	QDateTime uploaded; /* non editable */
+	QDateTime lastModified; /* non editable */
 	QString name;
 	QString category;
 	double quantity; /* amount to buy or bought */
@@ -64,6 +65,7 @@ public:
 		OnStock,
 		UnitPrice, /* virtual field (computed) */
 		Comment,
+		LastModified,
 		NumOfFields
 	};
 private:

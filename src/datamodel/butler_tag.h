@@ -6,6 +6,7 @@
 #ifndef BUTLER_TAG_H
 #define BUTLER_TAG_H
 
+#include <QDate>
 #include <QString>
 
 class Tag
@@ -27,11 +28,13 @@ public:
 
 public:
 	QString name;
+	QDateTime lastModified; /* non editable */
 	QString description;
 	
 	enum Fields {
 		Name = 0,
 		Description,
+		LastModified,
 		NumOfFields
 	};
 
