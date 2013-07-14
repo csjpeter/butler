@@ -327,6 +327,8 @@ public:
 		justFocusedIn(true)
 	{
 //		setAttribute(Qt::WA_InputMethodEnabled, false);
+/*		setInputMethodHints(Qt::ImhNoPredictiveText | 
+				Qt::ImhHiddenText);*/
 	}
 
 	virtual void focusInEvent(QFocusEvent * e)
@@ -355,6 +357,36 @@ public:
 			selectAll();
 		justFocusedIn = false;
 	}
+
+	virtual void inputMethodEvent(QInputMethodEvent * event)
+	{
+		if(!event)
+			return;
+
+		QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
+		if(!event->commitString().isEmpty())
+			e->setCommitString(event->commitString());
+/*
+		QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
+		if(event->commitString().isEmpty())
+			e->setCommitString(event->preeditString());
+		else
+			e->setCommitString(event->commitString());
+*/
+//		QInputMethodEvent * e = event;
+/*
+		LOG(		"Replacement start: %d\n"
+				"Replacement length: %d\n"
+				"Preedit string: %s\n"
+				"Commit string: %s",
+				e->replacementStart(),
+				e->replacementLength(),
+				C_STR(e->preeditString()),
+				C_STR(e->commitString()));
+		QLineEdit::inputMethodEvent(e.data());
+		LOG("Entry text after QLineEdit::inputMethodEvent(): %s\n", C_STR(text()));*/
+	}
+
 private:
 	bool justFocusedIn;
 };
@@ -942,9 +974,17 @@ public:
 	{
 		if(layout() && (event->size() == event->oldSize()))
 			return;
-		int h = main.minimumSizeHint().height() +horizontalScrollBar()->height();
-		setMinimumHeight(0 < h ? h : 0);
+
+		/* Now to update the buttons. */
 		updateButtons();
+
+		/* Lets make place for horizontal scrollbar iff it is to be shown. */
+		int h = main.minimumSizeHint().height();
+		bool v = horizontalScrollBar()->minimum() < horizontalScrollBar()->maximum();
+		horizontalScrollBar()->setVisible(v);
+		if(v)
+			h += horizontalScrollBar()->height();
+		setMinimumHeight(0 < h ? h : 0);
 	}
 
 	virtual void changeEvent(QEvent * event)

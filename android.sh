@@ -149,3 +149,5 @@ esac
 # Use this below command to (re)install to the android device connected to you computer:
 # adb -d install -r $(ANDROID_PACKAGES)
 
+
+# adb logcat *:W libbutler0.1.so:V SurfaceFlinger:S
