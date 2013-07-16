@@ -30,21 +30,13 @@ int main(int argc, char *args[])
 	if(1 <= argc - argi && (
 			  !strcmp(args[argi], "--help") ||
 			  !strcmp(args[argi], "-h"))){
-		printf(	"Usage: %s [--dbfile|-d file] [--logdir|-l dir] [--verbose|-v]\n"
+		printf(	"Usage: %s [--logdir|-l dir] [--verbose|-v]\n"
 			"       %s [--help|-h]\n"
 			"\n", args[0], args[0]);
 		return 0;
 	}
 
 	while(argi < argc){
-		if(2 <= argc - argi && (
-				  !strcmp(args[argi], "--dbfile") ||
-				  !strcmp(args[argi], "-d"))){
-			Config::dbFileName = QString(args[argi+1]);
-			printf("Using %s as database file.\n", args[argi+1]);
-			argi += 2;
-			continue;
-		}
 		if(2 <= argc - argi && (
 				  !strcmp(args[argi], "--logdir") ||
 				  !strcmp(args[argi], "-l"))){
@@ -73,6 +65,7 @@ int main(int argc, char *args[])
 			C_STR(QProcessEnvironment::systemEnvironment().toStringList().join("\n")));
 
 		Path::initRootPath(args[0]);
+		Path::initConfigFileName();
 		app.setWindowIcon(QIcon(Path::icon("butler.png")));
 
 		app.loadTranslation();
@@ -82,15 +75,16 @@ int main(int argc, char *args[])
 		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
 		app.loadCSS();
 		Config::load();
+		loadDatabases();
 
 		LOG("Library paths: %s", C_STR(qApp->libraryPaths().join(", ")));
 
-		app.initLocalDb();
-		app.initDefaultPostgreDb();
-
 		/* Show main view and run the app */
 		app.mainView().show();
-		return app.exec();
+		bool ret = app.exec();
+		saveDatabases();
+		Config::save();
+		return ret;
 	} catch (csjp::Exception & e) {
 		EXCEPTION(e);
 		return -1;

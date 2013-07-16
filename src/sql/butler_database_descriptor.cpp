@@ -7,8 +7,8 @@
 
 DatabaseDescriptor::DatabaseDescriptor() :
 	name(""),
-	databaseName(""),
 	driver(""),
+	databaseName(""),
 	username(""),
 	password(""),
 	host(""),

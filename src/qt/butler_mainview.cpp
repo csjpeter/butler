@@ -186,7 +186,6 @@ void MainView::showEvent(QShowEvent *event)
 void MainView::closeEvent(QCloseEvent *event)
 {
 	saveState();
-	Config::save();
 	PannView::closeEvent(event);
 	QTimer::singleShot(0, qApp, SLOT(quit()));
 }

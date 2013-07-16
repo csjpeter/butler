@@ -35,36 +35,6 @@ MainView & Application::mainView()
 	return *mainViewPtr;
 }
 
-/* Init the local database */
-void Application::initLocalDb()
-{
-	csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
-	sqlitedb->name = "localdb";
-	sqlitedb->driver = "QSQLITE";
-	sqlitedb->databaseName = QDir::toNativeSeparators(Config::dbFileName);
-	LOG("Sqlite db file path: %s", C_STR(sqlitedb->databaseName));
-	registerDatabase(sqlitedb);
-}
-
-//echo "\\d" | psql -h csjpeter.dyndns.org -p 5432 -d butler
-//psql -h csjpeter.dyndns.org -p 5432
-//echo "CREATE ROLE csjpeter LOGIN PASSWORD 'password' VALID UNTIL 'infinity';" | sudo -i -u postgres psql
-//echo "SELECT rolname FROM pg_roles;" | sudo -i -u postgres psql
-//echo "CREATE DATABASE csjpeter WITH ENCODING='UTF8' OWNER=csjpeter;" | sudo -i -u postgres psql
-/* Init default postgre database */
-void Application::initDefaultPostgreDb()
-{
-	csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
-	dbDesc->name = "postgredb";
-	dbDesc->driver = "QPSQL";
-	dbDesc->databaseName = Config::psqlButlerDbName;
-	dbDesc->host = Config::psqlHost;
-	dbDesc->username = Config::psqlUsername;
-	dbDesc->password = Config::psqlPassword;
-	dbDesc->port = Config::psqlPort;
-	registerDatabase(dbDesc);
-}
-
 void Application::loadTranslation(const char * langCode)
 {
 	QString lang(langCode);

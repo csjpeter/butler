@@ -7,6 +7,7 @@
 #define BUTLER_MACROS_H
 
 #include <QCoreApplication>
+#include <csjp_string.h>
 
 #define C_STR(QStr) QStr.toUtf8().constData()
 
@@ -33,5 +34,8 @@
 				  sourceText, disambiguation, QCoreApplication::UnicodeUTF8, n), TextVariant::Long); }
 
 #define SCC static const char*
+
+inline csjp::String & operator<<= (csjp::String & str, const QString & qstr) { str = C_STR(qstr); return str; }
+inline QString & operator<<= (QString & qstr, const csjp::String & str) { qstr = str.c_str(); return qstr; }
 
 #endif

@@ -30,8 +30,8 @@ public:
 
 public:
 	QString name; // will be the connection name
-	QString databaseName; // file name in case of sqlite
 	QString driver; // for example "QSQLITE"
+	QString databaseName; // file name in case of sqlite
 	QString username;
 	QString password;
 	QString host; // domain name or ip

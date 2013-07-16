@@ -17,146 +17,28 @@ private:
 	MY_Q_OBJECT
 
 public:
-	PannView(QWidget * parent = 0) :
-		QWidget(parent),
-		scrollArea(0),
-		scroller(&scrollArea)
-	{
-		setAttribute(Qt::WA_QuitOnClose, false);
-		setFocusPolicy(Qt::NoFocus);
-		main.setFocusPolicy(Qt::NoFocus);
-
-		scrollArea.horizontalScrollBar()->setObjectName("pannviewscrollbar");
-		scrollArea.verticalScrollBar()->setObjectName("pannviewscrollbar");
-		scrollArea.setFrameStyle(QFrame::NoFrame);
-		scrollArea.setWidget(&main);
-		scrollArea.setWidgetResizable(true);
-		scrollArea.setFocusPolicy(Qt::NoFocus);
-//		scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		connect(scrollArea.verticalScrollBar(), SIGNAL(rangeChanged(int, int)),
-				this, SLOT(verticalScrollBarRangeChanged()));
-
-		QHBoxLayout * hLayout = new QHBoxLayout;
-		hLayout->setContentsMargins(0,0,0,0);
-		hLayout->addWidget(scrollArea.verticalScrollBar());
-		hLayout->addWidget(&scrollArea);
-
-		QVBoxLayout * vLayout = new QVBoxLayout;
-		vLayout->addWidget(&toolBar);
-		vLayout->addLayout(hLayout);
-		vLayout->addWidget(&footerBar);
-		vLayout->setContentsMargins(0,0,0,0);
-		QWidget::setLayout(vLayout);
-
-		installEventFilter(this);
-		setSizeIncrement(0, 0);
-	}
-	virtual ~PannView() {}
-
-	void setupView()
-	{
-		connect(&toolBar.backButton, SIGNAL(clicked()), this, SLOT(reject()));
-		toolBar.relayout();
-		footerBar.relayout();
-	}
-
-	virtual QLayout * layout() const
-	{
-		return main.layout();
-	}
-
-	virtual void setLayout(QLayout * layout)
-	{
-		delete main.layout();
-		main.setLayout(layout);
-	}
-
-	virtual QSize sizeHint()
-	{
-		return main.sizeHint();
-	}
-
-	virtual int width()
-	{
-		return scrollArea.viewport()->width();
-	}
-
-	virtual void showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
-		verticalScrollBarRangeChanged();
-	}
-
-	virtual void closeEvent(QCloseEvent *event)
-	{
-		QWidget::closeEvent(event);
-	}
-
-	bool eventFilter(QObject *obj, QEvent *event)
-	{
-		if (event->type() != QEvent::KeyPress)
-			return QObject::eventFilter(obj, event);
-
-		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-		DBG("Received key press 0x%x", keyEvent->key());
-
-		switch (keyEvent->key()){
-/*			case Qt::Key_Enter:
-			case Qt::Key_Return:
-				break;*/
-			case Qt::Key_Escape:
-				{
-					QWidget * focused = focusWidget();
-					if(focused)
-						focusWidget()->clearFocus();
-					else
-						reject();
-				}
-				return true;
-			default:
-				break;
-		}
-		return QObject::eventFilter(obj, event);
-	}
-
-	virtual void loadState(const QString & prefix)
-	{
-		QSettings settings;
-		QPoint pos = settings.value(prefix + "/position", QPoint(-1, -1)).toPoint();
-		QSize size = settings.value(prefix + "/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		else
-			adjustSize();
-		if(pos.x() != -1)
-			move(pos);
-	}
-
-	virtual void saveState(const QString & prefix)
-	{
-		QSettings settings;
-		settings.setValue(prefix + "/position", pos());
-		settings.setValue(prefix + "/size", size());
-	}
+	PannView(QWidget * parent = 0);
+	virtual ~PannView();
+	void setupView();
+	virtual QLayout * layout() const;
+	virtual void setLayout(QLayout * layout);
+	virtual QSize sizeHint();
+	virtual int width();
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+	bool eventFilter(QObject *obj, QEvent *event);
+	virtual void loadState(const QString & prefix);
+	virtual void saveState(const QString & prefix);
+	virtual void setWindowTitle(const QString & str);
 
 private slots:
-	void verticalScrollBarRangeChanged()
-	{
-		scrollArea.verticalScrollBar()->setVisible(
-				scrollArea.verticalScrollBar()->minimum() <
-				scrollArea.verticalScrollBar()->maximum());
-	}
+	void verticalScrollBarRangeChanged();
 
 public slots:
-	void activate()
-	{
-		QWidget::show(); raise(); activateWindow();
-//		setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-	}
-	void accept() { this->accepted(); this->finished(1); close(); }
-	void reject() { this->rejected(); this->finished(0); close(); }
-	void done(int result) { this->finished(result); close(); }
+	void activate();
+	void accept();
+	void reject();
+	void done(int result);
 
 signals:
 	void accepted();
@@ -164,6 +46,7 @@ signals:
 	void rejected();
 
 public:
+	Label titleLabel;
 	ToolBar toolBar;
 	ControlBar footerBar;
 private:

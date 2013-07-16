@@ -266,7 +266,9 @@ source: \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
 	$(DIST_DIR)/src/qt/butler_pannview.h \
+	$(DIST_DIR)/src/qt/butler_pannview.cpp \
 	$(DIST_DIR)/src/qt/butler_widgets.h \
+	$(DIST_DIR)/src/qt/butler_widgets.cpp \
 	$(DIST_DIR)/src/qt/butler_statsview.cpp \
 	$(DIST_DIR)/src/qt/butler_statsview.h \
 	$(DIST_DIR)/src/qt/butler_texts.cpp \

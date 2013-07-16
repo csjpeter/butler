@@ -13,6 +13,16 @@ MainView QToolButton {
 	color: #bbaa00;
 	font-weight: bold;
 }
+
+*[windowTitle="true"], *[windowTitle="true"] QLabel {
+	color: #ffffff;
+	background: #8888ff;
+	font-weight: bold;
+	border: solid;
+	border-width: 0.2mm;
+	border-color: #6666dd;
+}
+
 /*
 *[mandatoryField="true"] QComboBox, *[mandatoryField="true"] QAbstractSpinBox, *[mandatoryField="true"] QLineEdit {
 	background-color: #ffffdd;

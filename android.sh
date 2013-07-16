@@ -46,7 +46,7 @@ function config ()
 		--ldflags=\\\"--sysroot ${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}\\\" \
 		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/libsupc++.a\\\" \
 		--libs=\\\"-llog\\\" \
-		--libs=\\\"/${TCROOT}/lib/libcsjp0.2.a\\\" \
+		--libs=\\\"/${TCROOT}/lib/libcsjp0.3.a\\\" \
 		|| exit $?
 
 	exec_in_dir ${DIST} ./configure || exit $?

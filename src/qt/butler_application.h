@@ -22,8 +22,6 @@ public:
 	Application(int &argc, char *argv[]);
 	virtual ~Application();
 
-	void initLocalDb();
-	void initDefaultPostgreDb();
 	void loadTranslation(const char * langCode = NULL);
 	void pixelPerMM();
 	void loadCSS();

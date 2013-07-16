@@ -3,7 +3,10 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#include <csjp_map.h>
 #include "butler_databases.h"
+
+#include <QDir>
 
 class Database
 {
@@ -156,6 +159,81 @@ inline bool operator<(const Database &a, const QString &b)
 static csjp::OwnerContainer<Database> databases;
 
 
+
+QString defaultSQLiteDbFileName()
+{
+	QDir dir(QDir::homePath());
+	if(!dir.exists(".butler"))
+		dir.mkdir(".butler");
+	return QDir::toNativeSeparators( QDir::homePath() + QString("/.butler/db.sqlite") );
+}
+
+void loadDatabases()
+{
+	databases.clear();
+	csjp::ObjectTree & tree = config["database-connections"];
+	unsigned s = tree.objects.size();
+	for(unsigned i = 0; i < s; i++){
+		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
+		csjp::ObjectTree & dbt = tree.objects.queryAt(i);
+		desc->name <<= dbt.name;
+		csjp::Map<csjp::String, csjp::String> & props = dbt.properties;
+		desc->driver <<= props["driver"];
+		desc->databaseName <<= props["databaseName"];
+		desc->username <<= props["username"];
+		//desc->password <<= props["password"];
+		desc->host <<= props["host"];
+		desc->port <<= props["port"];
+		registerDatabase(desc);
+	}
+
+	/* Init the local database if it is not defined already */
+	if(!databases.has("localdb")){
+		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
+		sqlitedb->name = "localdb";
+		sqlitedb->driver = "QSQLITE";
+		sqlitedb->databaseName = defaultSQLiteDbFileName();
+		LOG("Sqlite db file path: %s", C_STR(sqlitedb->databaseName));
+		registerDatabase(sqlitedb);
+	}
+
+	/* Init default postgre database */
+//echo "\\d" | psql -h csjpeter.dyndns.org -p 5432 -d butler
+//psql -h csjpeter.dyndns.org -p 5432
+//echo "CREATE ROLE csjpeter LOGIN PASSWORD 'password' VALID UNTIL 'infinity';" | sudo -i -u postgres psql
+//echo "SELECT rolname FROM pg_roles;" | sudo -i -u postgres psql
+//echo "CREATE DATABASE csjpeter WITH ENCODING='UTF8' OWNER=csjpeter;" | sudo -i -u postgres psql
+	if(!databases.has("postgredb")){
+		csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
+		dbDesc->name = "postgredb";
+		dbDesc->driver = "QPSQL";
+		dbDesc->databaseName = "butler-db";
+		dbDesc->host = "localhost";
+		dbDesc->username = "username";
+		dbDesc->password = "password";
+		dbDesc->port = 5432;
+		registerDatabase(dbDesc);
+	}
+}
+
+void saveDatabases()
+{
+	csjp::ObjectTree tree("database-connections");
+	unsigned s = databases.size();
+	for(unsigned i = 0; i < s; i++){
+		const DatabaseDescriptor & desc = databases.queryAt(i).databaseDescriptor();
+		csjp::String name(C_STR(desc.name));
+		csjp::Map<csjp::String, csjp::String> & props = tree[name].properties;
+		props["driver"] <<= desc.driver; // for example "QSQLITE"
+		props["databaseName"] <<= desc.databaseName; //file name in case of sqlite
+		props["username"] <<= desc.username;
+		//props["password"] <<= desc.password;
+		props["host"] <<= desc.host; // domain name or ip
+		props["port"] = desc.port;
+	}
+	csjp::ObjectTree & origTree = config["database-connections"];
+	origTree = move_cast(tree);
+}
 
 void registerDatabase(csjp::Object<DatabaseDescriptor> & desc)
 {

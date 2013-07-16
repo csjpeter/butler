@@ -22,6 +22,8 @@
 #include <butler_queriesmodel.h>
 
 void registerDatabase(csjp::Object<DatabaseDescriptor> &);
+void loadDatabases();
+void saveDatabases();
 
 const DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 

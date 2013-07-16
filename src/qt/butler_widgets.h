@@ -54,88 +54,15 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	TableView(QWidget * parent = 0) :
-		QTableView(parent),
-		scroller(this)
-	{
-		setTabKeyNavigation(false);
-		setAlternatingRowColors(true);
-		setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-		setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-		setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-		setAutoScroll(true);
-		setSelectionBehavior(QAbstractItemView::SelectRows);
-		setSelectionMode(QAbstractItemView::SingleSelection);
-		verticalHeader()->hide();
-		setSortingEnabled(true);
-		horizontalHeader()->setMovable(true);
-		horizontalHeader()->setSortIndicatorShown(true);
-		horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-		horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
-		scroller.stealEventFromFocusedWidgets = true;
-	}
-
-	virtual void loadState(const QString & pref)
-	{
-		if(!model())
-			throw csjp::LogicError(
-					"Missing model in TableView when loadState() is called.");
-
-		QString prefix(pref + "/TableView");
-		QSettings settings;
-
-		int c = model()->columnCount();
-		for(int i = 0; i < c; i++){
-			int pos = settings.value(prefix + "/column" + i, i).toInt();
-			DBG("Lets move logical %d (%s, visual %d) to visual %d (%s)",
-					i,
-					C_STR(model()->headerData(
-							i, Qt::Horizontal,
-							Qt::DisplayRole).toString()),
-					horizontalHeader()->visualIndex(i),
-					pos,
-					C_STR(model()->headerData(
-							horizontalHeader()->logicalIndex(pos),
-							Qt::Horizontal, Qt::DisplayRole).toString())
-					);
-			horizontalHeader()->moveSection(horizontalHeader()->visualIndex(i), pos);
-		}
-
-		int sortPos = settings.value(prefix + "/sortColumn", 0).toInt();
-		int sortOrder = settings.value(prefix + "/sortOrder", 0).toInt();
-		horizontalHeader()->setSortIndicator(sortPos,
-				sortOrder ? Qt::DescendingOrder : Qt::AscendingOrder);
-	}
-
-	virtual void saveState(const QString & pref)
-	{
-		if(!model())
-			return;
-
-		QString prefix(pref + "/TableView");
-		QSettings settings;
-
-		unsigned c = model()->columnCount();
-		for(unsigned i = 0; i < c; i++)
-			settings.setValue(prefix + "/column" + i,
-					horizontalHeader()->visualIndex(i));
-
-		settings.setValue(prefix + "/sortColumn",
-				horizontalHeader()->sortIndicatorSection());
-
-		settings.setValue(prefix + "/sortOrder",
-				horizontalHeader()->sortIndicatorOrder());
-	}
+	TableView(QWidget * parent = 0);
+	virtual void loadState(const QString & pref);
+	virtual void saveState(const QString & pref);
 
 signals:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 protected slots:
-	virtual void currentChanged(const QModelIndex & current, const QModelIndex & previous)
-	{
-		QTableView::currentChanged(current, previous);
-		currentIndexChanged(current, previous);
-	}
+	virtual void currentChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	KineticScroller scroller;
@@ -147,11 +74,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	HLayout() : QHBoxLayout()
-	{
-		setContentsMargins(0,0,0,0);
-		setSpacing(5);
-	}
+	HLayout();
 };
 
 class VLayout : public QVBoxLayout
@@ -160,11 +83,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	VLayout() : QVBoxLayout()
-	{
-		setContentsMargins(0,0,0,0);
-		setSpacing(5);
-	}
+	VLayout();
 };
 
 class Label : public QLabel
@@ -173,11 +92,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	Label() : QLabel()
-	{
-		setFocusPolicy(Qt::NoFocus);
-		setWordWrap(true);
-	}
+	Label();
 };
 
 class InfoLabel : public Label
@@ -186,12 +101,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	InfoLabel() : Label()
-	{
-		setWordWrap(true);
-		setProperty("infoField", true);
-		setAlignment(Qt::AlignCenter);
-	}
+	InfoLabel();
 };
 
 class Button : public QPushButton, public ToolWidget
@@ -203,48 +113,13 @@ public:
 	Button(		const char * textId,
 			const char * textIdContext,
 			const QKeySequence & seq = QKeySequence(),
-			QWidget * parent = 0) :
-		QPushButton(parent),
-		textId(textId),
-		textIdContext(textIdContext),
-		shortcut(seq, this)
-	{
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-		setAutoDefault(false);
-		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
-	}
-
-	virtual void focusInEvent(QFocusEvent * event)
-	{
-		if(event->reason() == Qt::ActiveWindowFocusReason){
-			if(focusWidget())
-				focusWidget()->clearFocus();
-			return;
-		}
-		QPushButton::focusInEvent(event);
-	}
-
-	virtual void narrow()
-	{
-		setText(trShort(textId, textIdContext));
-	}
-
-	virtual void medium()
-	{
-		setText(trMed(textId, textIdContext));
-	}
-
-	virtual void wide()
-	{
-		setText(trLong(textId, textIdContext));
-	}
-
-	virtual void expanding()
-	{
-		setText(trLong(textId, textIdContext));
-	}
-
-	virtual QWidget * qwidget() { return this; }
+			QWidget * parent = 0);
+	virtual void focusInEvent(QFocusEvent * event);
+	virtual void narrow();
+	virtual void medium();
+	virtual void wide();
+	virtual void expanding();
+	virtual QWidget * qwidget();
 
 public:
 	const char * textId;
@@ -262,55 +137,15 @@ public:
 			const char * textId,
 			const char * textIdContext,
 			const QKeySequence & seq = QKeySequence(),
-			QWidget * parent = 0) :
-		QToolButton(parent),
-		textId(textId),
-		textIdContext(textIdContext),
-		shortcut(seq, this)
-	{
-		setIcon(icon);
-		connect(&shortcut, SIGNAL(activated()), this, SLOT(click()));
-	}
+			QWidget * parent = 0);
+	virtual void focusInEvent(QFocusEvent * event);
 
-	virtual void focusInEvent(QFocusEvent * event)
-	{
-		if(event->reason() == Qt::ActiveWindowFocusReason){
-			if(focusWidget())
-				focusWidget()->clearFocus();
-			return;
-		}
-		QToolButton::focusInEvent(event);
-	}
 public:
-	virtual void narrow()
-	{
-		setText(trShort(textId, textIdContext));
-		setToolButtonStyle(Qt::ToolButtonIconOnly);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-	}
-
-	virtual void medium()
-	{
-		setText(trMed(textId, textIdContext));
-		setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-	}
-
-	virtual void wide()
-	{
-		setText(trLong(textId, textIdContext));
-		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-	}
-
-	virtual void expanding()
-	{
-		setText(trLong(textId, textIdContext));
-		setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
-	}
-
-	virtual QWidget * qwidget() { return this; }
+	virtual void narrow();
+	virtual void medium();
+	virtual void wide();
+	virtual void expanding();
+	virtual QWidget * qwidget();
 
 	const char * textId;
 	const char * textIdContext;
@@ -323,69 +158,12 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	LineEditor() : QLineEdit(),
-		justFocusedIn(true)
-	{
-//		setAttribute(Qt::WA_InputMethodEnabled, false);
-/*		setInputMethodHints(Qt::ImhNoPredictiveText | 
-				Qt::ImhHiddenText);*/
-	}
-
-	virtual void focusInEvent(QFocusEvent * e)
-	{
-		QLineEdit::focusInEvent(e);
-		selectAll();
-		justFocusedIn = true;
-	}
-
-	virtual void focusOutEvent(QFocusEvent * e)
-	{
-		QLineEdit::focusOutEvent(e);
-		justFocusedIn = false;
-	}
-
-	virtual void keyPressEvent(QKeyEvent * e)
-	{
-		QLineEdit::keyPressEvent(e);
-		justFocusedIn = false;
-	}
-
-	virtual void mousePressEvent(QMouseEvent * event)
-	{
-		QLineEdit::mousePressEvent(event);
-		if(justFocusedIn && !hasSelectedText())
-			selectAll();
-		justFocusedIn = false;
-	}
-
-	virtual void inputMethodEvent(QInputMethodEvent * event)
-	{
-		if(!event)
-			return;
-
-		QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
-		if(!event->commitString().isEmpty())
-			e->setCommitString(event->commitString());
-/*
-		QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
-		if(event->commitString().isEmpty())
-			e->setCommitString(event->preeditString());
-		else
-			e->setCommitString(event->commitString());
-*/
-//		QInputMethodEvent * e = event;
-/*
-		LOG(		"Replacement start: %d\n"
-				"Replacement length: %d\n"
-				"Preedit string: %s\n"
-				"Commit string: %s",
-				e->replacementStart(),
-				e->replacementLength(),
-				C_STR(e->preeditString()),
-				C_STR(e->commitString()));
-		QLineEdit::inputMethodEvent(e.data());
-		LOG("Entry text after QLineEdit::inputMethodEvent(): %s\n", C_STR(text()));*/
-	}
+	LineEditor();
+	virtual void focusInEvent(QFocusEvent * e);
+	virtual void focusOutEvent(QFocusEvent * e);
+	virtual void keyPressEvent(QKeyEvent * e);
+	virtual void mousePressEvent(QMouseEvent * event);
+	virtual void inputMethodEvent(QInputMethodEvent * event);
 
 private:
 	bool justFocusedIn;
@@ -397,36 +175,10 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	InputEditor(QWidget * parent = 0) :
-		QWidget(parent)
-	{
-		setFocusPolicy(Qt::NoFocus);
-		label.setFocusPolicy(Qt::NoFocus);
-
-		setContentsMargins(0,0,0,0);
-		wideLayout();
-	}
-
-	virtual ~InputEditor() {}
-
-	void narrowLayout()
-	{
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignBottom);
-		newLayout->addWidget(&editor);
-		newLayout->setSpacing(1);
-		delete layout();
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 1, Qt::AlignTop);
-		newLayout->addWidget(&editor, 4);
-		delete layout();
-		setLayout(newLayout);
-	}
+	InputEditor(QWidget * parent = 0);
+	virtual ~InputEditor();
+	void narrowLayout();
+	void wideLayout();
 
 public:
 	QLabel label;
@@ -439,131 +191,25 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	DoubleEditor(QWidget * parent = 0) :
-		QWidget(parent),
-		precision(0)
-	{
-		setFocusPolicy(Qt::NoFocus);
-		label.setFocusPolicy(Qt::NoFocus);
-		resetRegexp();
-		editor.setValidator(&validator);
-		editor.setInputMethodHints(Qt::ImhFormattedNumbersOnly);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
-		connect(&editor, SIGNAL(textChanged(const QString &)),
-				this, SLOT(textChangedSlot(const QString &)));
-
-		setContentsMargins(0,0,0,0);
-		wideLayout();
-	}
+	DoubleEditor(QWidget * parent = 0);
 private:
-	void resetRegexp()
-	{
-		/*
-		QString rx("[0-9]{0,3}(%1[0-9]{0,3})*(%2[0-9]{0,%3})?(%4)?");
-		QString regx(rx.arg(
-				QRegExp::escape(Config::locale.groupSeparator()),
-				QRegExp::escape(Config::locale.decimalPoint()),
-				QRegExp::escape(QString::number(precision)),
-				QRegExp::escape(suffix)));
-				*/
-		QString rx("\\d*[%1%2]?\\d{0,%3}(%4)?");
-		QString regx(rx.arg(
-				QRegExp::escape(Config::locale.groupSeparator()),
-				QRegExp::escape(Config::locale.decimalPoint()),
-				QRegExp::escape(QString::number(precision)),
-				QRegExp::escape(suffix)));
-		DBG("Validator regx: %s", C_STR(regx));
-		validator.setRegExp(QRegExp(regx));
-	}
+	void resetRegexp();
 
 signals:
 	void valueChanged(double);
 	void valueChanged(const QString &);
 
 public slots:
-	void textChangedSlot(const QString & newText)
-	{
-		int pos = editor.cursorPosition();
-		QString str = newText;
-		if(validator.validate(str, pos) != QValidator::Acceptable){
-			DBG("Invalid text: %s", C_STR(str));
-			return;
-		}
-		DBG("Value: %f", value());
-
-		if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
-			valueChanged(value());
-			valueChanged(editor.text());
-			return;
-		}
-
-		pos = editor.cursorPosition();
-		editor.blockSignals(true);
-		editor.setText(str + suffix);
-		editor.blockSignals(false);
-		editor.setCursorPosition(pos);
-		valueChanged(value());
-		valueChanged(editor.text());
-	}
-
-	void setPrecision(unsigned prec = 0)
-	{
-		double val = value();
-		precision = prec;
-		resetRegexp();
-		setValue(val);
-	}
-
-	void setSuffix(const QString & newSuffix = "")
-	{
-		double val = value();
-		if(newSuffix.length())
-			suffix = " " + newSuffix;
-		else
-			suffix = "";
-		resetRegexp();
-		setValue(val);
-	}
-
-	void setValue(double v)
-	{
-		//QString vStr(Config::locale.toString(v, 'f', precision));
-		QString vStr(QString::number(v, 'f', precision));
-		editor.blockSignals(true);
-		editor.setText(vStr + suffix);
-		editor.blockSignals(false);
-		editor.setCursorPosition(vStr.length());
-	}
+	void textChangedSlot(const QString & newText);
+	void setPrecision(unsigned prec = 0);
+	void setSuffix(const QString & newSuffix = "");
+	void setValue(double v);
 
 public:
-	double value()
-	{
-		QString str = editor.text();
-		if(str.endsWith(suffix))
-			str.chop(suffix.length());
-		//double v = Config::locale.toDouble(str);
-		double v = str.QString::toDouble();
-		return v;
-	}
+	double value();
+	void narrowLayout();
+	void wideLayout();
 
-	void narrowLayout()
-	{
-		delete layout();
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignBottom);
-		newLayout->addWidget(&editor);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 1, Qt::AlignTop);
-		newLayout->addWidget(&editor, 4);
-		setLayout(newLayout);
-	}
 public:
 	QLabel label;
 	LineEditor editor;
@@ -579,11 +225,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	QuantityEditor(QWidget * parent = 0) :
-		DoubleEditor(parent)
-	{
-		setPrecision(3);
-	}
+	QuantityEditor(QWidget * parent = 0);
 };
 
 class PriceEditor : public DoubleEditor
@@ -592,11 +234,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	PriceEditor(QWidget * parent = 0) :
-		DoubleEditor(parent)
-	{
-		setPrecision(2);
-	}
+	PriceEditor(QWidget * parent = 0);
 };
 
 class FormCheckBox : public QWidget
@@ -605,18 +243,8 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	FormCheckBox(QWidget * parent = 0) :
-		QWidget(parent)
-	{
-		label.setFocusPolicy(Qt::NoFocus);
-		setContentsMargins(0,0,0,0);
-
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignVCenter);
-		newLayout->addWidget(&box, -1, Qt::AlignLeft);
-		setLayout(newLayout);
-	}
-
+	FormCheckBox(QWidget * parent = 0);
+public:
 	QLabel label;
 	QCheckBox box;
 };
@@ -627,22 +255,9 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ComboBox(QWidget * parent = 0) :
-		QComboBox(parent)
-	{
-	}
-
-	virtual QSize sizeHint() const
-	{
-		QSize hint = QComboBox::sizeHint();
-		return hint;
-	}
-
-	virtual QSize minimumSizeHint() const
-	{
-		QSize hint = QComboBox::minimumSizeHint();
-		return hint;
-	}
+	ComboBox(QWidget * parent = 0);
+	virtual QSize sizeHint() const;
+	virtual QSize minimumSizeHint() const;
 };
 
 class Selector : public QWidget
@@ -651,58 +266,13 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0) :
-		QWidget(parent),
-		tableViewPtr(new TableView),
-		boxLayout(0),
-		tableView(*tableViewPtr)
-	{
-		(void)column;
-		(void)model;
-		label.setFocusPolicy(Qt::NoFocus);
-		if(model){
-			box.setModel(model);
-			box.setModelColumn(column);
-		}
-		box.setView(tableViewPtr);
-		if(box.lineEdit())
-			box.lineEdit()->setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		wideLayout();
-		setContentsMargins(0,0,0,0);
-	}
+	Selector(QAbstractItemModel * model, int column, QWidget * parent = 0);
+	virtual void showEvent(QShowEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+	virtual void narrowLayout();
+	virtual void wideLayout();
 
-	virtual void showEvent(QShowEvent * event)
-	{
-		(void)event;
-		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
-	}
-
-	virtual void resizeEvent(QResizeEvent * event)
-	{
-		if(event->size() == event->oldSize())
-			return;
-		tableView.horizontalHeader()->resizeSection(box.modelColumn(), box.width());
-	}
-
-	virtual void narrowLayout()
-	{
-		delete layout();
-		boxLayout = new VLayout;
-		boxLayout->addWidget(&label, -1, Qt::AlignBottom);
-		boxLayout->addWidget(&box);
-		boxLayout->setSpacing(1);
-		setLayout(boxLayout);
-	}
-
-	virtual void wideLayout()
-	{
-		delete layout();
-		boxLayout = new HLayout;
-		boxLayout->addWidget(&label, 1, Qt::AlignTop);
-		boxLayout->addWidget(&box, 4);
-		setLayout(boxLayout);
-	}
-
+public:
 	QLabel label;
 	ComboBox box;
 
@@ -719,48 +289,13 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0) :
-		Selector(model, column, parent),
-		editorPtr(new LineEditor),
-		completerTableViewPtr(new TableView),
-		editor(*editorPtr),
-		completerTableView(*completerTableViewPtr)
-	{
-		box.setEditable(true);
-		box.setLineEdit(&editor);
-		box.setInsertPolicy(QComboBox::NoInsert);
-		box.completer()->setPopup(completerTableViewPtr);
-		box.setCurrentIndex(-1);
-		if(!model){
-			tableView.horizontalHeader()->hide();
-			completerTableView.horizontalHeader()->hide();
-		}
-		editor.setStyleSheet("QLineEdit { margin: 0px; padding: 0px; }");
-		editor.setValidator(0);
-	}
+	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0);
 
-	QString text() const { return editor.text(); }
-	void setText(const QString & str) { editor.setText(str); }
-
-	virtual void keyPressEvent(QKeyEvent * event)
-	{
-		if(event->key() == Qt::Key_Return){
-			return;
-		}
-		Selector::keyPressEvent(event);
-	}
-
-	virtual void narrowLayout()
-	{
-		box.completer()->setCompletionMode(QCompleter::InlineCompletion);
-		Selector::narrowLayout();
-	}
-
-	virtual void wideLayout()
-	{
-		box.completer()->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-		Selector::wideLayout();
-	}
+	QString text() const;
+	void setText(const QString & str);
+	virtual void keyPressEvent(QKeyEvent * event);
+	virtual void narrowLayout();
+	virtual void wideLayout();
 
 private:
 	LineEditor * editorPtr; /* Ownership held by QComboBox */
@@ -776,27 +311,9 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	DateTimeEdit(QWidget * parent = 0) :
-		QDateTimeEdit(parent)
-	{
-		QAbstractSpinBox::lineEdit()->setStyleSheet(
-				"QLineEdit { margin: 0px; padding: 0px; }");
-		setCalendarPopup(true);
-		setDisplayFormat(Config::dateTimeFormat());
-		setDateTime(QDateTime::currentDateTime());
-	}
-
-	virtual QSize sizeHint() const
-	{
-		QSize hint = QDateTimeEdit::sizeHint();
-		return hint;
-	}
-
-	virtual QSize minimumSizeHint() const
-	{
-		QSize hint = QDateTimeEdit::minimumSizeHint();
-		return hint;
-	}
+	DateTimeEdit(QWidget * parent = 0);
+	virtual QSize sizeHint() const;
+	virtual QSize minimumSizeHint() const;
 };
 
 class DateTimeEditor : public QWidget
@@ -805,32 +322,9 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	DateTimeEditor(QWidget * parent = 0) :
-		QWidget(parent)
-	{
-		label.setFocusPolicy(Qt::NoFocus);
-		wideLayout();
-		setContentsMargins(0,0,0,0);
-	}
-
-	void narrowLayout()
-	{
-		delete layout();
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addWidget(&edit);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 1, Qt::AlignTop);
-		newLayout->addWidget(&edit, 4);
-		setLayout(newLayout);
-	}
+	DateTimeEditor(QWidget * parent = 0);
+	void narrowLayout();
+	void wideLayout();
 
 	DateTimeEdit edit;
 	QLabel label;
@@ -842,32 +336,9 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	CommentEditor(QWidget * parent = 0) :
-		QWidget(parent)
-	{
-		label.setFocusPolicy(Qt::NoFocus);
-		setContentsMargins(0,0,0,0);
-		wideLayout();
-	}
-
-	void narrowLayout()
-	{
-		delete layout();
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, 0, Qt::AlignBottom);
-		newLayout->addWidget(&edit, 1);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, 1, Qt::AlignTop);
-		newLayout->addWidget(&edit, 4);
-		setLayout(newLayout);
-	}
+	CommentEditor(QWidget * parent = 0);
+	void narrowLayout();
+	void wideLayout();
 
 	QTextEdit edit;
 	QLabel label;
@@ -879,51 +350,10 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ButtonGroup(QWidget * parent = 0) :
-		QWidget(parent)
-	{
-		label.setFocusPolicy(Qt::NoFocus);
-		setContentsMargins(0,0,0,0);
-		wideLayout();
-	}
-
-	void narrowLayout()
-	{
-		delete layout();
-		VLayout * newLayout = new VLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignBottom);
-		QList<QAbstractButton*> list = group.buttons();
-		for(int i = 0; i < list.size(); i++)
-			newLayout->addWidget(list[i]);
-		newLayout->setSpacing(1);
-		setLayout(newLayout);
-	}
-
-	void mediumLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignTop);
-
-		VLayout * vLayout = new VLayout;
-		QList<QAbstractButton*> list = group.buttons();
-		for(int i = 0; i < list.size(); i++)
-			vLayout->addWidget(list[i]);
-		newLayout->addLayout(vLayout);
-
-		setLayout(newLayout);
-	}
-
-	void wideLayout()
-	{
-		delete layout();
-		HLayout * newLayout = new HLayout;
-		newLayout->addWidget(&label, -1, Qt::AlignTop);
-		QList<QAbstractButton*> list = group.buttons();
-		for(int i = 0; i < list.size(); i++)
-			newLayout->addWidget(list[i], -1, Qt::AlignLeft);
-		setLayout(newLayout);
-	}
+	ButtonGroup(QWidget * parent = 0);
+	void narrowLayout();
+	void mediumLayout();
+	void wideLayout();
 
 	QButtonGroup group;
 	QLabel label;
@@ -935,137 +365,15 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ControlBar(QWidget * parent = 0) :
-		QScrollArea(parent),
-		updatingButtons(false),
-		expanding(false),
-		spacerBegin(false),
-		spacerEnd(true),
-		hideIfEmpty(true),
-		scroller(this)
-	{
-		setFocusPolicy(Qt::NoFocus);
-		setContentsMargins(0,0,0,0);
-		main.setContentsMargins(0,0,0,0);
-		main.setFocusPolicy(Qt::NoFocus);
-
-		setFrameStyle(QFrame::NoFrame);
-		setWidget(&main);
-		setWidgetResizable(true);
-		setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
-	}
-	virtual ~ControlBar() {}
-
-	void addToolWidget(ToolWidget & tw)
-	{
-		buttons.add(tw);
-	}
-
-	void showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
-		bool save = hideIfEmpty;
-		hideIfEmpty = false;
-		updateButtons();
-		hideIfEmpty = save;
-	}
-
-	void resizeEvent(QResizeEvent * event)
-	{
-		if(layout() && (event->size() == event->oldSize()))
-			return;
-
-		/* Now to update the buttons. */
-		updateButtons();
-
-		/* Lets make place for horizontal scrollbar iff it is to be shown. */
-		int h = main.minimumSizeHint().height();
-		bool v = horizontalScrollBar()->minimum() < horizontalScrollBar()->maximum();
-		horizontalScrollBar()->setVisible(v);
-		if(v)
-			h += horizontalScrollBar()->height();
-		setMinimumHeight(0 < h ? h : 0);
-	}
-
-	virtual void changeEvent(QEvent * event)
-	{
-		QWidget::changeEvent(event);
-		if(event->type() == QEvent::LanguageChange)
-			updateButtons();
-	}
-
-	void applyLayout()
-	{
-		HLayout * toolLayout = new HLayout;
-		toolLayout->setSpacing(0);
-
-		if(spacerBegin)
-			toolLayout->addStretch(10000);
-
-		unsigned s = buttons.size();
-		for(unsigned i = 0; i < s; i++){
-			toolLayout->addWidget(buttons.queryAt(i).qwidget(),
-					-1, Qt::AlignVCenter | Qt::AlignLeft);
-			if(expanding && i != s-1)
-				toolLayout->addStretch(10000);
-		}
-
-		if(spacerEnd)
-			toolLayout->addStretch(10000);
-
-		delete main.layout();
-		main.setLayout(toolLayout);
-		updateButtons();
-	}
-
-	void relayout()
-	{
-		if(!main.layout())
-			applyLayout();
-	}
-
-	void updateButtons()
-	{
-		if(updatingButtons)
-			return;
-		updatingButtons = true;
-
-		unsigned showCount = 0;
-
-		{
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++){
-				ToolWidget & tw = buttons.queryAt(i);
-				tw.expanding();
-				tw.qwidget()->updateGeometry();
-				if(tw.qwidget()->isVisible())
-					showCount++;
-			}
-		}
-		if(width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).wide();
-		}
-		if(width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).medium();
-		}
-		if(width() < main.sizeHint().width()) {
-			unsigned s = buttons.size();
-			for(unsigned i = 0; i < s; i++)
-				buttons.queryAt(i).narrow();
-		}
-
-		if(hideIfEmpty)
-			setVisible(showCount);
-
-		if(showCount)
-			update();
-
-		updatingButtons = false;
-	}
+	ControlBar(QWidget * parent = 0);
+	virtual ~ControlBar();
+	void addToolWidget(ToolWidget & tw);
+	void showEvent(QShowEvent *event);
+	void resizeEvent(QResizeEvent * event);
+	virtual void changeEvent(QEvent * event);
+	void applyLayout();
+	void relayout();
+	void updateButtons();
 
 public:
 	bool updatingButtons;
@@ -1081,100 +389,25 @@ private:
 	csjp::SorterReferenceContainer<ToolWidget> buttons;
 };
 
-SCC TidToolBarContext = "ToolBar";
-SCC TidBackButtonLabel = QT_TRANSLATE_NOOP("ToolBar", "Back");
-
 class ToolBar : public QWidget
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	ToolBar(QWidget * parent = 0) :
-		QWidget(parent),
-		backButton(TidBackButtonLabel, TidToolBarContext,
-				QKeySequence(Qt::ALT + Qt::Key_Escape))
-	{
-		setFocusPolicy(Qt::NoFocus);
-		setContentsMargins(0,0,0,0);
-		ctrlBar.hideIfEmpty = false;
-
-		infoLabel.hide();
-	}
-	virtual ~ToolBar() {}
-
-	void showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
-		updateButtons();
-	}
-
-	void resizeEvent(QResizeEvent * event)
-	{
-		if(layout() && (event->size() == event->oldSize()))
-			return;
-		updateButtons();
-	}
-
-	virtual void changeEvent(QEvent * event)
-	{
-		QWidget::changeEvent(event);
-		if(event->type() != QEvent::LanguageChange)
-			return;
-		updateButtons();
-	}
-
-	void addToolWidget(ToolWidget & tw)
-	{
-		ctrlBar.addToolWidget(tw);
-	}
-
-	void updateButtons()
-	{
-		backButton.setText(tr(TidBackButtonLabel));
-		ctrlBar.updateButtons();
-	}
-
-	void applyLayout()
-	{
-		QHBoxLayout * hLayout = new QHBoxLayout;
-		hLayout->setContentsMargins(0,0,0,0);
-		hLayout->addWidget(&ctrlBar);
-		hLayout->addWidget(&backButton);
-
-		QVBoxLayout * vLayout = new QVBoxLayout;
-		vLayout->setSpacing(0);
-		vLayout->setContentsMargins(0,0,0,0);
-		vLayout->addWidget(&infoLabel);
-		vLayout->addLayout(hLayout);
-
-		delete QWidget::layout();
-		QWidget::setLayout(vLayout);
-	}
-
-	void relayout()
-	{
-		ctrlBar.relayout();
-		applyLayout();
-	}
+	ToolBar(QWidget * parent = 0);
+	virtual ~ToolBar();
+	void showEvent(QShowEvent *event);
+	void resizeEvent(QResizeEvent * event);
+	virtual void changeEvent(QEvent * event);
+	void addToolWidget(ToolWidget & tw);
+	void updateButtons();
+	void applyLayout();
+	void relayout();
 
 public slots:
-	void setInfo(const QString & text)
-	{
-		infoLabel.setText(text);
-		if(text.size())
-			infoLabel.show();
-		else
-			infoLabel.hide();
-	}
-
-	void clearInfo()
-	{
-		if(!infoLabel.text().size())
-			return;
-		infoLabel.setText("");
-		infoLabel.hide();
-	}
+	void setInfo(const QString & text);
+	void clearInfo();
 
 public:
 	InfoLabel infoLabel;

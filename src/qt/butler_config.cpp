@@ -7,6 +7,8 @@
 
 #include <csjp_logger.h>
 #include <csjp_object.h>
+#include <csjp_json.h>
+#include <csjp_file.h>
 
 #include "config.h"
 #include "butler_config.h"
@@ -17,19 +19,16 @@
 static QString _dateTimeFormat;
 static QString rootDir;
 
+csjp::ObjectTree config;
+
 namespace Config {
 
-QString dbFileName;
-QString defaultDbName;
+QString configFileName;
+QString defaultDbName = "localdb";
 QLocale locale;
 double pxPerMM = 0;
 double scaleFactor = 1;
 int thresholdScrollDistance = 0;
-QString psqlHost;
-QString psqlButlerDbName;
-QString psqlUsername;
-QString psqlPassword;
-unsigned psqlPort = 0;
 
 void save()
 {
@@ -38,15 +37,11 @@ void save()
 
 	settings.setValue(prefix + "/locale", locale.bcp47Name());
 
-	settings.setValue(prefix + "/dbfile", dbFileName);
-
-	settings.setValue(prefix + "/psql-host", psqlHost);
-	settings.setValue(prefix + "/psql-dbname", psqlButlerDbName);
-	settings.setValue(prefix + "/psql-user", psqlUsername);
-	settings.setValue(prefix + "/psql-pwd", psqlPassword);
-	settings.setValue(prefix + "/psql-port", psqlPort);
-
-	settings.setValue(prefix + "/defaultDbName", defaultDbName);
+	/* JSON */
+	csjp::Json json;
+	json <<= config;
+	csjp::File file(C_STR(configFileName));
+	file.overWrite(json.data);
 }
 
 void load()
@@ -58,41 +53,13 @@ void load()
 	if(l.size())
 		locale = QLocale(l);
 
-	if(dbFileName.isEmpty())
-		dbFileName = settings.value(prefix + "/dbfile", QString()).toString();
-	if(dbFileName.isEmpty()){
-		QDir dir(QDir::homePath());
-
-		if(!dir.exists(".butler"))
-			dir.mkdir(".butler");
-		Config::dbFileName = QDir::toNativeSeparators(
-				QDir::homePath() + QString("/.butler/db.sqlite")
-				);
+	/* JSON */
+	csjp::Json json;
+	csjp::File file(C_STR(configFileName));
+	if(file.exists()){
+		json.data = file.readAll();
+		config <<= json;
 	}
-
-	psqlHost = settings.value(prefix + "/psql-host", QString()).toString();
-	if(psqlHost.isEmpty())
-		psqlHost = "localhost";
-
-	psqlButlerDbName = settings.value(prefix + "/psql-dbname", QString()).toString();
-	if(psqlButlerDbName.isEmpty())
-		psqlButlerDbName = "butler-db";
-
-	psqlUsername = settings.value(prefix + "/psql-user", QString()).toString();
-	if(psqlUsername.isEmpty())
-		psqlUsername = "username";
-
-	psqlPassword = settings.value(prefix + "/psql-pwd", QString()).toString();
-	if(psqlPassword.isEmpty())
-		psqlPassword = "password";
-
-	psqlPort = settings.value(prefix + "/psql-port", QString()).toInt();
-	if(psqlPort < 1)
-		psqlPort = 5432;
-
-	defaultDbName = settings.value(prefix + "/defaultDbName", QString()).toString();
-	if(defaultDbName.isEmpty())
-		defaultDbName = "localdb";
 }
 
 const QString & dateTimeFormat()
@@ -172,6 +139,17 @@ void initRootPath(const char * args0)
 
 	LOG("root: %s", C_STR(rootDir));
 	LOG("QDir::homePath(): %s", C_STR(QDir::homePath()));
+}
+
+void initConfigFileName()
+{
+	QDir dir(QDir::homePath());
+
+	if(!dir.exists(".butler"))
+		dir.mkdir(".butler");
+	Config::configFileName = QDir::toNativeSeparators(
+			QDir::homePath() + QString("/.butler/config.json")
+			);
 }
 
 }

@@ -85,7 +85,7 @@ function process_args ()
 				TCROOT="${VALUE}"
 			;;
 			(--debug)
-				CFLAGS="${CFLAGS} -fno-builtin -O0"
+				CFLAGS="${CFLAGS} -fno-builtin -O0 -ggdb3"
 				DEBUG=yes
 			;;
 			(--relative-path)
@@ -190,17 +190,17 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)" || exit $?
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)" || exit $?
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.2)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.3)" || exit $?
 echo "${CONFIG}" | grep staticbuild > /dev/null && {
 #	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)" || exit $?
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)" || exit $?
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)" || exit $?
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.2)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.3)" || exit $?
 } || {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)" || exit $?
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.2)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.3)" || exit $?
 }
 
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
