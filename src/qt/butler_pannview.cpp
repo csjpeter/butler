@@ -134,13 +134,16 @@ void PannView::saveState(const QString & prefix)
 void PannView::setWindowTitle(const QString & str)
 {
 	LOG("Window width: %d and %d", qApp->desktop()->width(), QWidget::width());
-	if(qApp->desktop()->width() <= QWidget::width()){
+	//if(qApp->desktop()->width() <= QWidget::width()){
+#ifdef Q_OS_ANDROID
 		titleLabel.setText(str);
 		titleLabel.show();
-	} else {
+#else
+//	} else {
 		QWidget::setWindowTitle(str);
 		titleLabel.hide();
-	}
+#endif
+//	}
 }
 
 void PannView::verticalScrollBarRangeChanged()

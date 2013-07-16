@@ -39,6 +39,7 @@ function config ()
 		--fpic \
 		--non-gnu-source \
 		--cflags=-Wno-psabi \
+		--cflags=\\\"-DQ_OS_ANDROID\\\" \
 		--cflags=\\\"-D__STDC_INT64__ -DSTDC_INT64 -DSTDC_VERSION -DSTRICT_ANSI\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}/usr/include\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include\\\" \
