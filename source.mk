@@ -155,6 +155,7 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.cpp \
+	$(DIST_DIR)/src/sql/butler_database_descriptor_set.cpp \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
 	$(DIST_DIR)/src/sql/butler_sqlquery.cpp \
 	$(DIST_DIR)/src/sql/butler_db.cpp \
@@ -177,6 +178,7 @@ source: \
 	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
 	$(DIST_DIR)/src/sql/butler_waretags_table.cpp \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.h \
+	$(DIST_DIR)/src/sql/butler_database_descriptor_set.h \
 	$(DIST_DIR)/src/sql/butler_db.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
 	$(DIST_DIR)/src/sql/butler_sqlquery.h \
@@ -209,8 +211,10 @@ source: \
 	$(DIST_DIR)/src/qt/butler_config.cpp \
 	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \
+	$(DIST_DIR)/src/qt/butler_databasesview.cpp \
 	$(DIST_DIR)/src/qt/butler_editpartnerview.cpp \
 	$(DIST_DIR)/src/qt/butler_editcompanyview.cpp \
+	$(DIST_DIR)/src/qt/butler_editdbdescview.cpp \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
 	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
@@ -233,14 +237,17 @@ source: \
 	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_waresview.cpp \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_databasesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_edititemview.h \
 	$(DIST_DIR)/src/qt/butler_application.h \
 	$(DIST_DIR)/src/qt/butler_buyitemview.h \
 	$(DIST_DIR)/src/qt/butler_config.h \
 	$(DIST_DIR)/src/qt/butler_custommodel.h \
 	$(DIST_DIR)/src/qt/butler_customview.h \
+	$(DIST_DIR)/src/qt/butler_databasesview.h \
 	$(DIST_DIR)/src/qt/butler_editpartnerview.h \
 	$(DIST_DIR)/src/qt/butler_editcompanyview.h \
+	$(DIST_DIR)/src/qt/butler_editdbdescview.h \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_editwareview.h \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.h \
@@ -263,6 +270,7 @@ source: \
 	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.h \
 	$(DIST_DIR)/src/qt/butler_waresview.h \
 	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
+	$(DIST_DIR)/src/qt/butler_databasesmodel.h \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
 	$(DIST_DIR)/src/qt/butler_pannview.h \
@@ -301,6 +309,7 @@ source: \
 	$(DIST_DIR)/share/icons/comboarrowdown.png \
 	$(DIST_DIR)/share/icons/comboarrowup.png \
 	$(DIST_DIR)/share/icons/calendar.png \
+	$(DIST_DIR)/share/icons/databases.png \
 	$(DIST_DIR)/share/icons/butler.png \
 	$(DIST_DIR)/config \
 	$(DIST_DIR)/configure \

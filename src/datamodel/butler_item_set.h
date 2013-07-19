@@ -18,7 +18,7 @@ public:
 		csjp::SorterOwnerContainer<Item>(),
 		ordering(Item::Name),
 		ascending(true){}
-	ItemSet(ItemSet &is) :
+	ItemSet(const ItemSet &is) :
 		csjp::SorterOwnerContainer<Item>(is),
 		ordering(Item::Name),
 		ascending(true){}

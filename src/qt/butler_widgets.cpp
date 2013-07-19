@@ -317,6 +317,71 @@ void InputEditor::wideLayout()
 	setLayout(newLayout);
 }
 
+PortEditor::PortEditor(QWidget * parent) :
+	QWidget(parent)
+{
+	setFocusPolicy(Qt::NoFocus);
+	label.setFocusPolicy(Qt::NoFocus);
+	QString regx("[0-9]{0,5}");
+	validator.setRegExp(QRegExp(regx));
+	editor.setValidator(&validator);
+	editor.setInputMethodHints(Qt::ImhFormattedNumbersOnly);
+	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+	connect(&editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(textChangedSlot(const QString &)));
+
+	setContentsMargins(0,0,0,0);
+	wideLayout();
+}
+
+void PortEditor::textChangedSlot(const QString & newStr)
+{
+	int pos = editor.cursorPosition();
+	QString str(newStr);
+	if(validator.validate(str, pos) != QValidator::Acceptable){
+		DBG("Invalid text: %s", C_STR(str));
+		return;
+	}
+	DBG("Value: %f", value());
+
+	valueChanged(value());
+	valueChanged(editor.text());
+	return;
+}
+
+void PortEditor::setValue(unsigned v)
+{
+	QString vStr(QString::number(v));
+	editor.blockSignals(true);
+	editor.setText(vStr);
+	editor.blockSignals(false);
+	editor.setCursorPosition(vStr.length());
+}
+
+unsigned PortEditor::value()
+{
+	return editor.text().QString::toUInt();
+}
+
+void PortEditor::narrowLayout()
+{
+	delete layout();
+	VLayout * newLayout = new VLayout;
+	newLayout->addWidget(&label, -1, Qt::AlignBottom);
+	newLayout->addWidget(&editor);
+	newLayout->setSpacing(1);
+	setLayout(newLayout);
+}
+
+void PortEditor::wideLayout()
+{
+	delete layout();
+	HLayout * newLayout = new HLayout;
+	newLayout->addWidget(&label, 1, Qt::AlignTop);
+	newLayout->addWidget(&editor, 4);
+	setLayout(newLayout);
+}
+
 DoubleEditor::DoubleEditor(QWidget * parent) :
 	QWidget(parent),
 	precision(0)

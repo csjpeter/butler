@@ -21,7 +21,7 @@ public:
 		csjp::SorterOwnerContainer<Tag>(),
 		ordering(Tag::Name),
 		ascending(true){}
-	TagSet(TagSet &ts) :
+	TagSet(const TagSet &ts) :
 		csjp::SorterOwnerContainer<Tag>(ts),
 		ordering(Tag::Name),
 		ascending(true){}

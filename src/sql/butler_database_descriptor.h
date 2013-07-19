@@ -14,12 +14,12 @@ class DatabaseDescriptor
 {
 public:
 	DatabaseDescriptor();
-	explicit DatabaseDescriptor(const DatabaseDescriptor &) = delete;
+	explicit DatabaseDescriptor(const DatabaseDescriptor &);
 	~DatabaseDescriptor();
 
-	DatabaseDescriptor& operator=(const DatabaseDescriptor &) = delete;
+	DatabaseDescriptor& operator=(const DatabaseDescriptor &);
 
-//	void copy(const DatabaseDescriptor & orig);
+	void copy(const DatabaseDescriptor & orig);
 
 	bool isEqual(const DatabaseDescriptor &t) const;
 
@@ -36,6 +36,17 @@ public:
 	QString password;
 	QString host; // domain name or ip
 	unsigned port;
+
+	enum Fields {
+		Name = 0,
+		Driver,
+		DatabaseName,
+		Username,
+		Password,
+		Host,
+		Port,
+		NumOfFields
+	};
 
 private:
 	void equal(const DatabaseDescriptor &tag);

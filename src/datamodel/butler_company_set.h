@@ -19,7 +19,7 @@ public:
 		csjp::SorterOwnerContainer<Company>(),
 		ordering(Company::Name),
 		ascending(true){}
-	CompanySet(CompanySet &ss) :
+	CompanySet(const CompanySet &ss) :
 		csjp::SorterOwnerContainer<Company>(ss),
 		ordering(Company::Name),
 		ascending(true){}

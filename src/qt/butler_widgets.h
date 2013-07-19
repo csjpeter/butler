@@ -185,6 +185,34 @@ public:
 	LineEditor editor;
 };
 
+class PortEditor : public QWidget
+{
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
+public:
+	PortEditor(QWidget * parent = 0);
+
+signals:
+	void valueChanged(double);
+	void valueChanged(const QString &);
+
+public slots:
+	void textChangedSlot(const QString & str);
+	void setValue(unsigned v);
+
+public:
+	unsigned value();
+	void narrowLayout();
+	void wideLayout();
+
+public:
+	QLabel label;
+	LineEditor editor;
+private:
+	QRegExpValidator validator;
+};
+
 class DoubleEditor : public QWidget
 {
 private:

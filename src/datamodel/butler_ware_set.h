@@ -19,7 +19,7 @@ public:
 		csjp::SorterOwnerContainer<Ware>(),
 		ordering(Ware::Name),
 		ascending(true){}
-	WareSet(WareSet &ws) :
+	WareSet(const WareSet &ws) :
 		csjp::SorterOwnerContainer<Ware>(ws),
 		ordering(Ware::Name),
 		ascending(true){}

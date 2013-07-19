@@ -138,6 +138,7 @@ STATIC_LIBDATAMODEL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-datamodel.a
 
 SQL_OBJECTS+= \
 	tmp/src/sql/butler_database_descriptor.opp \
+	tmp/src/sql/butler_database_descriptor_set.opp \
 	tmp/src/sql/butler_sql_connection.opp \
 	tmp/src/sql/butler_sqlquery.opp \
 	tmp/src/sql/butler_db.opp \
@@ -181,12 +182,15 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/butler_custommodel.opp \
 	tmp/src/qt/butler_shoppingmodel.opp \
 	tmp/src/qt/butler_queriesmodel.opp \
+	tmp/src/qt/butler_databasesmodel.opp \
 	tmp/src/qt/butler_customview.opp \
+	tmp/src/qt/butler_databasesview.opp \
 	tmp/src/qt/butler_edititemview.opp \
 	tmp/src/qt/butler_application.opp \
 	tmp/src/qt/butler_buyitemview.opp \
 	tmp/src/qt/butler_editpartnerview.opp \
 	tmp/src/qt/butler_editcompanyview.opp \
+	tmp/src/qt/butler_editdbdescview.opp \
 	tmp/src/qt/butler_edittagview.opp \
 	tmp/src/qt/butler_editwareview.opp \
 	tmp/src/qt/butler_newitemview.opp \
@@ -212,12 +216,15 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/moc/butler_custommodel.opp \
 	tmp/src/qt/moc/butler_shoppingmodel.opp \
 	tmp/src/qt/moc/butler_queriesmodel.opp \
+	tmp/src/qt/moc/butler_databasesmodel.opp \
 	tmp/src/qt/moc/butler_customview.opp \
+	tmp/src/qt/moc/butler_databasesview.opp \
 	tmp/src/qt/moc/butler_newitemview.opp \
 	tmp/src/qt/moc/butler_application.opp \
 	tmp/src/qt/moc/butler_buyitemview.opp \
 	tmp/src/qt/moc/butler_editpartnerview.opp \
 	tmp/src/qt/moc/butler_editcompanyview.opp \
+	tmp/src/qt/moc/butler_editdbdescview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
 	tmp/src/qt/moc/butler_editwareview.opp \
 	tmp/src/qt/moc/butler_edititemview.opp \
@@ -268,6 +275,7 @@ BUTLER_IMAGES+=\
 	$(ICONS_DIR)/comboarrowdown.png \
 	$(ICONS_DIR)/comboarrowup.png \
 	$(ICONS_DIR)/calendar.png \
+	$(ICONS_DIR)/databases.png \
 	$(ICONS_DIR)/butler.png
 
 #

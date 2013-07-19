@@ -5,14 +5,17 @@
 
 #include <csjp_map.h>
 #include "butler_databases.h"
+#include "butler_database_descriptor_set.h"
 
 #include <QDir>
+
+DatabaseDescriptorSet descriptorSet;
 
 class Database
 {
 public:
-	Database(csjp::Object<DatabaseDescriptor> & dd) :
-		desc(0),
+	Database(const QString & dbname) :
+		dbname(dbname),
 		database(0),
 		shoppingModel(0),
 		tagsModel(0),
@@ -21,8 +24,6 @@ public:
 		waresModel(0),
 		queriesModel(0)
 	{
-		desc = dd.release();
-		ENSURE(desc, csjp::LogicError);
 	}
 
 	explicit Database(const Database &) = delete;
@@ -35,38 +36,26 @@ public:
 		delete companyModel;
 		delete waresModel;
 		delete database;
-		delete desc;
 	}
 
 	Database& operator=(const Database &) = delete;
 
-	bool isEqual(const Database &dm) const { return *desc == *dm.desc; }
+	bool isEqual(const Database &dm) const { return dbname == dm.dbname; }
 
-	bool isLess(const Database &dm) const { return *desc < *dm.desc; }
+	bool isLess(const Database &dm) const { return dbname < dm.dbname; }
 	
-	bool isLess(const QString &s) const { return *desc < s; }
-	bool isMore(const QString &s) const { return desc->isMore(s); }
+	bool isLess(const QString &s) const { return dbname < s; }
+	bool isMore(const QString &s) const { return s < dbname; }
 
 private:
 	Db & db()
 	{
-		if(database)
-			return *database;
-
-		if(desc->driver == "QSQLITE" || desc->driver == "QPSQL") {
-			database = new Db(*desc);
-		} else
-			throw DbError("Driver '%s' is not yet supported.", C_STR(desc->driver));
-
+		if(!database)
+			database = new Db(descriptorSet.query(dbname));
 		return *database;
 	}
 
 public:
-	const DatabaseDescriptor & databaseDescriptor()
-	{
-		return *desc;
-	}
-
 	csjp::Object<CustomModel> customItems()
 	{
 		/* Each custom view shall have its own special custom model. */
@@ -116,7 +105,7 @@ public:
 	}
 
 private:
-	DatabaseDescriptor * desc;
+	QString dbname;
 	Db * database;
 	ShoppingModel * shoppingModel;
 	TagsModel * tagsModel;
@@ -156,7 +145,7 @@ inline bool operator<(const Database &a, const QString &b)
 
 
 
-static csjp::OwnerContainer<Database> databases;
+csjp::OwnerContainer<Database> databases;
 
 
 
@@ -170,7 +159,7 @@ QString defaultSQLiteDbFileName()
 
 void loadDatabases()
 {
-	databases.clear();
+	descriptorSet.clear();
 	csjp::ObjectTree & tree = config["database-connections"];
 	unsigned s = tree.objects.size();
 	for(unsigned i = 0; i < s; i++){
@@ -181,20 +170,20 @@ void loadDatabases()
 		desc->driver <<= props["driver"];
 		desc->databaseName <<= props["databaseName"];
 		desc->username <<= props["username"];
-		//desc->password <<= props["password"];
+		desc->password <<= props["password"];
 		desc->host <<= props["host"];
 		desc->port <<= props["port"];
-		registerDatabase(desc);
+		descriptorSet.add(desc);
 	}
 
 	/* Init the local database if it is not defined already */
-	if(!databases.has("localdb")){
+	if(!descriptorSet.has("localdb")){
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = "localdb";
 		sqlitedb->driver = "QSQLITE";
 		sqlitedb->databaseName = defaultSQLiteDbFileName();
 		LOG("Sqlite db file path: %s", C_STR(sqlitedb->databaseName));
-		registerDatabase(sqlitedb);
+		descriptorSet.add(sqlitedb);
 	}
 
 	/* Init default postgre database */
@@ -203,31 +192,31 @@ void loadDatabases()
 //echo "CREATE ROLE csjpeter LOGIN PASSWORD 'password' VALID UNTIL 'infinity';" | sudo -i -u postgres psql
 //echo "SELECT rolname FROM pg_roles;" | sudo -i -u postgres psql
 //echo "CREATE DATABASE csjpeter WITH ENCODING='UTF8' OWNER=csjpeter;" | sudo -i -u postgres psql
-	if(!databases.has("postgredb")){
+	if(!descriptorSet.has("postgredb")){
 		csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
 		dbDesc->name = "postgredb";
 		dbDesc->driver = "QPSQL";
 		dbDesc->databaseName = "butler-db";
 		dbDesc->host = "localhost";
 		dbDesc->username = "username";
-		dbDesc->password = "password";
+		dbDesc->password = "0eXaN4ff9HaE1zdcLBd1wy0kVZpJXy";
 		dbDesc->port = 5432;
-		registerDatabase(dbDesc);
+		descriptorSet.add(dbDesc);
 	}
 }
 
 void saveDatabases()
 {
 	csjp::ObjectTree tree("database-connections");
-	unsigned s = databases.size();
+	unsigned s = descriptorSet.size();
 	for(unsigned i = 0; i < s; i++){
-		const DatabaseDescriptor & desc = databases.queryAt(i).databaseDescriptor();
+		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
 		csjp::String name(C_STR(desc.name));
 		csjp::Map<csjp::String, csjp::String> & props = tree[name].properties;
 		props["driver"] <<= desc.driver; // for example "QSQLITE"
 		props["databaseName"] <<= desc.databaseName; //file name in case of sqlite
 		props["username"] <<= desc.username;
-		//props["password"] <<= desc.password;
+		props["password"] <<= desc.password;
 		props["host"] <<= desc.host; // domain name or ip
 		props["port"] = desc.port;
 	}
@@ -235,48 +224,55 @@ void saveDatabases()
 	origTree = move_cast(tree);
 }
 
-void registerDatabase(csjp::Object<DatabaseDescriptor> & desc)
+Database & loadDatabase(const QString & name)
 {
-	csjp::Object<Database> db(new Database(desc));
-	databases.add(db);
+	if(!databases.has(name)){
+		if(!descriptorSet.has(name))
+			throw DbError("Database connection '%s' is not yet specified.",
+					C_STR(name));
+		csjp::Object<Database> db(new Database(name));
+		databases.add(db);
+	}
+
+	return databases.query(name);
 }
 
 csjp::Object<CustomModel> customModel(const QString & dbname)
 {
-	return databases.query(dbname).customItems();
+	return loadDatabase(dbname).customItems();
 }
-
-const DatabaseDescriptor & databaseDescriptor(const QString & dbname)
+/*
+DatabaseDescriptor & databaseDescriptor(const QString & dbname)
 {
-	return databases.query(dbname).databaseDescriptor();
+	return loadDatabase(dbname).databaseDescriptor();
 }
-
+*/
 ShoppingModel & shoppingModel(const QString & dbname)
 {
-	return databases.query(dbname).shoppingItems();
+	return loadDatabase(dbname).shoppingItems();
 }
 
 TagsModel & tagsModel(const QString & dbname)
 {
-	return databases.query(dbname).tags();
+	return loadDatabase(dbname).tags();
 }
 
 PartnersModel & partnersModel(const QString & dbname)
 {
-	return databases.query(dbname).partners();
+	return loadDatabase(dbname).partners();
 }
 
 CompanyModel & companyModel(const QString & dbname)
 {
-	return databases.query(dbname).company();
+	return loadDatabase(dbname).company();
 }
 
 WaresModel & waresModel(const QString & dbname)
 {
-	return databases.query(dbname).wares();
+	return loadDatabase(dbname).wares();
 }
 
 QueriesModel & queriesModel(const QString & dbname)
 {
-	return databases.query(dbname).queries();
+	return loadDatabase(dbname).queries();
 }

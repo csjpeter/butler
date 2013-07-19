@@ -7,6 +7,7 @@
 #define BUTLER_MACROS_H
 
 #include <QCoreApplication>
+#include <QVariant>
 #include <csjp_string.h>
 
 #define C_STR(QStr) QStr.toUtf8().constData()
@@ -37,5 +38,9 @@
 
 inline csjp::String & operator<<= (csjp::String & str, const QString & qstr) { str = C_STR(qstr); return str; }
 inline QString & operator<<= (QString & qstr, const csjp::String & str) { qstr = str.c_str(); return qstr; }
+
+inline QString & operator<<= (QString & qstr, const QVariant & v) { qstr = v.toString(); return qstr; }
+inline int & operator<<= (int & i, const QVariant & v) { i = v.toInt(); return i; }
+inline unsigned & operator<<= (unsigned & u, const QVariant & v) { u = v.toUInt(); return u; }
 
 #endif

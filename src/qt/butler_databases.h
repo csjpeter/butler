@@ -21,11 +21,10 @@
 #include <butler_waresmodel.h>
 #include <butler_queriesmodel.h>
 
-void registerDatabase(csjp::Object<DatabaseDescriptor> &);
 void loadDatabases();
 void saveDatabases();
 
-const DatabaseDescriptor & databaseDescriptor(const QString & dbname);
+//DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 
 csjp::Object<CustomModel> customModel(const QString & dbname);
 ShoppingModel & shoppingModel(const QString & dbname);

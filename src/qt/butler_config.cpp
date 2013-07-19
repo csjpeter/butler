@@ -37,6 +37,8 @@ void save()
 
 	settings.setValue(prefix + "/locale", locale.bcp47Name());
 
+	config.set("defaultDb", C_STR(Config::defaultDbName));
+
 	/* JSON */
 	csjp::Json json;
 	json <<= config;
@@ -60,6 +62,8 @@ void load()
 		json.data = file.readAll();
 		config <<= json;
 	}
+
+	Config::defaultDbName <<= config.get("defaultDb", csjp::String(C_STR(Config::defaultDbName)));
 }
 
 const QString & dateTimeFormat()

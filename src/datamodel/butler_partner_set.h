@@ -19,7 +19,7 @@ public:
 		csjp::SorterOwnerContainer<Partner>(),
 		ordering(Partner::Name),
 		ascending(true){}
-	PartnerSet(PartnerSet &ss) :
+	PartnerSet(const PartnerSet &ss) :
 		csjp::SorterOwnerContainer<Partner>(ss),
 		ordering(Partner::Name),
 		ascending(true){}

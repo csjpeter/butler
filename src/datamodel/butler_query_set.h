@@ -15,7 +15,7 @@ class QuerySet : public csjp::SorterOwnerContainer<Query>
 {
 public:
 	QuerySet() : csjp::SorterOwnerContainer<Query>() {}
-	QuerySet(QuerySet &qs) : csjp::SorterOwnerContainer<Query>(qs) {}
+	QuerySet(const QuerySet &qs) : csjp::SorterOwnerContainer<Query>(qs) {}
 	~QuerySet() {}
 
 	Query& query(const QString &name) const {

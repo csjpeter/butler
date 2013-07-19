@@ -18,6 +18,7 @@
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
 #include "butler_customview.h"
+#include "butler_databasesview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 
@@ -36,6 +37,7 @@ SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
 SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
 SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
 SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
+SCC TidDatabasesButton = QT_TRANSLATE_NOOP("MainView", "Databases");
 SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
 SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
 
@@ -63,10 +65,12 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
 	tagButton(QIcon(Path::icon("tag.png")),
 			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
+	databasesButton(QIcon(Path::icon("databases.png")),
+			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F8)),
 	infoButton(QIcon(Path::icon("info.png")),
-			TidInfoButton, TidContext, QKeySequence(Qt::Key_F8)),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F9)),
 	quitButton(QIcon(Path::icon("delete.png")),
-			TidQuitButton, TidContext, QKeySequence(Qt::Key_F9)),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F10)),
 	shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
@@ -74,6 +78,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	companyView(NULL),
 	waresView(NULL),
 	tagsView(NULL),
+	databasesView(NULL),
 	queryOptionsView(NULL),
 	infoView(NULL)
 {
@@ -90,6 +95,7 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
 	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
+	connect(&databasesButton, SIGNAL(clicked()), this, SLOT(openDatabasesView()));
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
@@ -106,6 +112,7 @@ MainView::~MainView()
 	delete partnersView;
 	delete companyView;
 	delete tagsView;
+	delete databasesView;
 	delete waresView;
 	delete queryOptionsView;
 	delete infoView;
@@ -134,6 +141,7 @@ void MainView::applyLayout()
 	layout->addWidget(&tagButton);
 	layout->addWidget(&partnersButton);
 	layout->addWidget(&companyButton);
+	layout->addWidget(&databasesButton);
 	layout->addWidget(&infoButton);
 	layout->addWidget(&quitButton);
 
@@ -156,6 +164,7 @@ void MainView::relayout()
 	companyButton.expanding();
 	wareButton.expanding();
 	tagButton.expanding();
+	databasesButton.expanding();
 	infoButton.expanding();
 	quitButton.expanding();
 
@@ -212,6 +221,8 @@ void MainView::loadState()
 		openWaresView();
 	if(settings.value(prefix + "/tagsview", false).toBool())
 		openTagsView();
+	if(settings.value(prefix + "/databasesview", false).toBool())
+		openDatabasesView();
 	if(settings.value(prefix + "/queryoptionsview", false).toBool())
 		openQueryOptionsView();
 	if(settings.value(prefix + "/infoview", false).toBool())
@@ -243,6 +254,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = waresView;
 	else if(activeWindowName == "tagsView")
 		activeWindow = tagsView;
+	else if(activeWindowName == "databasesView")
+		activeWindow = databasesView;
 	else if(activeWindowName == "queryOptionsView")
 		activeWindow = queryOptionsView;
 	else if(activeWindowName == "infoView")
@@ -265,7 +278,7 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(companyView);
 	SAVE_VIEW_STATE(tagsView);
 	SAVE_VIEW_STATE(waresView);
-	SAVE_VIEW_STATE(tagsView);
+	SAVE_VIEW_STATE(databasesView);
 	SAVE_VIEW_STATE(queryOptionsView);
 	SAVE_VIEW_STATE(infoView);
 
@@ -287,13 +300,13 @@ void MainView::saveState()
 		activeWindowName = "waresView";
 	else if(activeWindow == tagsView)
 		activeWindowName = "tagsView";
+	else if(activeWindow == databasesView)
+		activeWindowName = "databasesView";
 	else if(activeWindow == queryOptionsView)
 		activeWindowName = "queryOptionsView";
 	else if(activeWindow == infoView)
 		activeWindowName = "infoView";
 	settings.setValue(prefix + "/activeWindow", activeWindowName);
-
-	settings.setValue(prefix + "/dbfile", databaseDescriptor(dbname).databaseName);
 }
 
 void MainView::openTodoView()
@@ -351,6 +364,13 @@ void MainView::openWaresView()
 	if(!waresView)
 		waresView = new WaresView(dbname);
 	waresView->activate();
+}
+
+void MainView::openDatabasesView()
+{
+	if(!databasesView)
+		databasesView = new DatabasesView(dbname);
+	databasesView->activate();
 }
 
 void MainView::openTagsView()
