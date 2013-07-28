@@ -196,9 +196,9 @@ void loadDatabases()
 		csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
 		dbDesc->name = "postgredb";
 		dbDesc->driver = "QPSQL";
-		dbDesc->databaseName = "butler-db";
-		dbDesc->host = "localhost";
-		dbDesc->username = "username";
+		dbDesc->databaseName = "butler";
+		dbDesc->host = "csjpeter.dyndns.org";
+		dbDesc->username = "csjpeter";
 		dbDesc->password = "0eXaN4ff9HaE1zdcLBd1wy0kVZpJXy";
 		dbDesc->port = 5432;
 		descriptorSet.add(dbDesc);
