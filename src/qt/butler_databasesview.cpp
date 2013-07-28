@@ -21,9 +21,8 @@ SCC TidDelButton = QT_TRANSLATE_NOOP("DatabasesView", "Delete database connectio
 
 DatabasesModel model;
 
-DatabasesView::DatabasesView(const QString & dbname, QWidget * parent) :
+DatabasesView::DatabasesView(QWidget * parent) :
 	PannView(parent),
-	dbname(dbname),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -141,12 +140,12 @@ void DatabasesView::loadState()
 	QSettings settings;
 
 	tableView.loadState(prefix);
-
+/*
 	QString dbname; dbname <<= settings.value(prefix + "/currentitem", "");
 	int col; col <<= settings.value(prefix + "/currentitemCol", "");
 	if(model.has(dbname))
 		tableView.setCurrentIndex(model.index(model.index(dbname), col));
-
+*/
 	if(settings.value(prefix + "/editDbDescView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
 

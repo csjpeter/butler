@@ -46,8 +46,9 @@ private slots:
 	void filterAcceptedSlot();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 
+public:
+	const QString dbname;
 private:
-	const QString & dbname;
 	ShoppingModel & model;
 
 	QComboBox *partnerBox;

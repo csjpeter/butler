@@ -44,10 +44,19 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditItemView", "Please fill at l
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is updated.");
 
+EditItemView * EditItemView::newItemViewFactory(const QString & dbname)
+{
+	csjp::Object<CustomModel> ownModel = customModel(dbname);
+	EditItemView * view = new EditItemView(dbname, *ownModel);
+	view->ownModel = ownModel.release();
+	return view;
+}
+
 EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model),
+	ownModel(NULL),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -117,6 +126,8 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 
 EditItemView::~EditItemView()
 {
+	if(ownModel)
+		delete ownModel;
 }
 
 void EditItemView::showEvent(QShowEvent *event)

@@ -19,7 +19,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	DatabasesView(const QString & dbname, QWidget * parent = 0);
+	DatabasesView(QWidget * parent = 0);
 	virtual ~DatabasesView();
 
 	virtual void loadState();
@@ -46,8 +46,6 @@ private slots:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
-	const QString & dbname;
-
 	ToolButton addButton;
 	ToolButton delButton;
 	ToolButton editButton;

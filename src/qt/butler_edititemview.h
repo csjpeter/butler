@@ -20,6 +20,8 @@ public:
 	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
 	virtual ~EditItemView();
 
+	static EditItemView * newItemViewFactory(const QString & dbname);
+
 	void setCursor(const QModelIndex& index);
 
 	void loadState();
@@ -50,9 +52,11 @@ private slots:
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
 
-private:
+public:
 	const QString & dbname;
+private:
 	ItemsModel & model;
+	ItemsModel * ownModel;
 	QModelIndex cursor;
 	Item item;
 	Ware ware;

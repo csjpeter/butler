@@ -8,7 +8,6 @@
 
 #include <butler_pannview.h>
 #include <butler_query.h>
-#include <butler_databases.h>
 
 /*forwards*/
 class ShoppingView;
@@ -61,8 +60,7 @@ private slots:
 	void openInfoView();
 
 private:
-	QString dbname;
-	csjp::Object<CustomModel> model;
+	const QString & dbname;
 
 	ToolButton todoButton;
 	ToolButton shoppingButton;

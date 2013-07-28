@@ -48,7 +48,6 @@ https://www.googleapis.com/customsearch/v1?key=AIzaSyBz1WwkrfA8UursvLiUqRTJ2nC5b
 MainView::MainView(const QString & dbname, QWidget *parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(customModel(dbname)),
 	todoButton(QIcon(Path::icon("list.png")),
 			TidTodoButton, TidContext, QKeySequence(Qt::Key_F1)),
 	shoppingButton(QIcon(Path::icon("shopping.png")),
@@ -320,14 +319,28 @@ void MainView::openShoppingView()
 {
 	if(!shoppingView)
 		shoppingView = new ShoppingView(dbname);
-	shoppingView->activate();
+	if(shoppingView->dbname == dbname){
+		shoppingView->activate();
+	} else {
+		ShoppingView *anotherShoppingView;
+		anotherShoppingView = new ShoppingView(dbname);
+		anotherShoppingView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherShoppingView->activate();
+	}
 }
 
 void MainView::openEditItemView()
 {
 	if(!newItemView)
-		newItemView = new EditItemView(dbname, *model);
-	newItemView->activate();
+		newItemView = EditItemView::newItemViewFactory(dbname);
+	if(newItemView->dbname == dbname){
+		newItemView->activate();
+	} else {
+		EditItemView *anotherEditItemView;
+		anotherEditItemView = EditItemView::newItemViewFactory(dbname);
+		anotherEditItemView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherEditItemView->activate();
+	}
 }
 
 void MainView::openCustomView()
@@ -335,7 +348,7 @@ void MainView::openCustomView()
 	if(!customView)
 		customView = new CustomView(dbname);
 
-	if(!customView->isVisible()){
+	if(!customView->isVisible() && customView->dbname == dbname){
 		customView->activate();
 	} else {
 		CustomView *anotherCustomView;
@@ -349,27 +362,48 @@ void MainView::openPartnersView()
 {
 	if(!partnersView)
 		partnersView = new PartnersView(dbname);
-	partnersView->activate();
+	if(partnersView->dbname == dbname){
+		partnersView->activate();
+	} else {
+		PartnersView *anotherPartnersView;
+		anotherPartnersView = new PartnersView(dbname);
+		anotherPartnersView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherPartnersView->activate();
+	}
 }
 
 void MainView::openCompanyView()
 {
 	if(!companyView)
 		companyView = new CompanyView(dbname);
-	companyView->activate();
+	if(companyView->dbname == dbname){
+		companyView->activate();
+	} else {
+		CompanyView *anotherCompanyView;
+		anotherCompanyView = new CompanyView(dbname);
+		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherCompanyView->activate();
+	}
 }
 
 void MainView::openWaresView()
 {
 	if(!waresView)
 		waresView = new WaresView(dbname);
-	waresView->activate();
+	if(waresView->dbname == dbname){
+		waresView->activate();
+	} else {
+		WaresView *anotherWaresView;
+		anotherWaresView = new WaresView(dbname);
+		anotherWaresView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherWaresView->activate();
+	}
 }
 
 void MainView::openDatabasesView()
 {
 	if(!databasesView)
-		databasesView = new DatabasesView(dbname);
+		databasesView = new DatabasesView();
 	databasesView->activate();
 }
 
@@ -377,7 +411,14 @@ void MainView::openTagsView()
 {
 	if(!tagsView)
 		tagsView = new TagsView(dbname);
-	tagsView->activate();
+	if(tagsView->dbname == dbname){
+		tagsView->activate();
+	} else {
+		TagsView *anotherTagsView;
+		anotherTagsView = new TagsView(dbname);
+		anotherTagsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherTagsView->activate();
+	}
 }
 
 void MainView::openQueryOptionsView()

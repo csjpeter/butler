@@ -47,8 +47,9 @@ private slots:
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
+public:
+	const QString dbname;
 private:
-	const QString & dbname;
 	WaresModel & model;
 
 	ToolButton addButton;
