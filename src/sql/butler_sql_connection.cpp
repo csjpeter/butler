@@ -41,23 +41,7 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 					C_STR(dbDesc.name), C_STR(dbErrorString()));
 	}
 	ENSURE(db.isValid(), csjp::LogicError);
-	
-	db.setDatabaseName(dbDesc.databaseName);
-	if(db.lastError().isValid())
-		throw DbError("Failed to set database name to %s.\nError: %s",
-				C_STR(dbDesc.databaseName),
-				C_STR(dbErrorString()));
 
-	if(dbDesc.driver != "QSQLITE"){
-		db.setHostName(dbDesc.host);
-		db.setUserName(dbDesc.username);
-		db.setPassword(dbDesc.password);
-		db.setPort(dbDesc.port);
-	}
-
-#ifdef DEBUG
-	listAvailableFeatures(db, dbDesc);
-#endif
 	open();
 }
 
@@ -79,6 +63,25 @@ void SqlConnection::open()
 	if(db.isOpen()) return;
 
 	ENSURE(db.isValid(), csjp::LogicError);
+
+	db.setDatabaseName(dbDesc.databaseName);
+	if(db.lastError().isValid())
+		throw DbError("Failed to set database name to %s.\nError: %s",
+				C_STR(dbDesc.databaseName),
+				C_STR(dbErrorString()));
+
+	if(dbDesc.driver != "QSQLITE"){
+		db.setHostName(dbDesc.host);
+		db.setUserName(dbDesc.username);
+		db.setPassword(dbDesc.password);
+		db.setPort(dbDesc.port);
+	} else {
+		db.setPort(-1);
+	}
+
+#ifdef DEBUG
+	listAvailableFeatures(db, dbDesc);
+#endif
 
 	db.open();
 	if(db.lastError().isValid())

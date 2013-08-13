@@ -28,7 +28,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	MainView(const QString & dbname, QWidget *parent = 0);
+	MainView(QWidget *parent = 0);
 	virtual ~MainView();
 
 	virtual void loadState();
@@ -47,6 +47,7 @@ private:
 
 private slots:
 	void activateSavedActiveWindow();
+	void activeDbChanged();
 	void openTodoView();
 	void openShoppingView();
 	void openEditItemView();
@@ -60,7 +61,7 @@ private slots:
 	void openInfoView();
 
 private:
-	const QString & dbname;
+	InfoLabel infoLabel;
 
 	ToolButton todoButton;
 	ToolButton shoppingButton;

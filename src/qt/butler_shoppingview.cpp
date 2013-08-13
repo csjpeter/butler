@@ -23,7 +23,8 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	buyItemView(NULL),
 	tagFilterView(NULL)
 {
-	setWindowTitle(tr("Shopping list"));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr("Shopping list"));
 
 	QHBoxLayout * cLayout = new QHBoxLayout;
 	QPushButton * button;

@@ -84,7 +84,8 @@ CustomView::~CustomView()
 
 void CustomView::retranslate()
 {
-	setWindowTitle(tr(TidAnaliticsWindowTitle));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidAnaliticsWindowTitle));
 	relayout();
 }
 

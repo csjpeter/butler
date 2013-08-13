@@ -63,7 +63,8 @@ TagsView::~TagsView()
 
 void TagsView::retranslate()
 {
-	setWindowTitle(tr(TidTagsWindowTitle));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidTagsWindowTitle));
 	relayout();
 }
 

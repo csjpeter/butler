@@ -276,6 +276,7 @@ BUTLER_IMAGES+=\
 	$(ICONS_DIR)/comboarrowup.png \
 	$(ICONS_DIR)/calendar.png \
 	$(ICONS_DIR)/databases.png \
+	$(ICONS_DIR)/use.png \
 	$(ICONS_DIR)/butler.png
 
 #

@@ -21,8 +21,8 @@ class Db
 {
 public:
 	Db(const DatabaseDescriptor & dbDesc) :
-		sql(dbDesc),
 		desc(dbDesc),
+		sql(desc),
 		tag(sql),
 		query(sql, tag),
 		ware(sql, tag),
@@ -40,11 +40,13 @@ public:
 		query.check(tables);
 	}
 	~Db() { }
+	bool isOpen() { return sql.isOpen(); }
 
+public:
+	DatabaseDescriptor desc;
 private:
 	SqlConnection sql;
 public:
-	const DatabaseDescriptor & desc;
 	TagDb tag;
 	QueryDb query;
 	WareDb ware;

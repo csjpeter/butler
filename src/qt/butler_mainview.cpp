@@ -40,14 +40,14 @@ SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
 SCC TidDatabasesButton = QT_TRANSLATE_NOOP("MainView", "Databases");
 SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
 SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
+SCC TidCurrentDbInfo = QT_TRANSLATE_NOOP("MainView", "Current database: %1");
 
 /* Search for images using google:
 https://www.googleapis.com/customsearch/v1?key=AIzaSyBz1WwkrfA8UursvLiUqRTJ2nC5bytMHQk&fileType=jpg&fileType=ong&cr=hu&searchType=image&cx=007625690417709007201:tyovxvdl-ek&q=tolnatej
 */
 
-MainView::MainView(const QString & dbname, QWidget *parent) :
+MainView::MainView(QWidget *parent) :
 	PannView(parent),
-	dbname(dbname),
 	todoButton(QIcon(Path::icon("list.png")),
 			TidTodoButton, TidContext, QKeySequence(Qt::Key_F1)),
 	shoppingButton(QIcon(Path::icon("shopping.png")),
@@ -98,8 +98,8 @@ MainView::MainView(const QString & dbname, QWidget *parent) :
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-	retranslate();
 	loadState();
+	retranslate();
 }
 
 MainView::~MainView()
@@ -120,6 +120,7 @@ MainView::~MainView()
 void MainView::retranslate()
 {
 	setWindowTitle(tr(TidMainWindowTitle).arg(PKGNAME));
+	activeDbChanged();
 
 	relayout();
 }
@@ -129,6 +130,8 @@ void MainView::applyLayout()
 	HLayout * mainLayout = new HLayout;
 
 	VLayout * layout = new VLayout;
+
+	layout->addWidget(&infoLabel);
 
 	layout->addStretch(0);
 
@@ -204,30 +207,34 @@ void MainView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
-//	if(settings.value(prefix + "/todoview", false).toBool())
-//		openTodoView();
-	if(settings.value(prefix + "/shoppingview", false).toBool())
-		openShoppingView();
-	if(settings.value(prefix + "/newitemview", false).toBool())
-		openEditItemView();
-	if(settings.value(prefix + "/customview", false).toBool())
-		openCustomView();
-	if(settings.value(prefix + "/partnersview", false).toBool())
-		openPartnersView();
-	if(settings.value(prefix + "/companyview", false).toBool())
-		openCompanyView();
-	if(settings.value(prefix + "/waresview", false).toBool())
-		openWaresView();
-	if(settings.value(prefix + "/tagsview", false).toBool())
-		openTagsView();
-	if(settings.value(prefix + "/databasesview", false).toBool())
-		openDatabasesView();
-	if(settings.value(prefix + "/queryoptionsview", false).toBool())
-		openQueryOptionsView();
-	if(settings.value(prefix + "/infoview", false).toBool())
-		openInfoView();
+	try {
+		//if(settings.value(prefix + "/todoview", false).toBool())
+		//	openTodoView();
+		if(settings.value(prefix + "/shoppingview", false).toBool())
+			openShoppingView();
+		if(settings.value(prefix + "/newitemview", false).toBool())
+			openEditItemView();
+		if(settings.value(prefix + "/customview", false).toBool())
+			openCustomView();
+		if(settings.value(prefix + "/partnersview", false).toBool())
+			openPartnersView();
+		if(settings.value(prefix + "/companyview", false).toBool())
+			openCompanyView();
+		if(settings.value(prefix + "/waresview", false).toBool())
+			openWaresView();
+		if(settings.value(prefix + "/tagsview", false).toBool())
+			openTagsView();
+		if(settings.value(prefix + "/databasesview", false).toBool())
+			openDatabasesView();
+		if(settings.value(prefix + "/queryoptionsview", false).toBool())
+			openQueryOptionsView();
+		if(settings.value(prefix + "/infoview", false).toBool())
+			openInfoView();
 
-	QTimer::singleShot(0, this, SLOT(activateSavedActiveWindow()));
+		QTimer::singleShot(0, this, SLOT(activateSavedActiveWindow()));
+	} catch (DbError & e) {
+		EXCEPTION(e);
+	}
 }
 
 void MainView::activateSavedActiveWindow()
@@ -308,22 +315,30 @@ void MainView::saveState()
 	settings.setValue(prefix + "/activeWindow", activeWindowName);
 }
 
+void MainView::activeDbChanged()
+{
+	if(Config::defaultDbName != "localdb")
+		infoLabel.setText(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+	else
+		infoLabel.setText("");
+}
+
 void MainView::openTodoView()
 {
 /*	if(!todoView)
-		todoView = new TodoView(dbname);
+		todoView = new TodoView(Config::defaultDbName);
 	todoView->activate();*/
 }
 
 void MainView::openShoppingView()
 {
 	if(!shoppingView)
-		shoppingView = new ShoppingView(dbname);
-	if(shoppingView->dbname == dbname){
+		shoppingView = new ShoppingView(Config::defaultDbName);
+	if(shoppingView->dbname == Config::defaultDbName){
 		shoppingView->activate();
 	} else {
 		ShoppingView *anotherShoppingView;
-		anotherShoppingView = new ShoppingView(dbname);
+		anotherShoppingView = new ShoppingView(Config::defaultDbName);
 		anotherShoppingView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherShoppingView->activate();
 	}
@@ -332,12 +347,12 @@ void MainView::openShoppingView()
 void MainView::openEditItemView()
 {
 	if(!newItemView)
-		newItemView = EditItemView::newItemViewFactory(dbname);
-	if(newItemView->dbname == dbname){
+		newItemView = EditItemView::newItemViewFactory(Config::defaultDbName);
+	if(newItemView->dbname == Config::defaultDbName){
 		newItemView->activate();
 	} else {
 		EditItemView *anotherEditItemView;
-		anotherEditItemView = EditItemView::newItemViewFactory(dbname);
+		anotherEditItemView = EditItemView::newItemViewFactory(Config::defaultDbName);
 		anotherEditItemView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherEditItemView->activate();
 	}
@@ -346,13 +361,13 @@ void MainView::openEditItemView()
 void MainView::openCustomView()
 {
 	if(!customView)
-		customView = new CustomView(dbname);
+		customView = new CustomView(Config::defaultDbName);
 
-	if(!customView->isVisible() && customView->dbname == dbname){
+	if(!customView->isVisible() && customView->dbname == Config::defaultDbName){
 		customView->activate();
 	} else {
 		CustomView *anotherCustomView;
-		anotherCustomView = new CustomView(dbname);
+		anotherCustomView = new CustomView(Config::defaultDbName);
 		anotherCustomView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherCustomView->activate();
 	}
@@ -361,12 +376,12 @@ void MainView::openCustomView()
 void MainView::openPartnersView()
 {
 	if(!partnersView)
-		partnersView = new PartnersView(dbname);
-	if(partnersView->dbname == dbname){
+		partnersView = new PartnersView(Config::defaultDbName);
+	if(partnersView->dbname == Config::defaultDbName){
 		partnersView->activate();
 	} else {
 		PartnersView *anotherPartnersView;
-		anotherPartnersView = new PartnersView(dbname);
+		anotherPartnersView = new PartnersView(Config::defaultDbName);
 		anotherPartnersView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherPartnersView->activate();
 	}
@@ -375,12 +390,12 @@ void MainView::openPartnersView()
 void MainView::openCompanyView()
 {
 	if(!companyView)
-		companyView = new CompanyView(dbname);
-	if(companyView->dbname == dbname){
+		companyView = new CompanyView(Config::defaultDbName);
+	if(companyView->dbname == Config::defaultDbName){
 		companyView->activate();
 	} else {
 		CompanyView *anotherCompanyView;
-		anotherCompanyView = new CompanyView(dbname);
+		anotherCompanyView = new CompanyView(Config::defaultDbName);
 		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherCompanyView->activate();
 	}
@@ -389,12 +404,12 @@ void MainView::openCompanyView()
 void MainView::openWaresView()
 {
 	if(!waresView)
-		waresView = new WaresView(dbname);
-	if(waresView->dbname == dbname){
+		waresView = new WaresView(Config::defaultDbName);
+	if(waresView->dbname == Config::defaultDbName){
 		waresView->activate();
 	} else {
 		WaresView *anotherWaresView;
-		anotherWaresView = new WaresView(dbname);
+		anotherWaresView = new WaresView(Config::defaultDbName);
 		anotherWaresView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherWaresView->activate();
 	}
@@ -402,20 +417,22 @@ void MainView::openWaresView()
 
 void MainView::openDatabasesView()
 {
-	if(!databasesView)
+	if(!databasesView){
 		databasesView = new DatabasesView();
+		connect(databasesView, SIGNAL(activeDbChanged()), this, SLOT(activeDbChanged()));
+	}
 	databasesView->activate();
 }
 
 void MainView::openTagsView()
 {
 	if(!tagsView)
-		tagsView = new TagsView(dbname);
-	if(tagsView->dbname == dbname){
+		tagsView = new TagsView(Config::defaultDbName);
+	if(tagsView->dbname == Config::defaultDbName){
 		tagsView->activate();
 	} else {
 		TagsView *anotherTagsView;
-		anotherTagsView = new TagsView(dbname);
+		anotherTagsView = new TagsView(Config::defaultDbName);
 		anotherTagsView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherTagsView->activate();
 	}

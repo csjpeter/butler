@@ -18,6 +18,8 @@ SCC TidDatabasesWindowTitle = QT_TRANSLATE_NOOP("DatabasesView", "Database conne
 SCC TidAddButton = QT_TRANSLATE_NOOP("DatabasesView", "Add new database connection");
 SCC TidEditButton = QT_TRANSLATE_NOOP("DatabasesView", "Edit database connection");
 SCC TidDelButton = QT_TRANSLATE_NOOP("DatabasesView", "Delete database connection");
+SCC TidUseButton = QT_TRANSLATE_NOOP("DatabasesView", "Use database connection");
+SCC TidCurrentDbInfo = QT_TRANSLATE_NOOP("DatabasesView", "Current database: %1");
 
 DatabasesModel model;
 
@@ -25,10 +27,12 @@ DatabasesView::DatabasesView(QWidget * parent) :
 	PannView(parent),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
-	delButton(QIcon(Path::icon("delete.png")),
-			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
 	editButton(QIcon(Path::icon("edit.png")),
 			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
+	delButton(QIcon(Path::icon("delete.png")),
+			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
+	useButton(QIcon(Path::icon("use.png")),
+			TidUseButton, TidContext, QKeySequence(Qt::Key_F4)),
 	newDbDescView(NULL),
 	editDbDescView(NULL)
 {
@@ -40,10 +44,12 @@ DatabasesView::DatabasesView(QWidget * parent) :
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);
 	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(useButton);
 
 	connect(&addButton, SIGNAL(clicked()), this, SLOT(newDbDesc()));
 	connect(&editButton, SIGNAL(clicked()), this, SLOT(editDbDesc()));
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delDbDesc()));
+	connect(&useButton, SIGNAL(clicked()), this, SLOT(useDbDesc()));
 
 	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
@@ -62,6 +68,7 @@ DatabasesView::~DatabasesView()
 void DatabasesView::retranslate()
 {
 	setWindowTitle(tr(TidDatabasesWindowTitle));
+	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
 	relayout();
 }
 
@@ -79,10 +86,10 @@ void DatabasesView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
-				Item::Comment, QHeaderView::Stretch);
+				DatabaseDescriptor::DatabaseName, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setResizeMode(
-				Item::Comment, QHeaderView::ResizeToContents);
+				DatabaseDescriptor::DatabaseName, QHeaderView::ResizeToContents);
 
 	applyLayout();
 
@@ -94,9 +101,11 @@ void DatabasesView::updateToolButtonStates()
 	if(tableView.currentIndex().isValid()){
 		editButton.show();
 		delButton.show();
+		useButton.show();
 	} else {
 		editButton.hide();
 		delButton.hide();
+		useButton.hide();
 	}
 	toolBar.updateButtons();
 }
@@ -140,15 +149,17 @@ void DatabasesView::loadState()
 	QSettings settings;
 
 	tableView.loadState(prefix);
-/*
+
 	QString dbname; dbname <<= settings.value(prefix + "/currentitem", "");
 	int col; col <<= settings.value(prefix + "/currentitemCol", "");
 	if(model.has(dbname))
 		tableView.setCurrentIndex(model.index(model.index(dbname), col));
-*/
-	if(settings.value(prefix + "/editDbDescView", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
 
+	if(settings.value(prefix + "/newDbDescView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(newDbDesc()));
+
+	if(settings.value(prefix + "/editDbDescView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editDbDesc()));
 }
 
 void DatabasesView::saveState()
@@ -156,6 +167,17 @@ void DatabasesView::saveState()
 	QString prefix("DatabasesView");
 	PannView::saveState(prefix);
 	QSettings settings;
+
+	QString name;
+	if(tableView.currentIndex().isValid())
+		name = model.query(tableView.currentIndex().row()).name;
+	settings.setValue(prefix + "/currentitem", name);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
+
+	tableView.saveState(prefix);
+
+	SAVE_VIEW_STATE(newDbDescView);
+	SAVE_VIEW_STATE(editDbDescView);
 }
 
 void DatabasesView::newDbDesc()
@@ -201,6 +223,14 @@ void DatabasesView::delDbDesc()
 		model.del(row);
 }
 
+void DatabasesView::useDbDesc()
+{
+	int row = tableView.currentIndex().row();
+	Config::defaultDbName = model.query(row).name;
+	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+	activeDbChanged();
+}
+
 void DatabasesView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model.sort(logicalIndex, order == Qt::AscendingOrder);
@@ -211,5 +241,4 @@ void DatabasesView::currentIndexChanged(const QModelIndex & current, const QMode
 	if(current.isValid() == previous.isValid())
 		return;
 	updateToolButtonStates();
-	Config::defaultDbName = model.query(current.row()).name; /* FIXME */
 }

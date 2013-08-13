@@ -31,7 +31,7 @@ Application::~Application()
 MainView & Application::mainView()
 {
 	if(!mainViewPtr)
-		mainViewPtr = new MainView(Config::defaultDbName);
+		mainViewPtr = new MainView();
 	return *mainViewPtr;
 }
 

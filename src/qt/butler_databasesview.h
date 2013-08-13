@@ -25,6 +25,9 @@ public:
 	virtual void loadState();
 	virtual void saveState();
 
+signals:
+	void activeDbChanged();
+
 private:
 	virtual void showEvent(QShowEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
@@ -42,13 +45,15 @@ private slots:
 	void newDbDesc();
 	void editDbDesc();
 	void delDbDesc();
+	void useDbDesc();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
 	ToolButton addButton;
-	ToolButton delButton;
 	ToolButton editButton;
+	ToolButton delButton;
+	ToolButton useButton;
 
 	TableView tableView;
 

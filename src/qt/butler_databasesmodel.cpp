@@ -195,11 +195,11 @@ int DatabasesModel::columnCount(const QModelIndex & parent) const
 	return DatabaseDescriptor::NumOfFields;
 }
 
-bool DatabasesModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+bool DatabasesModel::removeRows(int row, int count, const QModelIndex &parent)
 {
 	try {
 		beginRemoveRows(parent, row, row + count - 1);
+		descriptorSet.removeAt(row);
 		endRemoveRows();
 	} catch (...) {
 		endRemoveRows();
@@ -241,14 +241,7 @@ const DatabaseDescriptor & DatabasesModel::query(int row)
 
 void DatabasesModel::del(int row)
 {
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		descriptorSet.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	removeRows(row, 1, QModelIndex());
 }
 
 void DatabasesModel::addNew(DatabaseDescriptor & desc)

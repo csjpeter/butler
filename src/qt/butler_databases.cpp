@@ -52,6 +52,8 @@ private:
 	{
 		if(!database)
 			database = new Db(descriptorSet.query(dbname));
+		if(!database->isOpen())
+			database->desc = descriptorSet.query(dbname);
 		return *database;
 	}
 

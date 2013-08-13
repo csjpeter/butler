@@ -64,7 +64,8 @@ PartnersView::~PartnersView()
 
 void PartnersView::retranslate()
 {
-	setWindowTitle(tr(TidPartnersWindowTitle));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidPartnersWindowTitle));
 	relayout();
 }
 

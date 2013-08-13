@@ -64,7 +64,8 @@ CompanyView::~CompanyView()
 
 void CompanyView::retranslate()
 {
-	setWindowTitle(tr(TidCompanyWindowTitle));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidCompanyWindowTitle));
 	relayout();
 }
 

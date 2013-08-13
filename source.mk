@@ -310,6 +310,7 @@ source: \
 	$(DIST_DIR)/share/icons/comboarrowup.png \
 	$(DIST_DIR)/share/icons/calendar.png \
 	$(DIST_DIR)/share/icons/databases.png \
+	$(DIST_DIR)/share/icons/use.png \
 	$(DIST_DIR)/share/icons/butler.png \
 	$(DIST_DIR)/config \
 	$(DIST_DIR)/configure \

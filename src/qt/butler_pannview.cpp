@@ -22,12 +22,14 @@ PannView::PannView(QWidget * parent) :
 	scrollArea.setWidgetResizable(true);
 	scrollArea.setFocusPolicy(Qt::NoFocus);
 	//scrollArea.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	/* left side scrollbar HACK part 1 */
 	scrollArea.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	connect(scrollArea.verticalScrollBar(), SIGNAL(rangeChanged(int, int)),
 			this, SLOT(verticalScrollBarRangeChanged()));
 
 	QHBoxLayout * hLayout = new QHBoxLayout;
 	hLayout->setContentsMargins(0,0,0,0);
+	/* left side scrollbar HACK part 1 */
 	hLayout->addWidget(scrollArea.verticalScrollBar());
 	hLayout->addWidget(&scrollArea);
 
@@ -133,7 +135,7 @@ void PannView::saveState(const QString & prefix)
 
 void PannView::setWindowTitle(const QString & str)
 {
-	LOG("Window width: %d and %d", qApp->desktop()->width(), QWidget::width());
+	//LOG("Window width: %d and %d", qApp->desktop()->width(), QWidget::width());
 	//if(qApp->desktop()->width() <= QWidget::width()){
 #ifdef Q_OS_ANDROID
 		titleLabel.setText(str);

@@ -64,7 +64,8 @@ WaresView::~WaresView()
 
 void WaresView::retranslate()
 {
-	setWindowTitle(tr(TidWaresWindowTitle));
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidWaresWindowTitle));
 	relayout();
 }
 

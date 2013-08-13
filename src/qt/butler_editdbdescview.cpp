@@ -73,6 +73,10 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&portEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
+	connect(&sqliteDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&psqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+
+	passwordEditor.editor.setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
 	setupView();
 	loadState();
@@ -119,6 +123,11 @@ void EditDbDescView::mapToGui()
 	hostEditor.editor.setText(dbdesc.host);
 	portEditor.setValue(dbdesc.port);
 
+	if(dbdesc.driver == "QSQLITE")
+		sqliteDriverOption.setChecked(true);
+	else if(dbdesc.driver == "QPSQL")
+		psqlDriverOption.setChecked(true);
+
 	updateToolButtonStates();
 }
 
@@ -130,6 +139,11 @@ void EditDbDescView::mapFromGui()
 	dbdesc.password = passwordEditor.editor.text();
 	dbdesc.host = hostEditor.editor.text();
 	dbdesc.port = portEditor.value();
+
+	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
+		dbdesc.driver = "QSQLITE";
+	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
+		dbdesc.driver = "QPSQL";
 }
 
 void EditDbDescView::changeEvent(QEvent * event)
@@ -176,6 +190,8 @@ void EditDbDescView::applyLayout(LayoutState state)
 	else
 		driverOptionsLayout = new HLayout;
 
+	driverOptionsLayout->addWidget(&driverOptions);
+	driverOptionsLayout->addStretch(0);
 	driverOptionsLayout->addWidget(&sqliteDriverOption);
 	driverOptionsLayout->addStretch(0);
 	driverOptionsLayout->addWidget(&psqlDriverOption);
@@ -240,6 +256,15 @@ void EditDbDescView::updateToolButtonStates()
 			dbdesc.port == portEditor.value()
 			);
 
+	if(!modified){
+		if(dbdesc.driver == "QSQLITE" &&
+				driverOptions.group.checkedButton() != &sqliteDriverOption)
+			modified = true;
+		else if(dbdesc.driver == "QPSQL" &&
+				driverOptions.group.checkedButton() != &psqlDriverOption)
+			modified = true;
+	}
+
 	bool mandatoriesGiven = nameEditor.editor.text().size();
 
 	footerBar.show(); /* We cant set visible status for a widget having hidden parent. */
@@ -253,6 +278,18 @@ void EditDbDescView::updateToolButtonStates()
 			toolBar.setInfo(tr(TidInfoMandatoryFields));
 		else
 			toolBar.clearInfo();
+	}
+
+	if(driverOptions.group.checkedButton() == &sqliteDriverOption){
+		usernameEditor.setVisible(false);
+		passwordEditor.setVisible(false);
+		hostEditor.setVisible(false);
+		portEditor.setVisible(false);
+	} else if(driverOptions.group.checkedButton() == &psqlDriverOption){
+		usernameEditor.setVisible(true);
+		passwordEditor.setVisible(true);
+		hostEditor.setVisible(true);
+		portEditor.setVisible(true);
 	}
 
 	toolBar.updateButtons();
