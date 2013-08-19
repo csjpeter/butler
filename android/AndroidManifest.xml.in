@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	android:installLocation="preferExternal"
 	package="com.@PRJNAME@"
 	android:versionCode="@VERSION_MAJOR@"
 	android:versionName="@VERSION@">
@@ -14,11 +15,12 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 			<meta-data android:name="android.app.qt_libs_resource_id"
-				android:resource="@array/qt_libs"/>
+					android:resource="@array/qt_libs"/>
+			<meta-data android:name="android.app.load_local_libs" android:value="pg:QtCore:QtSql:QtGui"/>
+			<meta-data android:name="android.app.use_local_qt_libs" android:value="1"/>
 			<meta-data android:name="android.app.bundled_libs_resource_id"
-				android:resource="@array/bundled_libs"/>
-			<meta-data android:name="android.app.lib_name"
-				android:value="@PKGNAME_BASE@"/>
+					android:resource="@array/bundled_libs"/>
+			<meta-data android:name="android.app.lib_name" android:value="@PKGNAME_BASE@"/>
 			<!--  Messages maps -->
 			<meta-data android:name="android.app.ministro_not_found_msg"
 				android:value="@string/ministro_not_found_msg"/>

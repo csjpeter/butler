@@ -75,6 +75,7 @@ void SqlConnection::open()
 		db.setUserName(dbDesc.username);
 		db.setPassword(dbDesc.password);
 		db.setPort(dbDesc.port);
+		db.setConnectOptions("sslmode=require");
 	} else {
 		db.setPort(-1);
 	}

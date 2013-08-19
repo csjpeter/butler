@@ -1,0 +1,130 @@
+diff --git a/android/androidconfigbuild.sh b/android/androidconfigbuild.sh
+index 92e8f88..77ddf85 100755
+--- a/android/androidconfigbuild.sh
++++ b/android/androidconfigbuild.sh
+@@ -1,5 +1,8 @@
+ #!/bin/bash -x
+ 
++# ./android/androidconfigbuild.sh -n "${HOME}/necessitas/android-ndk" -P "${HOME}/src/postgresql" -v "4.6" -h 1 -x 1 -k 0 -l 8 -q 1
++# ./android/androidconfigbuild.sh -n "${HOME}/necessitas/android-ndk" -P "${HOME}/src/postgresql" -v "4.6" -h 1 -x 1 -k 0 -l 8 -b 1
++
+ #defaults:
+ CLEAN_QT=1
+ CONFIGURE_QT=1
+@@ -30,7 +33,7 @@ SRC_DIR_QT=$SRC_DIR_QT/..
+ echo $SRC_DIR_QT
+ 
+ #openssl vars
+-OPENSSL_PACKAGE="openssl-1.0.0d.tar.gz"
++OPENSSL_PACKAGE="openssl-1.0.0e.tar.gz"
+ OPENSSL_NAME=`echo $OPENSSL_PACKAGE|sed 's#\.tar.gz##g'`
+ OPENSSL_URL=http://www.openssl.org/source/$OPENSSL_PACKAGE
+ OPENSSL_PREFIX=$SRC_DIR_QT/src/3rdparty/android/src/openssl
+@@ -92,12 +95,13 @@ OPTIONS:
+            extract to "$OPENSSL_PREFIX"
+               0 - don't download
+               1 - download
++   -P      Postgresql source dir containing already built libpg for android.
+ EOF
+ }
+ 
+ INSTSUFFIX=""
+ CFGOPTIONS=""
+-while getopts "p:c:q:b:k:n:o:f:v:a:l:h:x:d:r:m:i:w:" arg; do
++while getopts "p:c:q:b:k:n:o:f:v:a:l:h:x:d:r:m:i:w:P:" arg; do
+ case $arg in
+ 	p)
+ 		help
+@@ -165,6 +169,9 @@ case $arg in
+ 	w)
+ 		DOWNLOAD_OPENSSL=$OPTARG
+ 		;;
++	P)
++		export POSTGRESQL_SRC=$OPTARG
++		;;
+ 	?)
+ 		help
+ 		exit 0
+@@ -286,6 +293,7 @@ then
+         fi
+ 
+ 	$SRC_DIR_QT/configure -v -opensource -qpa -arch $ANDROID_ARCHITECTURE \
++		-qt-sql-sqlite -qt-sql-psql \
+ 		-no-phonon -freetype -fast -xplatform android-g++ \
+ 		-host-arch $HOST_ARCH $PLATFORM -host-little-endian \
+ 		-little-endian -no-qt3support -no-largefile \
+@@ -310,7 +318,7 @@ fi
+ 
+ if [ "$BUILD_QT" = "1" ]; then
+ 	make -f $MAKEFILE -j$JOBS all QtJar || exit 1
+-#	if [ "$OSTYPE" = "msys" ] ; then
++	if [ "$OSTYPE" = "msys" ] ; then
+ 		while [ "$?" != "0" ]
+ 		do
+ 			if [ -f /usr/break-make ]; then
+@@ -320,7 +328,7 @@ if [ "$BUILD_QT" = "1" ]; then
+ 			fi
+ 			make -f $MAKEFILE -j$JOBS all QtJar
+ 		done
+-#	fi
++	fi
+ fi
+ 
+ 
+diff --git a/config.tests/unix/psql/psql.pro b/config.tests/unix/psql/psql.pro
+index 38bfb3e..b40f6e4 100644
+--- a/config.tests/unix/psql/psql.pro
++++ b/config.tests/unix/psql/psql.pro
+@@ -1,4 +1,7 @@
+ SOURCES = psql.cpp
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/interfaces/libpq
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/include
++LIBS+=-L$$(POSTGRESQL_SRC)/libs/armeabi/ -lpq
+ CONFIG -= qt dylib
+ mac:CONFIG -= app_bundle
+ LIBS *= -lpq
+diff --git a/configure b/configure
+index a607374..82016d1 100755
+--- a/configure
++++ b/configure
+@@ -5532,7 +5532,7 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
+         psql)
+             if [ "$CFG_SQL_psql" != "no" ]; then
+                 # Be careful not to use native pg_config when cross building.
+-                if [ "$XPLATFORM_MINGW" != "yes" ] && "$WHICH" pg_config >/dev/null 2>&1; then
++                if [ "$XPLATFORM_MINGW" != "yes" ] && [ "$XPLATFORM_ANDROID" != "yes" ] && "$WHICH" pg_config >/dev/null 2>&1; then
+                     QT_CFLAGS_PSQL=`pg_config --includedir 2>/dev/null`
+                     QT_LFLAGS_PSQL=`pg_config --libdir 2>/dev/null`
+                 fi
+diff --git a/src/plugins/sqldrivers/psql/psql.pro b/src/plugins/sqldrivers/psql/psql.pro
+index 8276c0a..06ea85d 100644
+--- a/src/plugins/sqldrivers/psql/psql.pro
++++ b/src/plugins/sqldrivers/psql/psql.pro
+@@ -1,5 +1,9 @@
+ TARGET = qsqlpsql
+ 
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/interfaces/libpq
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/include
++LIBS+=-L$$(POSTGRESQL_SRC)/libs/armeabi/ -lpq
++
+ SOURCES = main.cpp
+ include(../../../sql/drivers/psql/qsql_psql.pri)
+ 
+diff --git a/src/sql/drivers/psql/qsql_psql.pri b/src/sql/drivers/psql/qsql_psql.pri
+index 6da3540..31fc36b 100644
+--- a/src/sql/drivers/psql/qsql_psql.pri
++++ b/src/sql/drivers/psql/qsql_psql.pri
+@@ -1,6 +1,13 @@
+ HEADERS += $$PWD/qsql_psql.h
+ SOURCES += $$PWD/qsql_psql.cpp
+ 
++#isEmpty( QT_CFLAGS_PSQL ) : QT_CFLAGS_PSQL = $$(POSTGRESQL_SRC)/src/interfaces/libpq $$(POSTGRESQL_SRC)/src/include
++#isEmpty( QT_LFLAGS_PSQL ) : QT_LFLAGS_PSQL = -L$$(POSTGRESQL_SRC)/libs/armeabi/ -lpq
++
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/interfaces/libpq
++INCLUDEPATH+=$$(POSTGRESQL_SRC)/src/include
++LIBS+=-L$$(POSTGRESQL_SRC)/libs/armeabi/ -lpq
++
+ unix|win32-g++* {
+     LIBS *= $$QT_LFLAGS_PSQL
+     !contains(LIBS, .*pq.*):LIBS += -lpq

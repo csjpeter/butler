@@ -18,9 +18,6 @@ int main(int argc, char *args[])
 {
 	csjp::setBinaryName(args[0]);
 	Application app(argc, args);
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
-	app.addLibraryPath("/data/data/com." PRJNAME "/files");
 
 #ifdef DEBUG
 	csjp::verboseMode = true;
@@ -60,6 +57,30 @@ int main(int argc, char *args[])
 		LOG("Bad argument given: '%s'", args[argi]);
 		return 1;
 	}
+
+#ifdef Q_OS_ANDROID
+	QDir filesDir("/data/data/com." PRJNAME "/files");
+	filesDir.mkpath("qt/plugins/platform/android");
+	filesDir.mkpath("qt/plugins/sqldrivers");
+/*
+	const char * libandroid = "/data/data/com." PRJNAME "/files/"
+			"qt/plugins/platform/android/libandroid-9.so";
+	if(!QFile::remove(libandroid))
+		LOG("Failed to remove %s", libandroid);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libandroid-9.so", libandroid))
+		LOG("Failed to create %s", libandroid);
+*/
+	const char * libqsqlpsql = "/data/data/com." PRJNAME "/files/"
+			"qt/plugins/sqldrivers/libqsqlpsql.so";
+	if(!QFile::remove(libqsqlpsql))
+		LOG("Failed to remove %s", libqsqlpsql);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlpsql.so", libqsqlpsql))
+		LOG("Failed to create %s", libqsqlpsql);
+
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
+	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
+	app.addLibraryPath("/data/data/com." PRJNAME "/files/qt/plugins");
+#endif
 
 	try {
 		LOG("Environment variables:\n%s",

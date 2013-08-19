@@ -12,7 +12,7 @@ function exec_in_dir ()
 	return ${RET}
 }
 
-if test "x$ANDROID_NDK_HOME" = "x" -o "x$ANDROID_sDK_HOME" = "x"; then
+if test "x$ANDROID_NDK_HOME" = "x" -o "x$ANDROID_SDK_HOME" = "x"; then
 	echo "You will need to have ANDROID_NDK_HOME and ANDROID_SDK_HOME"
 	echo "environment variables to contain the path to your favoured"
 	echo "android ndk."
