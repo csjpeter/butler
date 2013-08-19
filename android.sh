@@ -12,8 +12,12 @@ function exec_in_dir ()
 	return ${RET}
 }
 
-export ANDROID_NDK_HOME=~/necessitas/android-ndk
-export ANDROID_SDK_HOME=~/necessitas/android-sdk
+if test "x$ANDROID_NDK_HOME" = "x" -o "x$ANDROID_sDK_HOME" = "x"; then
+	echo "You will need to have ANDROID_NDK_HOME and ANDROID_SDK_HOME"
+	echo "environment variables to contain the path to your favoured"
+	echo "android ndk."
+	exit 1
+fi
 
 #--cflags=\"-flto -fwhole-program\"
 
@@ -71,6 +75,9 @@ case "${CMD}" in
 		exec_in_dir ${DIST} debuild \
 			--no-tgz-check \
 			--preserve-envvar PATH \
+			--preserve-envvar NECESSITAS_HOME \
+			--preserve-envvar ANDROID_NDK_HOME \
+			--preserve-envvar ANDROID_SDK_HOME \
 			--preserve-envvar PKG_CONFIG_LIBDIR \
 			--preserve-envvar PKG_CONFIG_PATH || exit $?
 	;;

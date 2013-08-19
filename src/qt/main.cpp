@@ -20,6 +20,7 @@ int main(int argc, char *args[])
 	Application app(argc, args);
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
 	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
+	app.addLibraryPath("/data/data/com." PRJNAME "/files");
 
 #ifdef DEBUG
 	csjp::verboseMode = true;

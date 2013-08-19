@@ -331,19 +331,6 @@ check: $(TEST_BINARIES)
 
 doxygen: @TCROOT@@DOC_DIR@/html/index.html
 
-debian: FORCE
-	debuild \
-		--no-tgz-check \
-		--preserve-envvar PATH \
-		--preserve-envvar PKG_CONFIG_LIBDIR \
-		--preserve-envvar PKG_CONFIG_PATH
-
-debian-nc: FORCE
-	debuild --no-tgz-check -nc
-
-debian-src: FORCE
-	debuild --no-tgz-check -S
-
 FORCE:
 
 #
