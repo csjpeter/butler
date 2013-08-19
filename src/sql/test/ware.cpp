@@ -11,6 +11,8 @@
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
+DatabaseDescriptor sqliteDesc;
+
 class TestWare : public QObject
 {
 public:
@@ -23,25 +25,24 @@ public:
 
 void TestWare::initTestCase()
 {
+	sqliteDesc.name = "localdb";
+	sqliteDesc.driver = "QSQLITE";
+	sqliteDesc.databaseName = DB_FILE;
+
 	QFile f(DB_FILE);
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
-	VERIFY(db.create());
 }
 
 void TestWare::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 	
 	Tag t;
@@ -60,8 +61,8 @@ void TestWare::insert()
 	w.tags.add(new QString("meal"));
 
 	/* insert and query sould go fine */
-	VERIFY(db.ware().insert(w));
-	VERIFY(db.ware().query(ws));
+	VERIFY(db.ware.insert(w));
+	VERIFY(db.ware.query(ws));
 
 	/* lets check if everything went fine */
 	VERIFY(ws.size() == 1);
@@ -75,25 +76,22 @@ void TestWare::insert()
 	VERIFY(ws.queryAt(0) == w);
 
 	/* Lets clean up */
-	VERIFY(db.ware().del(w));
-	VERIFY(db.ware().query(ws));
+	VERIFY(db.ware.del(w));
+	VERIFY(db.ware.query(ws));
 	VERIFY(ws.size() == 0);
 	
 	VERIFY(db.tag().del(t));
 	VERIFY(db.tag().query(ts));
 	VERIFY(ts.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestWare::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 	
 	Tag meal("meal");
@@ -115,11 +113,11 @@ void TestWare::update()
 
 	WareSet ws;
 	
-	VERIFY(db.ware().insert(w));
+	VERIFY(db.ware.insert(w));
 
 	/* Update should be ok. */
-	VERIFY(db.ware().update(w, wu));
-	VERIFY(db.ware().query(ws));
+	VERIFY(db.ware.update(w, wu));
+	VERIFY(db.ware.query(ws));
 	VERIFY(ws.size() == 1);
 	VERIFY(wu == ws.queryAt(0));
 	VERIFY(ws.queryAt(0).name == "milk");
@@ -131,8 +129,8 @@ void TestWare::update()
 	VERIFY(ws.queryAt(0).tags.has("drink"));
 
 	/* Lets clean up */
-	VERIFY(db.ware().del(wu));
-	VERIFY(db.ware().query(ws));
+	VERIFY(db.ware.del(wu));
+	VERIFY(db.ware.query(ws));
 	VERIFY(ws.size() == 0);
 	
 	VERIFY(db.tag().del(meal));
@@ -140,17 +138,14 @@ void TestWare::update()
 	VERIFY(db.tag().query(ts));
 	VERIFY(ts.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestWare::tags()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Ware w("bread");
@@ -159,18 +154,17 @@ void TestWare::tags()
 	WareSet ws;
 	
 	/* Insert with unregistered tag should fail. */
-	VERIFY(!db.ware().insert(w));
+	VERIFY(!db.ware.insert(w));
 
 	/* Insert without tag should be ok. */
 	w.tags.clear();
-	VERIFY(db.ware().insert(w));
+	VERIFY(db.ware.insert(w));
 
 	/* Lets clean up */
-	VERIFY(db.ware().del(w));
-	VERIFY(db.ware().query(ws));
+	VERIFY(db.ware.del(w));
+	VERIFY(db.ware.query(ws));
 	VERIFY(ws.size() == 0);
 
-	VERIFY(db.close());
 }
 
 TEST_INIT(Ware)

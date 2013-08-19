@@ -11,6 +11,8 @@
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
+DatabaseDescriptor sqliteDesc;
+
 class TestQuery : public QObject
 {
 public:
@@ -24,39 +26,38 @@ public:
 
 void TestQuery::initTestCase()
 {
+	sqliteDesc.name = "localdb";
+	sqliteDesc.driver = "QSQLITE";
+	sqliteDesc.databaseName = DB_FILE;
+
 	QFile f(DB_FILE);
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
-	VERIFY(db.create());
 }
 
 void TestQuery::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Query q("query name");
 	QuerySet qs;
 
 	/* Query without dates should be rejected. */
-	VERIFY(!db.query().insert(q));
+	VERIFY(!db.query.insert(q));
 
 	q.startDate = QDateTime(QDate(2000, 1, 1));
 	q.endDate = QDateTime(QDate::currentDate());
 
 	/* Query with dates should be accepted. */
-	VERIFY(db.query().insert(q));
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.insert(q));
+	VERIFY(db.query.query(qs));
 
 	VERIFY(qs.size() == 1);
 	LOG("Start date: %s", C_STR(qs.queryAt(0).startDate.toString(Qt::ISODate)));
@@ -64,21 +65,18 @@ void TestQuery::insert()
 	VERIFY(q == qs.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.query().del(q));
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.del(q));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestQuery::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	/* Lets update an inserted query. */
@@ -90,35 +88,32 @@ void TestQuery::update()
 	q.endDate = QDateTime(QDate::currentDate());
 
 	/* Update to query without dates hould be rejected. */
-	VERIFY(db.query().insert(q));
-	VERIFY(!db.query().update(q, qu));
+	VERIFY(db.query.insert(q));
+	VERIFY(!db.query.update(q, qu));
 
 	qu.startDate = QDateTime(QDate(2000, 1, 1));
 	qu.endDate = QDateTime(QDate::currentDate());
 
 	/* Update to query with dates hould be accepted. */
-	VERIFY(db.query().update(q, qu));
+	VERIFY(db.query.update(q, qu));
 
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 1);
 	VERIFY(qu == qs.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.query().del(qu));
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.del(qu));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestQuery::tags()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	/* Insert query with unregistered tag should fail. */
@@ -128,7 +123,7 @@ void TestQuery::tags()
 	q.endDate = QDateTime(QDate::currentDate());
 	q.withTags.add(new QString("unregistered tag"));
 	
-	VERIFY(!db.query().insert(q));
+	VERIFY(!db.query.insert(q));
 
 	q.withTags.removeAt(0);
 
@@ -141,13 +136,13 @@ void TestQuery::tags()
 
 	q.withTags.add(new QString(registeredTag1.name));
 
-	VERIFY(db.query().insert(q));
+	VERIFY(db.query.insert(q));
 
 	/* Queried Query should have tagset with
 	 * 1 tag (registeredTag). */
 
 	QuerySet qs;
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 1);
 	VERIFY(qs.queryAt(0).withTags.size() == 1);
 	VERIFY(qs.queryAt(0).withTags.has("registered tag 1"));
@@ -157,23 +152,22 @@ void TestQuery::tags()
 	Query swapped(qs.queryAt(0));
 	swapped.withTags.remove("registered tag 1");
 	swapped.withTags.add(new QString("registered tag 2"));
-	db.query().update(qs.queryAt(0), swapped);
+	db.query.update(qs.queryAt(0), swapped);
 
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.queryAt(0).withTags.size() == 1);
 	VERIFY(qs.queryAt(0).withTags.has("registered tag 2"));
 	
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 1);
 	VERIFY(qs.queryAt(0).withTags.size() == 1);
 	VERIFY(qs.queryAt(0).withTags.has("registered tag 2"));
 
 	/* Lets clean up */
-	VERIFY(db.query().del(q));
-	VERIFY(db.query().query(qs));
+	VERIFY(db.query.del(q));
+	VERIFY(db.query.query(qs));
 	VERIFY(qs.size() == 0);
 
-	VERIFY(db.close());
 }
 
 TEST_INIT(Query)

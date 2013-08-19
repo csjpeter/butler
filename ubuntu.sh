@@ -100,11 +100,9 @@ case "${CMD}" in
 	;;
 	(debian)
 		shift
-		DIST=local
-		config ${DIST} || exit $?
-		exec_in_dir ${DIST} debuild \
+		config ${DISTRIB_CODENAME} || exit $?
+		exec_in_dir ${DISTRIB_CODENAME} debuild \
 			--no-tgz-check \
-			--preserve-envvar MXE_HOME \
 			--preserve-envvar PATH \
 			--preserve-envvar PKG_CONFIG_LIBDIR \
 			--preserve-envvar PKG_CONFIG_PATH \

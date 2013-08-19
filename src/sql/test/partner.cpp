@@ -11,6 +11,8 @@
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
+DatabaseDescriptor sqliteDesc;
+
 class TestPartner : public QObject
 {
 public:
@@ -23,25 +25,24 @@ public:
 
 void TestPartner::initTestCase()
 {
+	sqliteDesc.name = "localdb";
+	sqliteDesc.driver = "QSQLITE";
+	sqliteDesc.databaseName = DB_FILE;
+
 	QFile f(DB_FILE);
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
-	VERIFY(db.create());
 }
 
 void TestPartner::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Partner s;
@@ -54,34 +55,31 @@ void TestPartner::insert()
 	s.company = "tesco";
 
 	/* put a partner in db and read it back */
-	VERIFY(db.partner().insert(s));
-	VERIFY(db.partner().query(ss));
+	VERIFY(db.partner.insert(s));
+	VERIFY(db.partner.query(ss));
 	VERIFY(ss.size() == 1);
 	VERIFY(ss.queryAt(0) == s);
 
 	/* Lets clean up */
-	VERIFY(db.partner().del(s));
-	VERIFY(db.partner().query(ss));
+	VERIFY(db.partner.del(s));
+	VERIFY(db.partner.query(ss));
 	VERIFY(ss.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestPartner::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 
 	Partner s, su;
 	PartnerSet ss;
 
-	VERIFY(db.partner().insert(s));
+	VERIFY(db.partner.insert(s));
 
 	/* These fields must be updated */
 	su.name = "western tesco";
@@ -90,18 +88,17 @@ void TestPartner::update()
 	su.address = "postal code, street and number";
 	su.company = "tesco";
 
-	VERIFY(db.partner().update(s, su));
+	VERIFY(db.partner.update(s, su));
 
-	VERIFY(db.partner().query(ss));
+	VERIFY(db.partner.query(ss));
 	VERIFY(ss.size() == 1);
 	VERIFY(su == ss.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.partner().del(su));
-	VERIFY(db.partner().query(ss));
+	VERIFY(db.partner.del(su));
+	VERIFY(db.partner.query(ss));
 	VERIFY(ss.size() == 0);
 
-	VERIFY(db.close());
 }
 
 TEST_INIT(Partner)

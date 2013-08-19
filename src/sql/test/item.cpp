@@ -12,6 +12,8 @@
 
 #define DB_FILE TESTDIR "/TestSqlite.db"
 
+DatabaseDescriptor sqliteDesc;
+
 class TestItem
 {
 public:
@@ -26,26 +28,25 @@ public:
 
 void TestItem::initTestCase()
 {
+	sqliteDesc.name = "localdb";
+	sqliteDesc.driver = "QSQLITE";
+	sqliteDesc.databaseName = DB_FILE;
+
 	QFile f(DB_FILE);
 	if(f.exists())
 		VERIFY(f.remove());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
-	VERIFY(db.create());
 }
 
 void TestItem::insert()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 	QueryStat stat;
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Query q("testing query");
@@ -62,24 +63,24 @@ void TestItem::insert()
 	TagNameSet qtns;
 
 	/* Item without upload date should be rejected. */
-	VERIFY(!db.item().insert(i));
+	VERIFY(!db.item.insert(i));
 
 	/* FIXME : in multi user database this might cause conflict */
 	i.uploaded = QDateTime::currentDateTime();
 
 	/* Item with negative quantity should be rejected. */
 	i.quantity = -1;
-	VERIFY(!db.item().insert(i));
+	VERIFY(!db.item.insert(i));
 	i.quantity = 0;
 
 	/* Item not yet purchased, should not be in Bought table, nor on stock. */
 	i.onStock = true;
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 	/* not in bought table */
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.size() == 0);
 	/* in items table*/
-	VERIFY(db.item().query(qtns, is));
+	VERIFY(db.item.query(qtns, is));
 	VERIFY(is.size() == 1);
 	/* not on stock */
 	VERIFY(is.queryAt(0).onStock == false);
@@ -87,8 +88,8 @@ void TestItem::insert()
 	VERIFY(is.queryAt(0) == i);
 
 	/* Lets clean up */
-	VERIFY(db.item().del(i));
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.del(i));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.size() == 0);
 
 	i.bought = true;
@@ -96,47 +97,44 @@ void TestItem::insert()
 	/* Item having negative price should be rejected. */
 	i.partner = "mypartner";
 	i.price = -1;
-	VERIFY(!db.item().insert(i));
+	VERIFY(!db.item.insert(i));
 	
 	/* Item having 0 price should be rejected. */
 	i.price = 0;
-	VERIFY(!db.item().insert(i));
+	VERIFY(!db.item.insert(i));
 
 	/* Item with unregistered partner should be rejected. */
 	i.partner = "nonmypartner";
-	VERIFY(!db.item().insert(i));
+	VERIFY(!db.item.insert(i));
 	i.partner = "mypartner";
 
 	/* Bought item should be accepted on stock. */
 	i.purchased = QDateTime::currentDateTime();
 	i.onStock = true;
-	VERIFY(db.item().insert(i));
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.insert(i));
+	VERIFY(db.item.query(q, stat, is));
 
 	VERIFY(is.size() == 1);
 	VERIFY(i == is.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.item().del(i));
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.del(i));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.size() == 0);
 
 	VERIFY(db.partner().del(s));
 	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestItem::update()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 	QueryStat stat;
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Query q("testing query");
@@ -154,11 +152,11 @@ void TestItem::update()
 	ItemSet is;
 	
 	i.uploaded = QDateTime::currentDateTime().addDays(-1);
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	/* Update uploaded field should be rejected. */
 	iu.uploaded = QDateTime::currentDateTime();
-	VERIFY(!db.item().update(i, iu));
+	VERIFY(!db.item.update(i, iu));
 	iu = i;
 
 	/* These fields must be updated */
@@ -171,33 +169,30 @@ void TestItem::update()
 	iu.quantity = 2;
 	iu.onStock = true;
 	iu.comment = "comment";
-	VERIFY(db.item().update(i, iu));
+	VERIFY(db.item.update(i, iu));
 
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.size() == 1);
 	VERIFY(iu == is.queryAt(0));
 
 	/* Lets clean up */
-	VERIFY(db.item().del(iu));
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.del(iu));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.size() == 0);
 
 	VERIFY(db.partner().del(s));
 	VERIFY(db.partner().query(ss));
 	VERIFY(ss.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestItem::tagqueries()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 	QueryStat stat;
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	ItemSet is;
@@ -225,36 +220,36 @@ void TestItem::tagqueries()
 	i.uploaded = QDateTime::currentDateTime().addDays(-1);
 	i.purchased = QDateTime::currentDateTime();
 
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	/* Query item with no tag should has no result set. */
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.empty());
 
 	/* Query item only with 'tag a' should has no result set. */
 	q.withTags.add(new QString(ta.name));
-	VERIFY(db.item().query(q, stat, is));
+	VERIFY(db.item.query(q, stat, is));
 	VERIFY(is.empty());
 
 	/* Query item with 'tag a' and 'tag b' should has result set. */
 	q.withTags.add(new QString(tb.name));
-	VERIFY(db.item().query(qtns, is));
+	VERIFY(db.item.query(qtns, is));
 	VERIFY(is.size() == 1);
 
 	/* Query item with 'tag b' should has result set. */
 	q.withTags.remove(ta.name);
-	VERIFY(db.item().query(qtns, is));
+	VERIFY(db.item.query(qtns, is));
 	VERIFY(is.size() == 1);
 
 	/* FIXME : Not implemented yet. */
 	/* Query item with and without 'tag b' should has no result set. */
 /*	q.withoutTags.add(new QString(tb.name));
-	VERIFY(db.item().query(qtns, is));
+	VERIFY(db.item.query(qtns, is));
 	VERIFY(is.size() == 0);
 */
 	/* Lets clean up */
-	VERIFY(db.item().del(i));
-	VERIFY(db.item().query(qtns, is));
+	VERIFY(db.item.del(i));
+	VERIFY(db.item.query(qtns, is));
 	VERIFY(is.size() == 0);
 
 	VERIFY(db.ware().del(w));
@@ -267,17 +262,14 @@ void TestItem::tagqueries()
 	VERIFY(db.tag().query(ts));
 	VERIFY(is.size() == 0);
 
-	VERIFY(db.close());
 }
 
 void TestItem::itemNames()
 {
 	NOEXC_VERIFY(initTestCase());
 
-	SqlConnection conn(DB_FILE);
-	Db db(conn);
+	Db db(sqliteDesc);
 
-	VERIFY(db.connect());
 	VERIFY(db.open());
 
 	Item i;
@@ -285,49 +277,48 @@ void TestItem::itemNames()
 	i.uploaded = QDateTime::currentDateTime().addDays(-1);
 	i.name = "i1";
 	i.category = "i1c1";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	i.uploaded = QDateTime::currentDateTime().addDays(-2);
 	i.name = "i1";
 	i.category = "i1c2";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	i.uploaded = QDateTime::currentDateTime().addDays(-3);
 	i.name = "i2";
 	i.category = "i1c1";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	i.uploaded = QDateTime::currentDateTime().addDays(-4);
 	i.name = "i2";
 	i.category = "i2c1";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	i.uploaded = QDateTime::currentDateTime().addDays(-5);
 	i.name = "i2";
 	i.category = "i2c2";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	i.uploaded = QDateTime::currentDateTime().addDays(-6);
 	i.name = "i2";
 	i.category = "i2c2";
-	VERIFY(db.item().insert(i));
+	VERIFY(db.item.insert(i));
 
 	/* FIXME What on earth I wanted to test with this? */
 
 	/* Delete all the inserted items. */
 	ItemSet is;
 	TagNameSet tns;
-	VERIFY(db.item().query(tns, is));
+	VERIFY(db.item.query(tns, is));
 	VERIFY(is.size() == 6);
 	unsigned s = is.size();
 	unsigned j;
 	for(j=0; j<s; j++)
-		VERIFY(db.item().del(is.queryAt(j)));
+		VERIFY(db.item.del(is.queryAt(j)));
 	
-	VERIFY(db.item().query(tns, is));
+	VERIFY(db.item.query(tns, is));
 	VERIFY(is.size() == 0);
 
-	VERIFY(db.close());
 }
 
 TEST_INIT(Item)

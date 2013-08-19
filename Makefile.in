@@ -108,11 +108,11 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 #
 
 TEST_BINARIES=\
-	tmp/bin/test-@PKGNAME_BASE@-sql-item@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-sql-query@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-sql-partner@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-sql-tag@EXEC_POSTFIX@ \
-	tmp/bin/test-@PKGNAME_BASE@-sql-ware@EXEC_POSTFIX@
+#	tmp/bin/test-@PKGNAME_BASE@-sql-item@EXEC_POSTFIX@ \
+#	tmp/bin/test-@PKGNAME_BASE@-sql-query@EXEC_POSTFIX@ \
+#	tmp/bin/test-@PKGNAME_BASE@-sql-partner@EXEC_POSTFIX@ \
+#	tmp/bin/test-@PKGNAME_BASE@-sql-tag@EXEC_POSTFIX@ \
+#	tmp/bin/test-@PKGNAME_BASE@-sql-ware@EXEC_POSTFIX@
 
 #
 # temporary files
