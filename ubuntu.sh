@@ -98,6 +98,19 @@ case "${CMD}" in
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} pump make CXX=distcc $@ || exit $?
 	;;
+	(debian)
+		shift
+		DIST=local
+		config ${DIST} || exit $?
+		exec_in_dir ${DIST} debuild \
+			--no-tgz-check \
+			--preserve-envvar MXE_HOME \
+			--preserve-envvar PATH \
+			--preserve-envvar PKG_CONFIG_LIBDIR \
+			--preserve-envvar PKG_CONFIG_PATH \
+			-B $@ \
+			--lintian-opts --no-lintian || exit $?
+	;;
 	(*)
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
