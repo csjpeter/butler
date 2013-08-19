@@ -32,6 +32,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	--prefix=${PKGNAME_BASE} \
 	--gnu-source \
 	--static \
+	--libs=\"-lgnurx -lpq\" \
 	--ldflags=\\\"-static-libgcc -static-libstdc++\\\" \
 	--ldflags=-Wl,-subsystem,windows \
 	--stlcompatible || exit $?
