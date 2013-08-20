@@ -11,6 +11,7 @@ DatabaseDescriptor::DatabaseDescriptor() :
 	databaseName(""),
 	username(""),
 	password(""),
+	savePassword(false),
 	host(""),
 	port(0)
 {
@@ -38,6 +39,7 @@ void DatabaseDescriptor::copy(const DatabaseDescriptor & orig)
 	databaseName = orig.databaseName;
 	username = orig.username;
 	password = orig.password;
+	savePassword = orig.savePassword;
 	host = orig.host;
 	port = orig.port;
 }
@@ -49,6 +51,7 @@ bool DatabaseDescriptor::isEqual(const DatabaseDescriptor &dd) const
 		(driver == dd.driver) &&
 		(username == dd.username) &&
 		(password == dd.password) &&
+		(savePassword == dd.savePassword) &&
 		(host == dd.host) &&
 		(port == dd.port);
 }
@@ -75,6 +78,7 @@ void DatabaseDescriptor::equal(const DatabaseDescriptor &dd)
 	driver = dd.driver;
 	username = dd.username;
 	password = dd.password;
+	savePassword = dd.savePassword;
 	host = dd.host;
 	port = dd.port;
 }

@@ -29,17 +29,18 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 	DBG("Available drivers: %s", C_STR((QSqlDatabase::drivers().join(", "))));
 #endif
 
-	if(!QSqlDatabase::contains(dbDesc.name)){
+//	if(!QSqlDatabase::contains(dbDesc.name)){
 		db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
 		if(db.lastError().isValid())
 			throw DbError("Failed to add SQLITE database driver: %s",
 					C_STR(dbErrorString()));
-	} else {
+/*	} else {
+		// At once tries to open the connection with old details
 		db = QSqlDatabase::database(dbDesc.name, false);
 		if(db.lastError().isValid())
 			throw DbError("Failed to get database connection named '%s'.\nError: %s",
 					C_STR(dbDesc.name), C_STR(dbErrorString()));
-	}
+	}*/
 	ENSURE(db.isValid(), csjp::LogicError);
 
 	open();
@@ -89,6 +90,8 @@ void SqlConnection::open()
 		throw DbError("Failed to open database '%s'.\nError: %s",
 				C_STR(db.databaseName()),
 				C_STR(dbErrorString()));
+	LOG("Connected to %s on host %s:%d.",
+			C_STR(dbDesc.databaseName), C_STR(dbDesc.host), dbDesc.port);
 
 	ENSURE(db.isOpen(), csjp::LogicError);
 

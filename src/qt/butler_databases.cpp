@@ -173,6 +173,8 @@ void loadDatabases()
 		desc->databaseName <<= props["databaseName"];
 		desc->username <<= props["username"];
 		desc->password <<= props["password"];
+		if(!desc->password.isEmpty())
+			desc->savePassword = true;
 		desc->host <<= props["host"];
 		desc->port <<= props["port"];
 		descriptorSet.add(desc);
@@ -198,10 +200,6 @@ void loadDatabases()
 		csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
 		dbDesc->name = "postgredb";
 		dbDesc->driver = "QPSQL";
-		dbDesc->databaseName = "butler";
-		dbDesc->host = "csjpeter.dyndns.org";
-		dbDesc->username = "csjpeter";
-		dbDesc->password = "0eXaN4ff9HaE1zdcLBd1wy0kVZpJXy";
 		dbDesc->port = 5432;
 		descriptorSet.add(dbDesc);
 	}
@@ -218,7 +216,9 @@ void saveDatabases()
 		props["driver"] <<= desc.driver; // for example "QSQLITE"
 		props["databaseName"] <<= desc.databaseName; //file name in case of sqlite
 		props["username"] <<= desc.username;
-		props["password"] <<= desc.password;
+		/* DO NOT SAVE THE VALUE OF desc.savePassword */
+		if(desc.savePassword)
+			props["password"] <<= desc.password;
 		props["host"] <<= desc.host; // domain name or ip
 		props["port"] = desc.port;
 	}

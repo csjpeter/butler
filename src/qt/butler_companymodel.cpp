@@ -62,7 +62,7 @@ QVariant CompanyModel::data(const QModelIndex & index, int role) const
 			return QVariant(companys.queryAt(index.row()).city);
 			break;
 		case Company::PostalCode :
-			return QVariant(companys.queryAt(index.row()).city);
+			return QVariant(companys.queryAt(index.row()).postalCode);
 			break;
 		case Company::Address :
 			return QVariant(companys.queryAt(index.row()).address);

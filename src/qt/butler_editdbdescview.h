@@ -38,6 +38,7 @@ private slots:
 	void retranslate();
 	void applyLayout(LayoutState state);
 	void relayout();
+	void passwordFieldModified();
 	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
@@ -62,6 +63,7 @@ private:
 	InputEditor databaseNameEditor;
 	InputEditor usernameEditor;
 	InputEditor passwordEditor;
+	FormCheckBox savePasswordCheckBox;
 	InputEditor hostEditor;
 	PortEditor portEditor;
 };

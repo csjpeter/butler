@@ -34,6 +34,7 @@ public:
 	QString databaseName; // file name in case of sqlite
 	QString username;
 	QString password;
+	bool savePassword;
 	QString host; // domain name or ip
 	unsigned port;
 
@@ -43,6 +44,7 @@ public:
 		DatabaseName,
 		Username,
 		Password,
+		SavePassword,
 		Host,
 		Port,
 		NumOfFields

@@ -23,12 +23,13 @@ SCC TidResetButton = QT_TRANSLATE_NOOP("EditDbDescView", "Reset");
 SCC TidPrevButton = QT_TRANSLATE_NOOP("EditDbDescView", "Previous database connection");
 SCC TidNextButton = QT_TRANSLATE_NOOP("EditDbDescView", "Next database connection");
 
-SCC TidCompanyName = QT_TRANSLATE_NOOP("EditDbDescView", "Name for database connection:");
-SCC TidCompanyCountry = QT_TRANSLATE_NOOP("EditDbDescView", "Database name:");
-SCC TidCompanyCity = QT_TRANSLATE_NOOP("EditDbDescView", "Username:");
-SCC TidCompanyPostalCode = QT_TRANSLATE_NOOP("EditDbDescView", "Password:");
-SCC TidCompanyAddress = QT_TRANSLATE_NOOP("EditDbDescView", "Host:");
-SCC TidCompanyTaxId = QT_TRANSLATE_NOOP("EditDbDescView", "Port:");
+SCC TidDbConnName = QT_TRANSLATE_NOOP("EditDbDescView", "Name for database connection:");
+SCC TidDbName = QT_TRANSLATE_NOOP("EditDbDescView", "Database name:");
+SCC TidUsername = QT_TRANSLATE_NOOP("EditDbDescView", "Username:");
+SCC TidPassword = QT_TRANSLATE_NOOP("EditDbDescView", "Password:");
+SCC TidSavePassword = QT_TRANSLATE_NOOP("EditDbDescView", "Save plain password :");
+SCC TidHost = QT_TRANSLATE_NOOP("EditDbDescView", "Host:");
+SCC TidPort = QT_TRANSLATE_NOOP("EditDbDescView", "Port:");
 
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditDbDescView", "Please fill the name field.");
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditDbDescView", "Database connection is saved, you may add another.");
@@ -61,6 +62,9 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
 	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
 
+	connect(&passwordEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(passwordFieldModified()));
+
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&databaseNameEditor.editor, SIGNAL(textChanged(const QString &)),
@@ -68,6 +72,8 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 	connect(&usernameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&passwordEditor.editor, SIGNAL(textChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&savePasswordCheckBox.box, SIGNAL(stateChanged(int)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&hostEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -101,13 +107,13 @@ void EditDbDescView::closeEvent(QCloseEvent *event)
 
 void EditDbDescView::loadState()
 {
-	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewCompanyView");
+	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewDbDescView");
 	PannView::loadState(prefix);
 }
 
 void EditDbDescView::saveState()
 {
-	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewCompanyView");
+	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewDbDescView");
 	PannView::saveState(prefix);
 }
 
@@ -120,6 +126,8 @@ void EditDbDescView::mapToGui()
 	databaseNameEditor.editor.setText(dbdesc.databaseName);
 	usernameEditor.editor.setText(dbdesc.username);
 	passwordEditor.editor.setText(dbdesc.password);
+	savePasswordCheckBox.box.setCheckState(
+			dbdesc.savePassword ? Qt::Checked : Qt::Unchecked);
 	hostEditor.editor.setText(dbdesc.host);
 	portEditor.setValue(dbdesc.port);
 
@@ -137,6 +145,7 @@ void EditDbDescView::mapFromGui()
 	dbdesc.databaseName = databaseNameEditor.editor.text();
 	dbdesc.username = usernameEditor.editor.text();
 	dbdesc.password = passwordEditor.editor.text();
+	dbdesc.savePassword = savePasswordCheckBox.box.checkState() == Qt::Checked;
 	dbdesc.host = hostEditor.editor.text();
 	dbdesc.port = portEditor.value();
 
@@ -171,12 +180,13 @@ void EditDbDescView::retranslate()
 	sqliteDriverOption.setText(tr(TidSqliteDriverOption));
 	psqlDriverOption.setText(tr(TidPsqlDriverOption));
 
-	nameEditor.label.setText(tr(TidCompanyName));
-	databaseNameEditor.label.setText(tr(TidCompanyCountry));
-	usernameEditor.label.setText(tr(TidCompanyCity));
-	passwordEditor.label.setText(tr(TidCompanyPostalCode));
-	hostEditor.label.setText(tr(TidCompanyAddress));
-	portEditor.label.setText(tr(TidCompanyTaxId));
+	nameEditor.label.setText(tr(TidDbConnName));
+	databaseNameEditor.label.setText(tr(TidDbName));
+	usernameEditor.label.setText(tr(TidUsername));
+	passwordEditor.label.setText(tr(TidPassword));
+	savePasswordCheckBox.label.setText(tr(TidSavePassword));
+	hostEditor.label.setText(tr(TidHost));
+	portEditor.label.setText(tr(TidPort));
 
 	relayout();
 }
@@ -208,6 +218,8 @@ void EditDbDescView::applyLayout(LayoutState state)
 	mainLayout->addWidget(&usernameEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&passwordEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&savePasswordCheckBox);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&hostEditor);
 	mainLayout->addStretch(0);
@@ -245,6 +257,18 @@ void EditDbDescView::relayout()
 	updateToolButtonStates();
 }
 
+void EditDbDescView::passwordFieldModified()
+{
+	/* Use case to avoid:
+	 * - user dont want to save his password
+	 * - cracker writes bad password into config file, thus turns on desc.savePassword value
+	 * - user can not login so needs to set his real password
+	 * - now, if desc.savePassword remains true, password gets saved and cracker can read it
+	 */
+//	if(dbdesc.password != passwordEditor.editor.text())
+		savePasswordCheckBox.box.setCheckState(Qt::Unchecked);
+}
+
 void EditDbDescView::updateToolButtonStates()
 {
 	bool modified = !(
@@ -252,6 +276,8 @@ void EditDbDescView::updateToolButtonStates()
 			dbdesc.databaseName == databaseNameEditor.editor.text() &&
 			dbdesc.username == usernameEditor.editor.text() &&
 			dbdesc.password == passwordEditor.editor.text() &&
+			dbdesc.savePassword == (
+					savePasswordCheckBox.box.checkState() == Qt::Checked) &&
 			dbdesc.host == hostEditor.editor.text() &&
 			dbdesc.port == portEditor.value()
 			);
@@ -283,11 +309,13 @@ void EditDbDescView::updateToolButtonStates()
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption){
 		usernameEditor.setVisible(false);
 		passwordEditor.setVisible(false);
+		savePasswordCheckBox.setVisible(false);
 		hostEditor.setVisible(false);
 		portEditor.setVisible(false);
 	} else if(driverOptions.group.checkedButton() == &psqlDriverOption){
 		usernameEditor.setVisible(true);
 		passwordEditor.setVisible(true);
+		savePasswordCheckBox.setVisible(true);
 		hostEditor.setVisible(true);
 		portEditor.setVisible(true);
 	}
