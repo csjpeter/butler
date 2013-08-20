@@ -4,12 +4,13 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+export JOBS=$(shell cat /proc/cpuinfo | grep processor | wc -l)
+JOBS=$(shell expr $(shell cat /proc/cpuinfo | grep processor | wc -l) + 1)
+
 build-indep:
 	dh_testdir
-	#dh_auto_configure
 	./configure
-	dh_auto_build
-	#make build
+	make build -j$(JOBS)
 	dh_auto_test
 
 build-arch:
