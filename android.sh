@@ -1,6 +1,7 @@
 #!/bin/bash
  
 source /etc/lsb-release
+source config
 
 function exec_in_dir ()
 {
@@ -93,6 +94,14 @@ case "${CMD}" in
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
 		exec_in_dir ${DIST} make $@ || exit $?
+
+		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
+		for f in $(echo "libcrypto.so libpq.so libqsqlpsql.so libssl.so"); do
+			cp /opt/${ANDROID_SDK_API}-${ARCH}/lib/$f ${DIST}/android/libs/armeabi/
+		done
+		test -h ${DIST}/${APKGNAME} || exec_in_dir ${DIST} ln -s android ${APKGNAME};
+		exec_in_dir ${DIST} tar -chzf ${APKGNAME}.tgz ${APKGNAME} || exit $?
+
 		exec_in_dir ${DIST}/android ant debug || exit $?
 	;;
 	(*)

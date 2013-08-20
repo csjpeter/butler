@@ -90,8 +90,8 @@ void SqlConnection::open()
 		throw DbError("Failed to open database '%s'.\nError: %s",
 				C_STR(db.databaseName()),
 				C_STR(dbErrorString()));
-	LOG("Connected to %s on host %s:%d.",
-			C_STR(dbDesc.databaseName), C_STR(dbDesc.host), dbDesc.port);
+	LOG("Connected to database '%s' on host '%s:%d' as user '%s'.", C_STR(dbDesc.databaseName),
+			C_STR(dbDesc.host), dbDesc.port, C_STR(dbDesc.username));
 
 	ENSURE(db.isOpen(), csjp::LogicError);
 

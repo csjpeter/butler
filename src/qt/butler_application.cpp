@@ -138,10 +138,10 @@ bool Application::notify(QObject * receiver, QEvent * event)
 				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 
 				if(keyEvent->matches(QKeySequence::Quit)){
-					Config::save();
 					if(mainViewPtr)
-						mainViewPtr->saveState();
-					quit();
+						mainViewPtr->accept();
+					else
+						quit();
 					break;
 				}
 

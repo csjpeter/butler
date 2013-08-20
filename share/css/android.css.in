@@ -180,8 +180,8 @@ QMessageBox {
 
 QTextEdit {
 	padding: 0mm;
-	min-height: 25mm;
-	max-height: 25mm;
+	min-height: 20mm;
+	max-height: 20mm;
 }
 
 QTextEdit QScrollBar {

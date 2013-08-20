@@ -79,7 +79,6 @@ android: \
 		$(DIST_DIR)/android/res/values/strings.xml \
 		$(DIST_DIR)/android/build.xml \
 		$(DIST_DIR)/android/res/values/libs.xml \
-		$(DIST_DIR)/android/debug.keystore \
 		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtActivity.java \
 		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtApplication.java \
 		$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
