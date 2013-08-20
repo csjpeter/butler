@@ -196,13 +196,13 @@ void loadDatabases()
 //echo "CREATE ROLE csjpeter LOGIN PASSWORD 'password' VALID UNTIL 'infinity';" | sudo -i -u postgres psql
 //echo "SELECT rolname FROM pg_roles;" | sudo -i -u postgres psql
 //echo "CREATE DATABASE csjpeter WITH ENCODING='UTF8' OWNER=csjpeter;" | sudo -i -u postgres psql
-	if(!descriptorSet.has("postgredb")){
+/*	if(!descriptorSet.has("postgredb")){
 		csjp::Object<DatabaseDescriptor> dbDesc(new DatabaseDescriptor);
 		dbDesc->name = "postgredb";
 		dbDesc->driver = "QPSQL";
 		dbDesc->port = 5432;
 		descriptorSet.add(dbDesc);
-	}
+	}*/
 }
 
 void saveDatabases()
