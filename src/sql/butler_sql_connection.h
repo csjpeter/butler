@@ -23,6 +23,7 @@
 DECL_EXCEPTION(csjp::Exception, DbError);
 DECL_EXCEPTION(DbError, DbIncompatibleTableError);
 DECL_EXCEPTION(DbError, DbLogicError);
+DECL_EXCEPTION(DbError, DbConnectError);
 
 /* FIXME :
  * - check if object has changed in database before

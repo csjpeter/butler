@@ -97,14 +97,14 @@ int main(int argc, char *args[])
 		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
 		app.loadCSS();
 		Config::load();
-		loadDatabases();
+		loadDatabaseConfigs();
 
 		LOG("Library paths: %s", C_STR(qApp->libraryPaths().join(", ")));
 
 		/* Show main view and run the app */
 		app.mainView().show();
 		bool ret = app.exec();
-		saveDatabases();
+		saveDatabaseConfigs();
 		Config::save();
 		return ret;
 	} catch (csjp::Exception & e) {

@@ -131,6 +131,8 @@ void EditDbDescView::mapToGui()
 	hostEditor.editor.setText(dbdesc.host);
 	portEditor.setValue(dbdesc.port);
 
+	sqliteDriverOption.setChecked(false);
+	psqlDriverOption.setChecked(false);
 	if(dbdesc.driver == "QSQLITE")
 		sqliteDriverOption.setChecked(true);
 	else if(dbdesc.driver == "QPSQL")

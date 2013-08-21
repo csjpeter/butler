@@ -226,9 +226,16 @@ void DatabasesView::delDbDesc()
 void DatabasesView::useDbDesc()
 {
 	int row = tableView.currentIndex().row();
-	Config::defaultDbName = model.query(row).name;
-	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
-	activeDbChanged();
+	try {
+		queriesModel(model.query(row).name);
+		Config::defaultDbName = model.query(row).name;
+		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+		activeDbChanged();
+	} catch (DbConnectError & e) {
+		QString info = e.what();
+		QMessageBox(QMessageBox::Warning, "Exception thrown", info,
+			QMessageBox::Ok, 0, Qt::Dialog).exec();
+	}
 }
 
 void DatabasesView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)

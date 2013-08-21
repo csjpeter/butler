@@ -159,7 +159,7 @@ QString defaultSQLiteDbFileName()
 	return QDir::toNativeSeparators( QDir::homePath() + QString("/.butler/db.sqlite") );
 }
 
-void loadDatabases()
+void loadDatabaseConfigs()
 {
 	descriptorSet.clear();
 	csjp::ObjectTree & tree = config["database-connections"];
@@ -205,7 +205,7 @@ void loadDatabases()
 	}*/
 }
 
-void saveDatabases()
+void saveDatabaseConfigs()
 {
 	csjp::ObjectTree tree("database-connections");
 	unsigned s = descriptorSet.size();

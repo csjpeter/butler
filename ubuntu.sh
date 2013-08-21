@@ -1,5 +1,7 @@
 #!/bin/bash
 
+JOBS=$(expr $(cat /proc/cpuinfo | grep processor | wc -l) + 1)
+
 # ubuntu ditributions
 raring=13.04
 quantal=12.10
@@ -111,7 +113,7 @@ case "${CMD}" in
 	;;
 	(*)
 		config ${DISTRIB_CODENAME} || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} make $@ || exit $?
+		exec_in_dir ${DISTRIB_CODENAME} make -j${JOBS} $@ || exit $?
 	;;
 esac
 

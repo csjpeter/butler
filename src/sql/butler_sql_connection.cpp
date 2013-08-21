@@ -87,7 +87,7 @@ void SqlConnection::open()
 
 	db.open();
 	if(db.lastError().isValid())
-		throw DbError("Failed to open database '%s'.\nError: %s",
+		throw DbConnectError("Failed to connect to database '%s'.\nError: %s",
 				C_STR(db.databaseName()),
 				C_STR(dbErrorString()));
 	LOG("Connected to database '%s' on host '%s:%d' as user '%s'.", C_STR(dbDesc.databaseName),

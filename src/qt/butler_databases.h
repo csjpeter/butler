@@ -21,8 +21,8 @@
 #include <butler_waresmodel.h>
 #include <butler_queriesmodel.h>
 
-void loadDatabases();
-void saveDatabases();
+void loadDatabaseConfigs();
+void saveDatabaseConfigs();
 
 //DatabaseDescriptor & databaseDescriptor(const QString & dbname);
 
