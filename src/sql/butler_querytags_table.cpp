@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include <butler_query.h>
@@ -38,9 +34,9 @@ void QueryTagsTable::check(QStringList &tables)
 		sql.exec("CREATE INDEX query_tags_query_tag_index ON query_tags(tag)");
 	}
 
-	QSqlRecord table = sql.record("query_tags");
-	if(		!table.contains("query_name") ||
-			!table.contains("tag")
+	SqlColumns cols = sql.columns("query_tags");
+	if(		!cols.has("query_name") ||
+			!cols.has("tag")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table query_tags in the openend database.");

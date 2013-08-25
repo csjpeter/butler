@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include <butler_query.h>
@@ -35,12 +31,12 @@ void QueryTable::check(QStringList &tables)
 				  ")"
 			    );
 
-	QSqlRecord table = sql.record("queries");
-	if(		!table.contains("query_name") ||
-			!table.contains("stock_option") ||
-			!table.contains("tag_option") ||
-			!table.contains("start_date") ||
-			!table.contains("end_date")
+	SqlColumns cols = sql.columns("queries");
+	if(		!cols.has("query_name") ||
+			!cols.has("stock_option") ||
+			!cols.has("tag_option") ||
+			!cols.has("start_date") ||
+			!cols.has("end_date")
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table queries in the openend database.");

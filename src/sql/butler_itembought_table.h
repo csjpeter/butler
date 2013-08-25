@@ -8,10 +8,11 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QSqlDatabase>
 
 #include <butler_sql_connection.h>
-#include <butler_sqlquery.h>
+
+#include <butler_item_set.h>
+#include <butler_query_set.h>
 
 class ItemBoughtTable
 {

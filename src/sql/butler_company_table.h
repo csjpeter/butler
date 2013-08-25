@@ -8,12 +8,10 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QSqlDatabase>
 
 #include <butler_company_set.h>
 
 #include <butler_sql_connection.h>
-#include <butler_sqlquery.h>
 
 class CompanyTable
 {

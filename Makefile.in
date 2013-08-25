@@ -140,7 +140,6 @@ SQL_OBJECTS+= \
 	tmp/src/sql/butler_database_descriptor.opp \
 	tmp/src/sql/butler_database_descriptor_set.opp \
 	tmp/src/sql/butler_sql_connection.opp \
-	tmp/src/sql/butler_sqlquery.opp \
 	tmp/src/sql/butler_db.opp \
 	tmp/src/sql/butler_itembought_table.opp \
 	tmp/src/sql/butler_item_table.opp \

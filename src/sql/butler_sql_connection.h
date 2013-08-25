@@ -7,17 +7,15 @@
 #define BUTLER_SQL_CONNECTION_H
 
 #include <QObject>
-#include <QSqlDatabase>
 
-#include <csjp_reference_container.h>
-
-#include <csjp_object.h>
-
+#include <csjp_string.h>
+#include <csjp_owner_container.h>
+/*
 #include <butler_query.h>
 #include <butler_query_set.h>
 #include <butler_item.h>
 #include <butler_item_set.h>
-
+*/
 #include <butler_database_descriptor.h>
 
 DECL_EXCEPTION(csjp::Exception, DbError);
@@ -31,8 +29,13 @@ DECL_EXCEPTION(DbError, DbConnectError);
  * - escaping required while assempling item queries
  */
 
+class SqlConnectionPrivate;
+
+typedef csjp::OwnerContainer<csjp::String> SqlColumns;
+
 class SqlConnection
 {
+	friend class SqlQuery;
 public:
 	SqlConnection(const DatabaseDescriptor & dbDesc);
 	~SqlConnection();
@@ -43,9 +46,8 @@ public:
 	void open();
 	void close();
 
-	QSqlQuery *createQuery();
 	void exec(const QString &query);
-	QSqlRecord record(const QString &tablename) const;
+	SqlColumns columns(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
 	void transaction();
@@ -57,8 +59,37 @@ public:
 	const DatabaseDescriptor & dbDesc;
 
 private:
-	QSqlDatabase db;
-	unsigned transactions;
+	SqlConnectionPrivate * priv;
+};
+
+class SqlQueryPrivate;
+
+class SqlQuery
+{
+public:
+	SqlQuery(SqlConnection &);
+	~SqlQuery();
+private:
+	SqlQuery();
+
+public:
+
+	void exec(const QString &query);
+	void prepare(const QString &query);
+	bool isPrepared();
+	void bindValue(int pos, const QVariant &v);
+	void exec();
+	bool next();
+	unsigned colIndex(const QString &name);
+	QVariant value(int index);
+	void finish();
+
+private:
+	QString queryString();
+
+private:
+	SqlConnection & sql;
+	SqlQueryPrivate * priv;
 };
 
 #endif

@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_item_table.h"
@@ -33,12 +29,12 @@ void ItemTable::check(QStringList &tables)
 				")"
 				);
 
-	QSqlRecord table = sql.record("items");
-	if(		!table.contains("name") ||
-			!table.contains("category") ||
-			!table.contains("uploaded") ||
-			!table.contains("quantity") ||
-			!table.contains("comment")
+	SqlColumns cols = sql.columns("items");
+	if(		!cols.has("name") ||
+			!cols.has("category") ||
+			!cols.has("uploaded") ||
+			!cols.has("quantity") ||
+			!cols.has("comment")
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table items in the openend database.");

@@ -8,11 +8,10 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <butler_sql_connection.h>
-#include <butler_sqlquery.h>
+
+#include <butler_tag_set.h>
 
 class TagTable
 {

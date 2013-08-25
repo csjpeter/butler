@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_partner_table.h"
@@ -36,14 +32,14 @@ void PartnerTable::check(QStringList &tables)
 				")"
 			       );
 
-	QSqlRecord table = sql.record("partners");
-	if(		!table.contains("name") ||
-			!table.contains("country") ||
-			!table.contains("city") ||
-			!table.contains("postal_code") ||
-			!table.contains("address") ||
-			!table.contains("company") ||
-			!table.contains("store_name")
+	SqlColumns cols = sql.columns("partners");
+	if(		!cols.has("name") ||
+			!cols.has("country") ||
+			!cols.has("city") ||
+			!cols.has("postal_code") ||
+			!cols.has("address") ||
+			!cols.has("company") ||
+			!cols.has("store_name")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table partners in the openend database.");

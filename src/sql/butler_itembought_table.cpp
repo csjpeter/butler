@@ -7,11 +7,7 @@
 
 //#include <csjp_time.h>
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_itembought_table.h"
@@ -39,12 +35,12 @@ void ItemBoughtTable::check(QStringList &tables)
 				  ")"
 			    );
 
-	QSqlRecord table = sql.record("items_bought");
-	if(		!table.contains("uploaded") ||
-			!table.contains("purchased") ||
-			!table.contains("price") ||
-			!table.contains("partner") ||
-			!table.contains("on_stock")
+	SqlColumns cols = sql.columns("items_bought");
+	if(		!cols.has("uploaded") ||
+			!cols.has("purchased") ||
+			!cols.has("price") ||
+			!cols.has("partner") ||
+			!cols.has("on_stock")
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table items_bought in the openend database.");

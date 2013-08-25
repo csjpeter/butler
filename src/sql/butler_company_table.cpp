@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_company_table.h"
@@ -34,13 +30,13 @@ void CompanyTable::check(QStringList &tables)
 				")"
 			       );
 
-	QSqlRecord table = sql.record("company");
-	if(		!table.contains("name") ||
-			!table.contains("country") ||
-			!table.contains("city") ||
-			!table.contains("postal_code") ||
-			!table.contains("address") ||
-			!table.contains("tax_id")
+	SqlColumns cols = sql.columns("company");
+	if(		!cols.has("name") ||
+			!cols.has("country") ||
+			!cols.has("city") ||
+			!cols.has("postal_code") ||
+			!cols.has("address") ||
+			!cols.has("tax_id")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table company in the openend database.");

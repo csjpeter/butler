@@ -3,13 +3,20 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QVariant>
+#include <csjp_object.h>
 
+#include <butler_macros.h>
+
+#include <QMap>
 #include <QStringList>
+
+#include <QSqlDatabase>
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QSqlField>
+
 
 #define DEBUG
 
@@ -19,31 +26,45 @@
 void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc);
 #endif
 
+typedef struct SqlConnectionPrivate
+{
+	SqlConnectionPrivate() :
+		transactions(0)
+	{}
+
+	QSqlDatabase db;
+	unsigned transactions;
+} SqlConnectionPrivate;
+
 SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 	dbDesc(dbDesc),
-	transactions(0)
+	priv(NULL)
 {
-	ENSURE(!db.isValid(), csjp::LogicError);
+	csjp::Object<SqlConnectionPrivate> p(new SqlConnectionPrivate());
+	priv = p.ptr;
+
+	ENSURE(!priv->db.isValid(), csjp::LogicError);
 
 #ifdef DEBUG
 	DBG("Available drivers: %s", C_STR((QSqlDatabase::drivers().join(", "))));
 #endif
 
 //	if(!QSqlDatabase::contains(dbDesc.name)){
-		db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
-		if(db.lastError().isValid())
+		priv->db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
+		if(priv->db.lastError().isValid())
 			throw DbError("Failed to add SQLITE database driver: %s",
 					C_STR(dbErrorString()));
 /*	} else {
 		// At once tries to open the connection with old details
-		db = QSqlDatabase::database(dbDesc.name, false);
-		if(db.lastError().isValid())
+		priv->db = QSqlDatabase::database(dbDesc.name, false);
+		if(priv->db.lastError().isValid())
 			throw DbError("Failed to get database connection named '%s'.\nError: %s",
 					C_STR(dbDesc.name), C_STR(dbErrorString()));
 	}*/
-	ENSURE(db.isValid(), csjp::LogicError);
+	ENSURE(priv->db.isValid(), csjp::LogicError);
 
 	open();
+	p.ptr = NULL;
 }
 
 SqlConnection::~SqlConnection()
@@ -57,49 +78,50 @@ SqlConnection::~SqlConnection()
 	} catch (std::exception & e) {
 		LOG("%s", e.what());
 	}
+	delete priv;
 }
 
 void SqlConnection::open()
 {
-	if(db.isOpen()) return;
+	if(priv->db.isOpen()) return;
 
-	ENSURE(db.isValid(), csjp::LogicError);
+	ENSURE(priv->db.isValid(), csjp::LogicError);
 
-	db.setDatabaseName(dbDesc.databaseName);
-	if(db.lastError().isValid())
+	priv->db.setDatabaseName(dbDesc.databaseName);
+	if(priv->db.lastError().isValid())
 		throw DbError("Failed to set database name to %s.\nError: %s",
 				C_STR(dbDesc.databaseName),
 				C_STR(dbErrorString()));
 
 	if(dbDesc.driver != "QSQLITE"){
-		db.setHostName(dbDesc.host);
-		db.setUserName(dbDesc.username);
-		db.setPassword(dbDesc.password);
-		db.setPort(dbDesc.port);
-		db.setConnectOptions("sslmode=require");
+		priv->db.setHostName(dbDesc.host);
+		priv->db.setUserName(dbDesc.username);
+		priv->db.setPassword(dbDesc.password);
+		priv->db.setPort(dbDesc.port);
+		priv->db.setConnectOptions("sslmode=require");
 	} else {
-		db.setPort(-1);
+		priv->db.setPort(-1);
 	}
 
 #ifdef DEBUG
-	listAvailableFeatures(db, dbDesc);
+	listAvailableFeatures(priv->db, dbDesc);
 #endif
 
-	db.open();
-	if(db.lastError().isValid())
+	priv->db.open();
+	if(priv->db.lastError().isValid())
 		throw DbConnectError("Failed to connect to database '%s'.\nError: %s",
-				C_STR(db.databaseName()),
+				C_STR(priv->db.databaseName()),
 				C_STR(dbErrorString()));
 	LOG("Connected to database '%s' on host '%s:%d' as user '%s'.", C_STR(dbDesc.databaseName),
 			C_STR(dbDesc.host), dbDesc.port, C_STR(dbDesc.username));
 
-	ENSURE(db.isOpen(), csjp::LogicError);
+	ENSURE(priv->db.isOpen(), csjp::LogicError);
 
 	if(dbDesc.driver == "QSQLITE"){
 		/* Lets check if the sqlite on system is compatible with us. */
 		/* Lets turn on reference constraits */
-		QSqlQuery q = db.exec("PRAGMA foreign_keys = ON");
-		q = db.exec("PRAGMA foreign_keys");
+		QSqlQuery q = priv->db.exec("PRAGMA foreign_keys = ON");
+		q = priv->db.exec("PRAGMA foreign_keys");
 		ENSURE(q.isActive(), csjp::LogicError);
 		ENSURE(q.isSelect(), csjp::LogicError);
 
@@ -109,7 +131,7 @@ void SqlConnection::open()
 				(q.value(0).toInt()) ? "yes" : "no");
 
 		if(q.value(0).toInt() != 1){
-			db.close();
+			priv->db.close();
 			throw DbError("Reference constraits could not turned "
 					"on or not supported at all.");
 		}
@@ -118,96 +140,91 @@ void SqlConnection::open()
 
 void SqlConnection::close()
 {
-	if(!db.isOpen()) return;
+	if(!priv->db.isOpen()) return;
 
-	ENSURE(db.isOpen(), csjp::LogicError);
+	ENSURE(priv->db.isOpen(), csjp::LogicError);
 
-	db.close();
-	if(db.lastError().isValid())
+	priv->db.close();
+	if(priv->db.lastError().isValid())
 		throw DbError("Failed to close database '%s'.\nError: %s",
-				C_STR(db.databaseName()),
+				C_STR(priv->db.databaseName()),
 				C_STR(dbErrorString()));
 
-	ENSURE(!db.isOpen(), csjp::LogicError);
+	ENSURE(!priv->db.isOpen(), csjp::LogicError);
 }
 
 /*
  *	Private members
  */
 
-QSqlQuery* SqlConnection::createQuery()
-{
-	open();
-
-	QSqlQuery * q = new QSqlQuery(db);
-	if(!q)
-		throw DbError("Failed to create QSqlQuery object");
-	return q;
-}
-
 void SqlConnection::exec(const QString &query)
 {
 	open();
 
-	csjp::Object<QSqlQuery> qQuery(new QSqlQuery(db));
-	qQuery->setForwardOnly(true);
+	QSqlQuery qQuery(priv->db);
+	qQuery.setForwardOnly(true);
 
 	DBG("%s", C_STR(query));
-	if(!qQuery->exec(query))
+	if(!qQuery.exec(query))
 		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
 				C_STR(query),
 				C_STR(dbErrorString()));
 }
 
-QSqlRecord SqlConnection::record(const QString &tablename) const
+SqlColumns SqlConnection::columns(const QString &tablename) const
 {
-	return db.record(tablename);
+	QSqlRecord rec = priv->db.record(tablename);
+	SqlColumns cols;
+	int c = rec.count();
+	for(int i = 0; i < c; i++)
+		cols.add(new csjp::String(C_STR(rec.field(i).name())));
+	return cols;
 }
 
 QStringList SqlConnection::tables() const
 {
-	return db.tables();
+	return priv->db.tables();
 }
 
 bool SqlConnection::isOpen()
 {
-	return db.isOpen();
+	return priv->db.isOpen();
 }
 
 void SqlConnection::transaction()
 {
 	open();
 
-	if(transactions == 0){
+	if(priv->transactions == 0){
 		DBG("BEGIN TRANSACTION");
-		db.transaction();
-		if(db.lastError().isValid())
+		priv->db.transaction();
+		if(priv->db.lastError().isValid())
 			throw DbError("Failed begin transcation.\nError: %s",
 					C_STR(dbErrorString()));
 	}
 
-	transactions++;
+	priv->transactions++;
 }
 
 void SqlConnection::commit()
 {
-	if(transactions == 1){
+	if(priv->transactions == 1){
 		DBG("COMMIT TRANSACTION");
-		db.commit();
-		if(db.lastError().isValid())
+		priv->db.commit();
+		if(priv->db.lastError().isValid())
 			throw DbError("Failed to commit transcation.\nError: %s",
 					C_STR(dbErrorString()));
 	}
 
-	transactions--;
+	priv->transactions--;
 }
 
 void SqlConnection::rollback()
 {
-	if(transactions == 1){
+	if(priv->transactions == 1){
 		DBG("ROLLBACK TRANSACTION");
-		db.rollback();
-		if(db.lastError().isValid())
+		priv->db.rollback();
+		if(priv->db.lastError().isValid())
 			LOG("Failed to rollback transcation.\nError: %s", C_STR(dbErrorString()));
 			/* FIXME test this */
 /*			throw DbError("Failed to rollback transcation.\nError: %s",
@@ -215,12 +232,12 @@ void SqlConnection::rollback()
 */
 	}
 
-	transactions--;
+	priv->transactions--;
 }
 
 QString SqlConnection::dbErrorString()
 {
-	return db.lastError().text();
+	return priv->db.lastError().text();
 }
 
 #ifdef DEBUG
@@ -273,3 +290,149 @@ void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & db
 	featuresListed = true;
 }
 #endif
+
+
+
+
+typedef struct SqlQueryPrivate
+{
+	SqlQueryPrivate() :
+		qQuery(NULL),
+		prepared(false)
+	{}
+
+	~SqlQueryPrivate()
+	{
+		delete qQuery;
+	}
+
+	QSqlQuery * qQuery;
+	bool prepared;
+} SqlQueryPrivate;
+
+SqlQuery::SqlQuery(SqlConnection & sql) :
+	sql(sql)
+{
+	csjp::Object<SqlQueryPrivate> p(new SqlQueryPrivate());
+	priv = p.ptr;
+
+	sql.open();
+
+	priv->qQuery = new QSqlQuery(sql.priv->db);
+	if(!priv->qQuery)
+		throw DbError("Failed to create QSqlQuery object");
+
+	priv->qQuery->setForwardOnly(true);
+
+	p.ptr = NULL;
+}
+
+SqlQuery::~SqlQuery()
+{
+	delete priv;
+}
+
+void SqlQuery::exec(const QString &query)
+{
+	priv->prepared = false;
+
+	LOG("%s", C_STR(query));
+	if(!priv->qQuery->exec(query))
+		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
+				C_STR(query),
+				C_STR(sql.dbErrorString()));
+}
+
+bool SqlQuery::isPrepared()
+{
+	return priv->prepared;
+}
+
+void SqlQuery::prepare(const QString &query)
+{
+	if(!priv->qQuery->prepare(query))
+		throw DbError("Failed to prepare query:\n%serror: %s",
+				C_STR(query),
+				C_STR(sql.dbErrorString()));
+}
+
+void SqlQuery::bindValue(int pos, const QVariant &v)
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	priv->qQuery->bindValue(pos, v);
+}
+
+void SqlQuery::exec()
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	LOG("%s", C_STR(queryString()));
+	if(!priv->qQuery->exec())
+		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
+			C_STR(queryString()), C_STR(sql.dbErrorString()));
+}
+
+bool SqlQuery::next()
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	return priv->qQuery->next();
+}
+
+unsigned SqlQuery::colIndex(const QString &name)
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	int ret = priv->qQuery->record().indexOf(name);
+	if(ret < 0)
+		throw DbIncompatibleTableError(
+				"There is no column '%s' in the result for query:\n%s.",
+				C_STR(name), C_STR(queryString()));
+
+	return ret;
+}
+
+QVariant SqlQuery::value(int index)
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	DBG("%s : [%s]",
+			C_STR(priv->qQuery->record().fieldName(index)),
+			C_STR(priv->qQuery->value(index).toString())
+			);
+
+	return priv->qQuery->value(index);
+}
+
+void SqlQuery::finish()
+{
+	if(!priv->qQuery)
+		return;
+
+	priv->qQuery->finish();
+	priv->qQuery->clear();
+}
+
+QString SqlQuery::queryString()
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	QString str;
+	if(priv->qQuery->executedQuery().size())
+		str += priv->qQuery->executedQuery();
+	else
+		str += priv->qQuery->lastQuery();
+
+	QList<QVariant> list = priv->qQuery->boundValues().values();
+	for (int i = 0; i < list.size(); ++i){
+		int pos = str.indexOf("?");
+		ENSURE(0 <= pos, csjp::LogicError);
+		QString param = "'";
+		param += list.at(i).toString();
+		param += "'";
+		str.replace(pos, 1, param);
+	}
+
+	return str;
+}

@@ -8,10 +8,10 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QSqlDatabase>
 
 #include <butler_sql_connection.h>
-#include <butler_sqlquery.h>
+
+#include <butler_partner_set.h>
 
 class PartnerTable
 {

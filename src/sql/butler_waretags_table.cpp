@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_waretags_table.h"
@@ -36,9 +32,9 @@ void WareTagsTable::check(QStringList &tables)
 		sql.exec("CREATE INDEX ware_tags_tag_index ON ware_tags(tag)");
 	}
 
-	QSqlRecord table = sql.record("ware_tags");
-	if(		!table.contains("name") ||
-			!table.contains("tag")
+	SqlColumns cols = sql.columns("ware_tags");
+	if(		!cols.has("name") ||
+			!cols.has("tag")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table ware_tags in the openend database.");

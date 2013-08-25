@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_tag_table.h"
@@ -30,9 +26,9 @@ void TagTable::check(QStringList &tables)
 				")"
 				);
 
-	QSqlRecord table = sql.record("tags");
-	if(	!table.contains("name") ||
-		!table.contains("description")
+	SqlColumns cols = sql.columns("tags");
+	if(	!cols.has("name") ||
+		!cols.has("description")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table tags in the openend database.");

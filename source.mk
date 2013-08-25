@@ -156,7 +156,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.cpp \
 	$(DIST_DIR)/src/sql/butler_database_descriptor_set.cpp \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
-	$(DIST_DIR)/src/sql/butler_sqlquery.cpp \
 	$(DIST_DIR)/src/sql/butler_db.cpp \
 	$(DIST_DIR)/src/sql/butler_itembought_table.cpp \
 	$(DIST_DIR)/src/sql/butler_item_table.cpp \
@@ -180,7 +179,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_database_descriptor_set.h \
 	$(DIST_DIR)/src/sql/butler_db.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
-	$(DIST_DIR)/src/sql/butler_sqlquery.h \
 	$(DIST_DIR)/src/sql/butler_itembought_table.h \
 	$(DIST_DIR)/src/sql/butler_item_table.h \
 	$(DIST_DIR)/src/sql/butler_item_db.h \

@@ -3,11 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#include <QSqlDatabase>
 #include <QStringList>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QVariant>
 
 #include "butler_ware_table.h"
@@ -31,9 +27,9 @@ void WareTable::check(QStringList &tables)
 				  ")"
 				  );
 
-	QSqlRecord table = sql.record("wares");
-	if(		!table.contains("name") ||
-			!table.contains("unit")
+	SqlColumns cols = sql.columns("wares");
+	if(		!cols.has("name") ||
+			!cols.has("unit")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table wares in the openend database.");
