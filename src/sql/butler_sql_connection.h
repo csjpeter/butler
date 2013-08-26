@@ -35,7 +35,6 @@ typedef csjp::OwnerContainer<csjp::String> SqlColumns;
 
 class SqlConnection
 {
-	friend class SqlQuery;
 public:
 	SqlConnection(const DatabaseDescriptor & dbDesc);
 	~SqlConnection();
@@ -50,16 +49,26 @@ public:
 	SqlColumns columns(const QString &tablename) const;
 	QStringList tables() const;
 	bool isOpen();
-	void transaction();
-	void commit();
-	void rollback();
 	QString dbErrorString();
 
 public:
 	const DatabaseDescriptor & dbDesc;
 
 private:
+	friend class SqlQuery;
+	friend class SqlTransaction;
 	SqlConnectionPrivate * priv;
+};
+
+class SqlTransaction
+{
+public:
+	SqlTransaction(SqlConnection & sql);
+	~SqlTransaction();
+	void commit();
+private:
+	SqlConnection & sql;
+	bool committed;
 };
 
 class SqlQueryPrivate;

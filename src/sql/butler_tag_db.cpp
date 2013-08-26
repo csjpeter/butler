@@ -5,9 +5,9 @@
 
 #include "butler_tag_db.h"
 
-TagDb::TagDb(SqlConnection &_sql) :
-	sql(_sql),
-	tagTable(_sql)
+TagDb::TagDb(SqlConnection &sql) :
+	sql(sql),
+	tagTable(sql)
 {
 }
 
@@ -22,48 +22,28 @@ void TagDb::check(QStringList &tables)
 
 void TagDb::insert(const Tag &t)
 {
-	sql.transaction();
-	try {
-		tagTable.insert(t);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	tagTable.insert(t);
+	tr.commit();
 }
 
 void TagDb::update(const Tag &orig, const Tag &modified)
 {
-	sql.transaction();
-	try {
-		tagTable.update(orig, modified);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	tagTable.update(orig, modified);
+	tr.commit();
 }
 
 void TagDb::del(const Tag &t)
 {
-	sql.transaction();
-	try {
-		tagTable.del(t);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	tagTable.del(t);
+	tr.commit();
 }
 
 void TagDb::query(TagSet &ts)
 {
-	sql.transaction();
-	try {
-		tagTable.query(ts);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	tagTable.query(ts);
+	tr.commit();
 }

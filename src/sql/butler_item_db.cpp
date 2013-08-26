@@ -5,11 +5,11 @@
 
 #include "butler_item_db.h"
 
-ItemDb::ItemDb(SqlConnection &_sql, TagDb &tagDb) :
-	sql(_sql),
+ItemDb::ItemDb(SqlConnection &sql, TagDb &tagDb) :
+	sql(sql),
 	tagDb(tagDb),
-	itemBoughtTable(_sql),
-	itemTable(_sql)
+	itemBoughtTable(sql),
+	itemTable(sql)
 {
 }
 
@@ -25,69 +25,44 @@ void ItemDb::check(QStringList &tables)
 
 void ItemDb::insert(const Item &i)
 {
-	sql.transaction();
-	try{
-		itemTable.insert(i);
-		if(i.bought)
-			itemBoughtTable.insert(i);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	itemTable.insert(i);
+	if(i.bought)
+		itemBoughtTable.insert(i);
+	tr.commit();
 }
 
 void ItemDb::update(const Item &orig, const Item &modified)
 {
-	sql.transaction();
-	try {
-		itemTable.update(orig, modified);
-		if(!orig.bought && modified.bought){
-			itemBoughtTable.insert(modified);
-		} else if(orig.bought && !modified.bought){
-			itemBoughtTable.del(orig);
-		} else if(orig.bought && modified.bought){
-			itemBoughtTable.update(orig, modified);
-		}
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
+	SqlTransaction tr(sql);
+	itemTable.update(orig, modified);
+	if(!orig.bought && modified.bought){
+		itemBoughtTable.insert(modified);
+	} else if(orig.bought && !modified.bought){
+		itemBoughtTable.del(orig);
+	} else if(orig.bought && modified.bought){
+		itemBoughtTable.update(orig, modified);
 	}
+	tr.commit();
 }
 
 void ItemDb::del(const Item &i)
 {
-	sql.transaction();
-	try {
-		itemTable.del(i);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	itemTable.del(i);
+	tr.commit();
 }
 
 void ItemDb::query(const TagNameSet &tags, ItemSet &is)
 {
-	sql.transaction();
-	try {
-		itemTable.query(tags, is);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	itemTable.query(tags, is);
+	tr.commit();
 }
 
 void ItemDb::query(const Query &q, QueryStat &stat, ItemSet &is)
 {
-	sql.transaction();
-	try {
-		itemBoughtTable.query(q, stat, is);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	itemBoughtTable.query(q, stat, is);
+	tr.commit();
 }

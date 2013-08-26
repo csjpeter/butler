@@ -5,13 +5,13 @@
 
 #include "butler_queries_db.h"
 
-QueryDb::QueryDb(SqlConnection &_sql, TagDb &tagDb) :
-	sql(_sql),
+QueryDb::QueryDb(SqlConnection &sql, TagDb &tagDb) :
+	sql(sql),
 	tagDb(tagDb),
-	queryTable(_sql),
-	queryTagsTable(_sql),
-	queryWaresTable(_sql),
-	queryPartnersTable(_sql)
+	queryTable(sql),
+	queryTagsTable(sql),
+	queryWaresTable(sql),
+	queryPartnersTable(sql)
 {
 }
 
@@ -29,64 +29,44 @@ void QueryDb::check(QStringList &tables)
 
 void QueryDb::insert(const Query &q)
 {
-	sql.transaction();
-	try {
-		queryTable.insert(q);
-		queryTagsTable.insert(q);
-		queryWaresTable.insert(q);
-		queryPartnersTable.insert(q);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	queryTable.insert(q);
+	queryTagsTable.insert(q);
+	queryWaresTable.insert(q);
+	queryPartnersTable.insert(q);
+	tr.commit();
 }
 
 void QueryDb::update(const Query &orig, const Query &modified)
 {
-	sql.transaction();
-	try {
-		queryTable.update(orig, modified);
-		queryTagsTable.update(orig, modified);
-		queryWaresTable.update(orig, modified);
-		queryPartnersTable.update(orig, modified);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	queryTable.update(orig, modified);
+	queryTagsTable.update(orig, modified);
+	queryWaresTable.update(orig, modified);
+	queryPartnersTable.update(orig, modified);
+	tr.commit();
 }
 
 void QueryDb::del(const Query &q)
 {
-	sql.transaction();
-	try {
-		queryTable.del(q);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	queryTable.del(q);
+	tr.commit();
 }
 
 void QueryDb::query(QuerySet &qs)
 {
-	sql.transaction();
-	try {
-		queryTable.query(qs);
+	SqlTransaction tr(sql);
+	queryTable.query(qs);
 
-		unsigned s = qs.size();
-		for(unsigned i=0; i<s; i++){
-			Query &q = qs.queryAt(i);
-			/* FIXME : We need to upgrade the schema for this. */
-			/* queryTagsTable.query(q, q.withoutTags); */
-			queryTagsTable.query(q, q.withTags);
-			queryWaresTable.query(q, q.wares);
-			queryPartnersTable.query(q, q.partners);
-		}
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
+	unsigned s = qs.size();
+	for(unsigned i=0; i<s; i++){
+		Query &q = qs.queryAt(i);
+		/* FIXME : We need to upgrade the schema for this. */
+		/* queryTagsTable.query(q, q.withoutTags); */
+		queryTagsTable.query(q, q.withTags);
+		queryWaresTable.query(q, q.wares);
+		queryPartnersTable.query(q, q.partners);
 	}
+	tr.commit();
 }

@@ -5,9 +5,9 @@
 
 #include "butler_partner_db.h"
 
-PartnerDb::PartnerDb(SqlConnection &_sql) :
-	sql(_sql),
-	partnerTable(_sql)
+PartnerDb::PartnerDb(SqlConnection &sql) :
+	sql(sql),
+	partnerTable(sql)
 {
 }
 
@@ -22,48 +22,28 @@ void PartnerDb::check(QStringList &tables)
 
 void PartnerDb::insert(const Partner &s)
 {
-	sql.transaction();
-	try {
-		partnerTable.insert(s);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	partnerTable.insert(s);
+	tr.commit();
 }
 
 void PartnerDb::update(const Partner &orig, const Partner &modified)
 {
-	sql.transaction();
-	try {
-		partnerTable.update(orig, modified);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	partnerTable.update(orig, modified);
+	tr.commit();
 }
 
 void PartnerDb::del(const Partner &s)
 {
-	sql.transaction();
-	try {
-		partnerTable.del(s);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	partnerTable.del(s);
+	tr.commit();
 }
 
 void PartnerDb::query(PartnerSet &ss)
 {
-	sql.transaction();
-	try {
-		partnerTable.query(ss);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	partnerTable.query(ss);
+	tr.commit();
 }

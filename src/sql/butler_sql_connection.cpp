@@ -191,50 +191,6 @@ bool SqlConnection::isOpen()
 	return priv->db.isOpen();
 }
 
-void SqlConnection::transaction()
-{
-	open();
-
-	if(priv->transactions == 0){
-		DBG("BEGIN TRANSACTION");
-		priv->db.transaction();
-		if(priv->db.lastError().isValid())
-			throw DbError("Failed begin transcation.\nError: %s",
-					C_STR(dbErrorString()));
-	}
-
-	priv->transactions++;
-}
-
-void SqlConnection::commit()
-{
-	if(priv->transactions == 1){
-		DBG("COMMIT TRANSACTION");
-		priv->db.commit();
-		if(priv->db.lastError().isValid())
-			throw DbError("Failed to commit transcation.\nError: %s",
-					C_STR(dbErrorString()));
-	}
-
-	priv->transactions--;
-}
-
-void SqlConnection::rollback()
-{
-	if(priv->transactions == 1){
-		DBG("ROLLBACK TRANSACTION");
-		priv->db.rollback();
-		if(priv->db.lastError().isValid())
-			LOG("Failed to rollback transcation.\nError: %s", C_STR(dbErrorString()));
-			/* FIXME test this */
-/*			throw DbError("Failed to rollback transcation.\nError: %s",
-					C_STR(dbErrorString()));
-*/
-	}
-
-	priv->transactions--;
-}
-
 QString SqlConnection::dbErrorString()
 {
 	return priv->db.lastError().text();
@@ -290,6 +246,59 @@ void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & db
 	featuresListed = true;
 }
 #endif
+
+SqlTransaction::SqlTransaction(SqlConnection & sql) :
+	sql(sql),
+	committed(false)
+{
+	sql.open();
+
+	if(sql.priv->transactions == 0){
+		DBG("BEGIN TRANSACTION");
+		sql.priv->db.transaction();
+		if(sql.priv->db.lastError().isValid())
+			throw DbError("Failed begin transcation.\nError: %s",
+					C_STR(sql.dbErrorString()));
+	}
+
+	sql.priv->transactions++;
+}
+
+SqlTransaction::~SqlTransaction()
+{
+	if(committed)
+		return;
+
+	if(sql.priv->transactions == 1){
+		DBG("ROLLBACK TRANSACTION");
+		sql.priv->db.rollback();
+		if(sql.priv->db.lastError().isValid())
+			LOG("Failed to rollback transcation.\nError: %s", C_STR(sql.dbErrorString()));
+			/* FIXME test this */
+/*			throw DbError("Failed to rollback transcation.\nError: %s",
+					C_STR(sql.dbErrorString()));
+*/
+	}
+
+	sql.priv->transactions--;
+}
+
+void SqlTransaction::commit()
+{
+	if(committed)
+		return;
+	committed = true;
+
+	if(sql.priv->transactions == 1){
+		DBG("COMMIT TRANSACTION");
+		sql.priv->db.commit();
+		if(sql.priv->db.lastError().isValid())
+			throw DbError("Failed to commit transcation.\nError: %s",
+					C_STR(sql.dbErrorString()));
+	}
+
+	sql.priv->transactions--;
+}
 
 
 

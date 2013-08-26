@@ -5,12 +5,12 @@
 
 #include "butler_ware_db.h"
 
-WareDb::WareDb(SqlConnection &_sql, TagDb &tagDb) :
-	sql(_sql),
+WareDb::WareDb(SqlConnection &sql, TagDb &tagDb) :
+	sql(sql),
 	tagDb(tagDb),
-	wareTable(_sql),
-	wareTagsTable(_sql),
-	wareCategoriesTable(_sql)
+	wareTable(sql),
+	wareTagsTable(sql),
+	wareCategoriesTable(sql)
 {
 }
 
@@ -27,59 +27,39 @@ void WareDb::check(QStringList &tables)
 
 void WareDb::insert(const Ware &ware)
 {
-	sql.transaction();
-	try {
-		wareTable.insert(ware);
-		wareTagsTable.insert(ware);
-		wareCategoriesTable.insert(ware);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	wareTable.insert(ware);
+	wareTagsTable.insert(ware);
+	wareCategoriesTable.insert(ware);
+	tr.commit();
 }
 
 void WareDb::update(const Ware &orig, const Ware &modified)
 {
-	sql.transaction();
-	try {
-		wareTable.update(orig, modified);
-		wareTagsTable.update(orig, modified);
-		wareCategoriesTable.update(orig, modified);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	wareTable.update(orig, modified);
+	wareTagsTable.update(orig, modified);
+	wareCategoriesTable.update(orig, modified);
+	tr.commit();
 }
 
 void WareDb::del(const Ware &w)
 {
-	sql.transaction();
-	try {
-		wareTable.del(w);
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
-	}
+	SqlTransaction tr(sql);
+	wareTable.del(w);
+	tr.commit();
 }
 
 void WareDb::query(WareSet &ws)
 {
-	sql.transaction();
-	try {
-		wareTable.query(ws);
+	SqlTransaction tr(sql);
+	wareTable.query(ws);
 
-		unsigned i, s = ws.size();
-		for(i=0; i<s; i++){
-			Ware &ware = ws.queryAt(i);
-			wareTagsTable.query(ware, ware.tags);
-			wareCategoriesTable.query(ware, ware.categories);
-		}
-		sql.commit();
-	} catch (...) {
-		sql.rollback();
-		throw;
+	unsigned i, s = ws.size();
+	for(i=0; i<s; i++){
+		Ware &ware = ws.queryAt(i);
+		wareTagsTable.query(ware, ware.tags);
+		wareCategoriesTable.query(ware, ware.categories);
 	}
+	tr.commit();
 }
