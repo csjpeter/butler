@@ -119,3 +119,21 @@ void WareCategoriesTable::query(const Ware &ware, CategoryNameSet &categories)
 	}
 	DBG("-----");
 }
+
+void WareCategoriesTable::query(WareSet & ws)
+{
+	SqlQuery selectQuery(sql);
+	selectQuery.exec("SELECT name, category FROM ware_categories");
+
+	int nameNo = selectQuery.colIndex("name");
+	int categoryNo = selectQuery.colIndex("category");
+
+	DBG("----- Ware categories query result:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		QString name(selectQuery.value(nameNo).toString());
+		ws.query(name).categories.add(
+				new QString(selectQuery.value(categoryNo).toString()));
+	}
+	DBG("-----");
+}

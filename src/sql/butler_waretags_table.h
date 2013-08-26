@@ -29,6 +29,7 @@ public:
 	void update(const Ware &orig,
 			const Ware &modified);
 	void query(const Ware &, csjp::OwnerContainer<QString> &tags);
+	void query(WareSet & ws);
 
 private:
 	SqlConnection &sql;

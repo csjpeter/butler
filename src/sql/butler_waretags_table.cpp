@@ -101,10 +101,7 @@ void WareTagsTable::update(const Ware &orig, const Ware &modified)
 void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 {
 	SqlQuery selectQuery(sql);
-	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT tag FROM ware_tags "
-				"WHERE name = ?");
-
+	selectQuery.prepare("SELECT tag FROM ware_tags WHERE name = ?");
 	selectQuery.bindValue(0, ware.name);
 	selectQuery.exec();
 
@@ -116,6 +113,23 @@ void WareTagsTable::query(const Ware& ware, csjp::OwnerContainer<QString> &tags)
 	while (selectQuery.next()) {
 		DBG("Next row");
 		tags.add(new QString(selectQuery.value(tagNo).toString()));
+	}
+	DBG("-----");
+}
+
+void WareTagsTable::query(WareSet &ws)
+{
+	SqlQuery selectQuery(sql);
+	selectQuery.exec("SELECT name, tag FROM ware_tags");
+
+	unsigned nameNo = selectQuery.colIndex("name");
+	unsigned tagNo = selectQuery.colIndex("tag");
+
+	DBG("----- Ware tags query result:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		QString name(selectQuery.value(nameNo).toString());
+		ws.query(name).tags.add(new QString(selectQuery.value(tagNo).toString()));
 	}
 	DBG("-----");
 }

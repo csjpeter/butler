@@ -29,6 +29,7 @@ public:
 	void update(const Ware &orig,
 			const Ware &modified);
 	void query(const Ware &, CategoryNameSet &categories);
+	void query(WareSet &ws);
 
 private:
 	SqlConnection &sql;

@@ -55,11 +55,15 @@ void WareDb::query(WareSet &ws)
 	SqlTransaction tr(sql);
 	wareTable.query(ws);
 
+	wareTagsTable.query(ws);
+	wareCategoriesTable.query(ws);
+
+/*	More precisely with much more queries:
 	unsigned i, s = ws.size();
 	for(i=0; i<s; i++){
 		Ware &ware = ws.queryAt(i);
 		wareTagsTable.query(ware, ware.tags);
 		wareCategoriesTable.query(ware, ware.categories);
-	}
+	}*/
 	tr.commit();
 }
