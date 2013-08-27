@@ -136,7 +136,7 @@ void MainView::applyLayout()
 	layout->addStretch(0);
 
 //	layout->addWidget(&todoButton);
-//	layout->addWidget(&shoppingButton);
+	layout->addWidget(&shoppingButton);
 	layout->addWidget(&newItemButton);
 	layout->addWidget(&analiticsButton);
 	layout->addWidget(&wareButton);
