@@ -6,9 +6,7 @@
 #ifndef BUTLER_TAGSMODEL_H
 #define BUTLER_TAGSMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_query_set.h>
 #include <butler_tag_set.h>
@@ -20,8 +18,7 @@ class QueryOptions;
 class Tag;
 class Item;
 
-class TagsModel :
-	public QAbstractTableModel
+class TagsModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

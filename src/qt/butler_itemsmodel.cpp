@@ -267,26 +267,14 @@ int ItemsModel::columnCount(const QModelIndex & parent) const
 bool ItemsModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool ItemsModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -331,14 +319,8 @@ void ItemsModel::itemRemovedListener(const Db & db, const Item &removed)
 		return;
 
 	int row = items.index(removed.uploaded);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		items.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	items.removeAt(row);
 }
 
 void ItemsModel::addNew(Item &item)
@@ -376,25 +358,13 @@ void ItemsModel::itemChangeListener(const Db & db, const Item &modified)
 			items.queryAt(row) = modified;
 			dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
 		} else {
-			try {
-				beginRemoveRows(QModelIndex(), row, row);
-				items.removeAt(row);
-				endRemoveRows();
-			} catch (...) {
-				endRemoveRows();
-				throw;
-			}
+			ModelRemoveGuard g(this, QModelIndex(), row, row);
+			items.removeAt(row);
 		}
 	} else {
 		if(want){
-			try {
-				beginInsertRows(QModelIndex(), items.size(), items.size());
-				items.add(new Item(modified));
-				endInsertRows();
-			} catch (...) {
-				endInsertRows();
-				throw;
-			}
+			ModelInsertGuard g(this, QModelIndex(), items.size(), items.size());
+			items.add(new Item(modified));
 		}
 	}
 }
@@ -404,16 +374,10 @@ void ItemsModel::sort(int column, bool ascending)
 	if(items.ascending == ascending && items.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		items.ascending = ascending;
-		items.ordering = static_cast<Item::Fields>(column);
-		items.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	items.ascending = ascending;
+	items.ordering = static_cast<Item::Fields>(column);
+	items.sort();
 }
 
 bool operator<(const ItemsModel &a, const ItemsModel &b)

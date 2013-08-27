@@ -190,27 +190,15 @@ int CompanyModel::columnCount(const QModelIndex & parent) const
 bool CompanyModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
-	return true;
+		ModelRemoveGuard g(this, parent, row, row + count - 1);
+		return true;
 }
 
 bool CompanyModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
-	return true;
+		ModelInsertGuard g(this, parent, row, row + count - 1);
+		return true;
 }
 
 void CompanyModel::sort(int column, Qt::SortOrder order)
@@ -235,14 +223,9 @@ void CompanyModel::del(int row)
 {
 	Company &company = companys.queryAt(row);
 	db.company.del(company);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		companys.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	companys.removeAt(row);
 }
 
 void CompanyModel::addNew(Company &company)

@@ -28,14 +28,8 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 
 void ShoppingModel::query()
 {
-	try {
-		beginResetModel();
-		db.item.query(queryTagNames, items);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.item.query(queryTagNames, items);
 }
 
 void ShoppingModel::buy(unsigned itemRow, Item &modified)
@@ -53,14 +47,8 @@ void ShoppingModel::update(int row, Item &modified)
 	if(queryFilter(modified))
 		return;
 
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		items.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	items.removeAt(row);
 }
 
 bool ShoppingModel::queryFilter(const Item &modified)

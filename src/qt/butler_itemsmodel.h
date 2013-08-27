@@ -6,9 +6,7 @@
 #ifndef BUTLER_ITEMSMODEL_H
 #define BUTLER_ITEMSMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <csjp_reference_container.h>
 
@@ -21,8 +19,7 @@
 
 class Item;
 
-class ItemsModel :
-	public QAbstractTableModel
+class ItemsModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

@@ -201,26 +201,14 @@ int PartnersModel::columnCount(const QModelIndex & parent) const
 bool PartnersModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool PartnersModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -246,27 +234,15 @@ void PartnersModel::del(int row)
 {
 	Partner &partner = partners.queryAt(row);
 	db.partner.del(partner);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		partners.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	partners.removeAt(row);
 }
 
 void PartnersModel::addNew(Partner &partner)
 {
 	db.partner.insert(partner);
-	try {
-		beginInsertRows(QModelIndex(), partners.size(), partners.size());
-		partners.add(new Partner(partner));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), partners.size(), partners.size());
+	partners.add(new Partner(partner));
 }
 
 void PartnersModel::update(int row, Partner &modified)
@@ -279,14 +255,8 @@ void PartnersModel::update(int row, Partner &modified)
 
 void PartnersModel::query()
 {
-	try {
-		beginResetModel();
-		db.partner.query(partners);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.partner.query(partners);
 }
 
 void PartnersModel::sort(int column, bool ascending)
@@ -294,14 +264,8 @@ void PartnersModel::sort(int column, bool ascending)
 	if(partners.ascending == ascending && partners.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		partners.ascending = ascending;
-		partners.ordering = static_cast<Partner::Fields>(column);
-		partners.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	partners.ascending = ascending;
+	partners.ordering = static_cast<Partner::Fields>(column);
+	partners.sort();
 }

@@ -6,9 +6,7 @@
 #ifndef BUTLER_QUERIESMODEL_H
 #define BUTLER_QUERIESMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_query_set.h>
 
@@ -16,8 +14,7 @@
 
 #include <butler_config.h>
 
-class QueriesModel :
-	public QAbstractTableModel
+class QueriesModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

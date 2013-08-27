@@ -6,17 +6,14 @@
 #ifndef BUTLER_COMPANYMODEL_H
 #define BUTLER_COMPANYMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_company_set.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
 
-class CompanyModel :
-	public QAbstractTableModel
+class CompanyModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

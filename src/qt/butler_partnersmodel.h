@@ -6,17 +6,14 @@
 #ifndef BUTLER_PARTNERSMODEL_H
 #define BUTLER_PARTNERSMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_partner_set.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
 
-class PartnersModel :
-	public QAbstractTableModel
+class PartnersModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

@@ -6,14 +6,11 @@
 #ifndef BUTLER_DATABASESMODEL_H
 #define BUTLER_DATABASESMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_databases.h>
 
-class DatabasesModel :
-	public QAbstractTableModel
+class DatabasesModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

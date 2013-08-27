@@ -145,26 +145,14 @@ int TagsModel::columnCount(const QModelIndex & parent) const
 bool TagsModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool TagsModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -186,14 +174,8 @@ int TagsModel::index(const QString &name) const
 /*
 void TagsModel::setTagSet(const TagSet &ts)
 {
-	try {
-		beginResetModel();
-		tags.copy(ts);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	tags.copy(ts);
 }
 */
 
@@ -206,27 +188,15 @@ void TagsModel::del(int row)
 {
 	Tag &tag = tags.queryAt(row);
 	db.tag.del(tag);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		tags.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	tags.removeAt(row);
 }
 
 void TagsModel::addNew(Tag &tag)
 {
 	db.tag.insert(tag);
-	try {
-		beginInsertRows(QModelIndex(), tags.size(), tags.size());
-		tags.add(new Tag(tag));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), tags.size(), tags.size());
+	tags.add(new Tag(tag));
 }
 
 void TagsModel::update(int row, Tag &modified)
@@ -239,14 +209,8 @@ void TagsModel::update(int row, Tag &modified)
 
 void TagsModel::query()
 {
-	try {
-		beginResetModel();
-		db.tag.query(tags);
-		endResetModel();
-	} catch(...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.tag.query(tags);
 }
 
 void TagsModel::sort(int column, bool ascending)
@@ -254,14 +218,8 @@ void TagsModel::sort(int column, bool ascending)
 	if(tags.ascending == ascending && tags.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		tags.ascending = ascending;
-		tags.ordering = static_cast<Tag::Fields>(column);
-		tags.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	tags.ascending = ascending;
+	tags.ordering = static_cast<Tag::Fields>(column);
+	tags.sort();
 }

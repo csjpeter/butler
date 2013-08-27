@@ -6,9 +6,7 @@
 #ifndef BUTLER_WARESMODEL_H
 #define BUTLER_WARESMODEL_H
 
-#include <QAbstractItemModel>
-#include <QAbstractTableModel>
-#include <QModelIndex>
+#include <butler_abstract_table_model.h>
 
 #include <butler_ware_set.h>
 
@@ -16,8 +14,7 @@
 
 #include <butler_config.h>
 
-class WaresModel :
-	public QAbstractTableModel
+class WaresModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT

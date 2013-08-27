@@ -18,14 +18,8 @@ CustomModel::~CustomModel()
 
 void CustomModel::query()
 {
-	try{
-		beginResetModel();
-		db.item.query(opts, stat, items);
-		endResetModel();
-	} catch(...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.item.query(opts, stat, items);
 }
 
 void CustomModel::update(int row, Item &modified)
@@ -33,14 +27,9 @@ void CustomModel::update(int row, Item &modified)
 	ItemsModel::update(row, modified);
 	if(queryFilter(modified))
 		return;
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		items.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	items.removeAt(row);
 }
 
 bool CustomModel::queryFilter(const Item &modified)

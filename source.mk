@@ -202,6 +202,7 @@ source: \
 	$(DIST_DIR)/src/sql/test/partner.cpp \
 	$(DIST_DIR)/src/sql/test/tag.cpp \
 	$(DIST_DIR)/src/sql/test/ware.cpp \
+	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
 	$(DIST_DIR)/src/qt/butler_application.cpp \
 	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
