@@ -136,26 +136,14 @@ int WareCategoriesModel::columnCount(const QModelIndex & parent) const
 bool WareCategoriesModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool WareCategoriesModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -179,26 +167,14 @@ const QString & WareCategoriesModel::category(int row) const
 
 void WareCategoriesModel::del(int row)
 {
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		categories.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	categories.removeAt(row);
 }
 
 void WareCategoriesModel::addNew(const QString & cat)
 {
-	try {
-		beginInsertRows(QModelIndex(), categories.size(), categories.size());
-		categories.add(new QString(cat));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), categories.size(), categories.size());
+	categories.add(new QString(cat));
 }
 
 void WareCategoriesModel::sort(int column, bool ascending)
@@ -206,13 +182,7 @@ void WareCategoriesModel::sort(int column, bool ascending)
 	if(categories.ascending == ascending || column != 0)
 		return;
 
-	try {
-		beginResetModel();
-		categories.ascending = ascending;
-		categories.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	categories.ascending = ascending;
+	categories.sort();
 }

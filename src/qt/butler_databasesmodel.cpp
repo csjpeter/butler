@@ -197,27 +197,15 @@ int DatabasesModel::columnCount(const QModelIndex & parent) const
 
 bool DatabasesModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		descriptorSet.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
+	descriptorSet.removeAt(row);
 	return true;
 }
 
 bool DatabasesModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -246,14 +234,8 @@ void DatabasesModel::del(int row)
 
 void DatabasesModel::addNew(DatabaseDescriptor & desc)
 {
-	try {
-		beginInsertRows(QModelIndex(), descriptorSet.size(), descriptorSet.size());
-		descriptorSet.add(new DatabaseDescriptor(desc));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), descriptorSet.size(), descriptorSet.size());
+	descriptorSet.add(new DatabaseDescriptor(desc));
 }
 
 void DatabasesModel::update(int row, DatabaseDescriptor & modified)
@@ -272,14 +254,8 @@ void DatabasesModel::sort(int column, bool ascending)
 	if(descriptorSet.ascending == ascending && descriptorSet.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		descriptorSet.ascending = ascending;
-		descriptorSet.ordering = static_cast<DatabaseDescriptor::Fields>(column);
-		descriptorSet.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	descriptorSet.ascending = ascending;
+	descriptorSet.ordering = static_cast<DatabaseDescriptor::Fields>(column);
+	descriptorSet.sort();
 }

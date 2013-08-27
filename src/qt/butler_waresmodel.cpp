@@ -172,26 +172,14 @@ int WaresModel::columnCount(const QModelIndex & parent) const
 bool WaresModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool WaresModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -217,27 +205,15 @@ void WaresModel::del(int row)
 {
 	Ware &ware = wares.queryAt(row);
 	db.ware.del(ware);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		wares.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	wares.removeAt(row);
 }
 
 void WaresModel::addNew(Ware &ware)
 {
 	db.ware.insert(ware);
-	try {
-		beginInsertRows(QModelIndex(), wares.size(), wares.size());
-		wares.add(new Ware(ware));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), wares.size(), wares.size());
+	wares.add(new Ware(ware));
 }
 
 void WaresModel::update(int row, Ware &modified)
@@ -250,14 +226,8 @@ void WaresModel::update(int row, Ware &modified)
 
 void WaresModel::query()
 {
-	try {
-		beginResetModel();
-		db.ware.query(wares);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.ware.query(wares);
 }
 
 QString WaresModel::categoriesToString(const CategoryNameSet &cat)
@@ -323,14 +293,8 @@ void WaresModel::sort(int column, bool ascending)
 	if(wares.ascending == ascending && wares.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		wares.ascending = ascending;
-		wares.ordering = static_cast<Ware::Fields>(column);
-		wares.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	wares.ascending = ascending;
+	wares.ordering = static_cast<Ware::Fields>(column);
+	wares.sort();
 }

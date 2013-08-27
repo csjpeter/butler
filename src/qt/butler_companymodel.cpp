@@ -231,14 +231,8 @@ void CompanyModel::del(int row)
 void CompanyModel::addNew(Company &company)
 {
 	db.company.insert(company);
-	try {
-		beginInsertRows(QModelIndex(), companys.size(), companys.size());
-		companys.add(new Company(company));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), companys.size(), companys.size());
+	companys.add(new Company(company));
 }
 
 void CompanyModel::update(int row, Company &modified)
@@ -251,14 +245,8 @@ void CompanyModel::update(int row, Company &modified)
 
 void CompanyModel::query()
 {
-	try {
-		beginResetModel();
+		ModelResetGuard g(this);
 		db.company.query(companys);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
 }
 
 void CompanyModel::sort(int column, bool ascending)
@@ -266,14 +254,8 @@ void CompanyModel::sort(int column, bool ascending)
 	if(companys.ascending == ascending && companys.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
+		ModelResetGuard g(this);
 		companys.ascending = ascending;
 		companys.ordering = static_cast<Company::Fields>(column);
 		companys.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
 }

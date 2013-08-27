@@ -161,26 +161,14 @@ int QueriesModel::columnCount(const QModelIndex & parent) const
 bool QueriesModel::removeRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginRemoveRows(parent, row, row + count - 1);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool QueriesModel::insertRows(
 		int row, int count, const QModelIndex &parent)
 {
-	try {
-		beginInsertRows(parent, row, row + count - 1);
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
@@ -206,27 +194,15 @@ void QueriesModel::del(int row)
 {
 	Query &query = queries.queryAt(row);
 	db.query.del(query);
-	try {
-		beginRemoveRows(QModelIndex(), row, row);
-		queries.removeAt(row);
-		endRemoveRows();
-	} catch (...) {
-		endRemoveRows();
-		throw;
-	}
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	queries.removeAt(row);
 }
 
 void QueriesModel::addNew(Query &query)
 {
 	db.query.insert(query);
-	try {
-		beginInsertRows(QModelIndex(), queries.size(), queries.size());
-		queries.add(new Query(query));
-		endInsertRows();
-	} catch (...) {
-		endInsertRows();
-		throw;
-	}
+	ModelInsertGuard g(this, QModelIndex(), queries.size(), queries.size());
+	queries.add(new Query(query));
 }
 
 void QueriesModel::update(int row, Query &modified)
@@ -239,14 +215,8 @@ void QueriesModel::update(int row, Query &modified)
 
 void QueriesModel::query()
 {
-	try {
-		beginResetModel();
-		db.query.query(queries);
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	db.query.query(queries);
 }
 
 QString QueriesModel::categoriesToString(const CategoryNameSet &cat)
@@ -312,14 +282,8 @@ void QueriesModel::sort(int column, bool ascending)
 	if(queries.ascending == ascending && queries.ordering == column)
 		return;
 
-	try {
-		beginResetModel();
-		queries.ascending = ascending;
-		queries.ordering = static_cast<Query::Fields>(column);
-		queries.sort();
-		endResetModel();
-	} catch (...) {
-		endResetModel();
-		throw;
-	}
+	ModelResetGuard g(this);
+	queries.ascending = ascending;
+	queries.ordering = static_cast<Query::Fields>(column);
+	queries.sort();
 }
