@@ -25,8 +25,7 @@ public:
 	void check(QStringList &tables);
 
 	void insert(const Query &qo);
-	void update(const Query &orig,
-			const Query &modified);
+	void update(const Query &orig, const Query &modified);
 	void del(const Query &qo);
 	void query(const QString &name, Query &query);
 	void query(QuerySet &queries);

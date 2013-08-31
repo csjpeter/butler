@@ -7,7 +7,6 @@
 #define BUTLER_MAINVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_query.h>
 
 /*forwards*/
 class ShoppingView;
