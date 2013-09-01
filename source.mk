@@ -128,6 +128,8 @@ $(DIST_DIR)/%: %
 	cp -pd $< $@
 
 source: \
+	$(DIST_DIR)/src/csjp_text.h \
+	$(DIST_DIR)/src/csjp_datetime.h \
 	$(DIST_DIR)/src/datamodel/butler_item.cpp \
 	$(DIST_DIR)/src/datamodel/butler_item_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_query.cpp \
@@ -136,8 +138,6 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_partner_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_company.cpp \
 	$(DIST_DIR)/src/datamodel/butler_company_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_tag.cpp \
-	$(DIST_DIR)/src/datamodel/butler_tag_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_ware.cpp \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.cpp \
 	$(DIST_DIR)/src/datamodel/butler_item.h \
@@ -149,7 +149,6 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_company.h \
 	$(DIST_DIR)/src/datamodel/butler_company_set.h \
 	$(DIST_DIR)/src/datamodel/butler_tag.h \
-	$(DIST_DIR)/src/datamodel/butler_tag_set.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
 	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
@@ -169,7 +168,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
 	$(DIST_DIR)/src/sql/butler_company_table.cpp \
 	$(DIST_DIR)/src/sql/butler_company_db.cpp \
-	$(DIST_DIR)/src/sql/butler_tag_table.cpp \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
 	$(DIST_DIR)/src/sql/butler_warecategories_table.cpp \
 	$(DIST_DIR)/src/sql/butler_ware_table.cpp \
@@ -191,7 +189,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_partner_db.h \
 	$(DIST_DIR)/src/sql/butler_company_table.h \
 	$(DIST_DIR)/src/sql/butler_company_db.h \
-	$(DIST_DIR)/src/sql/butler_tag_table.h \
 	$(DIST_DIR)/src/sql/butler_tag_db.h \
 	$(DIST_DIR)/src/sql/butler_warecategories_table.h \
 	$(DIST_DIR)/src/sql/butler_ware_table.h \

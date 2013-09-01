@@ -10,7 +10,7 @@
 #include <QAbstractTableModel>
 #include <QModelIndex>
 
-#include <butler_tag_set.h>
+#include <butler_tag.h>
 
 #include "butler_itemsmodel.h"
 

@@ -4,10 +4,10 @@
  */
 
 #include <csjp_object.h>
+#include <csjp_owner_container.h>
 
 #include <butler_macros.h>
 
-#include <QMap>
 #include <QStringList>
 
 #include <QSqlDatabase>
@@ -23,7 +23,7 @@
 #include "butler_sql_connection.h"
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc);
+void listAvailableFeatures(const QSqlDatabase &db);
 #endif
 
 typedef struct SqlConnectionPrivate
@@ -34,6 +34,7 @@ typedef struct SqlConnectionPrivate
 
 	QSqlDatabase db;
 	unsigned transactions;
+	mutable csjp::OwnerContainer<csjp::String> tables;
 } SqlConnectionPrivate;
 
 SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
@@ -104,7 +105,7 @@ void SqlConnection::open()
 	}
 
 #ifdef DEBUG
-	listAvailableFeatures(priv->db, dbDesc);
+	listAvailableFeatures(priv->db);
 #endif
 
 	priv->db.open();
@@ -181,9 +182,14 @@ SqlColumns SqlConnection::columns(const QString &tablename) const
 	return cols;
 }
 
-QStringList SqlConnection::tables() const
+const csjp::OwnerContainer<csjp::String> & SqlConnection::tables() const
 {
-	return priv->db.tables();
+	if(!priv->tables.size()){
+		QStringList list(priv->db.tables());
+		for(int i = 0; i < list.size(); i++)
+			priv->tables.add(new csjp::String(C_STR(list[i])));
+	}
+	return priv->tables;
 }
 
 bool SqlConnection::isOpen()
@@ -197,7 +203,7 @@ QString SqlConnection::dbErrorString()
 }
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db, const DatabaseDescriptor & dbDesc)
+void listAvailableFeatures(const QSqlDatabase &db)
 {
 	static bool featuresListed = false;
 
@@ -412,6 +418,19 @@ QVariant SqlQuery::value(int index)
 			);
 
 	return priv->qQuery->value(index);
+}
+
+csjp::Text SqlQuery::text(int index)
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	DBG("%s : [%s]",
+			C_STR(priv->qQuery->record().fieldName(index)),
+			C_STR(priv->qQuery->value(index).toString())
+			);
+
+	csjp::Text text(priv->qQuery->value(index).toString().utf16());
+	return text;
 }
 
 void SqlQuery::finish()

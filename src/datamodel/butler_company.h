@@ -9,7 +9,7 @@
 #include <QDate>
 #include <QString>
 
-#include <butler_tag_set.h>
+#include <butler_tag.h>
 
 class Tag;
 

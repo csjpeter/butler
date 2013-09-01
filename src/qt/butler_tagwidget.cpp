@@ -192,9 +192,12 @@ TagNameSet TagWidget::selectedTags()
 	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
 		QCheckBox & tagBox = btnContainer.queryAt(i);
-		if(tagBox.isChecked())
-			if(tagSet.has(tagBox.text())) // a tag might had been removed
-				tags.add(new QString(tagBox.text()));
+		if(tagBox.isChecked()){
+			csjp::Text text;
+			text <<= tagBox.text();
+			if(tagSet.has(text)) // a tag might had been removed
+				tags.add(new csjp::Text(text));
+		}
 	}
 	return tags;
 }

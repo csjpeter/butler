@@ -144,9 +144,10 @@ void TagsView::loadState()
 
 	tableView.loadState(prefix);
 
-	QString name = settings.value(prefix + "/currentitem", "").toString();
+	csjp::Text name;
+	name <<= settings.value(prefix + "/currentitem", "");
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.tagSet().has(name))
+	if(model.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editTagView", false).toBool())
@@ -215,7 +216,7 @@ void TagsView::delTag()
 
 void TagsView::refresh()
 {
-	QString name;
+	csjp::Text name;
 	if(tableView.currentIndex().isValid())
 		name = model.tag(tableView.currentIndex().row()).name;
 

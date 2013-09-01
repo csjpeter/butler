@@ -104,10 +104,10 @@ bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 	switch(index.column()){
 		case Tag::Name :
-			tags.queryAt(index.row()).name = value.toString();
+			tags.queryAt(index.row()).name <<= value;
 			break;
 		case Tag::Description :
-			tags.queryAt(index.row()).description = value.toString();
+			tags.queryAt(index.row()).description <<= value;
 			break;
 		default :
 			return false;
@@ -161,7 +161,7 @@ void TagsModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int TagsModel::index(const QString &name) const
+int TagsModel::index(const csjp::Text & name) const
 {
 	if(tags.has(name))
 		return tags.index(name);

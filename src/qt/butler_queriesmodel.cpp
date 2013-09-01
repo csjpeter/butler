@@ -274,7 +274,7 @@ void QueriesModel::stringToTags(const QString &value, TagNameSet &tags)
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		tags.add(new QString(sl.at(i).trimmed()));
+		tags.add(new csjp::Text(sl.at(i).trimmed().utf16()));
 }
 
 void QueriesModel::sort(int column, bool ascending)

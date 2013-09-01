@@ -11,7 +11,7 @@
 
 #include <csjp_sorter_owner_container.h>
 
-#include <butler_tag_set.h>
+#include <butler_tag.h>
 
 class CategoryNameSet : public csjp::SorterOwnerContainer<QString>
 {

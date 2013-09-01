@@ -30,14 +30,13 @@ public:
 		partner(sql),
 		item(sql, tag)
 	{
-		QStringList tables = sql.tables();
+/*		const csjp::OwnerContainer<csjp::String> & tables = sql.tables();
 		LOG("Tables: %s", C_STR(tables.join(", ")));
-		tag.check(tables);
 		company.check(tables);
 		partner.check(tables);
 		ware.check(tables);
 		item.check(tables);
-		query.check(tables);
+		query.check(tables);*/
 	}
 	~Db() { }
 	bool isOpen() { return sql.isOpen(); }

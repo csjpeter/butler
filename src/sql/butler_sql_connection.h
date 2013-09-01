@@ -6,10 +6,13 @@
 #ifndef BUTLER_SQL_CONNECTION_H
 #define BUTLER_SQL_CONNECTION_H
 
-#include <QObject>
-
 #include <csjp_string.h>
 #include <csjp_owner_container.h>
+
+#include <csjp_text.h>
+
+#include <QVariant>
+
 /*
 #include <butler_query.h>
 #include <butler_query_set.h>
@@ -47,7 +50,7 @@ public:
 
 	void exec(const QString &query);
 	SqlColumns columns(const QString &tablename) const;
-	QStringList tables() const;
+	const csjp::OwnerContainer<csjp::String> & tables() const;
 	bool isOpen();
 	QString dbErrorString();
 
@@ -91,6 +94,7 @@ public:
 	bool next();
 	unsigned colIndex(const QString &name);
 	QVariant value(int index);
+	csjp::Text text(int index);
 	void finish();
 
 private:

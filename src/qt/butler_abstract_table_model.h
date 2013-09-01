@@ -32,7 +32,8 @@ public:
 		class ModelRemoveGuard
 		{
 		public:
-				ModelRemoveGuard(AbstractTableModel * m, const QModelIndex & parent, int first, int last) : model(*m)
+				ModelRemoveGuard(AbstractTableModel * m, const QModelIndex & parent,
+								int first, int last) : model(*m)
 				{
 						model.beginRemoveRows(parent, first, last);
 				}
@@ -48,7 +49,8 @@ public:
 		class ModelInsertGuard
 		{
 		public:
-				ModelInsertGuard(AbstractTableModel * m, const QModelIndex & parent, int first, int last) : model(*m)
+				ModelInsertGuard(AbstractTableModel * m, const QModelIndex & parent,
+								int first, int last) : model(*m)
 				{
 						model.beginInsertRows(parent, first, last);
 				}

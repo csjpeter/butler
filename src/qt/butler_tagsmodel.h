@@ -9,7 +9,7 @@
 #include <butler_abstract_table_model.h>
 
 #include <butler_query_set.h>
-#include <butler_tag_set.h>
+#include <butler_tag.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
@@ -52,9 +52,10 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const QString &name) const NO_FCLOG;
+	int index(const csjp::Text & name) const NO_FCLOG;
 	//void setTagSet(const TagSet &);
 	const TagSet& tagSet() const { return tags; }
+	bool has(const QString & name) const { return tags.has(csjp::Text(name.utf16())); }
 	const Tag& tag(int row) NO_FCLOG;
 	void del(int row);
 	void addNew(Tag &tag);

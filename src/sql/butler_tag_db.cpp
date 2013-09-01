@@ -6,44 +6,99 @@
 #include "butler_tag_db.h"
 
 TagDb::TagDb(SqlConnection &sql) :
-	sql(sql),
-	tagTable(sql)
+	sql(sql)
 {
+	const csjp::OwnerContainer<csjp::String> & tables = sql.tables();
+
+	if(!tables.has("tags"))
+		sql.exec(	"CREATE TABLE tags ("
+				"name VARCHAR(64) PRIMARY KEY, "
+				"description TEXT NOT NULL DEFAULT ''"
+				")"
+				);
+
+	SqlColumns cols = sql.columns("tags");
+	if(	!cols.has("name") ||
+		!cols.has("description")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table tags in the openend database.");
 }
 
 TagDb::~TagDb()
 {
 }
 
-void TagDb::check(QStringList &tables)
-{
-	tagTable.check(tables);
-}
-
 void TagDb::insert(const Tag &t)
 {
 	SqlTransaction tr(sql);
-	tagTable.insert(t);
+
+	SqlQuery insertQuery(sql);
+	if(!insertQuery.isPrepared())
+		insertQuery.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
+
+	insertQuery.bindValue(0, t.name);
+	insertQuery.bindValue(1, t.description);
+	insertQuery.exec();
+
 	tr.commit();
 }
 
 void TagDb::update(const Tag &orig, const Tag &modified)
 {
 	SqlTransaction tr(sql);
-	tagTable.update(orig, modified);
+
+	SqlQuery updateQuery(sql);
+	if(!updateQuery.isPrepared())
+		updateQuery.prepare("UPDATE tags SET name = ?, description = ?"
+				" WHERE name = ?");
+
+	updateQuery.bindValue(0, modified.name);
+	updateQuery.bindValue(1, modified.description);
+	updateQuery.bindValue(2, orig.name);
+	updateQuery.exec();
+
 	tr.commit();
 }
 
 void TagDb::del(const Tag &t)
 {
 	SqlTransaction tr(sql);
-	tagTable.del(t);
+
+	SqlQuery deleteQuery(sql);
+	if(!deleteQuery.isPrepared())
+		deleteQuery.prepare("DELETE FROM tags WHERE name = ?");
+
+	deleteQuery.bindValue(0, t.name);
+	deleteQuery.exec();
+
 	tr.commit();
 }
 
-void TagDb::query(TagSet &ts)
+void TagDb::query(TagSet & tags)
 {
 	SqlTransaction tr(sql);
-	tagTable.query(ts);
+
+	SqlQuery selectQuery(sql);
+	if(!selectQuery.isPrepared())
+		selectQuery.prepare("SELECT name, description FROM tags");
+
+	selectQuery.exec();
+
+	tags.clear();
+
+	int nameNo = selectQuery.colIndex("name");
+	int descriptionNo = selectQuery.colIndex("description");
+
+	DBG("----- Reading all tags from db:");
+	while (selectQuery.next()) {
+		DBG("Next row");
+		Tag *tag = new Tag();
+		tag->name <<= selectQuery.value(nameNo).toString();
+		tag->description <<= selectQuery.value(descriptionNo).toString();
+		tags.add(tag);
+	}
+	DBG("-----");
+
 	tr.commit();
 }

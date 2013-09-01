@@ -8,7 +8,6 @@
 #include "butler_config.h"
 #include "butler_edittagview.h"
 #include "butler_tagsmodel.h"
-#include "butler_tagsmodel.h"
 
 SCC TidContext = "EditTagView";
 
@@ -103,8 +102,8 @@ void EditTagView::mapToGui()
 
 void EditTagView::mapFromGui()
 {
-	tag.name = nameEditor.editor.text();
-	tag.description = descEditor.editor.text();
+	tag.name <<= nameEditor.editor.text();
+	tag.description <<= descEditor.editor.text();
 }
 
 void EditTagView::changeEvent(QEvent * event)

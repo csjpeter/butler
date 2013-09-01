@@ -129,7 +129,7 @@ void WareTagsTable::query(WareSet &ws)
 	while (selectQuery.next()) {
 		DBG("Next row");
 		QString name(selectQuery.value(nameNo).toString());
-		ws.query(name).tags.add(new QString(selectQuery.value(tagNo).toString()));
+		ws.query(name).tags.add(new csjp::Text(selectQuery.text(tagNo)));
 	}
 	DBG("-----");
 }

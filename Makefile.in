@@ -79,6 +79,7 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	$(TARGETINFO)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(MOC) -o $@ $<
+	@touch $@
 	$(TARGETFINISHED)
 
 @TCROOT@@PREFIX@lib/% : \
@@ -127,8 +128,6 @@ DATAMODEL_OBJECTS+= \
 	tmp/src/datamodel/butler_partner_set.opp \
 	tmp/src/datamodel/butler_company.opp \
 	tmp/src/datamodel/butler_company_set.opp \
-	tmp/src/datamodel/butler_tag.opp \
-	tmp/src/datamodel/butler_tag_set.opp \
 	tmp/src/datamodel/butler_ware.opp \
 	tmp/src/datamodel/butler_ware_set.opp
 
@@ -153,7 +152,6 @@ SQL_OBJECTS+= \
 	tmp/src/sql/butler_partner_db.opp \
 	tmp/src/sql/butler_company_table.opp \
 	tmp/src/sql/butler_company_db.opp \
-	tmp/src/sql/butler_tag_table.opp \
 	tmp/src/sql/butler_tag_db.opp \
 	tmp/src/sql/butler_warecategories_table.opp \
 	tmp/src/sql/butler_ware_table.opp \

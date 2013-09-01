@@ -6,7 +6,8 @@
 #ifndef BUTLER_TAG_DB_H
 #define BUTLER_TAG_DB_H
 
-#include <butler_tag_table.h>
+#include <butler_tag.h>
+#include <butler_sql_connection.h>
 
 class TagDb
 {
@@ -17,8 +18,6 @@ private:
 	TagDb();
 
 public:
-	void check(QStringList &tables);
-
 	void insert(const Tag &t);
 	void update(const Tag &orig, const Tag &modified);
 	void del(const Tag &t);
@@ -26,7 +25,6 @@ public:
 
 private:
 	SqlConnection &sql;
-	TagTable tagTable;
 };
 
 #endif

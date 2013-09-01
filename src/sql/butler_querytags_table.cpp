@@ -111,7 +111,7 @@ void QueryTagsTable::query(const Query &q, TagNameSet &withTags)
 	DBG("----- Query withTags query result:");
 	while (selectQuery.next()) {
 		DBG("Next row");
-		withTags.add(new QString(selectQuery.value(tagNo).toString()));
+		withTags.add(new csjp::Text(selectQuery.text(tagNo)));
 	}
 	DBG("-----");
 }
