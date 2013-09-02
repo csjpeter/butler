@@ -22,7 +22,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT;
 public:
-	ShoppingModel(Db & db, const WaresModel & wmodel);
+	ShoppingModel(ItemDb & db, const WaresModel & wmodel);
 	virtual ~ShoppingModel();
 
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const NO_FCLOG;

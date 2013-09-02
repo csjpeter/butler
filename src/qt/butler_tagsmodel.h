@@ -8,9 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_query.h>
-#include <butler_tag.h>
-#include <butler_db.h>
+#include <butler_tag_db.h>
 
 #include <butler_config.h>
 
@@ -25,7 +23,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	TagsModel(Db & db);
+	TagsModel(TagDb & db);
 	virtual ~TagsModel();
 
 	virtual QModelIndex index(
@@ -64,7 +62,7 @@ public:
 	void sort(int column, bool ascending);
 
 private:
-	Db & db;
+	TagDb & db;
 	TagSet tags;
 };
 

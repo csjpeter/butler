@@ -7,7 +7,6 @@
 
 #include <config.h>
 
-#include <butler_db.h>
 #include <butler_databases.h>
 #include <butler_config.h>
 #include <butler_kineticscroller.h>

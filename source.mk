@@ -146,7 +146,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
 	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.h \
-	$(DIST_DIR)/src/sql/butler_db.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
 	$(DIST_DIR)/src/sql/butler_item_db.h \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \

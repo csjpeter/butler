@@ -4,8 +4,18 @@
  */
 
 #include <csjp_map.h>
+
 #include "butler_databases.h"
 #include "butler_database_descriptor.h"
+
+#include <butler_sql_connection.h>
+
+#include <butler_tag_db.h>
+#include <butler_ware_db.h>
+#include <butler_company_db.h>
+#include <butler_partner_db.h>
+#include <butler_item_db.h>
+#include <butler_queries_db.h>
 
 #include <QDir>
 
@@ -13,10 +23,32 @@ DatabaseDescriptorSet descriptorSet;
 
 class Database
 {
+private:
+	QString dbname;
+	SqlConnection * sql;
+	TagDb * tagDb;
+	WareDb * wareDb;
+	CompanyDb * companyDb;
+	PartnerDb * partnerDb;
+	ItemDb * itemDb;
+	QueryDb * queryDb;
+	ShoppingModel * shoppingModel;
+	TagsModel * tagsModel;
+	PartnersModel * partnersModel;
+	CompanyModel * companyModel;
+	WaresModel * waresModel;
+	QueriesModel * queriesModel;
+
 public:
 	Database(const QString & dbname) :
 		dbname(dbname),
-		database(0),
+		sql(0),
+		tagDb(0),
+		wareDb(0),
+		companyDb(0),
+		partnerDb(0),
+		itemDb(0),
+		queryDb(0),
 		shoppingModel(0),
 		tagsModel(0),
 		partnersModel(0),
@@ -35,7 +67,15 @@ public:
 		delete partnersModel;
 		delete companyModel;
 		delete waresModel;
-		delete database;
+
+		delete tagDb;
+		delete wareDb;
+		delete companyDb;
+		delete partnerDb;
+		delete itemDb;
+		delete queryDb;
+
+		delete sql;
 	}
 
 	Database& operator=(const Database &) = delete;
@@ -48,73 +88,77 @@ public:
 	bool isMore(const QString & s) const { return s < dbname; }
 
 private:
-	Db & db()
+	SqlConnection & sqlConn()
 	{
-		if(!database)
-			database = new Db(descriptorSet.query(dbname));
-		if(!database->isOpen())
-			database->desc = descriptorSet.query(dbname);
-		return *database;
+		if(!sql)
+			sql = new SqlConnection(descriptorSet.query(dbname));
+		if(!sql->isOpen())
+			sql->dbDesc = descriptorSet.query(dbname);
+		return *sql;
 	}
 
 public:
 	csjp::Object<CustomModel> customItems()
 	{
+		if(!itemDb)
+			itemDb = new ItemDb(sqlConn());
 		/* Each custom view shall have its own special custom model. */
-		return csjp::Object<CustomModel>(new CustomModel(db(), wares()));
+		return csjp::Object<CustomModel>(new CustomModel(*itemDb, wares()));
 	}
 
 	ShoppingModel & shoppingItems()
 	{
+		if(!itemDb)
+			itemDb = new ItemDb(sqlConn());
 		if(!shoppingModel)
-			shoppingModel = new ShoppingModel(db(), wares());
+			shoppingModel = new ShoppingModel(*itemDb, wares());
 		return *shoppingModel;
 	}
 
 	TagsModel & tags()
 	{
+		if(!tagDb)
+			tagDb = new TagDb(sqlConn());
 		if(!tagsModel)
-			tagsModel = new TagsModel(db());
+			tagsModel = new TagsModel(*tagDb);
 		return *tagsModel;
 	}
 
 	PartnersModel & partners()
 	{
+		if(!partnerDb)
+			partnerDb = new PartnerDb(sqlConn());
 		if(!partnersModel)
-			partnersModel = new PartnersModel(db());
+			partnersModel = new PartnersModel(*partnerDb);
 		return *partnersModel;
 	}
 
 	CompanyModel & company()
 	{
+		if(!companyDb)
+			companyDb = new CompanyDb(sqlConn());
 		if(!companyModel)
-			companyModel = new CompanyModel(db());
+			companyModel = new CompanyModel(*companyDb);
 		return *companyModel;
 	}
 
 	WaresModel & wares()
 	{
+		if(!wareDb)
+			wareDb = new WareDb(sqlConn());
 		if(!waresModel)
-			waresModel = new WaresModel(db());
+			waresModel = new WaresModel(*wareDb);
 		return *waresModel;
 	}
 
 	QueriesModel & queries()
 	{
+		if(!queryDb)
+			queryDb = new QueryDb(sqlConn());
 		if(!queriesModel)
-			queriesModel = new QueriesModel(db());
+			queriesModel = new QueriesModel(*queryDb);
 		return *queriesModel;
 	}
-
-private:
-	QString dbname;
-	Db * database;
-	ShoppingModel * shoppingModel;
-	TagsModel * tagsModel;
-	PartnersModel * partnersModel;
-	CompanyModel * companyModel;
-	WaresModel * waresModel;
-	QueriesModel * queriesModel;
 
 private:
 	void equal(const Database & tag);
@@ -146,8 +190,6 @@ inline bool operator<(const Database & a, const QString & b)
 }
 
 
-
-csjp::OwnerContainer<Database> databases;
 
 
 
@@ -226,6 +268,8 @@ void saveDatabaseConfigs()
 	origTree = move_cast(tree);
 }
 
+csjp::OwnerContainer<Database> databases;
+
 Database & loadDatabase(const QString & name)
 {
 	if(!databases.has(name)){
@@ -243,12 +287,7 @@ csjp::Object<CustomModel> customModel(const QString & dbname)
 {
 	return loadDatabase(dbname).customItems();
 }
-/*
-DatabaseDescriptor & databaseDescriptor(const QString & dbname)
-{
-	return loadDatabase(dbname).databaseDescriptor();
-}
-*/
+
 ShoppingModel & shoppingModel(const QString & dbname)
 {
 	return loadDatabase(dbname).shoppingItems();

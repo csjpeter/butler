@@ -8,7 +8,7 @@
 #include "butler_shoppingmodel.h"
 #include "butler_partnersmodel.h"
 
-ShoppingModel::ShoppingModel(Db & db, const WaresModel & wmodel) :
+ShoppingModel::ShoppingModel(ItemDb & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
 {
 	query();
@@ -29,7 +29,7 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 void ShoppingModel::query()
 {
 	ModelResetGuard g(this);
-	db.item.query(queryTagNames, items);
+	db.query(queryTagNames, items);
 }
 
 void ShoppingModel::buy(unsigned itemRow, Item & modified)
@@ -37,7 +37,7 @@ void ShoppingModel::buy(unsigned itemRow, Item & modified)
 	Item & orig = items.queryAt(itemRow);
 	modified.bought = true;
 	modified.onStock = true;
-	db.item.update(orig, modified);
+	db.update(orig, modified);
 	itemChange(db, modified);
 }
 

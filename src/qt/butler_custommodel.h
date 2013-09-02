@@ -19,7 +19,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	CustomModel(Db & db, const WaresModel & wmodel);
+	CustomModel(ItemDb & db, const WaresModel & wmodel);
 	virtual ~CustomModel();
 
 	void query();

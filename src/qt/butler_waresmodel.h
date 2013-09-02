@@ -8,9 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_ware.h>
-
-#include <butler_db.h>
+#include <butler_ware_db.h>
 
 #include <butler_config.h>
 
@@ -21,7 +19,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	WaresModel(Db & db);
+	WaresModel(WareDb & db);
 	virtual ~WaresModel();
 
 	virtual QModelIndex index(
@@ -63,7 +61,7 @@ public:
 	void sort(int column, bool ascending);
 
 protected:
-	Db & db;
+	WareDb & db;
 	WareSet wares;
 };
 

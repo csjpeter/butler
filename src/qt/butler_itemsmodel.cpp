@@ -23,7 +23,7 @@ SCC TidItemFieldOnStock		= QT_TRANSLATE_NOOP("ItemsModel", "On stock");
 SCC TidItemFieldComment		= QT_TRANSLATE_NOOP("ItemsModel", "Comment");
 SCC TidItemFieldUnitPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Unit price");
 
-ItemsModel::ItemsModel(Db & db, const WaresModel & wmodel) :
+ItemsModel::ItemsModel(ItemDb & db, const WaresModel & wmodel) :
 	db(db),
 	wmodel(wmodel)
 {
@@ -299,18 +299,18 @@ const Item& ItemsModel::item(int row) const
 void ItemsModel::del(int row)
 {
 	Item & item = items.queryAt(row);
-	db.item.del(item);
+	db.del(item);
 	itemRemoved(db, item);
 }
 
-void ItemsModel::itemRemoved(const Db & db, const Item & removed)
+void ItemsModel::itemRemoved(const ItemDb & db, const Item & removed)
 {
 	int s = itemOperationListeners.size();
 	for(int i=0; i<s; i++)
 		itemOperationListeners.queryAt(i).itemRemovedListener(db, removed);
 }
 
-void ItemsModel::itemRemovedListener(const Db & db, const Item & removed)
+void ItemsModel::itemRemovedListener(const ItemDb & db, const Item & removed)
 {
 	if(& db != &(this->db))
 		return;
@@ -325,7 +325,7 @@ void ItemsModel::itemRemovedListener(const Db & db, const Item & removed)
 
 void ItemsModel::addNew(Item & item)
 {
-	db.item.insert(item);
+	db.insert(item);
 	itemChange(db, item);
 }
 
@@ -333,20 +333,20 @@ void ItemsModel::update(int row, Item & modified)
 {
 	Item & orig = items.queryAt(row);
 
-	db.item.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Item::NumOfFields-1));
 	itemChange(db, modified);
 }
 
-void ItemsModel::itemChange(const Db & db, const Item & modified)
+void ItemsModel::itemChange(const ItemDb & db, const Item & modified)
 {
 	int s = itemOperationListeners.size();
 	for(int i=0; i<s; i++)
 		itemOperationListeners.queryAt(i).itemChangeListener(db, modified);
 }
 
-void ItemsModel::itemChangeListener(const Db & db, const Item & modified)
+void ItemsModel::itemChangeListener(const ItemDb & db, const Item & modified)
 {
 	if(& db != &(this->db))
 		return;

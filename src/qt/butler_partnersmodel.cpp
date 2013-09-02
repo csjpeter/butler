@@ -15,7 +15,7 @@ SCC TidPartnerFieldAddress	= QT_TRANSLATE_NOOP("PartnersModel", "Address");
 SCC TidPartnerFieldCompany	= QT_TRANSLATE_NOOP("PartnersModel", "Company");
 SCC TidPartnerFieldStoreName	= QT_TRANSLATE_NOOP("PartnersModel", "Store/Agent");
 
-PartnersModel::PartnersModel(Db & db) :
+PartnersModel::PartnersModel(PartnerDb & db) :
 	db(db)
 {
 	query();
@@ -233,14 +233,14 @@ const Partner& PartnersModel::partner(int row)
 void PartnersModel::del(int row)
 {
 	Partner & partner = partners.queryAt(row);
-	db.partner.del(partner);
+	db.del(partner);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	partners.removeAt(row);
 }
 
 void PartnersModel::addNew(Partner & partner)
 {
-	db.partner.insert(partner);
+	db.insert(partner);
 	ModelInsertGuard g(this, QModelIndex(), partners.size(), partners.size());
 	partners.add(new Partner(partner));
 }
@@ -248,7 +248,7 @@ void PartnersModel::addNew(Partner & partner)
 void PartnersModel::update(int row, Partner & modified)
 {
 	Partner & orig = partners.queryAt(row);
-	db.partner.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Partner::NumOfFields-1));
 }
@@ -256,7 +256,7 @@ void PartnersModel::update(int row, Partner & modified)
 void PartnersModel::query()
 {
 	ModelResetGuard g(this);
-	db.partner.query(partners);
+	db.query(partners);
 }
 
 void PartnersModel::sort(int column, bool ascending)

@@ -11,7 +11,7 @@ SCC TidQueryFieldName = QT_TRANSLATE_NOOP("QueriesModel", "Name");
 SCC TidQueryFieldStartDate = QT_TRANSLATE_NOOP("QueriesModel", "From date");
 SCC TidQueryFieldEndDate = QT_TRANSLATE_NOOP("QueriesModel", "Till date");
 
-QueriesModel::QueriesModel(Db & db) :
+QueriesModel::QueriesModel(QueryDb & db) :
 	db(db)
 {
 	query();
@@ -193,14 +193,14 @@ const Query& QueriesModel::query(int row)
 void QueriesModel::del(int row)
 {
 	Query & query = queries.queryAt(row);
-	db.query.del(query);
+	db.del(query);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	queries.removeAt(row);
 }
 
 void QueriesModel::addNew(Query & query)
 {
-	db.query.insert(query);
+	db.insert(query);
 	ModelInsertGuard g(this, QModelIndex(), queries.size(), queries.size());
 	queries.add(new Query(query));
 }
@@ -208,7 +208,7 @@ void QueriesModel::addNew(Query & query)
 void QueriesModel::update(int row, Query & modified)
 {
 	Query & orig = queries.queryAt(row);
-	db.query.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Query::NumOfFields-1));
 }
@@ -216,7 +216,7 @@ void QueriesModel::update(int row, Query & modified)
 void QueriesModel::query()
 {
 	ModelResetGuard g(this);
-	db.query.query(queries);
+	db.query(queries);
 }
 
 QString QueriesModel::categoriesToString(const CategoryNameSet & cat)

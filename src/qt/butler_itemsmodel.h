@@ -6,16 +6,12 @@
 #ifndef BUTLER_ITEMSMODEL_H
 #define BUTLER_ITEMSMODEL_H
 
-#include <butler_abstract_table_model.h>
-
 #include <csjp_reference_container.h>
 
-#include <butler_item.h>
-#include <butler_db.h>
-
+#include <butler_abstract_table_model.h>
 #include <butler_config.h>
-
-#include "butler_waresmodel.h"
+#include <butler_item_db.h>
+#include <butler_waresmodel.h>
 
 class Item;
 
@@ -26,7 +22,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	ItemsModel(Db & db, const WaresModel & wmodel);
+	ItemsModel(ItemDb & db, const WaresModel & wmodel);
 	virtual ~ItemsModel();
 
 	virtual QModelIndex index(
@@ -63,15 +59,15 @@ public:
 	void sort(int logicalIndex, bool ascending);
 
 protected:
-	static void itemChange(const Db & db, const Item & modified);
-	void itemChangeListener(const Db & db, const Item & modified);
+	static void itemChange(const ItemDb & db, const Item & modified);
+	void itemChangeListener(const ItemDb & db, const Item & modified);
 	/* return true if 'modified' should be in query list */
 	virtual bool queryFilter(const Item & modified) = 0;
-	static void itemRemoved(const Db & db, const Item & removed);
-	void itemRemovedListener(const Db & db, const Item & removed);
+	static void itemRemoved(const ItemDb & db, const Item & removed);
+	void itemRemovedListener(const ItemDb & db, const Item & removed);
 
 protected:
-	Db & db;
+	ItemDb & db;
 	const WaresModel & wmodel;
 	ItemSet items;
 

@@ -7,7 +7,7 @@
 
 #include "butler_custommodel.h"
 
-CustomModel::CustomModel(Db & db, const WaresModel & wmodel) :
+CustomModel::CustomModel(ItemDb & db, const WaresModel & wmodel) :
 	ItemsModel(db, wmodel)
 {
 }
@@ -19,7 +19,7 @@ CustomModel::~CustomModel()
 void CustomModel::query()
 {
 	ModelResetGuard g(this);
-	db.item.query(opts, stat, items);
+	db.query(opts, stat, items);
 }
 
 void CustomModel::update(int row, Item & modified)
@@ -51,6 +51,6 @@ void CustomModel::addShoppingItem(int row)
 	shoppingItem.uploaded = QDateTime::currentDateTime();
 	shoppingItem.name = i.name;
 	shoppingItem.category = i.category;
-	db.item.insert(shoppingItem);
+	db.insert(shoppingItem);
 	itemChange(db, shoppingItem);
 }

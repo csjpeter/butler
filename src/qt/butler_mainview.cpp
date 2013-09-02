@@ -7,8 +7,6 @@
 
 #include <config.h>
 
-#include <butler_db.h>
-
 #include "butler_databases.h"
 
 #include "butler_shoppingview.h"

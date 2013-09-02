@@ -56,7 +56,7 @@ public:
 	QString dbErrorString();
 
 public:
-	const DatabaseDescriptor & dbDesc;
+	DatabaseDescriptor dbDesc;
 
 private:
 	friend class SqlQuery;

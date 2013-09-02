@@ -12,7 +12,7 @@ SCC TidWareFieldUnit = QT_TRANSLATE_NOOP("WaresModel", "Unit");
 SCC TidWareFieldCategories = QT_TRANSLATE_NOOP("WaresModel", "Categories");
 SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
 
-WaresModel::WaresModel(Db & db) :
+WaresModel::WaresModel(WareDb & db) :
 	db(db)
 {
 	query();
@@ -204,14 +204,14 @@ const Ware& WaresModel::ware(int row) const
 void WaresModel::del(int row)
 {
 	Ware & ware = wares.queryAt(row);
-	db.ware.del(ware);
+	db.del(ware);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	wares.removeAt(row);
 }
 
 void WaresModel::addNew(Ware & ware)
 {
-	db.ware.insert(ware);
+	db.insert(ware);
 	ModelInsertGuard g(this, QModelIndex(), wares.size(), wares.size());
 	wares.add(new Ware(ware));
 }
@@ -219,7 +219,7 @@ void WaresModel::addNew(Ware & ware)
 void WaresModel::update(int row, Ware & modified)
 {
 	Ware & orig = wares.queryAt(row);
-	db.ware.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Ware::NumOfFields-1));
 }
@@ -227,7 +227,7 @@ void WaresModel::update(int row, Ware & modified)
 void WaresModel::query()
 {
 	ModelResetGuard g(this);
-	db.ware.query(wares);
+	db.query(wares);
 }
 
 QString WaresModel::categoriesToString(const CategoryNameSet & cat)

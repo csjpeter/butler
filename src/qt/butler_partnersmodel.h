@@ -8,8 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_partner.h>
-#include <butler_db.h>
+#include <butler_partner_db.h>
 
 #include <butler_config.h>
 
@@ -20,7 +19,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	PartnersModel(Db & db);
+	PartnersModel(PartnerDb & db);
 	virtual ~PartnersModel();
 
 	virtual QModelIndex index(
@@ -58,7 +57,7 @@ public:
 	void sort(int column, bool ascending);
 
 protected:
-	Db & db;
+	PartnerDb & db;
 	PartnerSet partners;
 };
 

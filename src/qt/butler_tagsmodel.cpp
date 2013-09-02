@@ -10,7 +10,7 @@
 SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
 SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
 
-TagsModel::TagsModel(Db & db) :
+TagsModel::TagsModel(TagDb & db) :
 	db(db)
 {
 	query();
@@ -187,14 +187,14 @@ const Tag& TagsModel::tag(int row)
 void TagsModel::del(int row)
 {
 	Tag & tag = tags.queryAt(row);
-	db.tag.del(tag);
+	db.del(tag);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	tags.removeAt(row);
 }
 
 void TagsModel::addNew(Tag & tag)
 {
-	db.tag.insert(tag);
+	db.insert(tag);
 	ModelInsertGuard g(this, QModelIndex(), tags.size(), tags.size());
 	tags.add(new Tag(tag));
 }
@@ -202,7 +202,7 @@ void TagsModel::addNew(Tag & tag)
 void TagsModel::update(int row, Tag & modified)
 {
 	Tag & orig = tags.queryAt(row);
-	db.tag.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Tag::NumOfFields-1));
 }
@@ -210,7 +210,7 @@ void TagsModel::update(int row, Tag & modified)
 void TagsModel::query()
 {
 	ModelResetGuard g(this);
-	db.tag.query(tags);
+	db.query(tags);
 }
 
 void TagsModel::sort(int column, bool ascending)

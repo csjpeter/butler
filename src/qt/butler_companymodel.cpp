@@ -14,7 +14,7 @@ SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompanyModel", "Postal code")
 SCC TidCompanyFieldAddress	= QT_TRANSLATE_NOOP("CompanyModel", "Address");
 SCC TidCompanyFieldTaxId	= QT_TRANSLATE_NOOP("CompanyModel", "Tax Id");
 
-CompanyModel::CompanyModel(Db & db) :
+CompanyModel::CompanyModel(CompanyDb & db) :
 	db(db)
 {
 	query();
@@ -222,7 +222,7 @@ const Company& CompanyModel::company(int row)
 void CompanyModel::del(int row)
 {
 	Company & company = companys.queryAt(row);
-	db.company.del(company);
+	db.del(company);
 
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	companys.removeAt(row);
@@ -230,7 +230,7 @@ void CompanyModel::del(int row)
 
 void CompanyModel::addNew(Company & company)
 {
-	db.company.insert(company);
+	db.insert(company);
 	ModelInsertGuard g(this, QModelIndex(), companys.size(), companys.size());
 	companys.add(new Company(company));
 }
@@ -238,7 +238,7 @@ void CompanyModel::addNew(Company & company)
 void CompanyModel::update(int row, Company & modified)
 {
 	Company & orig = companys.queryAt(row);
-	db.company.update(orig, modified);
+	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Company::NumOfFields-1));
 }
@@ -246,7 +246,7 @@ void CompanyModel::update(int row, Company & modified)
 void CompanyModel::query()
 {
 		ModelResetGuard g(this);
-		db.company.query(companys);
+		db.query(companys);
 }
 
 void CompanyModel::sort(int column, bool ascending)
