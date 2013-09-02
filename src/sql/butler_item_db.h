@@ -6,32 +6,28 @@
 #ifndef BUTLER_ITEM_DB_H
 #define BUTLER_ITEM_DB_H
 
-#include <butler_item_table.h>
-#include <butler_itembought_table.h>
-#include <butler_tag_db.h>
+#include <butler_tag.h>
+#include <butler_item.h>
+#include <butler_query.h>
+#include <butler_sql_connection.h>
 
 class ItemDb
 {
 public:
-	ItemDb(SqlConnection &sql, TagDb &tagDb);
+	ItemDb(SqlConnection & sql);
 	virtual ~ItemDb();
 private:
 	ItemDb();
 
 public:
-	void check(QStringList &tables);
-
 	void insert(const Item &);
-	void update(const Item &orig, const Item &modified);
+	void update(const Item & orig, const Item & modified);
 	void del(const Item &);
 	void query(const TagNameSet &, ItemSet &);
 	void query(const Query &, QueryStat &, ItemSet &);
 
 private:
-	SqlConnection &sql;
-	TagDb &tagDb;
-	ItemBoughtTable itemBoughtTable;
-	ItemTable itemTable;
+	SqlConnection & sql;
 };
 
 #endif

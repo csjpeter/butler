@@ -409,14 +409,14 @@ void EditItemView::saveSlot()
 	mapFromGui();
 
 	/* Add partner if not yet known. */
-	PartnersModel &sm = partnersModel(dbname);
+	PartnersModel & sm = partnersModel(dbname);
 	int i = sm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;
 		partner.name = partnerEditor.text();
 		partner.company = partnerEditor.text();
 		/* Add company if not yet known. */
-		CompanyModel &cm = companyModel(dbname);
+		CompanyModel & cm = companyModel(dbname);
 		int i = cm.index(partner.company);
 		if(i == -1){
 			Company company;
@@ -427,7 +427,7 @@ void EditItemView::saveSlot()
 	}
 
 	/* Add/update ware if neccessary. */
-	WaresModel &wm = waresModel(dbname);
+	WaresModel & wm = waresModel(dbname);
 	i = wm.index(ware.name);
 	if(i == -1)
 		wm.addNew(ware);
@@ -544,7 +544,7 @@ void EditItemView::wareNameEditFinishedSlot()
 	QString lastCat = categoryEditor.text();
 	categoryEditor.box.clear();
 
-	WaresModel &wm = waresModel(dbname);
+	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(lastWareName);
 	if(i == -1)
 		ware = Ware();

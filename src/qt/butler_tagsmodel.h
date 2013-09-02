@@ -8,7 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_query_set.h>
+#include <butler_query.h>
 #include <butler_tag.h>
 #include <butler_db.h>
 
@@ -45,8 +45,8 @@ public:
 			int role = Qt::EditRole);
 	virtual int rowCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
 	virtual int columnCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
-	virtual bool removeRows(int row, int count, const QModelIndex &parent=QModelIndex());
-	virtual bool insertRows(int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual bool removeRows(int row, int count, const QModelIndex & parent=QModelIndex());
+	virtual bool insertRows(int row, int count, const QModelIndex & parent=QModelIndex());
 
 public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
@@ -58,8 +58,8 @@ public:
 	bool has(const QString & name) const { return tags.has(csjp::Text(name.utf16())); }
 	const Tag& tag(int row) NO_FCLOG;
 	void del(int row);
-	void addNew(Tag &tag);
-	void update(int row, Tag &modified);
+	void addNew(Tag & tag);
+	void update(int row, Tag & modified);
 	void query();
 	void sort(int column, bool ascending);
 

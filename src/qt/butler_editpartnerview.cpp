@@ -275,7 +275,7 @@ void EditPartnerView::saveSlot()
 	mapFromGui();
 
 	/* Add company if not yet known. */
-	CompanyModel &cm = companyModel(dbname);
+	CompanyModel & cm = companyModel(dbname);
 	int i = cm.index(companyEditor.text());
 	if(i == -1){
 		Company company;

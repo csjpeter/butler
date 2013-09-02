@@ -9,7 +9,7 @@
 #include "butler_tagfilterview.h"
 #include "butler_tagwidget.h"
 
-TagFilterView::TagFilterView(const QString & dbname, TagNameSet &tags, QWidget * parent) :
+TagFilterView::TagFilterView(const QString & dbname, TagNameSet & tags, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	tags(tags)

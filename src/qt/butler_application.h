@@ -19,7 +19,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	Application(int &argc, char *argv[]);
+	Application(int & argc, char *argv[]);
 	virtual ~Application();
 
 	void loadTranslation(const char * langCode = NULL);

@@ -119,44 +119,20 @@ TEST_BINARIES=\
 # temporary files
 #
 
-DATAMODEL_OBJECTS+= \
-	tmp/src/datamodel/butler_item.opp \
-	tmp/src/datamodel/butler_item_set.opp \
-	tmp/src/datamodel/butler_query.opp \
-	tmp/src/datamodel/butler_query_set.opp \
-	tmp/src/datamodel/butler_partner.opp \
-	tmp/src/datamodel/butler_partner_set.opp \
-	tmp/src/datamodel/butler_company.opp \
-	tmp/src/datamodel/butler_company_set.opp \
-	tmp/src/datamodel/butler_ware.opp \
-	tmp/src/datamodel/butler_ware_set.opp
+DATAMODEL_OBJECTS= 
 
 DATAMODEL_INCLUDES=-Isrc/datamodel
 
 STATIC_LIBDATAMODEL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-datamodel.a
 
 SQL_OBJECTS+= \
-	tmp/src/sql/butler_database_descriptor.opp \
-	tmp/src/sql/butler_database_descriptor_set.opp \
 	tmp/src/sql/butler_sql_connection.opp \
-	tmp/src/sql/butler_db.opp \
-	tmp/src/sql/butler_itembought_table.opp \
-	tmp/src/sql/butler_item_table.opp \
 	tmp/src/sql/butler_item_db.opp \
-	tmp/src/sql/butler_queries_table.opp \
 	tmp/src/sql/butler_queries_db.opp \
-	tmp/src/sql/butler_querypartners_table.opp \
-	tmp/src/sql/butler_querytags_table.opp \
-	tmp/src/sql/butler_querywares_table.opp \
-	tmp/src/sql/butler_partner_table.opp \
 	tmp/src/sql/butler_partner_db.opp \
-	tmp/src/sql/butler_company_table.opp \
 	tmp/src/sql/butler_company_db.opp \
 	tmp/src/sql/butler_tag_db.opp \
-	tmp/src/sql/butler_warecategories_table.opp \
-	tmp/src/sql/butler_ware_table.opp \
-	tmp/src/sql/butler_ware_db.opp \
-	tmp/src/sql/butler_waretags_table.opp
+	tmp/src/sql/butler_ware_db.opp
 
 SQL_INCLUDES=-Isrc/sql
 

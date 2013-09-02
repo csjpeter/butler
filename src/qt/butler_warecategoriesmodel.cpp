@@ -134,14 +134,14 @@ int WareCategoriesModel::columnCount(const QModelIndex & parent) const
 }
 
 bool WareCategoriesModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool WareCategoriesModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -152,7 +152,7 @@ void WareCategoriesModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int WareCategoriesModel::index(const QString &name) const
+int WareCategoriesModel::index(const QString & name) const
 {
 	if(categories.has(name))
 		return categories.index(name);

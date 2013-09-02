@@ -8,7 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_partner_set.h>
+#include <butler_partner.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
@@ -41,19 +41,19 @@ public:
 			const QVariant & value, int role = Qt::EditRole);
 	virtual int rowCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
 	virtual int columnCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
-	virtual bool removeRows(int row, int count, const QModelIndex &parent=QModelIndex());
-	virtual bool insertRows(int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual bool removeRows(int row, int count, const QModelIndex & parent=QModelIndex());
+	virtual bool insertRows(int row, int count, const QModelIndex & parent=QModelIndex());
 
 public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const QString &name) const NO_FCLOG;
+	int index(const QString & name) const NO_FCLOG;
 	const Partner& partner(int row) NO_FCLOG;
 	const PartnerSet & partnerSet() const { return partners; };
 	void del(int row);
-	void addNew(Partner &partner);
-	virtual void update(int row, Partner &modified);
+	void addNew(Partner & partner);
+	virtual void update(int row, Partner & modified);
 	void query();
 	void sort(int column, bool ascending);
 

@@ -6,35 +6,25 @@
 #ifndef BUTLER_QUERY_DB_H
 #define BUTLER_QUERY_DB_H
 
-#include <butler_querytags_table.h>
-#include <butler_querywares_table.h>
-#include <butler_querypartners_table.h>
-#include <butler_queries_table.h>
-#include <butler_tag_db.h>
+#include <butler_query.h>
+#include <butler_sql_connection.h>
 
 class QueryDb
 {
 public:
-	QueryDb(SqlConnection &sql, TagDb &tagDb);
+	QueryDb(SqlConnection & sql);
 	virtual ~QueryDb();
 private:
 	QueryDb();
 
 public:
-	void check(QStringList &tables);
-
-	void insert(const Query &q);
-	void update(const Query &orig, const Query &modified);
-	void del(const Query &q);
-	void query(QuerySet &qs);
+	void insert(const Query & query);
+	void update(const Query & orig, const Query & modified);
+	void del(const Query & query);
+	void query(QuerySet & queries);
 
 private:
-	SqlConnection &sql;
-	TagDb &tagDb;
-	QueryTable queryTable;
-	QueryTagsTable queryTagsTable;
-	QueryWaresTable queryWaresTable;
-	QueryPartnersTable queryPartnersTable;
+	SqlConnection & sql;
 };
 
 #endif

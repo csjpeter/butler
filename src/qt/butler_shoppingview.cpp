@@ -132,7 +132,7 @@ void ShoppingView::saveState()
 
 	QString uploaded;
 	if(queryView.currentIndex().isValid()){
-		const Item &item = model.item(queryView.currentIndex().row());
+		const Item & item = model.item(queryView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
@@ -189,7 +189,7 @@ void ShoppingView::delItem()
 	}
 
 	int row = queryView.currentIndex().row();
-	const Item &item = model.item(row);
+	const Item & item = model.item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting item"),

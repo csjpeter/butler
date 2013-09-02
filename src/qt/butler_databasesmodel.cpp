@@ -6,7 +6,7 @@
 #include <QtGui>
 
 #include "butler_databasesmodel.h"
-#include "butler_database_descriptor_set.h"
+#include "butler_database_descriptor.h"
 
 extern DatabaseDescriptorSet descriptorSet;
 
@@ -195,7 +195,7 @@ int DatabasesModel::columnCount(const QModelIndex & parent) const
 	return DatabaseDescriptor::NumOfFields;
 }
 
-bool DatabasesModel::removeRows(int row, int count, const QModelIndex &parent)
+bool DatabasesModel::removeRows(int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	descriptorSet.removeAt(row);
@@ -203,7 +203,7 @@ bool DatabasesModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 bool DatabasesModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -214,7 +214,7 @@ void DatabasesModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int DatabasesModel::index(const QString &name) const
+int DatabasesModel::index(const QString & name) const
 {
 	if(descriptorSet.has(name))
 		return descriptorSet.index(name);

@@ -10,7 +10,7 @@
 
 #include <csjp_reference_container.h>
 
-#include <butler_item_set.h>
+#include <butler_item.h>
 #include <butler_db.h>
 
 #include <butler_config.h>
@@ -47,28 +47,28 @@ public:
 			const QVariant & value, int role = Qt::EditRole);
 	virtual int rowCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
 	virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
-	virtual bool removeRows(int row, int count, const QModelIndex &parent=QModelIndex());
-	virtual bool insertRows(int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual bool removeRows(int row, int count, const QModelIndex & parent=QModelIndex());
+	virtual bool insertRows(int row, int count, const QModelIndex & parent=QModelIndex());
 
 public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const QDateTime &uploaded) const NO_FCLOG;
+	int index(const QDateTime & uploaded) const NO_FCLOG;
 	const Item & item(int row) const NO_FCLOG;
 	const ItemSet & itemSet() const { return items; };
 	void del(int row);
-	void addNew(Item &item);
-	virtual void update(int row, Item &modified);
+	void addNew(Item & item);
+	virtual void update(int row, Item & modified);
 	void sort(int logicalIndex, bool ascending);
 
 protected:
-	static void itemChange(const Db & db, const Item &modified);
-	void itemChangeListener(const Db & db, const Item &modified);
+	static void itemChange(const Db & db, const Item & modified);
+	void itemChangeListener(const Db & db, const Item & modified);
 	/* return true if 'modified' should be in query list */
-	virtual bool queryFilter(const Item &modified) = 0;
-	static void itemRemoved(const Db & db, const Item &removed);
-	void itemRemovedListener(const Db & db, const Item &removed);
+	virtual bool queryFilter(const Item & modified) = 0;
+	static void itemRemoved(const Db & db, const Item & removed);
+	void itemRemovedListener(const Db & db, const Item & removed);
 
 protected:
 	Db & db;
@@ -79,6 +79,6 @@ private:
 	static csjp::ReferenceContainer<ItemsModel> itemOperationListeners;
 };
 
-bool operator<(const ItemsModel &a, const ItemsModel &b);
+bool operator<(const ItemsModel & a, const ItemsModel & b);
 
 #endif

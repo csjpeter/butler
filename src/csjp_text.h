@@ -61,17 +61,17 @@ private:
 		}
 };
 
-inline bool operator==(const Text &a, const Text &b)
+inline bool operator==(const Text & a, const Text & b)
 {
 		return a.isEqual(b);
 }
 
-inline bool operator!=(const Text &a, const Text &b)
+inline bool operator!=(const Text & a, const Text & b)
 {
 		return !a.isEqual(b);
 }
 
-inline bool operator<(const Text &a, const Text &b)
+inline bool operator<(const Text & a, const Text & b)
 {
 		return a.isLess(b);
 }

@@ -5,10 +5,11 @@
 
 #include "butler_tag_db.h"
 
-TagDb::TagDb(SqlConnection &sql) :
+TagDb::TagDb(SqlConnection & sql) :
 	sql(sql)
 {
-	const csjp::OwnerContainer<csjp::String> & tables = sql.tables();
+	SqlColumns cols;
+	const SqlTableNames & tables = sql.tables();
 
 	if(!tables.has("tags"))
 		sql.exec(	"CREATE TABLE tags ("
@@ -17,7 +18,7 @@ TagDb::TagDb(SqlConnection &sql) :
 				")"
 				);
 
-	SqlColumns cols = sql.columns("tags");
+	cols = sql.columns("tags");
 	if(	!cols.has("name") ||
 		!cols.has("description")
 	  )
@@ -29,14 +30,12 @@ TagDb::~TagDb()
 {
 }
 
-void TagDb::insert(const Tag &t)
+void TagDb::insert(const Tag & t)
 {
 	SqlTransaction tr(sql);
 
 	SqlQuery insertQuery(sql);
-	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
-
+	insertQuery.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
 	insertQuery.bindValue(0, t.name);
 	insertQuery.bindValue(1, t.description);
 	insertQuery.exec();
@@ -44,15 +43,12 @@ void TagDb::insert(const Tag &t)
 	tr.commit();
 }
 
-void TagDb::update(const Tag &orig, const Tag &modified)
+void TagDb::update(const Tag & orig, const Tag & modified)
 {
 	SqlTransaction tr(sql);
 
 	SqlQuery updateQuery(sql);
-	if(!updateQuery.isPrepared())
-		updateQuery.prepare("UPDATE tags SET name = ?, description = ?"
-				" WHERE name = ?");
-
+	updateQuery.prepare("UPDATE tags SET name = ?, description = ? WHERE name = ?");
 	updateQuery.bindValue(0, modified.name);
 	updateQuery.bindValue(1, modified.description);
 	updateQuery.bindValue(2, orig.name);
@@ -61,14 +57,12 @@ void TagDb::update(const Tag &orig, const Tag &modified)
 	tr.commit();
 }
 
-void TagDb::del(const Tag &t)
+void TagDb::del(const Tag & t)
 {
 	SqlTransaction tr(sql);
 
 	SqlQuery deleteQuery(sql);
-	if(!deleteQuery.isPrepared())
-		deleteQuery.prepare("DELETE FROM tags WHERE name = ?");
-
+	deleteQuery.prepare("DELETE FROM tags WHERE name = ?");
 	deleteQuery.bindValue(0, t.name);
 	deleteQuery.exec();
 
@@ -80,9 +74,7 @@ void TagDb::query(TagSet & tags)
 	SqlTransaction tr(sql);
 
 	SqlQuery selectQuery(sql);
-	if(!selectQuery.isPrepared())
-		selectQuery.prepare("SELECT name, description FROM tags");
-
+	selectQuery.prepare("SELECT name, description FROM tags");
 	selectQuery.exec();
 
 	tags.clear();

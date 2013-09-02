@@ -99,12 +99,12 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			break;
 		case Item::Quantity :
 			{
-				Item &item = items.queryAt(index.row());
+				Item & item = items.queryAt(index.row());
 				int i = wmodel.index(item.name);
 				QString val;
 				val.setNum(item.quantity, 'g', 3);
 				if(i != -1) {
-					const Ware &w = wmodel.ware(i);
+					const Ware & w = wmodel.ware(i);
 					val += " ";
 					val += w.unit;
 				}
@@ -265,14 +265,14 @@ int ItemsModel::columnCount(const QModelIndex & parent) const
 }
 
 bool ItemsModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool ItemsModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -283,7 +283,7 @@ void ItemsModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int ItemsModel::index(const QDateTime &uploaded) const
+int ItemsModel::index(const QDateTime & uploaded) const
 {
 	if(items.has(uploaded))
 		return items.index(uploaded);
@@ -298,21 +298,21 @@ const Item& ItemsModel::item(int row) const
 
 void ItemsModel::del(int row)
 {
-	Item &item = items.queryAt(row);
+	Item & item = items.queryAt(row);
 	db.item.del(item);
 	itemRemoved(db, item);
 }
 
-void ItemsModel::itemRemoved(const Db & db, const Item &removed)
+void ItemsModel::itemRemoved(const Db & db, const Item & removed)
 {
 	int s = itemOperationListeners.size();
 	for(int i=0; i<s; i++)
 		itemOperationListeners.queryAt(i).itemRemovedListener(db, removed);
 }
 
-void ItemsModel::itemRemovedListener(const Db & db, const Item &removed)
+void ItemsModel::itemRemovedListener(const Db & db, const Item & removed)
 {
-	if(&db != &(this->db))
+	if(& db != &(this->db))
 		return;
 
 	if(!items.has(removed.uploaded))
@@ -323,15 +323,15 @@ void ItemsModel::itemRemovedListener(const Db & db, const Item &removed)
 	items.removeAt(row);
 }
 
-void ItemsModel::addNew(Item &item)
+void ItemsModel::addNew(Item & item)
 {
 	db.item.insert(item);
 	itemChange(db, item);
 }
 
-void ItemsModel::update(int row, Item &modified)
+void ItemsModel::update(int row, Item & modified)
 {
-	Item &orig = items.queryAt(row);
+	Item & orig = items.queryAt(row);
 
 	db.item.update(orig, modified);
 	orig = modified;
@@ -339,16 +339,16 @@ void ItemsModel::update(int row, Item &modified)
 	itemChange(db, modified);
 }
 
-void ItemsModel::itemChange(const Db & db, const Item &modified)
+void ItemsModel::itemChange(const Db & db, const Item & modified)
 {
 	int s = itemOperationListeners.size();
 	for(int i=0; i<s; i++)
 		itemOperationListeners.queryAt(i).itemChangeListener(db, modified);
 }
 
-void ItemsModel::itemChangeListener(const Db & db, const Item &modified)
+void ItemsModel::itemChangeListener(const Db & db, const Item & modified)
 {
-	if(&db != &(this->db))
+	if(& db != &(this->db))
 		return;
 
 	bool want = queryFilter(modified);
@@ -380,7 +380,7 @@ void ItemsModel::sort(int column, bool ascending)
 	items.sort();
 }
 
-bool operator<(const ItemsModel &a, const ItemsModel &b)
+bool operator<(const ItemsModel & a, const ItemsModel & b)
 {
-	return &a < &b;
+	return & a < & b;
 }

@@ -210,7 +210,7 @@ void CustomView::saveState()
 
 	QString uploaded;
 	if(tableView.currentIndex().isValid()){
-		const Item &item = model->item(tableView.currentIndex().row());
+		const Item & item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploaded);
@@ -226,7 +226,7 @@ void CustomView::refreshItems()
 {
 	QDateTime uploaded;
 	if(tableView.currentIndex().isValid()){
-		const Item &item = model->item(tableView.currentIndex().row());
+		const Item & item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded;
 	}
 
@@ -262,7 +262,7 @@ void CustomView::delItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item &item = model->item(row);
+	const Item & item = model->item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an item"),
@@ -283,7 +283,7 @@ void CustomView::shoppingItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item &item = model->item(row);
+	const Item & item = model->item(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Adding to shopping list"),
@@ -307,7 +307,7 @@ void CustomView::editWare()
 	if(!editWareView)
 		editWareView = new EditWareView(dbname);
 
-	const Item &item = model->item(tableView.currentIndex().row());
+	const Item & item = model->item(tableView.currentIndex().row());
 
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
 	editWareView->activate();

@@ -128,7 +128,7 @@ void TagWidget::populate()
 	/* Update texts */
 	for(unsigned i = 0; i < tagSet.size(); i++){
 		QCheckBox & tagBox = btnContainer.queryAt(i);
-		const Tag &tag = tagSet.queryAt(i);
+		const Tag & tag = tagSet.queryAt(i);
 		if(tagBox.text() != tag.name){
 			tagBox.setText(tag.name);
 			changed = true;
@@ -165,14 +165,14 @@ void TagWidget::resizeEvent(QResizeEvent *event)
 	relayout();
 }
 
-void TagWidget::setTags(const TagNameSet &tags)
+void TagWidget::setTags(const TagNameSet & tags)
 {
 	populate();
 	
 	unsigned i, s = tagSet.size();
 	for(i = 0; i < s; i++){
-		const Tag &tag = tagSet.queryAt(i);
-		QCheckBox &tagBox = btnContainer.queryAt(i);
+		const Tag & tag = tagSet.queryAt(i);
+		QCheckBox & tagBox = btnContainer.queryAt(i);
 		if(tags.has(tag.name))
 			tagBox.setChecked(true);
 		else
@@ -206,7 +206,7 @@ void TagWidget::selectAll()
 {
 	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
-		QCheckBox &tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer.queryAt(i);
 		tagBox.setChecked(true);
 	}
 }
@@ -215,12 +215,12 @@ void TagWidget::deselectAll()
 {
 	unsigned i, s = btnContainer.size();
 	for(i = 0; i < s; i++){
-		QCheckBox &tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer.queryAt(i);
 		tagBox.setChecked(false);
 	}
 }
 
-bool operator<(const QCheckBox &a, const QCheckBox &b)
+bool operator<(const QCheckBox & a, const QCheckBox & b)
 {
 	return &a < &b;
 }

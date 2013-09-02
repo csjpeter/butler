@@ -130,76 +130,35 @@ $(DIST_DIR)/%: %
 source: \
 	$(DIST_DIR)/src/csjp_text.h \
 	$(DIST_DIR)/src/csjp_datetime.h \
-	$(DIST_DIR)/src/datamodel/butler_item.cpp \
-	$(DIST_DIR)/src/datamodel/butler_item_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_query.cpp \
-	$(DIST_DIR)/src/datamodel/butler_query_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_partner.cpp \
-	$(DIST_DIR)/src/datamodel/butler_partner_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_company.cpp \
-	$(DIST_DIR)/src/datamodel/butler_company_set.cpp \
-	$(DIST_DIR)/src/datamodel/butler_ware.cpp \
-	$(DIST_DIR)/src/datamodel/butler_ware_set.cpp \
+	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/datamodel/butler_item.h \
-	$(DIST_DIR)/src/datamodel/butler_item_set.h \
 	$(DIST_DIR)/src/datamodel/butler_query.h \
-	$(DIST_DIR)/src/datamodel/butler_query_set.h \
 	$(DIST_DIR)/src/datamodel/butler_partner.h \
-	$(DIST_DIR)/src/datamodel/butler_partner_set.h \
 	$(DIST_DIR)/src/datamodel/butler_company.h \
-	$(DIST_DIR)/src/datamodel/butler_company_set.h \
 	$(DIST_DIR)/src/datamodel/butler_tag.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
-	$(DIST_DIR)/src/datamodel/butler_ware_set.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
-	$(DIST_DIR)/src/sql/butler_database_descriptor.cpp \
-	$(DIST_DIR)/src/sql/butler_database_descriptor_set.cpp \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
-	$(DIST_DIR)/src/sql/butler_db.cpp \
-	$(DIST_DIR)/src/sql/butler_itembought_table.cpp \
-	$(DIST_DIR)/src/sql/butler_item_table.cpp \
 	$(DIST_DIR)/src/sql/butler_item_db.cpp \
-	$(DIST_DIR)/src/sql/butler_queries_table.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
-	$(DIST_DIR)/src/sql/butler_querypartners_table.cpp \
-	$(DIST_DIR)/src/sql/butler_querytags_table.cpp \
-	$(DIST_DIR)/src/sql/butler_querywares_table.cpp \
-	$(DIST_DIR)/src/sql/butler_partner_table.cpp \
 	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
-	$(DIST_DIR)/src/sql/butler_company_table.cpp \
 	$(DIST_DIR)/src/sql/butler_company_db.cpp \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
-	$(DIST_DIR)/src/sql/butler_warecategories_table.cpp \
-	$(DIST_DIR)/src/sql/butler_ware_table.cpp \
 	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
-	$(DIST_DIR)/src/sql/butler_waretags_table.cpp \
 	$(DIST_DIR)/src/sql/butler_database_descriptor.h \
-	$(DIST_DIR)/src/sql/butler_database_descriptor_set.h \
 	$(DIST_DIR)/src/sql/butler_db.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
-	$(DIST_DIR)/src/sql/butler_itembought_table.h \
-	$(DIST_DIR)/src/sql/butler_item_table.h \
 	$(DIST_DIR)/src/sql/butler_item_db.h \
-	$(DIST_DIR)/src/sql/butler_queries_table.h \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \
-	$(DIST_DIR)/src/sql/butler_querypartners_table.h \
-	$(DIST_DIR)/src/sql/butler_querytags_table.h \
-	$(DIST_DIR)/src/sql/butler_querywares_table.h \
-	$(DIST_DIR)/src/sql/butler_partner_table.h \
 	$(DIST_DIR)/src/sql/butler_partner_db.h \
-	$(DIST_DIR)/src/sql/butler_company_table.h \
 	$(DIST_DIR)/src/sql/butler_company_db.h \
 	$(DIST_DIR)/src/sql/butler_tag_db.h \
-	$(DIST_DIR)/src/sql/butler_warecategories_table.h \
-	$(DIST_DIR)/src/sql/butler_ware_table.h \
 	$(DIST_DIR)/src/sql/butler_ware_db.h \
-	$(DIST_DIR)/src/sql/butler_waretags_table.h \
 	$(DIST_DIR)/src/sql/test/item.cpp \
 	$(DIST_DIR)/src/sql/test/query.cpp \
 	$(DIST_DIR)/src/sql/test/partner.cpp \
 	$(DIST_DIR)/src/sql/test/tag.cpp \
 	$(DIST_DIR)/src/sql/test/ware.cpp \
-	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
 	$(DIST_DIR)/src/qt/butler_application.cpp \
 	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \

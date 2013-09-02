@@ -12,19 +12,19 @@
 class TagDb
 {
 public:
-	TagDb(SqlConnection &sql);
+	TagDb(SqlConnection & sql);
 	virtual ~TagDb();
 private:
 	TagDb();
 
 public:
-	void insert(const Tag &t);
-	void update(const Tag &orig, const Tag &modified);
-	void del(const Tag &t);
-	void query(TagSet &ts);
+	void insert(const Tag & t);
+	void update(const Tag & orig, const Tag & modified);
+	void del(const Tag & t);
+	void query(TagSet & ts);
 
 private:
-	SqlConnection &sql;
+	SqlConnection & sql;
 };
 
 #endif

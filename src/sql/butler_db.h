@@ -24,19 +24,12 @@ public:
 		desc(dbDesc),
 		sql(desc),
 		tag(sql),
-		query(sql, tag),
-		ware(sql, tag),
+		query(sql),
+		ware(sql),
 		company(sql),
 		partner(sql),
-		item(sql, tag)
+		item(sql)
 	{
-/*		const csjp::OwnerContainer<csjp::String> & tables = sql.tables();
-		LOG("Tables: %s", C_STR(tables.join(", ")));
-		company.check(tables);
-		partner.check(tables);
-		ware.check(tables);
-		item.check(tables);
-		query.check(tables);*/
 	}
 	~Db() { }
 	bool isOpen() { return sql.isOpen(); }

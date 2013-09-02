@@ -6,7 +6,7 @@
 #ifndef BUTLER_CUSTOMMODEL_H
 #define BUTLER_CUSTOMMODEL_H
 
-#include <butler_query_set.h>
+#include <butler_query.h>
 
 #include "butler_itemsmodel.h"
 
@@ -23,8 +23,8 @@ public:
 	virtual ~CustomModel();
 
 	void query();
-	virtual void update(int row, Item &modified);
-	virtual bool queryFilter(const Item &modified);
+	virtual void update(int row, Item & modified);
+	virtual bool queryFilter(const Item & modified);
 
 	void addShoppingItem(int row);
 

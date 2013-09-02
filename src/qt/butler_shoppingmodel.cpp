@@ -32,16 +32,16 @@ void ShoppingModel::query()
 	db.item.query(queryTagNames, items);
 }
 
-void ShoppingModel::buy(unsigned itemRow, Item &modified)
+void ShoppingModel::buy(unsigned itemRow, Item & modified)
 {
-	Item &orig = items.queryAt(itemRow);
+	Item & orig = items.queryAt(itemRow);
 	modified.bought = true;
 	modified.onStock = true;
 	db.item.update(orig, modified);
 	itemChange(db, modified);
 }
 
-void ShoppingModel::update(int row, Item &modified)
+void ShoppingModel::update(int row, Item & modified)
 {
 	ItemsModel::update(row, modified);
 	if(queryFilter(modified))
@@ -51,7 +51,7 @@ void ShoppingModel::update(int row, Item &modified)
 	items.removeAt(row);
 }
 
-bool ShoppingModel::queryFilter(const Item &modified)
+bool ShoppingModel::queryFilter(const Item & modified)
 {
 	return !modified.bought;
 }

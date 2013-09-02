@@ -143,14 +143,14 @@ int TagsModel::columnCount(const QModelIndex & parent) const
 }
 
 bool TagsModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool TagsModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -172,7 +172,7 @@ int TagsModel::index(const csjp::Text & name) const
 /* FIXME find better (reference) solution to avoid full copy and thus
  * have changes automatically adapted by other models and view. */
 /*
-void TagsModel::setTagSet(const TagSet &ts)
+void TagsModel::setTagSet(const TagSet & ts)
 {
 	ModelResetGuard g(this);
 	tags.copy(ts);
@@ -186,22 +186,22 @@ const Tag& TagsModel::tag(int row)
 
 void TagsModel::del(int row)
 {
-	Tag &tag = tags.queryAt(row);
+	Tag & tag = tags.queryAt(row);
 	db.tag.del(tag);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	tags.removeAt(row);
 }
 
-void TagsModel::addNew(Tag &tag)
+void TagsModel::addNew(Tag & tag)
 {
 	db.tag.insert(tag);
 	ModelInsertGuard g(this, QModelIndex(), tags.size(), tags.size());
 	tags.add(new Tag(tag));
 }
 
-void TagsModel::update(int row, Tag &modified)
+void TagsModel::update(int row, Tag & modified)
 {
-	Tag &orig = tags.queryAt(row);
+	Tag & orig = tags.queryAt(row);
 	db.tag.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Tag::NumOfFields-1));

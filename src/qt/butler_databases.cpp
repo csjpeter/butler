@@ -5,7 +5,7 @@
 
 #include <csjp_map.h>
 #include "butler_databases.h"
-#include "butler_database_descriptor_set.h"
+#include "butler_database_descriptor.h"
 
 #include <QDir>
 
@@ -40,12 +40,12 @@ public:
 
 	Database& operator=(const Database &) = delete;
 
-	bool isEqual(const Database &dm) const { return dbname == dm.dbname; }
+	bool isEqual(const Database & dm) const { return dbname == dm.dbname; }
 
-	bool isLess(const Database &dm) const { return dbname < dm.dbname; }
+	bool isLess(const Database & dm) const { return dbname < dm.dbname; }
 	
-	bool isLess(const QString &s) const { return dbname < s; }
-	bool isMore(const QString &s) const { return s < dbname; }
+	bool isLess(const QString & s) const { return dbname < s; }
+	bool isMore(const QString & s) const { return s < dbname; }
 
 private:
 	Db & db()
@@ -117,30 +117,30 @@ private:
 	QueriesModel * queriesModel;
 
 private:
-	void equal(const Database &tag);
+	void equal(const Database & tag);
 };
 
-inline bool operator==(const Database &a, const Database &b)
+inline bool operator==(const Database & a, const Database & b)
 {
 	return a.isEqual(b);
 }
 
-inline bool operator!=(const Database &a, const Database &b)
+inline bool operator!=(const Database & a, const Database & b)
 {
 	return !a.isEqual(b);
 }
 
-inline bool operator<(const Database &a, const Database &b)
+inline bool operator<(const Database & a, const Database & b)
 {
 	return a.isLess(b);
 }
 
-inline bool operator<(const QString &a, const Database &b)
+inline bool operator<(const QString & a, const Database & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Database &a, const QString &b)
+inline bool operator<(const Database & a, const QString & b)
 {
 	return a.isLess(b);
 }

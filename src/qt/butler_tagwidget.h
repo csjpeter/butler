@@ -25,7 +25,7 @@ public:
 	TagWidget(const QString & dbname, QWidget * parent = 0);
 
 public:
-	void setTags(const TagNameSet &tags);
+	void setTags(const TagNameSet & tags);
 	TagNameSet selectedTags();
 	void selectAll();
 	void deselectAll();
@@ -57,6 +57,6 @@ private:
 	int maxTagCheckboxWidth;
 };
 
-bool operator<(const QCheckBox &a, const QCheckBox &b);
+bool operator<(const QCheckBox & a, const QCheckBox & b);
 
 #endif

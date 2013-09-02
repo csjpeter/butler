@@ -24,7 +24,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	TagFilterView(const QString & dbname, TagNameSet &tags, QWidget * parent = 0);
+	TagFilterView(const QString & dbname, TagNameSet & tags, QWidget * parent = 0);
 	virtual ~TagFilterView();
 
 protected:
@@ -47,7 +47,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	TagNameSet &tags;
+	TagNameSet & tags;
 
 	TagWidget * tagsSelector;
 

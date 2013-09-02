@@ -6,27 +6,27 @@
 #ifndef BUTLER_COMPANY_DB_H
 #define BUTLER_COMPANY_DB_H
 
-#include <butler_company_table.h>
+#include <butler_company.h>
+#include <butler_sql_connection.h>
 
 class CompanyDb
 {
 public:
-	CompanyDb(SqlConnection &sql);
+	CompanyDb(SqlConnection & sql);
 	virtual ~CompanyDb();
 private:
 	CompanyDb();
 
 public:
-	void check(QStringList &tables);
+	void check(QStringList & tables);
 
 	void insert(const Company &);
-	void update(const Company &orig, const Company &modified);
+	void update(const Company & orig, const Company & modified);
 	void del(const Company &);
 	void query(CompanySet &);
 
 private:
-	SqlConnection &sql;
-	CompanyTable companyTable;
+	SqlConnection & sql;
 };
 
 #endif

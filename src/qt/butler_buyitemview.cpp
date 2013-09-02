@@ -149,19 +149,19 @@ void BuyItemView::mapToGui()
 	partnerBox->setCurrentIndex(partnerCursor);
 	purchaseDateTime->setDateTime(QDateTime::currentDateTime());
 	
-	WaresModel &wm = waresModel(dbname);
+	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(item.name);
 	if(i == -1) {
 		quantityEditor->setSuffix("");
 	} else {
-		const Ware &w = wm.ware(i);
+		const Ware & w = wm.ware(i);
 		quantityEditor->setSuffix(w.unit);
 	}
 }
 
 void BuyItemView::mapFromGui()
 {
-	PartnersModel &pm = partnersModel(dbname);
+	PartnersModel & pm = partnersModel(dbname);
 	item.purchased = purchaseDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();

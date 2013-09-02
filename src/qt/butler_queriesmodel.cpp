@@ -159,14 +159,14 @@ int QueriesModel::columnCount(const QModelIndex & parent) const
 }
 
 bool QueriesModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool QueriesModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -177,7 +177,7 @@ void QueriesModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int QueriesModel::index(const QString &name) const
+int QueriesModel::index(const QString & name) const
 {
 	if(queries.has(name))
 		return queries.index(name);
@@ -192,22 +192,22 @@ const Query& QueriesModel::query(int row)
 
 void QueriesModel::del(int row)
 {
-	Query &query = queries.queryAt(row);
+	Query & query = queries.queryAt(row);
 	db.query.del(query);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	queries.removeAt(row);
 }
 
-void QueriesModel::addNew(Query &query)
+void QueriesModel::addNew(Query & query)
 {
 	db.query.insert(query);
 	ModelInsertGuard g(this, QModelIndex(), queries.size(), queries.size());
 	queries.add(new Query(query));
 }
 
-void QueriesModel::update(int row, Query &modified)
+void QueriesModel::update(int row, Query & modified)
 {
-	Query &orig = queries.queryAt(row);
+	Query & orig = queries.queryAt(row);
 	db.query.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Query::NumOfFields-1));
@@ -219,7 +219,7 @@ void QueriesModel::query()
 	db.query.query(queries);
 }
 
-QString QueriesModel::categoriesToString(const CategoryNameSet &cat)
+QString QueriesModel::categoriesToString(const CategoryNameSet & cat)
 {
 	QString result("");
 
@@ -237,7 +237,7 @@ QString QueriesModel::categoriesToString(const CategoryNameSet &cat)
 	return result;
 }
 
-QString QueriesModel::tagsToString(const TagNameSet &tags)
+QString QueriesModel::tagsToString(const TagNameSet & tags)
 {
 	QString result("");
 
@@ -255,7 +255,7 @@ QString QueriesModel::tagsToString(const TagNameSet &tags)
 	return result;
 }
 
-void QueriesModel::stringToCategories(const QString &value, CategoryNameSet &cat)
+void QueriesModel::stringToCategories(const QString & value, CategoryNameSet & cat)
 {
 	cat.clear();
 	QStringList sl;
@@ -266,7 +266,7 @@ void QueriesModel::stringToCategories(const QString &value, CategoryNameSet &cat
 		cat.add(new QString(sl.at(i).trimmed()));
 }
 
-void QueriesModel::stringToTags(const QString &value, TagNameSet &tags)
+void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
 {
 	tags.clear();
 	QStringList sl;

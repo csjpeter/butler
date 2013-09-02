@@ -188,14 +188,14 @@ int CompanyModel::columnCount(const QModelIndex & parent) const
 }
 
 bool CompanyModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 		ModelRemoveGuard g(this, parent, row, row + count - 1);
 		return true;
 }
 
 bool CompanyModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 		ModelInsertGuard g(this, parent, row, row + count - 1);
 		return true;
@@ -206,7 +206,7 @@ void CompanyModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int CompanyModel::index(const QString &name) const
+int CompanyModel::index(const QString & name) const
 {
 	if(companys.has(name))
 		return companys.index(name);
@@ -221,23 +221,23 @@ const Company& CompanyModel::company(int row)
 
 void CompanyModel::del(int row)
 {
-	Company &company = companys.queryAt(row);
+	Company & company = companys.queryAt(row);
 	db.company.del(company);
 
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	companys.removeAt(row);
 }
 
-void CompanyModel::addNew(Company &company)
+void CompanyModel::addNew(Company & company)
 {
 	db.company.insert(company);
 	ModelInsertGuard g(this, QModelIndex(), companys.size(), companys.size());
 	companys.add(new Company(company));
 }
 
-void CompanyModel::update(int row, Company &modified)
+void CompanyModel::update(int row, Company & modified)
 {
-	Company &orig = companys.queryAt(row);
+	Company & orig = companys.queryAt(row);
 	db.company.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Company::NumOfFields-1));

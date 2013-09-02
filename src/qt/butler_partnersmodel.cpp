@@ -199,14 +199,14 @@ int PartnersModel::columnCount(const QModelIndex & parent) const
 }
 
 bool PartnersModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool PartnersModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -217,7 +217,7 @@ void PartnersModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int PartnersModel::index(const QString &name) const
+int PartnersModel::index(const QString & name) const
 {
 	if(partners.has(name))
 		return partners.index(name);
@@ -232,22 +232,22 @@ const Partner& PartnersModel::partner(int row)
 
 void PartnersModel::del(int row)
 {
-	Partner &partner = partners.queryAt(row);
+	Partner & partner = partners.queryAt(row);
 	db.partner.del(partner);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	partners.removeAt(row);
 }
 
-void PartnersModel::addNew(Partner &partner)
+void PartnersModel::addNew(Partner & partner)
 {
 	db.partner.insert(partner);
 	ModelInsertGuard g(this, QModelIndex(), partners.size(), partners.size());
 	partners.add(new Partner(partner));
 }
 
-void PartnersModel::update(int row, Partner &modified)
+void PartnersModel::update(int row, Partner & modified)
 {
-	Partner &orig = partners.queryAt(row);
+	Partner & orig = partners.queryAt(row);
 	db.partner.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Partner::NumOfFields-1));

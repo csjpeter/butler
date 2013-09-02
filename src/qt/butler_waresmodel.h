@@ -8,7 +8,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_ware_set.h>
+#include <butler_ware.h>
 
 #include <butler_db.h>
 
@@ -41,25 +41,25 @@ public:
 			const QVariant & value, int role = Qt::EditRole);
 	virtual int rowCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
 	virtual int columnCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
-	virtual bool removeRows(int row, int count, const QModelIndex &parent=QModelIndex());
-	virtual bool insertRows(int row, int count, const QModelIndex &parent=QModelIndex());
+	virtual bool removeRows(int row, int count, const QModelIndex & parent=QModelIndex());
+	virtual bool insertRows(int row, int count, const QModelIndex & parent=QModelIndex());
 
 public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const QString &name) const NO_FCLOG;
+	int index(const QString & name) const NO_FCLOG;
 	const Ware& ware(int row) const NO_FCLOG;
 	const WareSet & wareSet() const { return wares; };
 	void del(int row);
-	void addNew(Ware &ware);
-	virtual void update(int row, Ware &modified);
+	void addNew(Ware & ware);
+	virtual void update(int row, Ware & modified);
 	void query();
 
-	static QString categoriesToString(const CategoryNameSet &cat) NO_FCLOG;
-	static QString tagsToString(const TagNameSet &tags) NO_FCLOG;
-	static void stringToCategories(const QString &value, CategoryNameSet &modified);
-	static void stringToTags(const QString &value, TagNameSet &modified);
+	static QString categoriesToString(const CategoryNameSet & cat) NO_FCLOG;
+	static QString tagsToString(const TagNameSet & tags) NO_FCLOG;
+	static void stringToCategories(const QString & value, CategoryNameSet & modified);
+	static void stringToTags(const QString & value, TagNameSet & modified);
 	void sort(int column, bool ascending);
 
 protected:

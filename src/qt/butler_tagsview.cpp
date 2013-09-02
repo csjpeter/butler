@@ -203,7 +203,7 @@ void TagsView::delTag()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Tag &tag = model.tag(row);
+	const Tag & tag = model.tag(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a tag"),

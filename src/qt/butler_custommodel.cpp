@@ -22,7 +22,7 @@ void CustomModel::query()
 	db.item.query(opts, stat, items);
 }
 
-void CustomModel::update(int row, Item &modified)
+void CustomModel::update(int row, Item & modified)
 {
 	ItemsModel::update(row, modified);
 	if(queryFilter(modified))
@@ -32,7 +32,7 @@ void CustomModel::update(int row, Item &modified)
 	items.removeAt(row);
 }
 
-bool CustomModel::queryFilter(const Item &modified)
+bool CustomModel::queryFilter(const Item & modified)
 {
 	bool want = false;
 	if(modified.bought)
@@ -46,7 +46,7 @@ bool CustomModel::queryFilter(const Item &modified)
 
 void CustomModel::addShoppingItem(int row)
 {
-	const Item &i = item(row);
+	const Item & i = item(row);
 	Item shoppingItem;
 	shoppingItem.uploaded = QDateTime::currentDateTime();
 	shoppingItem.name = i.name;

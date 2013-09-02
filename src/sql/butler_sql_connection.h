@@ -35,6 +35,7 @@ DECL_EXCEPTION(DbError, DbConnectError);
 class SqlConnectionPrivate;
 
 typedef csjp::OwnerContainer<csjp::String> SqlColumns;
+typedef csjp::OwnerContainer<csjp::String> SqlTableNames;
 
 class SqlConnection
 {
@@ -48,9 +49,9 @@ public:
 	void open();
 	void close();
 
-	void exec(const QString &query);
-	SqlColumns columns(const QString &tablename) const;
-	const csjp::OwnerContainer<csjp::String> & tables() const;
+	void exec(const QString & query);
+	SqlColumns columns(const QString & tablename) const;
+	const SqlTableNames & tables() const;
 	bool isOpen();
 	QString dbErrorString();
 
@@ -86,13 +87,13 @@ private:
 
 public:
 
-	void exec(const QString &query);
-	void prepare(const QString &query);
+	void exec(const QString & query);
+	void prepare(const QString & query);
 	bool isPrepared();
-	void bindValue(int pos, const QVariant &v);
+	void bindValue(int pos, const QVariant & v);
 	void exec();
 	bool next();
-	unsigned colIndex(const QString &name);
+	unsigned colIndex(const QString & name);
 	QVariant value(int index);
 	csjp::Text text(int index);
 	void finish();

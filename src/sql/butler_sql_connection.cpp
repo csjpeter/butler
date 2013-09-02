@@ -34,7 +34,7 @@ typedef struct SqlConnectionPrivate
 
 	QSqlDatabase db;
 	unsigned transactions;
-	mutable csjp::OwnerContainer<csjp::String> tables;
+	mutable SqlTableNames tables;
 } SqlConnectionPrivate;
 
 SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
@@ -182,7 +182,7 @@ SqlColumns SqlConnection::columns(const QString &tablename) const
 	return cols;
 }
 
-const csjp::OwnerContainer<csjp::String> & SqlConnection::tables() const
+const SqlTableNames & SqlConnection::tables() const
 {
 	if(!priv->tables.size()){
 		QStringList list(priv->db.tables());

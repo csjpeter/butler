@@ -153,7 +153,7 @@ void QueryOptionsView::mapToGui()
 	endDate.edit.setDateTime(query.endDate);
 
 	if(query.wares.size()){
-		WaresModel &wm = waresModel(dbname);
+		WaresModel & wm = waresModel(dbname);
 		int row = wm.index(query.wares.queryAt(0));
 		if(0 <= row){
 			wareFilter.box.blockSignals(true);
@@ -165,7 +165,7 @@ void QueryOptionsView::mapToGui()
 		wareFilter.box.setChecked(false);
 
 	if(query.partners.size()){
-		PartnersModel &sm = partnersModel(dbname);
+		PartnersModel & sm = partnersModel(dbname);
 		int row = sm.index(query.partners.queryAt(0));
 		if(0 <= row){
 			partnerFilter.box.blockSignals(true);
@@ -224,7 +224,7 @@ void QueryOptionsView::mapFromGui()
 	query.wares.clear();
 	if(wareFilter.box.isChecked()){
 		int i = wareSelector.box.currentIndex();
-		WaresModel &wm = waresModel(dbname);
+		WaresModel & wm = waresModel(dbname);
 		if(0 <= i && i < wm.rowCount())
 			query.wares.add(new QString(wm.ware(i).name.trimmed()));
 	}
@@ -232,7 +232,7 @@ void QueryOptionsView::mapFromGui()
 	query.partners.clear();
 	if(partnerFilter.box.isChecked()){
 		int i = partnerSelector.box.currentIndex();
-		PartnersModel &sm = partnersModel(dbname);
+		PartnersModel & sm = partnersModel(dbname);
 		if(0 <= i && i < sm.rowCount())
 			query.partners.add(new QString(sm.partner(i).name.trimmed()));
 	}

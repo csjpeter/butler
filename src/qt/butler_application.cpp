@@ -14,7 +14,7 @@
 
 #include "butler_application.h"
 
-Application::Application(int &argc, char *argv[]) :
+Application::Application(int & argc, char *argv[]) :
 	QApplication(argc, argv),
 	mainViewPtr(0)
 {

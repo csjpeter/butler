@@ -203,7 +203,7 @@ void WaresView::delWare()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Ware &ware = model.ware(row);
+	const Ware & ware = model.ware(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a ware"),

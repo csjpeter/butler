@@ -68,17 +68,17 @@ private:
 		QDateTime time;
 };
 
-inline bool operator==(const DateTime &a, const DateTime &b)
+inline bool operator==(const DateTime & a, const DateTime & b)
 {
 		return a.isEqual(b);
 }
 
-inline bool operator!=(const DateTime &a, const DateTime &b)
+inline bool operator!=(const DateTime & a, const DateTime & b)
 {
 		return !a.isEqual(b);
 }
 
-inline bool operator<(const DateTime &a, const DateTime &b)
+inline bool operator<(const DateTime & a, const DateTime & b)
 {
 		return a.isLess(b);
 }

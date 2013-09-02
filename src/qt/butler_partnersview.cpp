@@ -205,7 +205,7 @@ void PartnersView::delPartner()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Partner &partner = model.partner(row);
+	const Partner & partner = model.partner(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a partner"),

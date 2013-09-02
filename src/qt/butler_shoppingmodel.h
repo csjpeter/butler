@@ -28,9 +28,9 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex & index) const NO_FCLOG;
 
 	void query();
-	void buy(unsigned itemRow, Item &modified);
-	virtual void update(int row, Item &modified);
-	virtual bool queryFilter(const Item &modified);
+	void buy(unsigned itemRow, Item & modified);
+	virtual void update(int row, Item & modified);
+	virtual bool queryFilter(const Item & modified);
 
 public:
 	TagNameSet queryTagNames;

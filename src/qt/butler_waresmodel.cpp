@@ -170,14 +170,14 @@ int WaresModel::columnCount(const QModelIndex & parent) const
 }
 
 bool WaresModel::removeRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
 bool WaresModel::insertRows(
-		int row, int count, const QModelIndex &parent)
+		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
@@ -188,7 +188,7 @@ void WaresModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int WaresModel::index(const QString &name) const
+int WaresModel::index(const QString & name) const
 {
 	if(wares.has(name))
 		return wares.index(name);
@@ -203,22 +203,22 @@ const Ware& WaresModel::ware(int row) const
 
 void WaresModel::del(int row)
 {
-	Ware &ware = wares.queryAt(row);
+	Ware & ware = wares.queryAt(row);
 	db.ware.del(ware);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	wares.removeAt(row);
 }
 
-void WaresModel::addNew(Ware &ware)
+void WaresModel::addNew(Ware & ware)
 {
 	db.ware.insert(ware);
 	ModelInsertGuard g(this, QModelIndex(), wares.size(), wares.size());
 	wares.add(new Ware(ware));
 }
 
-void WaresModel::update(int row, Ware &modified)
+void WaresModel::update(int row, Ware & modified)
 {
-	Ware &orig = wares.queryAt(row);
+	Ware & orig = wares.queryAt(row);
 	db.ware.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Ware::NumOfFields-1));
@@ -230,7 +230,7 @@ void WaresModel::query()
 	db.ware.query(wares);
 }
 
-QString WaresModel::categoriesToString(const CategoryNameSet &cat)
+QString WaresModel::categoriesToString(const CategoryNameSet & cat)
 {
 	QString result("");
 
@@ -248,7 +248,7 @@ QString WaresModel::categoriesToString(const CategoryNameSet &cat)
 	return result;
 }
 
-QString WaresModel::tagsToString(const TagNameSet &tags)
+QString WaresModel::tagsToString(const TagNameSet & tags)
 {
 	QString result("");
 
@@ -266,7 +266,7 @@ QString WaresModel::tagsToString(const TagNameSet &tags)
 	return result;
 }
 
-void WaresModel::stringToCategories(const QString &value, CategoryNameSet &cat)
+void WaresModel::stringToCategories(const QString & value, CategoryNameSet & cat)
 {
 	cat.clear();
 	QStringList sl;
@@ -277,7 +277,7 @@ void WaresModel::stringToCategories(const QString &value, CategoryNameSet &cat)
 		cat.add(new QString(sl.at(i).trimmed()));
 }
 
-void WaresModel::stringToTags(const QString &value, TagNameSet &tags)
+void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
 {
 	tags.clear();
 	QStringList sl;

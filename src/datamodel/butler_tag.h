@@ -29,36 +29,27 @@ public:
 	};
 
 public:
-	Tag() :
-		name(""),
-		lastModified(),
-		description("")
+	Tag() {}
+
+	explicit Tag(const csjp::Text & _name) :
+		name(_name)
 	{
 	}
 
-	explicit Tag(const csjp::Text &_name) :
-		lastModified(),
-		description("")
-	{
-		name = _name;
-	}
-
-	explicit Tag(const Tag &tag)
+	explicit Tag(const Tag & tag)
 	{
 		equal(tag);
 	}
 
-	~Tag()
-	{
-	}
+	~Tag() {}
 
-	Tag& operator=(const Tag& tag)
+	Tag & operator=(const Tag & tag)
 	{
 		equal(tag);
 		return *this;
 	}
 
-	bool isEqual(const Tag &t) const
+	bool isEqual(const Tag & t) const
 	{
 		if(		name != t.name ||
 				lastModified != t.lastModified ||
@@ -67,23 +58,23 @@ public:
 		return true;
 	}
 
-	bool isLess(const Tag &t) const
+	bool isLess(const Tag & t) const
 	{
 		return name < t.name;
 	}
 
-	bool isLess(const csjp::Text &s) const
+	bool isLess(const csjp::Text & s) const
 	{
 		return name < s;
 	}
 
-	bool isMore(const csjp::Text &s) const
+	bool isMore(const csjp::Text & s) const
 	{
 		return s < name;
 	}
 
 private:
-	void equal(const Tag &tag)
+	void equal(const Tag & tag)
 	{
 		name = tag.name;
 		lastModified = tag.lastModified;
@@ -91,27 +82,27 @@ private:
 	}
 };
 
-inline bool operator==(const Tag &a, const Tag &b)
+inline bool operator==(const Tag & a, const Tag & b)
 {
 	return a.isEqual(b);
 }
 
-inline bool operator!=(const Tag &a, const Tag &b)
+inline bool operator!=(const Tag & a, const Tag & b)
 {
 	return !a.isEqual(b);
 }
 
-inline bool operator<(const Tag &a, const Tag &b)
+inline bool operator<(const Tag & a, const Tag & b)
 {
 	return a.isLess(b);
 }
 
-inline bool operator<(const csjp::Text &a, const Tag &b)
+inline bool operator<(const csjp::Text & a, const Tag & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Tag &a, const csjp::Text &b)
+inline bool operator<(const Tag & a, const csjp::Text & b)
 {
 	return a.isLess(b);
 }
@@ -122,7 +113,7 @@ public:
 	Tag::Fields ordering;
 	bool ascending;
 
-	int compare(const Tag &a, const Tag &b) const
+	virtual int compare(const Tag & a, const Tag & b) const
 	{
 		bool ret;
 
@@ -151,7 +142,7 @@ public:
 		csjp::SorterOwnerContainer<Tag>(),
 		ordering(Tag::Name),
 		ascending(true){}
-	TagSet(const TagSet &ts) :
+	TagSet(const TagSet & ts) :
 		csjp::SorterOwnerContainer<Tag>(ts),
 		ordering(Tag::Name),
 		ascending(true){}

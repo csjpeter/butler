@@ -161,7 +161,7 @@ void NewItemView::nameEditFinishedSlot()
 		return;
 	}
 
-	const Ware &w = wm.ware(i);
+	const Ware & w = wm.ware(i);
 
 	QString cats = WaresModel::categoriesToString(w.categories);
 	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));

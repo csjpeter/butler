@@ -205,7 +205,7 @@ void CompanyView::delCompany()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Company &company = model.company(row);
+	const Company & company = model.company(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a company"),
