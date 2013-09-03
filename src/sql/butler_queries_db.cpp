@@ -265,10 +265,11 @@ void QueryDb::query(QuerySet & queries)
 	DBG("-----");
 
 	unsigned s = queries.size();
-	sqlQuery.prepare("SELECT query_name, partner FROM query_partners WHERE query_name = ?");
 	for(unsigned i=0; i<s; i++){
 		Query & query = queries.queryAt(i);
 
+		sqlQuery.prepare("SELECT query_name, partner FROM query_partners "
+				"WHERE query_name = ?");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.exec();
 		query.partners.clear();
@@ -280,8 +281,7 @@ void QueryDb::query(QuerySet & queries)
 		}
 		DBG("-----");
 
-		sqlQuery.prepare(
-				"SELECT query_name, ware FROM query_wares WHERE query_name = ?");
+		sqlQuery.prepare("SELECT query_name, ware FROM query_wares WHERE query_name = ?");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.exec();
 		query.wares.clear();
@@ -293,8 +293,7 @@ void QueryDb::query(QuerySet & queries)
 		}
 		DBG("-----");
 
-		sqlQuery.prepare(
-				"SELECT query_name, tag FROM query_tags WHERE query_name = ?");
+		sqlQuery.prepare("SELECT query_name, tag FROM query_tags WHERE query_name = ?");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.exec();
 		query.withTags.clear();

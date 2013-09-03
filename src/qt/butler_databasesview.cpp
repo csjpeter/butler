@@ -228,7 +228,7 @@ void DatabasesView::useDbDesc()
 {
 	int row = tableView.currentIndex().row();
 	try {
-		queriesModel(model.query(row).name);
+		companyModel(model.query(row).name);
 		Config::defaultDbName = model.query(row).name;
 		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
 		activeDbChanged();
