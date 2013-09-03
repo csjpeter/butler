@@ -112,12 +112,12 @@ void CompanyDb::query(CompanySet & ss)
 	DBG("----- company query result:");
 	while(selectQuery.next()) {
 		Company *s = new Company();
-		s->name = selectQuery.value(nameNo).toString();
-		s->country = selectQuery.value(countryNo).toString();
-		s->city = selectQuery.value(cityNo).toString();
-		s->postalCode = selectQuery.value(postalCodeNo).toString();
-		s->address = selectQuery.value(addressNo).toString();
-		s->taxId = selectQuery.value(taxIdNo).toString();
+		s->name = selectQuery.text(nameNo);
+		s->country = selectQuery.text(countryNo);
+		s->city = selectQuery.text(cityNo);
+		s->postalCode = selectQuery.text(postalCodeNo);
+		s->address = selectQuery.text(addressNo);
+		s->taxId = selectQuery.text(taxIdNo);
 
 		ss.add(s);
 	}

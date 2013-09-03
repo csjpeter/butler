@@ -50,10 +50,9 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const csjp::Text & name) const NO_FCLOG;
+	int index(const Text & name) const NO_FCLOG;
 	//void setTagSet(const TagSet &);
 	const TagSet& tagSet() const { return tags; }
-	bool has(const QString & name) const { return tags.has(csjp::Text(name.utf16())); }
 	const Tag& tag(int row) NO_FCLOG;
 	void del(int row);
 	void addNew(Tag & tag);

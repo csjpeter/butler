@@ -18,8 +18,6 @@ private:
 	CompanyDb();
 
 public:
-	void check(QStringList & tables);
-
 	void insert(const Company &);
 	void update(const Company & orig, const Company & modified);
 	void del(const Company &);

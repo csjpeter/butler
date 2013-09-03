@@ -7,10 +7,6 @@
 #define BUTLER_MACROS_H
 
 #include <QCoreApplication>
-#include <QVariant>
-#include <csjp_string.h>
-#include <csjp_text.h>
-#include <csjp_datetime.h>
 
 #define C_STR(QStr) QStr.toUtf8().constData()
 
@@ -50,40 +46,5 @@
 	}
 
 #define SCC static const char*
-
-inline csjp::String & operator<<= (csjp::String & str, const QString & qstr)
-{
-	str = C_STR(qstr); return str;
-}
-
-inline QString & operator<<= (QString & qstr, const csjp::String & str)
-{
-	qstr = str.c_str(); return qstr;
-}
-
-inline csjp::Text & operator<<= (csjp::Text & text, const QString & s)
-{
-	text = s.utf16(); return text;
-}
-
-inline csjp::Text & operator<<= (csjp::Text & text, const QVariant & v)
-{
-	text = v.toString().utf16(); return text;
-}
-
-inline QString & operator<<= (QString & qstr, const QVariant & v)
-{
-	qstr = v.toString(); return qstr;
-}
-
-inline int & operator<<= (int & i, const QVariant & v)
-{
-	i = v.toInt(); return i;
-}
-
-inline unsigned & operator<<= (unsigned & u, const QVariant & v)
-{
-	u = v.toUInt(); return u;
-}
 
 #endif

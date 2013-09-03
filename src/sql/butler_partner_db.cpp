@@ -119,13 +119,13 @@ void PartnerDb::query(PartnerSet & ss)
 	DBG("----- Partner query result:");
 	while(selectQuery.next()) {
 		Partner *s = new Partner();
-		s->name = selectQuery.value(nameNo).toString();
-		s->country = selectQuery.value(countryNo).toString();
-		s->city = selectQuery.value(cityNo).toString();
-		s->postalCode = selectQuery.value(postalCodeNo).toString();
-		s->address = selectQuery.value(addressNo).toString();
-		s->company = selectQuery.value(companyNo).toString();
-		s->storeName = selectQuery.value(storeNameNo).toString();
+		s->name = selectQuery.text(nameNo);
+		s->country = selectQuery.text(countryNo);
+		s->city = selectQuery.text(cityNo);
+		s->postalCode = selectQuery.text(postalCodeNo);
+		s->address = selectQuery.text(addressNo);
+		s->company = selectQuery.text(companyNo);
+		s->storeName = selectQuery.text(storeNameNo);
 		ss.add(s);
 	}
 	DBG("-----");

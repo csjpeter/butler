@@ -138,31 +138,31 @@ bool PartnersModel::setData(const QModelIndex & index, const QVariant & value, i
 
 	switch(index.column()){
 		case Partner::Name :
-			modified.name = value.toString();
+			modified.name <<= value;
 			update(row, modified);
 			break;
 		case Partner::Country :
-			modified.country = value.toString();
+			modified.country <<= value;
 			update(row, modified);
 			break;
 		case Partner::City :
-			modified.city = value.toString();
+			modified.city <<= value;
 			update(row, modified);
 			break;
 		case Partner::PostalCode :
-			modified.postalCode = value.toString();
+			modified.postalCode <<= value;
 			update(row, modified);
 			break;
 		case Partner::Address :
-			modified.address = value.toString();
+			modified.address <<= value;
 			update(row, modified);
 			break;
 		case Partner::Company :
-			modified.company = value.toString();
+			modified.company <<= value;
 			update(row, modified);
 			break;
 		case Partner::StoreName :
-			modified.storeName = value.toString();
+			modified.storeName <<= value;
 			update(row, modified);
 			break;
 		default :
@@ -217,7 +217,7 @@ void PartnersModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int PartnersModel::index(const QString & name) const
+int PartnersModel::index(const Text & name) const
 {
 	if(partners.has(name))
 		return partners.index(name);

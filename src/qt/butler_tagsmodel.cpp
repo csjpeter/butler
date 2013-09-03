@@ -161,7 +161,7 @@ void TagsModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int TagsModel::index(const csjp::Text & name) const
+int TagsModel::index(const Text & name) const
 {
 	if(tags.has(name))
 		return tags.index(name);

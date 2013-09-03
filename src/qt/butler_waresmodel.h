@@ -6,6 +6,8 @@
 #ifndef BUTLER_WARESMODEL_H
 #define BUTLER_WARESMODEL_H
 
+#include <QString>
+
 #include <butler_abstract_table_model.h>
 
 #include <butler_ware_db.h>
@@ -46,6 +48,7 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
+	int index(const Text & name) const NO_FCLOG;
 	int index(const QString & name) const NO_FCLOG;
 	const Ware& ware(int row) const NO_FCLOG;
 	const WareSet & wareSet() const { return wares; };

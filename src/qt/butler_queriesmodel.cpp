@@ -36,17 +36,19 @@ Qt::ItemFlags QueriesModel::flags(const QModelIndex & index) const
 
 QVariant QueriesModel::data(const QModelIndex & index, int role) const 
 {
+	QVariant value;
+
 	if(!index.isValid())
-		return QVariant();
+		return value;
 
 	if(index.parent().isValid())
-		return QVariant();
+		return value;
 
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
-		return QVariant();
+		return value;
 
 	if((int)queries.size() <= index.row())
-		return QVariant();
+		return value;
 	
 	QString result;
 
@@ -61,10 +63,10 @@ QVariant QueriesModel::data(const QModelIndex & index, int role) const
 			return QVariant(queries.queryAt(index.row()).endDate);
 			break;
 		default :
-			return QVariant();
+			return value;
 	}
 
-	return QVariant();
+	return value;
 }
 
 QVariant QueriesModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -114,15 +116,15 @@ bool QueriesModel::setData(const QModelIndex & index, const QVariant & value, in
 
 	switch(index.column()){
 		case Query::Name :
-			modified.name = value.toString();
+			modified.name <<= value;
 			update(row, modified);
 			break;
 		case Query::StartDate :
-			modified.startDate = value.toDateTime();
+			modified.startDate <<= value;
 			update(row, modified);
 			break;
 		case Query::EndDate :
-			modified.endDate = value.toDateTime();
+			modified.endDate <<= value;
 			update(row, modified);
 			break;
 		default :
@@ -177,7 +179,7 @@ void QueriesModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int QueriesModel::index(const QString & name) const
+int QueriesModel::index(const Text & name) const
 {
 	if(queries.has(name))
 		return queries.index(name);
@@ -263,7 +265,7 @@ void QueriesModel::stringToCategories(const QString & value, CategoryNameSet & c
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		cat.add(new QString(sl.at(i).trimmed()));
+		cat.add(new Text(sl.at(i).trimmed().utf16()));
 }
 
 void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
@@ -274,7 +276,7 @@ void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		tags.add(new csjp::Text(sl.at(i).trimmed().utf16()));
+		tags.add(new Text(sl.at(i).trimmed().utf16()));
 }
 
 void QueriesModel::sort(int column, bool ascending)

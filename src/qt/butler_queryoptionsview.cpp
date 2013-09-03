@@ -226,7 +226,7 @@ void QueryOptionsView::mapFromGui()
 		int i = wareSelector.box.currentIndex();
 		WaresModel & wm = waresModel(dbname);
 		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new QString(wm.ware(i).name.trimmed()));
+			query.wares.add(new Text(wm.ware(i).name.trimmed().utf16()));
 	}
 	
 	query.partners.clear();
@@ -234,7 +234,7 @@ void QueryOptionsView::mapFromGui()
 		int i = partnerSelector.box.currentIndex();
 		PartnersModel & sm = partnersModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.partners.add(new QString(sm.partner(i).name.trimmed()));
+			query.partners.add(new Text(sm.partner(i).name.trimmed()));
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)

@@ -8,16 +8,19 @@
 
 #include <csjp_string.h>
 
-namespace csjp {
+#include <QString>
+#include <QVariant>
 
 class Text : public QString
 {
 public:
 		Text() : QString() {}
-		explicit Text(const csjp::Text & t) : QString(t) {}
-		Text(const csjp::Text && t) : QString(csjp::move_cast(t)) {}
+		explicit Text(const QVariant & v) : QString(v.toString()) {}
+		explicit Text(const QString & t) : QString(t) {}
+		Text(const QString && t) : QString(csjp::move_cast(t)) {}
+		explicit Text(const Text & t) : QString(t) {}
+		Text(const Text && t) : QString(csjp::move_cast(t)) {}
 		explicit Text(const char * s) : QString(s) {}
-		explicit Text(const unsigned short * utf16) : QString(QString::fromUtf16(utf16)) {}
 		explicit Text(const csjp::String & t) : QString(t.c_str()) {}
 		virtual ~Text() {}
 
@@ -39,31 +42,46 @@ public:
 				return *this;
 		}
 
-		bool isEqual(const Text & t) const
+		bool isEqual(const QString & t) const
 		{
 				return QString::localeAwareCompare(*this, t) == 0;
 		}
 
-		bool isLess(const Text & t) const
+		bool isLess(const QString & t) const
 		{
 				return QString::localeAwareCompare(*this, t) < 0;
 		}
 
-		bool isMore(const Text & t) const
+		bool isMore(const QString & t) const
 		{
 				return 0 < QString::localeAwareCompare(*this, t);
 		}
 
 private:
-		void copy(const Text & t)
+		void copy(const QString & t)
 		{
 				QString::operator=(t);
 		}
 };
 
+inline bool operator==(const Text & a, const QString & b)
+{
+		return a.isEqual(b);
+}
+
 inline bool operator==(const Text & a, const Text & b)
 {
 		return a.isEqual(b);
+}
+
+inline bool operator!=(const Text & a, const QString & b)
+{
+		return !a.isEqual(b);
+}
+
+inline bool operator!=(const QString & a, const Text & b)
+{
+		return !b.isEqual(a);
 }
 
 inline bool operator!=(const Text & a, const Text & b)
@@ -75,7 +93,5 @@ inline bool operator<(const Text & a, const Text & b)
 {
 		return a.isLess(b);
 }
-
-};
 
 #endif

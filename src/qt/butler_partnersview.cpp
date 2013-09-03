@@ -145,7 +145,7 @@ void PartnersView::loadState()
 
 	tableView.loadState(prefix);
 
-	QString name = settings.value(prefix + "/currentitem", "").toString();
+	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
 	if(model.partnerSet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
@@ -218,7 +218,7 @@ void PartnersView::delPartner()
 
 void PartnersView::refresh()
 {
-	QString name;
+	Text name;
 	if(tableView.currentIndex().isValid())
 		name = model.partner(tableView.currentIndex().row()).name;
 

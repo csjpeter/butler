@@ -136,13 +136,13 @@ void NewItemView::doneClickedSlot(bool toggled)
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		Ware ware;
-		ware.name = nameEditor->text();
+		ware.name <<= nameEditor->text();
 		if(categoryEditor->text().size())
-			ware.categories.add(new QString(categoryEditor->text()));
+			ware.categories.add(new Text(categoryEditor->text().utf16()));
 		wm.addNew(ware);
 	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
 		Ware modified(wm.ware(i));
-		modified.categories.add(new QString(categoryEditor->text()));
+		modified.categories.add(new Text(categoryEditor->text().utf16()));
 		wm.update(i, modified);
 	}
 	item = Item();

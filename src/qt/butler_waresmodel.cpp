@@ -121,11 +121,11 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 
 	switch(index.column()){
 		case Ware::Name :
-			modified.name = value.toString();
+			modified.name <<= value;
 			update(row, modified);
 			break;
 		case Ware::Unit :
-			modified.unit = value.toString();
+			modified.unit <<= value;
 			update(row, modified);
 			break;
 		case Ware::Categories :
@@ -188,10 +188,19 @@ void WaresModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int WaresModel::index(const QString & name) const
+int WaresModel::index(const Text & name) const
 {
 	if(wares.has(name))
 		return wares.index(name);
+	else
+		return -1;
+}
+
+int WaresModel::index(const QString & name) const
+{
+	Text tname(name.utf16());
+	if(wares.has(tname))
+		return wares.index(tname);
 	else
 		return -1;
 }
@@ -274,7 +283,7 @@ void WaresModel::stringToCategories(const QString & value, CategoryNameSet & cat
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		cat.add(new QString(sl.at(i).trimmed()));
+		cat.add(new Text(sl.at(i).trimmed().utf16()));
 }
 
 void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
@@ -285,7 +294,7 @@ void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		tags.add(new csjp::Text(sl.at(i).trimmed().utf16()));
+		tags.add(new Text(sl.at(i).trimmed().utf16()));
 }
 
 void WaresModel::sort(int column, bool ascending)

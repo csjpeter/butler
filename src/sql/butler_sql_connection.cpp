@@ -378,6 +378,21 @@ void SqlQuery::bindValue(int pos, const QVariant &v)
 	priv->qQuery->bindValue(pos, v);
 }
 
+void SqlQuery::bindValue(int pos, const Text & text)
+{
+	bindValue(pos, QVariant(text));
+}
+
+void SqlQuery::bindValue(int pos, const DateTime & time)
+{
+	bindValue(pos, QVariant(time.isoUtcString()));
+}
+
+void SqlQuery::bindValue(int pos, const double d)
+{
+	bindValue(pos, QVariant(d));
+}
+
 void SqlQuery::exec()
 {
 	ENSURE(priv->qQuery, csjp::LogicError);
@@ -420,17 +435,26 @@ QVariant SqlQuery::value(int index)
 	return priv->qQuery->value(index);
 }
 
-csjp::Text SqlQuery::text(int index)
+DateTime SqlQuery::dateTime(int index)
 {
-	ENSURE(priv->qQuery, csjp::LogicError);
+	DateTime dt(value(index).toDateTime());
+	dt.setTimeSpec(Qt::UTC);
+	return dt;
+}
 
-	DBG("%s : [%s]",
-			C_STR(priv->qQuery->record().fieldName(index)),
-			C_STR(priv->qQuery->value(index).toString())
-			);
+Text SqlQuery::text(int index)
+{
+	return Text(value(index));
+}
 
-	csjp::Text text(priv->qQuery->value(index).toString().utf16());
-	return text;
+double SqlQuery::real(int index)
+{
+	return value(index).toDouble();
+}
+
+int SqlQuery::number(int index)
+{
+	return value(index).toInt();
 }
 
 void SqlQuery::finish()

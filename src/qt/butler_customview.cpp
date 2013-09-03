@@ -178,7 +178,7 @@ void CustomView::loadState()
 	PannView::loadState(prefix);
 	QSettings settings;
 
-	QString queryName = settings.value(prefix + "/query", "").toString();
+	Text queryName(settings.value(prefix + "/query", ""));
 	QueriesModel & qm = queriesModel(dbname);
 	if(qm.querySet().has(queryName))
 		model->opts = qm.querySet().query(queryName);
@@ -186,7 +186,7 @@ void CustomView::loadState()
 
 	tableView.loadState(prefix);
 
-	QDateTime uploaded = settings.value(prefix + "/currentitem", "").toDateTime();
+	DateTime uploaded(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
 	if(model->itemSet().has(uploaded))
 		tableView.setCurrentIndex(model->index(model->index(uploaded), col));
@@ -224,7 +224,7 @@ void CustomView::saveState()
 
 void CustomView::refreshItems()
 {
-	QDateTime uploaded;
+	DateTime uploaded;
 	if(tableView.currentIndex().isValid()){
 		const Item & item = model->item(tableView.currentIndex().row());
 		uploaded = item.uploaded;

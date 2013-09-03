@@ -66,7 +66,7 @@ void ItemDb::insert(const Item & i)
 			"quantity, comment) VALUES(?, ?, ?, ?, ?)");
 	insertQuery.bindValue(0, i.name);
 	insertQuery.bindValue(1, i.category);
-	insertQuery.bindValue(2, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	insertQuery.bindValue(2, i.uploaded);
 	insertQuery.bindValue(3, i.quantity);
 	insertQuery.bindValue(4, i.comment);
 	insertQuery.exec();
@@ -74,11 +74,10 @@ void ItemDb::insert(const Item & i)
 	if(i.bought){
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO items_bought "
-				"(uploaded, purchased, "
-				"price, partner, on_stock) "
+				"(uploaded, purchased, price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
-		insertQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
-		insertQuery.bindValue(1, i.purchased.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+		insertQuery.bindValue(0, i.uploaded);
+		insertQuery.bindValue(1, i.purchased);
 		insertQuery.bindValue(2, i.price);
 		insertQuery.bindValue(3, i.partner);
 		insertQuery.bindValue(4, i.onStock ? 1 : 0);
@@ -95,7 +94,7 @@ void ItemDb::update(const Item & orig, const Item & modified)
 	SqlQuery updateQuery(sql);
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
-	if(orig.uploaded.toString() != modified.uploaded.toString())
+	if(orig.uploaded != modified.uploaded)
 		throw DbLogicError("The modified item is a different item than the original.");
 	updateQuery.prepare("UPDATE items SET "
 			"name = ?, "
@@ -107,7 +106,7 @@ void ItemDb::update(const Item & orig, const Item & modified)
 	updateQuery.bindValue(1, modified.category);
 	updateQuery.bindValue(2, modified.quantity);
 	updateQuery.bindValue(3, modified.comment);
-	updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	updateQuery.bindValue(4, orig.uploaded);
 	updateQuery.exec();
 
 	if(!orig.bought && modified.bought){
@@ -116,8 +115,8 @@ void ItemDb::update(const Item & orig, const Item & modified)
 				"(uploaded, purchased, "
 				"price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
-		insertQuery.bindValue(0, modified.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
-		insertQuery.bindValue(1, modified.purchased.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+		insertQuery.bindValue(0, modified.uploaded);
+		insertQuery.bindValue(1, modified.purchased);
 		insertQuery.bindValue(2, modified.price);
 		insertQuery.bindValue(3, modified.partner);
 		insertQuery.bindValue(4, modified.onStock ? 1 : 0);
@@ -125,13 +124,13 @@ void ItemDb::update(const Item & orig, const Item & modified)
 	} else if(orig.bought && !modified.bought){
 		SqlQuery deleteQuery(sql);
 		deleteQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
-		deleteQuery.bindValue(0, orig.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+		deleteQuery.bindValue(0, orig.uploaded);
 		deleteQuery.exec();
 	} else if(orig.bought && modified.bought){
 		SqlQuery updateQuery(sql);
 		/* The orig and modified object should describe
 		 * the same item's old and new content. */
-		if(orig.uploaded.toString() != modified.uploaded.toString())
+		if(orig.uploaded != modified.uploaded)
 			throw DbLogicError(
 					"The modified item is a different item than the original.");
 
@@ -141,11 +140,11 @@ void ItemDb::update(const Item & orig, const Item & modified)
 				"partner = ?, "
 				"on_stock = ? "
 				"WHERE uploaded = ?");
-		updateQuery.bindValue(0, modified.purchased.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+		updateQuery.bindValue(0, modified.purchased);
 		updateQuery.bindValue(1, modified.price);
 		updateQuery.bindValue(2, modified.partner);
 		updateQuery.bindValue(3, modified.onStock ? 1 : 0);
-		updateQuery.bindValue(4, orig.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+		updateQuery.bindValue(4, orig.uploaded);
 		updateQuery.exec();
 	}
 
@@ -158,7 +157,7 @@ void ItemDb::del(const Item & i)
 
 	SqlQuery deleteQuery(sql);
 	deleteQuery.prepare("DELETE FROM items WHERE uploaded = ?");
-	deleteQuery.bindValue(0, i.uploaded.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	deleteQuery.bindValue(0, i.uploaded);
 	deleteQuery.exec();
 
 	tr.commit();
@@ -205,17 +204,12 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 	DBG("----- Item query result:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
-		QDateTime dt;
 		Item *item = new Item();
-
-		dt = sqlQuery.value(uploadedNo).toDateTime();
-		dt.setTimeSpec(Qt::UTC);
-		item->uploaded = dt.toLocalTime();
-
-		item->name = sqlQuery.value(nameNo).toString();
-		item->category = sqlQuery.value(categoryNo).toString();
-		item->quantity = sqlQuery.value(quantityNo).toDouble();
-		item->comment = sqlQuery.value(commentNo).toString();
+		item->uploaded = sqlQuery.dateTime(uploadedNo);
+		item->name = sqlQuery.text(nameNo);
+		item->category = sqlQuery.text(categoryNo);
+		item->quantity = sqlQuery.real(quantityNo);
+		item->comment = sqlQuery.text(commentNo);
 		items.add(item);
 	}
 	DBG("-----");
@@ -258,16 +252,17 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		filter += " on_stock = '0'";
 	}
 
-	if(q.startDate.isValid()){
-		if(!filter.isEmpty())
-			filter += " AND";
-		filter +=  " '" + QDateTime(q.startDate).toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' < purchased";
-	}
-	if(q.endDate.isValid()){
-		if(!filter.isEmpty())
-			filter += " AND";
-		filter +=  " purchased < '" + QDateTime(q.endDate).toUTC().toString("yyyy-MM-dd hh:mm:ss") + "'";
-	}
+	if(!filter.isEmpty())
+		filter += " AND";
+	filter += " '";
+	filter += q.startDate.isoUtcString();
+	filter += "' < purchased";
+
+	if(!filter.isEmpty())
+		filter += " AND";
+	filter += " purchased < '";
+	filter += q.endDate.isoUtcString();
+	filter += "'";
 
 	{
 		unsigned i, s = q.withTags.size();
@@ -375,28 +370,18 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	double sumQuantity = 0;
 
 	DBG("----- Item query result:");
-	QDateTime dt;
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		Item *item = new Item();
-
-		dt = sqlQuery.value(uploadedNo).toDateTime();
-		dt.setTimeSpec(Qt::UTC);
-		item->uploaded = dt.toLocalTime();
-
-		dt = sqlQuery.value(purchasedNo).toDateTime();
-		dt.setTimeSpec(Qt::UTC);
-		item->purchased = dt.toLocalTime();
-
-		item->name = sqlQuery.value(nameNo).toString();
-		item->category = sqlQuery.value(categoryNo).toString();
-		item->comment = sqlQuery.value(commentNo).toString();
-
-		item->quantity = sqlQuery.value(quantityNo).toDouble();
-		item->price = sqlQuery.value(priceNo).toDouble();
-		item->partner = sqlQuery.value(partnerNo).toString();
-		item->onStock = sqlQuery.value(onStockNo).toBool();
-
+		item->uploaded = sqlQuery.dateTime(uploadedNo);
+		item->purchased = sqlQuery.dateTime(purchasedNo);
+		item->name = sqlQuery.text(nameNo);
+		item->category = sqlQuery.text(categoryNo);
+		item->comment = sqlQuery.text(commentNo);
+		item->quantity = sqlQuery.real(quantityNo);
+		item->price = sqlQuery.real(priceNo);
+		item->partner = sqlQuery.text(partnerNo);
+		item->onStock = sqlQuery.number(onStockNo);
 		item->bought = true;
 
 		/* statistics */

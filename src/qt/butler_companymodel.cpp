@@ -131,27 +131,27 @@ bool CompanyModel::setData(const QModelIndex & index, const QVariant & value, in
 
 	switch(index.column()){
 		case Company::Name :
-			modified.name = value.toString();
+			modified.name <<= value;
 			update(row, modified);
 			break;
 		case Company::Country :
-			modified.country = value.toString();
+			modified.country <<= value;
 			update(row, modified);
 			break;
 		case Company::City :
-			modified.city = value.toString();
+			modified.city <<= value;
 			update(row, modified);
 			break;
 		case Company::PostalCode :
-			modified.postalCode = value.toString();
+			modified.postalCode <<= value;
 			update(row, modified);
 			break;
 		case Company::Address :
-			modified.address = value.toString();
+			modified.address <<= value;
 			update(row, modified);
 			break;
 		case Company::TaxId :
-			modified.taxId = value.toString();
+			modified.taxId <<= value;
 			update(row, modified);
 			break;
 		default :
@@ -206,7 +206,7 @@ void CompanyModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int CompanyModel::index(const QString & name) const
+int CompanyModel::index(const Text & name) const
 {
 	if(companys.has(name))
 		return companys.index(name);

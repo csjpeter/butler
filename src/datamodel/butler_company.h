@@ -9,20 +9,20 @@
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 
-#include <QDate>
-#include <QString>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
 class Company
 {
 public:
-	QString name;		/* Tesco Global Áruházak ZRt. */
-	QDateTime lastModified; /* non editable */
-	QString country;	/* Magyarország */
-	QString city;		/* Budaörs */
-	QString postalCode;	/* 2040 */
-	QString address;	/* Kinizsi út 1-3. */
-	QString taxId;		/* 10307078-2-44 */
-	QString icon;		/* base64 representation of an image */
+	Text name;		/* Tesco Global Áruházak ZRt. */
+	DateTime lastModified;	/* non editable */
+	Text country;		/* Magyarország */
+	Text city;		/* Budaörs */
+	Text postalCode;	/* 2040 */
+	Text address;		/* Kinizsi út 1-3. */
+	Text taxId;		/* 10307078-2-44 */
+	Text icon;		/* base64 representation of an image */
 	
 	enum Fields {
 		Name = 0,
@@ -37,26 +37,12 @@ public:
 	};
 
 public:
-	Company() :
-		name(""),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		country(""),
-		city(""),
-		postalCode(""),
-		address(""),
-		taxId(""),
-		icon("")
+	Company()
 	{
 	}
 
-	Company(const QString & _name) :
-		name(_name),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		country(""),
-		postalCode(""),
-		address(""),
-		taxId(""),
-		icon("")
+	Company(const Text & _name) :
+		name(_name)
 	{
 	}
 
@@ -78,7 +64,7 @@ public:
 	bool isEqual(const Company & s) const
 	{
 		if(		name != s.name ||
-				lastModified.toString() != s.lastModified.toString() ||
+				lastModified != s.lastModified ||
 				country != s.country ||
 				city != s.city ||
 				postalCode != s.postalCode ||
@@ -91,17 +77,17 @@ public:
 
 	bool isLess(const Company & s) const
 	{
-		return QString::localeAwareCompare(name, s.name) < 0;
+		return name < s.name;
 	}
 
-	bool isLess(const QString & s) const
+	bool isLess(const Text & s) const
 	{
-		return QString::localeAwareCompare(name, s) < 0;
+		return name < s;
 	}
 
-	bool isMore(const QString & s) const
+	bool isMore(const Text & s) const
 	{
-		return 0 < QString::localeAwareCompare(name, s);
+		return s < name;
 	}
 
 private:
@@ -133,12 +119,12 @@ inline bool operator<(const Company & a, const Company & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const QString & a, const Company & b)
+inline bool operator<(const Text & a, const Company & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Company & a, const QString & b)
+inline bool operator<(const Company & a, const Text & b)
 {
 	return a.isLess(b);
 }
@@ -156,40 +142,31 @@ public:
 		ascending(true){}
 	~CompanySet() {}
 
-	Company& query(const QString & name) const {
-		return csjp::SorterOwnerContainer<Company>::query<QString>(name);}
-
-	bool has(const QString & name) const {
-		return csjp::SorterOwnerContainer<Company>::has<QString>(name);}
-
-	unsigned index(const QString & name) const {
-		return csjp::SorterOwnerContainer<Company>::index<QString>(name);}
-
 	virtual int compare(const Company & a, const Company & b) const
 	{
 		bool ret;
 
 		switch(ordering) {
 			case Company::Name :
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 			case Company::Country :
-				ret = QString::localeAwareCompare(a.country, b.country) < 0;
+				ret = a.country < b.country;
 				break;
 			case Company::City :
-				ret = QString::localeAwareCompare(a.city, b.city) < 0;
+				ret = a.city < b.city;
 				break;
 			case Company::PostalCode :
-				ret = QString::localeAwareCompare(a.postalCode, b.postalCode) < 0;
+				ret = a.postalCode < b.postalCode;
 				break;
 			case Company::Address :
-				ret = QString::localeAwareCompare(a.address, b.address) < 0;
+				ret = a.address < b.address;
 				break;
 			case Company::TaxId :
-				ret = QString::localeAwareCompare(a.taxId, b.taxId) < 0;
+				ret = a.taxId < b.taxId;
 				break;
 			default:
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 		}
 
@@ -205,6 +182,6 @@ public:
 	bool ascending;
 };
 
-typedef csjp::OwnerContainer<QString> CompanyNameSet;
+typedef csjp::OwnerContainer<Text> CompanyNameSet;
 
 #endif

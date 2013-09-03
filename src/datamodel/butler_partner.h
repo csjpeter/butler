@@ -9,22 +9,20 @@
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 
-#include <QDate>
-#include <QString>
-
-//#include <butler_tag.h>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
 class Partner
 {
 public:
-	QString name;		/* kertvárosi tesco */
-	QDateTime lastModified; /* non editable */
-	QString country;	/* Magyarország */
-	QString city;		/* Pécs */
-	QString postalCode;	/* 7631 */
-	QString address;	/* Kincses u. 1. */
-	QString company;	/* Tesco Global Áruházak ZRt. */
-	QString storeName;	/* 41052 számú bolt */
+	Text name;		/* kertvárosi tesco */
+	DateTime lastModified;	/* non editable */
+	Text country;		/* Magyarország */
+	Text city;		/* Pécs */
+	Text postalCode;	/* 7631 */
+	Text address;		/* Kincses u. 1. */
+	Text company;		/* Tesco Global Áruházak ZRt. */
+	Text storeName;		/* 41052 számú bolt */
 	
 	enum Fields {
 		Name = 0,
@@ -39,27 +37,12 @@ public:
 	};
 
 public:
-	Partner() :
-		name(""),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		country(""),
-		city(""),
-		postalCode(""),
-		address(""),
-		company(""),
-		storeName("")
+	Partner()
 	{
 	}
 
-	Partner(const QString & _name) :
-		name(_name),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		country(""),
-		city(""),
-		postalCode(""),
-		address(""),
-		company(""),
-		storeName("")
+	Partner(const Text & _name) :
+		name(_name)
 	{
 	}
 
@@ -81,7 +64,7 @@ public:
 	bool isEqual(const Partner & s) const
 	{
 		if(		name != s.name ||
-				lastModified.toString() != s.lastModified.toString() ||
+				lastModified != s.lastModified ||
 				country != s.country ||
 				city != s.city ||
 				postalCode != s.postalCode ||
@@ -94,17 +77,17 @@ public:
 
 	bool isLess(const Partner & s) const
 	{
-		return QString::localeAwareCompare(name, s.name) < 0;
+		return name < s.name;
 	}
 
-	bool isLess(const QString & s) const
+	bool isLess(const Text & s) const
 	{
-		return QString::localeAwareCompare(name, s) < 0;
+		return name < s;
 	}
 
-	bool isMore(const QString & s) const
+	bool isMore(const Text & s) const
 	{
-		return 0 < QString::localeAwareCompare(name, s);
+		return s < name;
 	}
 
 private:
@@ -136,12 +119,12 @@ inline bool operator<(const Partner & a, const Partner & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const QString & a, const Partner & b)
+inline bool operator<(const Text & a, const Partner & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Partner & a, const QString & b)
+inline bool operator<(const Partner & a, const Text & b)
 {
 	return a.isLess(b);
 }
@@ -159,40 +142,31 @@ public:
 		ascending(true){}
 	~PartnerSet() {}
 
-	Partner& query(const QString & name) const {
-		return csjp::SorterOwnerContainer<Partner>::query<QString>(name);}
-
-	bool has(const QString & name) const {
-		return csjp::SorterOwnerContainer<Partner>::has<QString>(name);}
-
-	unsigned index(const QString & name) const {
-		return csjp::SorterOwnerContainer<Partner>::index<QString>(name);}
-
 	virtual int compare(const Partner & a, const Partner & b) const
 	{
 		bool ret;
 
 		switch(ordering) {
 			case Partner::Name :
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 			case Partner::StoreName :
-				ret = QString::localeAwareCompare(a.storeName, b.storeName) < 0;
+				ret = a.storeName < b.storeName;
 				break;
 			case Partner::City :
-				ret = QString::localeAwareCompare(a.city, b.city) < 0;
+				ret = a.city < b.city;
 				break;
 			case Partner::PostalCode :
-				ret = QString::localeAwareCompare(a.postalCode, b.postalCode) < 0;
+				ret = a.postalCode < b.postalCode;
 				break;
 			case Partner::Address :
-				ret = QString::localeAwareCompare(a.address, b.address) < 0;
+				ret = a.address < b.address;
 				break;
 			case Partner::Company :
-				ret = QString::localeAwareCompare(a.company, b.company) < 0;
+				ret = a.company < b.company;
 				break;
 			default:
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 		}
 
@@ -208,6 +182,6 @@ public:
 	bool ascending;
 };
 
-typedef csjp::OwnerContainer<QString> PartnerNameSet;
+typedef csjp::OwnerContainer<Text> PartnerNameSet;
 
 #endif

@@ -8,12 +8,12 @@
 
 #include <csjp_sorter_owner_container.h>
 
+#include <butler_datetime.h>
+#include <butler_text.h>
+
 #include <butler_tag.h>
 #include <butler_ware.h>
 #include <butler_partner.h>
-
-#include <QString>
-#include <QDate>
 
 class QueryStat{
 public:
@@ -40,10 +40,10 @@ public:
 		MatchAny
 	};
 
-	QString name;
-	QDateTime lastModified; /* non editable */
-	QDateTime startDate;
-	QDateTime endDate;
+	Text name;
+	DateTime lastModified; /* non editable */
+	DateTime startDate;
+	DateTime endDate;
 	enum StockOptions stockOption;
 	enum TagOptions tagOption;
 	TagNameSet withTags;
@@ -61,20 +61,17 @@ public:
 
 public:
 	Query() :
-		name(""),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		startDate(QDate(1900, 1, 1)),
-		endDate(QDateTime::currentDateTime()),
+		startDate("1900-01-01T00:00:00Z"),
+		endDate("2200-01-01T00:00:00Z"),
 		stockOption(StockOptions::AllBoughtItem),
 		tagOption(TagOptions::MatchAny)
 	{
 	}
 
-	Query(const QString & name) :
+	Query(const Text & name) :
 		name(name),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		startDate(QDate(1900, 1, 1)),
-		endDate(QDateTime::currentDateTime()),
+		startDate("1900-01-01T00:00:00Z"),
+		endDate("2200-01-01T00:00:00Z"),
 		stockOption(StockOptions::AllBoughtItem),
 		tagOption(TagOptions::MatchAny)
 	{
@@ -82,7 +79,7 @@ public:
 
 	Query(const Query & qo)
 	{
-		equal(qo);
+		copy(qo);
 	}
 
 	~Query()
@@ -91,16 +88,16 @@ public:
 
 	Query& operator=(const Query& qo)
 	{
-		equal(qo);
+		copy(qo);
 		return *this;
 	}
 
 	bool isEqual(const Query & qo) const
 	{
 		if(		name != qo.name ||
-				lastModified.toString() != qo.lastModified.toString() ||
-				startDate.toString() != qo.startDate.toString() ||
-				endDate.toString() != qo.endDate.toString() ||
+				lastModified != qo.lastModified ||
+				startDate != qo.startDate ||
+				endDate != qo.endDate ||
 				stockOption != qo.stockOption ||
 				tagOption != qo.tagOption ||
 				withTags != qo.withTags ||
@@ -113,21 +110,21 @@ public:
 
 	bool isLess(const Query & qo) const
 	{
-		return QString::localeAwareCompare(name, qo.name) < 0;
+		return name < qo.name;
 	}
 
 	bool isLess(const QString & s) const
 	{
-		return QString::localeAwareCompare(name, s) < 0;
+		return name < s;
 	}
 
 	bool isMore(const QString & s) const
 	{
-		return 0 < QString::localeAwareCompare(name, s);
+		return s < name;
 	}
 
 private:
-	void equal(const Query & qo)
+	void copy(const Query & qo)
 	{
 		name = qo.name;
 		lastModified = qo.lastModified;
@@ -173,15 +170,6 @@ public:
 	QuerySet() : csjp::SorterOwnerContainer<Query>() {}
 	QuerySet(const QuerySet & qs) : csjp::SorterOwnerContainer<Query>(qs) {}
 	~QuerySet() {}
-
-	Query& query(const QString & name) const {
-		return csjp::SorterOwnerContainer<Query>::query<QString>(name);}
-
-	bool has(const QString & name) const {
-		return csjp::SorterOwnerContainer<Query>::has<QString>(name);}
-
-	unsigned index(const QString & name) const {
-		return csjp::SorterOwnerContainer<Query>::index<QString>(name);}
 
 	Query::Fields ordering;
 	bool ascending;

@@ -104,13 +104,13 @@ void QueryDb::insert(const Query & query)
 	insertQuery.bindValue(0, query.name);
 	insertQuery.bindValue(1, (int)query.stockOption);
 	insertQuery.bindValue(2, (int)query.tagOption);
-	insertQuery.bindValue(3, query.startDate.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
-	insertQuery.bindValue(4, query.endDate.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	insertQuery.bindValue(3, query.startDate);
+	insertQuery.bindValue(4, query.endDate);
 	insertQuery.exec();
 
 	unsigned i, s = query.partners.size();
 	for(i=0; i<s; i++){
-		const QString & partnerName = query.partners.queryAt(i);
+		const Text & partnerName = query.partners.queryAt(i);
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO query_partners "
 					"(query_name, partner) VALUES (?, ?)");
@@ -121,7 +121,7 @@ void QueryDb::insert(const Query & query)
 
 	s = query.wares.size();
 	for(i=0; i<s; i++){
-		const QString & wareName = query.wares.queryAt(i);
+		const Text & wareName = query.wares.queryAt(i);
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
 		insertQuery.bindValue(0, query.name);
@@ -131,7 +131,7 @@ void QueryDb::insert(const Query & query)
 
 	s = query.withTags.size();
 	for(i=0; i<s; i++){
-		const QString & tagName = query.withTags.queryAt(i);
+		const Text & tagName = query.withTags.queryAt(i);
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
 		insertQuery.bindValue(0, query.name);
@@ -157,14 +157,14 @@ void QueryDb::update(const Query & orig, const Query & modified)
 	updateQuery.bindValue(0, modified.name);
 	updateQuery.bindValue(1, (int)modified.stockOption);
 	updateQuery.bindValue(2, (int)modified.tagOption);
-	updateQuery.bindValue(3, modified.startDate.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
-	updateQuery.bindValue(4, modified.endDate.toUTC().toString("yyyy-MM-dd hh:mm:ss"));
+	updateQuery.bindValue(3, modified.startDate);
+	updateQuery.bindValue(4, modified.endDate);
 	updateQuery.bindValue(5, orig.name);
 	updateQuery.exec();
 
 	unsigned i, s = modified.partners.size();
 	for(i=0; i<s; i++){
-		const QString & partnerName = modified.partners.queryAt(i);
+		const Text & partnerName = modified.partners.queryAt(i);
 		if(orig.partners.has(partnerName))
 			continue;
 		SqlQuery insertQuery(sql);
@@ -176,7 +176,7 @@ void QueryDb::update(const Query & orig, const Query & modified)
 	}
 	s = orig.partners.size();
 	for(i=0; i<s; i++){
-		const QString & partnerName = orig.partners.queryAt(i);
+		const Text & partnerName = orig.partners.queryAt(i);
 		if(modified.partners.has(partnerName))
 			continue;
 		SqlQuery deleteQuery(sql);
@@ -189,7 +189,7 @@ void QueryDb::update(const Query & orig, const Query & modified)
 
 	s = modified.wares.size();
 	for(i=0; i<s; i++){
-		const QString & wareName = modified.wares.queryAt(i);
+		const Text & wareName = modified.wares.queryAt(i);
 		if(orig.wares.has(wareName))
 			continue;
 		SqlQuery insertQuery(sql);
@@ -200,7 +200,7 @@ void QueryDb::update(const Query & orig, const Query & modified)
 	}
 	s = orig.wares.size();
 	for(i=0; i<s; i++){
-		const QString & wareName = orig.wares.queryAt(i);
+		const Text & wareName = orig.wares.queryAt(i);
 		if(modified.wares.has(wareName))
 			continue;
 		SqlQuery deleteQuery(sql);
@@ -212,7 +212,7 @@ void QueryDb::update(const Query & orig, const Query & modified)
 
 	s = modified.withTags.size();
 	for(i=0; i<s; i++){
-		const QString & tagName = modified.withTags.queryAt(i);
+		const Text & tagName = modified.withTags.queryAt(i);
 		if(orig.withTags.has(tagName))
 			continue;
 		SqlQuery insertQuery(sql);
@@ -223,7 +223,7 @@ void QueryDb::update(const Query & orig, const Query & modified)
 	}
 	s = orig.withTags.size();
 	for(i=0; i<s; i++){
-		const QString & tagName = orig.withTags.queryAt(i);
+		const Text & tagName = orig.withTags.queryAt(i);
 		if(modified.withTags.has(tagName))
 			continue;
 		SqlQuery deleteQuery(sql);
@@ -263,23 +263,14 @@ void QueryDb::query(QuerySet & queries)
 	int startDateNo = selectAllQuery.colIndex("start_date");
 	int endDateNo = selectAllQuery.colIndex("end_date");
 	DBG("----- Query query result:");
-	QDateTime dt;
 	while (selectAllQuery.next()) {
 		DBG("Next row");
 		Query *query = new Query();
-		query->name = selectAllQuery.value(queryNameNo).toString();
-		query->stockOption = (enum Query::StockOptions)selectAllQuery.value(
-				stockOptionNo).toInt();
-		query->tagOption = (enum Query::TagOptions)selectAllQuery.value(
-				tagOptionNo).toInt();
-
-		dt = selectAllQuery.value(startDateNo).toDateTime();
-		dt.setTimeSpec(Qt::UTC);
-		query->startDate = dt.toLocalTime();
-
-		dt = selectAllQuery.value(endDateNo).toDateTime();
-		dt.setTimeSpec(Qt::UTC);
-		query->endDate = dt.toLocalTime();
+		query->name = selectAllQuery.text(queryNameNo);
+		query->stockOption = (enum Query::StockOptions)selectAllQuery.number(stockOptionNo);
+		query->tagOption = (enum Query::TagOptions)selectAllQuery.number(tagOptionNo);
+		query->startDate = selectAllQuery.dateTime(startDateNo);
+		query->endDate = selectAllQuery.dateTime(endDateNo);
 
 		queries.add(query);
 	}
@@ -299,7 +290,7 @@ void QueryDb::query(QuerySet & queries)
 		DBG("----- Query partners query result:");
 		while (selectQuery.next()) {
 			DBG("Next row");
-			query.partners.add(new QString(selectQuery.value(partnerNo).toString()));
+			query.partners.add(new Text(selectQuery.text(partnerNo)));
 		}
 		DBG("-----");
 
@@ -313,7 +304,7 @@ void QueryDb::query(QuerySet & queries)
 		DBG("----- Query wares query result:");
 		while (selectWaresQuery.next()) {
 			DBG("Next row");
-			query.wares.add(new QString(selectWaresQuery.value(wareNo).toString()));
+			query.wares.add(new Text(selectWaresQuery.text(wareNo)));
 		}
 		DBG("-----");
 
@@ -327,7 +318,7 @@ void QueryDb::query(QuerySet & queries)
 		DBG("----- Query withTags query result:");
 		while (selectTagsQuery.next()) {
 			DBG("Next row");
-			query.withTags.add(new csjp::Text(selectTagsQuery.text(tagNo)));
+			query.withTags.add(new Text(selectTagsQuery.text(tagNo)));
 		}
 		DBG("-----");
 

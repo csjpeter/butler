@@ -12,7 +12,6 @@
 
 #include "config.h"
 #include "butler_config.h"
-#include "butler_macros.h"
 
 #include <butler_texts.h>
 

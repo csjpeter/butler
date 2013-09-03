@@ -12,6 +12,7 @@
 
 #include <butler_texts.h>
 #include <butler_macros.h>
+#include <butler_conversions.h>
 
 extern csjp::ObjectTree config;
 

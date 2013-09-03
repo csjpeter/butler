@@ -9,17 +9,17 @@
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 
-#include <csjp_datetime.h>
-#include <csjp_text.h>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
 #include <butler_macros.h>
 
 class Tag
 {
 public:
-	csjp::Text name;
-	csjp::DateTime lastModified; /* non editable */
-	csjp::Text description;
+	Text name;
+	DateTime lastModified; /* non editable */
+	Text description;
 
 	enum Fields {
 		Name = 0,
@@ -31,21 +31,21 @@ public:
 public:
 	Tag() {}
 
-	explicit Tag(const csjp::Text & _name) :
+	explicit Tag(const Text & _name) :
 		name(_name)
 	{
 	}
 
 	explicit Tag(const Tag & tag)
 	{
-		equal(tag);
+		copy(tag);
 	}
 
 	~Tag() {}
 
 	Tag & operator=(const Tag & tag)
 	{
-		equal(tag);
+		copy(tag);
 		return *this;
 	}
 
@@ -63,18 +63,18 @@ public:
 		return name < t.name;
 	}
 
-	bool isLess(const csjp::Text & s) const
+	bool isLess(const Text & s) const
 	{
 		return name < s;
 	}
 
-	bool isMore(const csjp::Text & s) const
+	bool isMore(const Text & s) const
 	{
 		return s < name;
 	}
 
 private:
-	void equal(const Tag & tag)
+	void copy(const Tag & tag)
 	{
 		name = tag.name;
 		lastModified = tag.lastModified;
@@ -97,12 +97,12 @@ inline bool operator<(const Tag & a, const Tag & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const csjp::Text & a, const Tag & b)
+inline bool operator<(const Text & a, const Tag & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Tag & a, const csjp::Text & b)
+inline bool operator<(const Tag & a, const Text & b)
 {
 	return a.isLess(b);
 }
@@ -148,16 +148,8 @@ public:
 		ascending(true){}
 	~TagSet() {}
 
-	Tag& query(const csjp::Text & name) const {
-		return csjp::SorterOwnerContainer<Tag>::query<csjp::Text>(name);}
-
-	bool has(const csjp::Text & name) const {
-		return csjp::SorterOwnerContainer<Tag>::has<csjp::Text>(name);}
-
-	unsigned index(const csjp::Text & name) const {
-		return csjp::SorterOwnerContainer<Tag>::index<csjp::Text>(name);}
 };
 
-typedef csjp::OwnerContainer<csjp::Text> TagNameSet;
+typedef csjp::OwnerContainer<Text> TagNameSet;
 
 #endif

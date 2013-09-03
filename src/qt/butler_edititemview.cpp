@@ -72,7 +72,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 	
 	item.bought = true;
-	item.purchased = QDateTime::currentDateTime();
+	item.purchased <<= QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
 	tagsWidget.label.setWordWrap(true);
 
@@ -210,10 +210,10 @@ void EditItemView::mapFromGui()
 
 	item.onStock = (onStockCheck.box.checkState() == Qt::Checked);
 
-	ware.name = item.name;
+	ware.name <<= item.name;
 	ware.tags = tagsWidget.selectedTags();
 	if(categoryEditor.text().size() && !ware.categories.has(item.category))
-		ware.categories.add(new QString(categoryEditor.text()));
+		ware.categories.add(new Text(categoryEditor.text()));
 }
 
 void EditItemView::changeEvent(QEvent * event)

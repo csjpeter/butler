@@ -98,7 +98,7 @@ bool WareCategoriesModel::setData(const QModelIndex & index, const QVariant & va
 
 	switch(index.column()){
 		case 0 :
-			categories.queryAt(row) = value.toString();
+			categories.queryAt(row) <<= value;
 			break;
 		default :
 			return false;
@@ -174,7 +174,7 @@ void WareCategoriesModel::del(int row)
 void WareCategoriesModel::addNew(const QString & cat)
 {
 	ModelInsertGuard g(this, QModelIndex(), categories.size(), categories.size());
-	categories.add(new QString(cat));
+	categories.add(new Text(cat.utf16()));
 }
 
 void WareCategoriesModel::sort(int column, bool ascending)

@@ -128,8 +128,8 @@ $(DIST_DIR)/%: %
 	cp -pd $< $@
 
 source: \
-	$(DIST_DIR)/src/csjp_text.h \
-	$(DIST_DIR)/src/csjp_datetime.h \
+	$(DIST_DIR)/src/butler_text.h \
+	$(DIST_DIR)/src/butler_datetime.h \
 	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/datamodel/butler_item.h \
 	$(DIST_DIR)/src/datamodel/butler_query.h \
@@ -138,6 +138,7 @@ source: \
 	$(DIST_DIR)/src/datamodel/butler_tag.h \
 	$(DIST_DIR)/src/datamodel/butler_ware.h \
 	$(DIST_DIR)/src/datamodel/butler_macros.h \
+	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
 	$(DIST_DIR)/src/sql/butler_item_db.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_db.cpp \

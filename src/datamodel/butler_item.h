@@ -11,33 +11,33 @@
 
 #include <csjp_sorter_owner_container.h>
 
-#include <QDate>
-#include <QString>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
-//#include <butler_tag.h>
+#include <butler_conversions.h>
 
 class Item
 {
 public:
-	QDateTime uploaded; /* non editable */
-	QDateTime lastModified; /* non editable */
-	QString name;
-	QString category;
+	DateTime uploaded; /* non editable */
+	DateTime lastModified; /* non editable */
+	Text name;
+	Text category;
 	double quantity; /* amount to buy or bought */
-	QString comment;
+	Text comment;
 
 	bool bought; /* shows whether the below fields have sense */
 
-	QDateTime purchased; /* item considered bought if valid,
-				default value should suggested by
-				gui but editable */
-	QString partner;
+	DateTime purchased; /* item considered bought if valid,
+			       default value should suggested by
+			       gui but editable */
+	Text partner;
 	double price; /* price of gross piece/amount quantity
-		      expected price if not yet bought;
-		      should set to 0 when bought to notify
-		      to set the real paid price. */
+			 expected price if not yet bought;
+			 should set to 0 when bought to notify
+			 to set the real paid price. */
 	bool onStock; /* do we have it on store?
-			when marked to no, advise to put on shopping list */
+			 when marked to no, advise to put on shopping list */
 
 	enum Fields {
 		Uploaded = 0,
@@ -57,30 +57,17 @@ public:
 
 public:
 	Item() :
-		uploaded(QDate(0,0,0), QTime(0,0,0)),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
-		name(""),
-		category(),
 		quantity(1),
-		comment(""),
 		bought(false),
-		purchased(QDate(0,0,0), QTime(0,0,0)),
-		partner(""),
 		price(0),
 		onStock(false)
 	{
 	}
 
-	Item(const QString & _name) :
-		uploaded(QDate(0,0,0), QTime(0,0,0)),
-		lastModified(QDate(0,0,0), QTime(0,0,0)),
+	Item(const Text & _name) :
 		name(_name),
-		category(""),
 		quantity(1),
-		comment(""),
 		bought(false),
-		purchased(QDate(0,0,0), QTime(0,0,0)),
-		partner(""),
 		price(0),
 		onStock(false)
 	{
@@ -105,9 +92,9 @@ public:
 	{
 		if(		name != i.name ||
 				category != i.category ||
-				uploaded.toString() != i.uploaded.toString() ||
-				lastModified.toString() != i.lastModified.toString() ||
-				purchased.toString() != i.purchased.toString() ||
+				uploaded != i.uploaded ||
+				lastModified != i.lastModified ||
+				purchased != i.purchased ||
 				partner != i.partner ||
 				price != i.price ||
 				quantity != i.quantity ||
@@ -122,12 +109,12 @@ public:
 		return uploaded < i.uploaded;
 	}
 
-	bool isLess(const QDateTime & dt) const
+	bool isLess(const DateTime & dt) const
 	{
 		return uploaded < dt;
 	}
 
-	bool isMore(const QDateTime & dt) const
+	bool isMore(const DateTime & dt) const
 	{
 		return dt < uploaded;
 	}
@@ -172,12 +159,12 @@ inline bool operator<(const Item & a, const Item & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const Item & a, const QDateTime & b)
+inline bool operator<(const Item & a, const DateTime & b)
 {
 	return a.isLess(b);
 }
 
-inline bool operator<(const QDateTime & a, const Item & b)
+inline bool operator<(const DateTime & a, const Item & b)
 {
 	return b.isMore(a);
 }
@@ -198,15 +185,6 @@ public:
 		ascending(true){}
 	~ItemSet() {}
 
-	Item& query(const QDateTime & dt) const {
-		return csjp::SorterOwnerContainer<Item>::query<QDateTime>(dt);}
-
-	bool has(const QDateTime & dt) const {
-		return csjp::SorterOwnerContainer<Item>::has<QDateTime>(dt);}
-
-	unsigned index(const QDateTime & dt) const {
-		return csjp::SorterOwnerContainer<Item>::index<QDateTime>(dt);}
-
 	virtual int compare(const Item & a, const Item & b) const
 	{
 		bool ret;
@@ -216,16 +194,16 @@ public:
 				ret = a.uploaded < b.uploaded;
 				break;
 			case Item::Name :
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 			case Item::Category :
-				ret = QString::localeAwareCompare(a.category, b.category) < 0;
+				ret = a.category < b.category;
 				break;
 			case Item::Quantity :
 				ret = a.quantity < b.quantity;
 				break;
 			case Item::Comment :
-				ret = QString::localeAwareCompare(a.comment, b.comment) < 0;
+				ret = a.comment < b.comment;
 				break;
 			case Item::Bought :
 				ret = a.bought < b.bought;
@@ -234,7 +212,7 @@ public:
 				ret = a.purchased < b.purchased;
 				break;
 			case Item::Partner :
-				ret = QString::localeAwareCompare(a.partner, b.partner) < 0;
+				ret = a.partner < b.partner;
 				break;
 			case Item::Price :
 				ret = a.price < b.price;

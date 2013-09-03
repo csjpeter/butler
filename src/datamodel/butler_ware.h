@@ -9,24 +9,22 @@
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 
-#include <csjp_datetime.h>
-#include <csjp_text.h>
-
-#include <QString>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
 #include <butler_tag.h>
 
-class CategoryNameSet : public csjp::SorterOwnerContainer<QString>
+class CategoryNameSet : public csjp::SorterOwnerContainer<Text>
 {
 public:
-	CategoryNameSet() : csjp::SorterOwnerContainer<QString>(), ascending(true){}
+	CategoryNameSet() : csjp::SorterOwnerContainer<Text>(), ascending(true){}
 	CategoryNameSet(CategoryNameSet & cns) :
-		csjp::SorterOwnerContainer<QString>(cns),
+		csjp::SorterOwnerContainer<Text>(cns),
 		ascending(cns.ascending) {}
 	~CategoryNameSet() {}
-	int compare(const QString & a, const QString & b) const
+	int compare(const Text & a, const Text & b) const
 	{
-		bool ret = QString::localeAwareCompare(a, b) < 0;
+		bool ret = a < b;
 		if(!ascending)
 			ret = !ret;
 		return ret ? -1 : 1;
@@ -37,9 +35,9 @@ public:
 class Ware
 {
 public:
-	QString name;
-	csjp::DateTime lastModified; /* non editable */
-	QString unit;
+	Text name;
+	DateTime lastModified; /* non editable */
+	Text unit;
 	CategoryNameSet categories;
 	TagNameSet tags;
 
@@ -55,7 +53,7 @@ public:
 public:
 	Ware() {}
 
-	explicit Ware(const QString & _name) :
+	explicit Ware(const Text & _name) :
 		name(_name)
 	{
 	}
@@ -88,17 +86,17 @@ public:
 
 	bool isLess(const Ware & i) const
 	{
-		return QString::localeAwareCompare(name, i.name) < 0;
+		return name < i.name;
 	}
 
-	bool isLess(const QString & s) const
+	bool isLess(const Text & s) const
 	{
-		return QString::localeAwareCompare(name, s) < 0;
+		return name < s;
 	}
 
-	bool isMore(const QString & s) const
+	bool isMore(const Text & s) const
 	{
-		return 0 < QString::localeAwareCompare(name, s);
+		return s < name;
 	}
 
 private:
@@ -127,12 +125,12 @@ inline bool operator<(const Ware & a, const Ware & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const QString & a, const Ware & b)
+inline bool operator<(const Text & a, const Ware & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Ware & a, const QString & b)
+inline bool operator<(const Ware & a, const Text & b)
 {
 	return a.isLess(b);
 }
@@ -153,25 +151,16 @@ public:
 		ascending(true){}
 	~WareSet() {}
 
-	Ware& query(const QString & name) const {
-		return csjp::SorterOwnerContainer<Ware>::query<QString>(name);}
-
-	bool has(const QString & name) const {
-		return csjp::SorterOwnerContainer<Ware>::has<QString>(name);}
-
-	unsigned index(const QString & name) const {
-		return csjp::SorterOwnerContainer<Ware>::index<QString>(name);}
-
 	virtual int compare(const Ware & a, const Ware & b) const
 	{
 		bool ret;
 
 		switch(ordering) {
 			case Ware::Name :
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 			case Ware::Unit :
-				ret = QString::localeAwareCompare(a.unit, b.unit) < 0;
+				ret = a.unit < b.unit;
 				break;
 			case Ware::Categories :
 				ret = a.categories.size() < b.categories.size();
@@ -180,7 +169,7 @@ public:
 				ret = a.tags.size() < b.tags.size();
 				break;
 			default:
-				ret = QString::localeAwareCompare(a.name, b.name) < 0;
+				ret = a.name < b.name;
 				break;
 		}
 
@@ -193,6 +182,6 @@ public:
 	}
 };
 
-typedef csjp::OwnerContainer<QString> WareNameSet;
+typedef csjp::OwnerContainer<Text> WareNameSet;
 
 #endif

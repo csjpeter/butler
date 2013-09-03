@@ -86,8 +86,8 @@ void TagDb::query(TagSet & tags)
 	while (selectQuery.next()) {
 		DBG("Next row");
 		Tag *tag = new Tag();
-		tag->name <<= selectQuery.value(nameNo).toString();
-		tag->description <<= selectQuery.value(descriptionNo).toString();
+		tag->name = selectQuery.text(nameNo);
+		tag->description = selectQuery.text(descriptionNo);
 		tags.add(tag);
 	}
 	DBG("-----");

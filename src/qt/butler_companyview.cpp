@@ -145,7 +145,7 @@ void CompanyView::loadState()
 
 	tableView.loadState(prefix);
 
-	QString name = settings.value(prefix + "/currentitem", "").toString();
+	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
 	if(model.companySet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
@@ -218,7 +218,7 @@ void CompanyView::delCompany()
 
 void CompanyView::refresh()
 {
-	QString name;
+	Text name;
 	if(tableView.currentIndex().isValid())
 		name = model.company(tableView.currentIndex().row()).name;
 

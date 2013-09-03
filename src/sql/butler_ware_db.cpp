@@ -84,7 +84,7 @@ void WareDb::insert(const Ware & ware)
 
 	unsigned i, s = ware.tags.size();
 	for(i=0; i<s; i++){
-		const QString & tag = ware.tags.queryAt(i);
+		const Text & tag = ware.tags.queryAt(i);
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
 		insertQuery.bindValue(0, ware.name);
@@ -94,7 +94,7 @@ void WareDb::insert(const Ware & ware)
 
 	s = ware.categories.size();
 	for(i=0; i<s; i++){
-		const QString & category = ware.categories.queryAt(i);
+		const Text & category = ware.categories.queryAt(i);
 		SqlQuery insertQuery(sql);
 		insertQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
 		insertQuery.bindValue(0, ware.name);
@@ -123,7 +123,7 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 	unsigned i, s;
 	s = modified.tags.size();
 	for(i=0; i<s; i++){
-		const QString & tag = modified.tags.queryAt(i);
+		const Text & tag = modified.tags.queryAt(i);
 		if(orig.tags.has(tag))
 			continue;
 		SqlQuery insertQuery(sql);
@@ -134,7 +134,7 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 	}
 	s = orig.tags.size();
 	for(i=0; i<s; i++){
-		const QString & tag = orig.tags.queryAt(i);
+		const Text & tag = orig.tags.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If wares table is updated already.) */
@@ -149,7 +149,7 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 
 	s = modified.categories.size();
 	for(i=0; i<s; i++){
-		const QString & category = modified.categories.queryAt(i);
+		const Text & category = modified.categories.queryAt(i);
 		if(orig.categories.has(category))
 			continue;
 		SqlQuery insertQuery(sql);
@@ -162,7 +162,7 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 	}
 	s = orig.categories.size();
 	for(i=0; i<s; i++){
-		const QString & category = orig.categories.queryAt(i);
+		const Text & category = orig.categories.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If Wares table is updated already.) */
@@ -205,8 +205,8 @@ void WareDb::query(WareSet & wares)
 	while (selectAllQuery.next()) {
 		DBG("Next row");
 		Ware *ware = new Ware();
-		ware->name = selectAllQuery.value(nameNo).toString();
-		ware->unit = selectAllQuery.value(unitNo).toString();
+		ware->name = selectAllQuery.text(nameNo);
+		ware->unit = selectAllQuery.text(unitNo);
 		wares.add(ware);
 	}
 	DBG("-----");
@@ -218,9 +218,9 @@ void WareDb::query(WareSet & wares)
 	DBG("----- Ware tags query result:");
 	while (selectQuery.next()) {
 		DBG("Next row");
-		QString name(selectQuery.value(nameNo).toString());
+		Text name(selectQuery.text(nameNo));
 		if(wares.has(name))
-			wares.query(name).tags.add(new csjp::Text(selectQuery.text(tagNo)));
+			wares.query(name).tags.add(new Text(selectQuery.text(tagNo)));
 	}
 	DBG("-----");
 
@@ -233,10 +233,10 @@ void WareDb::query(WareSet & wares)
 	DBG("----- Ware categories query result:");
 	while (selectCategoryQuery.next()) {
 		DBG("Next row");
-		QString name(selectCategoryQuery.value(nameNo).toString());
+		Text name(selectCategoryQuery.text(nameNo));
 		if(wares.has(name))
 			wares.query(name).categories.add(
-					new QString(selectCategoryQuery.value(categoryNo).toString()));
+					new Text(selectCategoryQuery.text(categoryNo)));
 	}
 	DBG("-----");
 

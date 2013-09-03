@@ -63,17 +63,19 @@ Qt::ItemFlags ItemsModel::flags(const QModelIndex & index) const
 
 QVariant ItemsModel::data(const QModelIndex & index, int role) const 
 {
+	QVariant value;
+
 	if(!index.isValid())
-		return QVariant();
+		return value;
 
 	if(index.parent().isValid())
-		return QVariant();
+		return value;
 
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
-		return QVariant();
+		return value;
 
 	if((int)items.size() <= index.row())
-		return QVariant();
+		return value;
 
 	switch(index.column()){
 		case Item::Name :
@@ -121,10 +123,10 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			return QVariant(items.queryAt(index.row()).unitPrice());
 			break;
 		default :
-			return QVariant();
+			return value;
 	}
 
-	return QVariant();
+	return value;
 }
 
 QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -196,39 +198,39 @@ bool ItemsModel::setData(const QModelIndex & index, const QVariant & value, int 
 
 	switch(index.column()){
 		case Item::Name :
-			modified.name = value.toString();
+			modified.name <<= value;
 			update(row, modified);
 			break;
 		case Item::Category :
-			modified.category = value.toString();
+			modified.category <<= value;
 			update(row, modified);
 			break;
 		case Item::Uploaded :
-			modified.uploaded = value.toDateTime();
+			modified.uploaded <<= value;
 			update(row, modified);
 			break;
 		case Item::Purchased :
-			modified.purchased = value.toDateTime();
+			modified.purchased <<= value;
 			update(row, modified);
 			break;
 		case Item::Partner :
-			modified.partner = value.toString();
+			modified.partner <<= value;
 			update(row, modified);
 			break;
 		case Item::Price :
-			modified.price = value.toDouble();
+			modified.price <<= value;
 			update(row, modified);
 			break;
 		case Item::Quantity :
-			modified.quantity = value.toDouble();
+			modified.quantity <<= value;
 			update(row, modified);
 			break;
 		case Item::OnStock :
-			modified.onStock = value.toBool();
+			modified.onStock <<= value;
 			update(row, modified);
 			break;
 		case Item::Comment :
-			modified.comment = value.toString();
+			modified.comment <<= value;
 			update(row, modified);
 			break;
 		default :
@@ -285,8 +287,9 @@ void ItemsModel::sort(int column, Qt::SortOrder order)
 
 int ItemsModel::index(const QDateTime & uploaded) const
 {
-	if(items.has(uploaded))
-		return items.index(uploaded);
+	DateTime dt(uploaded);
+	if(items.has(dt))
+		return items.index(dt);
 	else
 		return -1;
 }

@@ -9,7 +9,7 @@
 #include <csjp_string.h>
 #include <csjp_owner_container.h>
 
-#include <csjp_text.h>
+#include <butler_text.h>
 
 #include <QVariant>
 
@@ -90,16 +90,22 @@ public:
 	void exec(const QString & query);
 	void prepare(const QString & query);
 	bool isPrepared();
-	void bindValue(int pos, const QVariant & v);
+	void bindValue(int pos, const Text & text);
+	void bindValue(int pos, const DateTime & time);
+	void bindValue(int pos, const double d);
 	void exec();
 	bool next();
 	unsigned colIndex(const QString & name);
-	QVariant value(int index);
-	csjp::Text text(int index);
+	DateTime dateTime(int index);
+	Text text(int index);
+	double real(int index);
+	int number(int index);
 	void finish();
 
 private:
 	QString queryString();
+	void bindValue(int pos, const QVariant & v);
+	QVariant value(int index);
 
 private:
 	SqlConnection & sql;
