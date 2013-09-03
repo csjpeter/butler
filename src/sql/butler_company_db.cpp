@@ -39,30 +39,30 @@ CompanyDb::~CompanyDb()
 
 void CompanyDb::insert(const Company & s)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
-	insertQuery.prepare("INSERT INTO company "
+	sqlQuery.prepare("INSERT INTO company "
 			"(name, country, city, postal_code, "
 			"address, tax_id) "
 			"VALUES(?, ?, ?, ?, ?, ?)");
-	insertQuery.bindValue(0, s.name);
-	insertQuery.bindValue(1, s.country);
-	insertQuery.bindValue(2, s.city);
-	insertQuery.bindValue(3, s.postalCode);
-	insertQuery.bindValue(4, s.address);
-	insertQuery.bindValue(5, s.taxId);
-	insertQuery.exec();
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.bindValue(1, s.country);
+	sqlQuery.bindValue(2, s.city);
+	sqlQuery.bindValue(3, s.postalCode);
+	sqlQuery.bindValue(4, s.address);
+	sqlQuery.bindValue(5, s.taxId);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void CompanyDb::update(const Company & orig, const Company & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery updateQuery(sql);
-	updateQuery.prepare("UPDATE company SET "
+	sqlQuery.prepare("UPDATE company SET "
 			"name = ?, "
 			"country = ?, "
 			"city = ?, "
@@ -70,54 +70,54 @@ void CompanyDb::update(const Company & orig, const Company & modified)
 			"address = ?, "
 			"tax_id = ? "
 			"WHERE name = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.country);
-	updateQuery.bindValue(2, modified.city);
-	updateQuery.bindValue(3, modified.postalCode);
-	updateQuery.bindValue(4, modified.address);
-	updateQuery.bindValue(5, modified.taxId);
-	updateQuery.bindValue(6, orig.name);
-	updateQuery.exec();
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.country);
+	sqlQuery.bindValue(2, modified.city);
+	sqlQuery.bindValue(3, modified.postalCode);
+	sqlQuery.bindValue(4, modified.address);
+	sqlQuery.bindValue(5, modified.taxId);
+	sqlQuery.bindValue(6, orig.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void CompanyDb::del(const Company & s)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM company WHERE name = ?");
-	deleteQuery.bindValue(0, s.name);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM company WHERE name = ?");
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void CompanyDb::query(CompanySet & ss)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery selectQuery(sql);
-	selectQuery.prepare("SELECT name, country, city, postal_code, address, tax_id "
+	sqlQuery.prepare("SELECT name, country, city, postal_code, address, tax_id "
 			"FROM company");
-	selectQuery.exec();
+	sqlQuery.exec();
 	ss.clear();
-	int nameNo = selectQuery.colIndex("name");
-	int countryNo = selectQuery.colIndex("country");
-	int cityNo = selectQuery.colIndex("city");
-	int postalCodeNo = selectQuery.colIndex("postal_code");
-	int addressNo = selectQuery.colIndex("address");
-	int taxIdNo = selectQuery.colIndex("tax_id");
+	int nameNo = sqlQuery.colIndex("name");
+	int countryNo = sqlQuery.colIndex("country");
+	int cityNo = sqlQuery.colIndex("city");
+	int postalCodeNo = sqlQuery.colIndex("postal_code");
+	int addressNo = sqlQuery.colIndex("address");
+	int taxIdNo = sqlQuery.colIndex("tax_id");
 	DBG("----- company query result:");
-	while(selectQuery.next()) {
+	while(sqlQuery.next()) {
 		Company *s = new Company();
-		s->name = selectQuery.text(nameNo);
-		s->country = selectQuery.text(countryNo);
-		s->city = selectQuery.text(cityNo);
-		s->postalCode = selectQuery.text(postalCodeNo);
-		s->address = selectQuery.text(addressNo);
-		s->taxId = selectQuery.text(taxIdNo);
+		s->name = sqlQuery.text(nameNo);
+		s->country = sqlQuery.text(countryNo);
+		s->city = sqlQuery.text(cityNo);
+		s->postalCode = sqlQuery.text(postalCodeNo);
+		s->address = sqlQuery.text(addressNo);
+		s->taxId = sqlQuery.text(taxIdNo);
 
 		ss.add(s);
 	}

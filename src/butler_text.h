@@ -24,12 +24,6 @@ public:
 		explicit Text(const csjp::String & t) : QString(t.c_str()) {}
 		virtual ~Text() {}
 
-		Text & operator=(const unsigned short * utf16)
-		{
-				*(QString*)this = QString::fromUtf16(utf16);
-				return *this;
-		}
-
 		Text & operator=(const char * s)
 		{
 				QString::operator=(s);
@@ -87,6 +81,16 @@ inline bool operator!=(const QString & a, const Text & b)
 inline bool operator!=(const Text & a, const Text & b)
 {
 		return !a.isEqual(b);
+}
+
+inline bool operator<(const Text & a, const QString & b)
+{
+		return a.isLess(b);
+}
+
+inline bool operator<(const QString & a, const Text & b)
+{
+		return b.isMore(a);
 }
 
 inline bool operator<(const Text & a, const Text & b)

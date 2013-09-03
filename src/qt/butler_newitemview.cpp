@@ -138,11 +138,11 @@ void NewItemView::doneClickedSlot(bool toggled)
 		Ware ware;
 		ware.name <<= nameEditor->text();
 		if(categoryEditor->text().size())
-			ware.categories.add(new Text(categoryEditor->text().utf16()));
+			ware.categories.add(new Text(categoryEditor->text()));
 		wm.addNew(ware);
 	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
 		Ware modified(wm.ware(i));
-		modified.categories.add(new Text(categoryEditor->text().utf16()));
+		modified.categories.add(new Text(categoryEditor->text()));
 		wm.update(i, modified);
 	}
 	item = Item();

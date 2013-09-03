@@ -265,7 +265,7 @@ void QueriesModel::stringToCategories(const QString & value, CategoryNameSet & c
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		cat.add(new Text(sl.at(i).trimmed().utf16()));
+		cat.add(new Text(sl.at(i).trimmed()));
 }
 
 void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
@@ -276,7 +276,7 @@ void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		tags.add(new Text(sl.at(i).trimmed().utf16()));
+		tags.add(new Text(sl.at(i).trimmed()));
 }
 
 void QueriesModel::sort(int column, bool ascending)

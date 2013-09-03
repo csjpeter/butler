@@ -3,6 +3,10 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+//#define DEBUG
+#include <csjp_logger.h>
+#undef DEBUG
+
 #include "butler_ware_db.h"
 
 WareDb::WareDb(SqlConnection & sql) :
@@ -74,32 +78,30 @@ WareDb::~WareDb()
 
 void WareDb::insert(const Ware & ware)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
-	insertQuery.prepare("INSERT INTO wares (name, unit) VALUES(?, ?)");
-	insertQuery.bindValue(0, ware.name);
-	insertQuery.bindValue(1, ware.unit);
-	insertQuery.exec();
+	sqlQuery.prepare("INSERT INTO wares (name, unit) VALUES(?, ?)");
+	sqlQuery.bindValue(0, ware.name);
+	sqlQuery.bindValue(1, ware.unit);
+	sqlQuery.exec();
 
 	unsigned i, s = ware.tags.size();
 	for(i=0; i<s; i++){
 		const Text & tag = ware.tags.queryAt(i);
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
-		insertQuery.bindValue(0, ware.name);
-		insertQuery.bindValue(1, tag);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
+		sqlQuery.bindValue(0, ware.name);
+		sqlQuery.bindValue(1, tag);
+		sqlQuery.exec();
 	}
 
 	s = ware.categories.size();
 	for(i=0; i<s; i++){
 		const Text & category = ware.categories.queryAt(i);
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
-		insertQuery.bindValue(0, ware.name);
-		insertQuery.bindValue(1, category);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
+		sqlQuery.bindValue(0, ware.name);
+		sqlQuery.bindValue(1, category);
+		sqlQuery.exec();
 	}
 
 	tr.commit();
@@ -107,18 +109,18 @@ void WareDb::insert(const Ware & ware)
 
 void WareDb::update(const Ware & orig, const Ware & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
 	/* FIXME check if orig and modified are really different. Note: we need this check here
 	 * because a ware object is saved into multiple tables and some tables might require
 	 * update some might not. We also need it because it is important to avoid unneccessary
 	 * network traffic. */
-	SqlQuery updateQuery(sql);
-	updateQuery.prepare("UPDATE wares SET name = ?, unit = ? WHERE name = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.unit);
-	updateQuery.bindValue(2, orig.name);
-	updateQuery.exec();
+	sqlQuery.prepare("UPDATE wares SET name = ?, unit = ? WHERE name = ?");
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.unit);
+	sqlQuery.bindValue(2, orig.name);
+	sqlQuery.exec();
 
 	unsigned i, s;
 	s = modified.tags.size();
@@ -126,11 +128,10 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 		const Text & tag = modified.tags.queryAt(i);
 		if(orig.tags.has(tag))
 			continue;
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
-		insertQuery.bindValue(0, modified.name);
-		insertQuery.bindValue(1, tag);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, tag);
+		sqlQuery.exec();
 	}
 	s = orig.tags.size();
 	for(i=0; i<s; i++){
@@ -139,11 +140,10 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 		 * has changed by the time this update is running.
 		 * (If wares table is updated already.) */
 		if(!modified.tags.has(tag)){
-			SqlQuery deleteQuery(sql);
-			deleteQuery.prepare("DELETE FROM ware_tags WHERE name = ? AND tag = ?");
-			deleteQuery.bindValue(0, modified.name);
-			deleteQuery.bindValue(1, tag);
-			deleteQuery.exec();
+			sqlQuery.prepare("DELETE FROM ware_tags WHERE name = ? AND tag = ?");
+			sqlQuery.bindValue(0, modified.name);
+			sqlQuery.bindValue(1, tag);
+			sqlQuery.exec();
 		}
 	}
 
@@ -152,13 +152,12 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 		const Text & category = modified.categories.queryAt(i);
 		if(orig.categories.has(category))
 			continue;
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO ware_categories "
+		sqlQuery.prepare("INSERT INTO ware_categories "
 				"(name, category) "
 				"VALUES(?, ?)");
-		insertQuery.bindValue(0, modified.name);
-		insertQuery.bindValue(1, category);
-		insertQuery.exec();
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, category);
+		sqlQuery.exec();
 	}
 	s = orig.categories.size();
 	for(i=0; i<s; i++){
@@ -167,12 +166,11 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 		 * has changed by the time this update is running.
 		 * (If Wares table is updated already.) */
 		if(!modified.categories.has(category)){
-			SqlQuery deleteQuery(sql);
-			deleteQuery.prepare("DELETE FROM ware_categories WHERE "
+			sqlQuery.prepare("DELETE FROM ware_categories WHERE "
 						"name = ? AND category = ?");
-			deleteQuery.bindValue(0, modified.name);
-			deleteQuery.bindValue(1, category);
-			deleteQuery.exec();
+			sqlQuery.bindValue(0, modified.name);
+			sqlQuery.bindValue(1, category);
+			sqlQuery.exec();
 		}
 	}
 
@@ -181,62 +179,60 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 
 void WareDb::del(const Ware & ware)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM wares WHERE name = ?");
-	deleteQuery.bindValue(0, ware.name);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM wares WHERE name = ?");
+	sqlQuery.bindValue(0, ware.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void WareDb::query(WareSet & wares)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery selectAllQuery(sql);
-	selectAllQuery.prepare("SELECT name, unit FROM wares");
-	selectAllQuery.exec();
+	sqlQuery.prepare("SELECT name, unit FROM wares");
+	sqlQuery.exec();
 	wares.clear();
-	int nameNo = selectAllQuery.colIndex("name");
-	int unitNo = selectAllQuery.colIndex("unit");
+	int nameNo = sqlQuery.colIndex("name");
+	int unitNo = sqlQuery.colIndex("unit");
 	DBG("----- WareName query result:");
-	while (selectAllQuery.next()) {
+	while (sqlQuery.next()) {
 		DBG("Next row");
 		Ware *ware = new Ware();
-		ware->name = selectAllQuery.text(nameNo);
-		ware->unit = selectAllQuery.text(unitNo);
+		ware->name = sqlQuery.text(nameNo);
+		ware->unit = sqlQuery.text(unitNo);
 		wares.add(ware);
 	}
 	DBG("-----");
 
-	SqlQuery selectQuery(sql);
-	selectQuery.exec("SELECT name, tag FROM ware_tags");
-	nameNo = selectQuery.colIndex("name");
-	int tagNo = selectQuery.colIndex("tag");
+	sqlQuery.exec("SELECT name, tag FROM ware_tags");
+	nameNo = sqlQuery.colIndex("name");
+	int tagNo = sqlQuery.colIndex("tag");
 	DBG("----- Ware tags query result:");
-	while (selectQuery.next()) {
+	while (sqlQuery.next()) {
 		DBG("Next row");
-		Text name(selectQuery.text(nameNo));
+		Text name(sqlQuery.text(nameNo));
 		if(wares.has(name))
-			wares.query(name).tags.add(new Text(selectQuery.text(tagNo)));
+			wares.query(name).tags.add(new Text(sqlQuery.text(tagNo)));
 	}
 	DBG("-----");
 
-	SqlQuery selectCategoryQuery(sql);
-	selectCategoryQuery.exec("SELECT name, category FROM ware_categories");
+	sqlQuery.exec("SELECT name, category FROM ware_categories");
 
-	nameNo = selectCategoryQuery.colIndex("name");
-	int categoryNo = selectCategoryQuery.colIndex("category");
+	nameNo = sqlQuery.colIndex("name");
+	int categoryNo = sqlQuery.colIndex("category");
 
 	DBG("----- Ware categories query result:");
-	while (selectCategoryQuery.next()) {
+	while (sqlQuery.next()) {
 		DBG("Next row");
-		Text name(selectCategoryQuery.text(nameNo));
+		Text name(sqlQuery.text(nameNo));
 		if(wares.has(name))
 			wares.query(name).categories.add(
-					new Text(selectCategoryQuery.text(categoryNo)));
+					new Text(sqlQuery.text(categoryNo)));
 	}
 	DBG("-----");
 

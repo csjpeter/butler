@@ -226,7 +226,7 @@ void QueryOptionsView::mapFromGui()
 		int i = wareSelector.box.currentIndex();
 		WaresModel & wm = waresModel(dbname);
 		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new Text(wm.ware(i).name.trimmed().utf16()));
+			query.wares.add(new Text(wm.ware(i).name.trimmed()));
 	}
 	
 	query.partners.clear();

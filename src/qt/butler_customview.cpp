@@ -50,6 +50,7 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 
 	tableView.setModel(&model);
 	tableView.hideColumn(Item::Bought);
+	tableView.hideColumn(Item::LastModified);
 
 	toolBar.addToolWidget(editButton);
 	toolBar.addToolWidget(delButton);

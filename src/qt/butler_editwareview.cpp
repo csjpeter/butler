@@ -113,8 +113,8 @@ void EditWareView::mapToGui()
 
 void EditWareView::mapFromGui()
 {
-	ware.name <<= nameEditor.editor.text();
-	ware.unit <<= unitEditor.editor.text();
+	ware.name = nameEditor.editor.text();
+	ware.unit = unitEditor.editor.text();
 	WaresModel::stringToCategories(categoriesEditor.editor.text(), ware.categories);
 	ware.tags = tagsWidget.selectedTags();
 }

@@ -37,6 +37,8 @@ CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
 	setWindowIcon(QIcon(Path::icon("company.png")));
 
 	tableView.setModel(&model);
+	tableView.hideColumn(Company::LastModified);
+	tableView.hideColumn(Company::Icon);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);

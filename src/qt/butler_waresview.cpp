@@ -37,6 +37,7 @@ WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	setWindowIcon(QIcon(Path::icon("ware.png")));
 
 	tableView.setModel(&model);
+	tableView.hideColumn(Ware::LastModified);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);

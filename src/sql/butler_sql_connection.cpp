@@ -3,6 +3,9 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#define DEBUG
+#undef DEBUG
+
 #include <csjp_object.h>
 #include <csjp_owner_container.h>
 
@@ -17,13 +20,10 @@
 #include <QSqlRecord>
 #include <QSqlField>
 
-
-#define DEBUG
-
 #include "butler_sql_connection.h"
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db);
+void listAvailableFeatures(const QSqlDatabase & db, const DatabaseDescriptor & dbDesc);
 #endif
 
 typedef struct SqlConnectionPrivate
@@ -105,7 +105,7 @@ void SqlConnection::open()
 	}
 
 #ifdef DEBUG
-	listAvailableFeatures(priv->db);
+	listAvailableFeatures(priv->db, dbDesc);
 #endif
 
 	priv->db.open();
@@ -203,7 +203,7 @@ QString SqlConnection::dbErrorString()
 }
 
 #ifdef DEBUG
-void listAvailableFeatures(const QSqlDatabase &db)
+void listAvailableFeatures(const QSqlDatabase & db, const DatabaseDescriptor & dbDesc)
 {
 	static bool featuresListed = false;
 
@@ -353,7 +353,9 @@ void SqlQuery::exec(const QString &query)
 
 	LOG("%s", C_STR(query));
 	if(!priv->qQuery->exec(query))
-		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
+		throw DbError("The below sql query failed on connection %s:\n"
+				"%s\nDatabase reports error: %s",
+				C_STR(sql.dbDesc.name),
 				C_STR(query),
 				C_STR(sql.dbErrorString()));
 }
@@ -380,7 +382,11 @@ void SqlQuery::bindValue(int pos, const QVariant &v)
 
 void SqlQuery::bindValue(int pos, const Text & text)
 {
-	bindValue(pos, QVariant(text));
+	const QString & str = text;
+	if(str.isNull())
+		bindValue(pos, QVariant(QString("")));
+	else
+		bindValue(pos, QVariant(str));
 }
 
 void SqlQuery::bindValue(int pos, const DateTime & time)
@@ -396,11 +402,13 @@ void SqlQuery::bindValue(int pos, const double d)
 void SqlQuery::exec()
 {
 	ENSURE(priv->qQuery, csjp::LogicError);
+	ENSURE(sql.isOpen(), csjp::LogicError);
 
 	LOG("%s", C_STR(queryString()));
 	if(!priv->qQuery->exec())
-		throw DbError("The below sql query failed:\n%s\nDatabase reports error: %s",
-			C_STR(queryString()), C_STR(sql.dbErrorString()));
+		throw DbError("The below sql query failed on connection %s:\n"
+				"%s\nDatabase reports error: %s",
+			C_STR(sql.dbDesc.name), C_STR(queryString()), C_STR(sql.dbErrorString()));
 }
 
 bool SqlQuery::next()

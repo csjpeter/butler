@@ -32,9 +32,9 @@ TagDb::~TagDb()
 
 void TagDb::insert(const Tag & t)
 {
+	SqlQuery insertQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
 	insertQuery.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
 	insertQuery.bindValue(0, t.name);
 	insertQuery.bindValue(1, t.description);
@@ -45,49 +45,49 @@ void TagDb::insert(const Tag & t)
 
 void TagDb::update(const Tag & orig, const Tag & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery updateQuery(sql);
-	updateQuery.prepare("UPDATE tags SET name = ?, description = ? WHERE name = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.description);
-	updateQuery.bindValue(2, orig.name);
-	updateQuery.exec();
+	sqlQuery.prepare("UPDATE tags SET name = ?, description = ? WHERE name = ?");
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.description);
+	sqlQuery.bindValue(2, orig.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void TagDb::del(const Tag & t)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM tags WHERE name = ?");
-	deleteQuery.bindValue(0, t.name);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM tags WHERE name = ?");
+	sqlQuery.bindValue(0, t.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void TagDb::query(TagSet & tags)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery selectQuery(sql);
-	selectQuery.prepare("SELECT name, description FROM tags");
-	selectQuery.exec();
+	sqlQuery.prepare("SELECT name, description FROM tags");
+	sqlQuery.exec();
 
 	tags.clear();
 
-	int nameNo = selectQuery.colIndex("name");
-	int descriptionNo = selectQuery.colIndex("description");
+	int nameNo = sqlQuery.colIndex("name");
+	int descriptionNo = sqlQuery.colIndex("description");
 
 	DBG("----- Reading all tags from db:");
-	while (selectQuery.next()) {
+	while (sqlQuery.next()) {
 		DBG("Next row");
 		Tag *tag = new Tag();
-		tag->name = selectQuery.text(nameNo);
-		tag->description = selectQuery.text(descriptionNo);
+		tag->name = sqlQuery.text(nameNo);
+		tag->description = sqlQuery.text(descriptionNo);
 		tags.add(tag);
 	}
 	DBG("-----");

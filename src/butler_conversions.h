@@ -23,16 +23,6 @@ inline QString & operator<<= (QString & qstr, const csjp::String & str)
 	qstr = str.c_str(); return qstr;
 }
 
-inline Text & operator<<= (Text & text, const QString & s)
-{
-	text = s.utf16(); return text;
-}
-
-inline Text & operator<<= (Text & text, const QVariant & v)
-{
-	text = v.toString().utf16(); return text;
-}
-
 inline QString & operator<<= (QString & qstr, const QVariant & v)
 {
 	qstr = v.toString(); return qstr;

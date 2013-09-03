@@ -89,12 +89,12 @@ public:
 		return name < i.name;
 	}
 
-	bool isLess(const Text & s) const
+	bool isLess(const QString & s) const
 	{
 		return name < s;
 	}
 
-	bool isMore(const Text & s) const
+	bool isMore(const QString & s) const
 	{
 		return s < name;
 	}
@@ -125,12 +125,12 @@ inline bool operator<(const Ware & a, const Ware & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const Text & a, const Ware & b)
+inline bool operator<(const QString & a, const Ware & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Ware & a, const Text & b)
+inline bool operator<(const Ware & a, const QString & b)
 {
 	return a.isLess(b);
 }

@@ -3,6 +3,10 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+//#define DEBUG
+#include <csjp_logger.h>
+#undef DEBUG
+
 #include <QtGui>
 
 #include "butler_waresmodel.h"
@@ -188,19 +192,10 @@ void WaresModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int WaresModel::index(const Text & name) const
+int WaresModel::index(const QString & name) const
 {
 	if(wares.has(name))
 		return wares.index(name);
-	else
-		return -1;
-}
-
-int WaresModel::index(const QString & name) const
-{
-	Text tname(name.utf16());
-	if(wares.has(tname))
-		return wares.index(tname);
 	else
 		return -1;
 }
@@ -283,7 +278,7 @@ void WaresModel::stringToCategories(const QString & value, CategoryNameSet & cat
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		cat.add(new Text(sl.at(i).trimmed().utf16()));
+		cat.add(new Text(sl.at(i).trimmed()));
 }
 
 void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
@@ -294,7 +289,7 @@ void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
 	int s = sl.size();
 	int i;
 	for(i=0; i<s; i++)
-		tags.add(new Text(sl.at(i).trimmed().utf16()));
+		tags.add(new Text(sl.at(i).trimmed()));
 }
 
 void WaresModel::sort(int column, bool ascending)

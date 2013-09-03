@@ -3,6 +3,10 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+//#define DEBUG
+#include <csjp_logger.h>
+#undef DEBUG
+
 #include <csjp_map.h>
 
 #include "butler_databases.h"

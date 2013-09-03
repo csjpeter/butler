@@ -1,4 +1,6 @@
 #!/bin/bash
+
+JOBS=$(expr $(cat /proc/cpuinfo | grep processor | wc -l) + 1)
  
 source /etc/lsb-release
 source config
@@ -93,7 +95,7 @@ case "${CMD}" in
 			--host=${ANDROID_SDK_API}-${ARCH} \
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} make $@ || exit $?
+		exec_in_dir ${DIST} make -j${JOBS} $@ || exit $?
 
 		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
 		for f in $(echo "libcrypto.so libpq.so libqsqlpsql.so libssl.so"); do

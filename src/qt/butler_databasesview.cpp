@@ -40,6 +40,7 @@ DatabasesView::DatabasesView(QWidget * parent) :
 
 	tableView.setModel(&model);
 	tableView.hideColumn(DatabaseDescriptor::Password);
+	tableView.hideColumn(DatabaseDescriptor::SavePassword);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);

@@ -174,7 +174,7 @@ void WareCategoriesModel::del(int row)
 void WareCategoriesModel::addNew(const QString & cat)
 {
 	ModelInsertGuard g(this, QModelIndex(), categories.size(), categories.size());
-	categories.add(new Text(cat.utf16()));
+	categories.add(new Text(cat));
 }
 
 void WareCategoriesModel::sort(int column, bool ascending)

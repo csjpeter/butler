@@ -59,29 +59,28 @@ ItemDb::~ItemDb()
 
 void ItemDb::insert(const Item & i)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
-	insertQuery.prepare("INSERT INTO items (name, category, uploaded, "
+	sqlQuery.prepare("INSERT INTO items (name, category, uploaded, "
 			"quantity, comment) VALUES(?, ?, ?, ?, ?)");
-	insertQuery.bindValue(0, i.name);
-	insertQuery.bindValue(1, i.category);
-	insertQuery.bindValue(2, i.uploaded);
-	insertQuery.bindValue(3, i.quantity);
-	insertQuery.bindValue(4, i.comment);
-	insertQuery.exec();
+	sqlQuery.bindValue(0, i.name);
+	sqlQuery.bindValue(1, i.category);
+	sqlQuery.bindValue(2, i.uploaded);
+	sqlQuery.bindValue(3, i.quantity);
+	sqlQuery.bindValue(4, i.comment);
+	sqlQuery.exec();
 
 	if(i.bought){
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO items_bought "
+		sqlQuery.prepare("INSERT INTO items_bought "
 				"(uploaded, purchased, price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
-		insertQuery.bindValue(0, i.uploaded);
-		insertQuery.bindValue(1, i.purchased);
-		insertQuery.bindValue(2, i.price);
-		insertQuery.bindValue(3, i.partner);
-		insertQuery.bindValue(4, i.onStock ? 1 : 0);
-		insertQuery.exec();
+		sqlQuery.bindValue(0, i.uploaded);
+		sqlQuery.bindValue(1, i.purchased);
+		sqlQuery.bindValue(2, i.price);
+		sqlQuery.bindValue(3, i.partner);
+		sqlQuery.bindValue(4, i.onStock ? 1 : 0);
+		sqlQuery.exec();
 	}
 
 	tr.commit();
@@ -89,63 +88,60 @@ void ItemDb::insert(const Item & i)
 
 void ItemDb::update(const Item & orig, const Item & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery updateQuery(sql);
 	/* The orig and modified object should describe
 	 * the same item's old and new content. */
 	if(orig.uploaded != modified.uploaded)
 		throw DbLogicError("The modified item is a different item than the original.");
-	updateQuery.prepare("UPDATE items SET "
+	sqlQuery.prepare("UPDATE items SET "
 			"name = ?, "
 			"category = ?, "
 			"quantity = ?, "
 			"comment = ? "
 			"WHERE uploaded = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.category);
-	updateQuery.bindValue(2, modified.quantity);
-	updateQuery.bindValue(3, modified.comment);
-	updateQuery.bindValue(4, orig.uploaded);
-	updateQuery.exec();
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.category);
+	sqlQuery.bindValue(2, modified.quantity);
+	sqlQuery.bindValue(3, modified.comment);
+	sqlQuery.bindValue(4, orig.uploaded);
+	sqlQuery.exec();
 
 	if(!orig.bought && modified.bought){
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO items_bought "
+		sqlQuery.prepare("INSERT INTO items_bought "
 				"(uploaded, purchased, "
 				"price, partner, on_stock) "
 				"VALUES(?, ?, ?, ?, ?)");
-		insertQuery.bindValue(0, modified.uploaded);
-		insertQuery.bindValue(1, modified.purchased);
-		insertQuery.bindValue(2, modified.price);
-		insertQuery.bindValue(3, modified.partner);
-		insertQuery.bindValue(4, modified.onStock ? 1 : 0);
-		insertQuery.exec();
+		sqlQuery.bindValue(0, modified.uploaded);
+		sqlQuery.bindValue(1, modified.purchased);
+		sqlQuery.bindValue(2, modified.price);
+		sqlQuery.bindValue(3, modified.partner);
+		sqlQuery.bindValue(4, modified.onStock ? 1 : 0);
+		sqlQuery.exec();
 	} else if(orig.bought && !modified.bought){
-		SqlQuery deleteQuery(sql);
-		deleteQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
-		deleteQuery.bindValue(0, orig.uploaded);
-		deleteQuery.exec();
+		sqlQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
+		sqlQuery.bindValue(0, orig.uploaded);
+		sqlQuery.exec();
 	} else if(orig.bought && modified.bought){
-		SqlQuery updateQuery(sql);
 		/* The orig and modified object should describe
 		 * the same item's old and new content. */
 		if(orig.uploaded != modified.uploaded)
 			throw DbLogicError(
 					"The modified item is a different item than the original.");
 
-		updateQuery.prepare("UPDATE items_bought SET "
+		sqlQuery.prepare("UPDATE items_bought SET "
 				"purchased = ?, "
 				"price = ?, "
 				"partner = ?, "
 				"on_stock = ? "
 				"WHERE uploaded = ?");
-		updateQuery.bindValue(0, modified.purchased);
-		updateQuery.bindValue(1, modified.price);
-		updateQuery.bindValue(2, modified.partner);
-		updateQuery.bindValue(3, modified.onStock ? 1 : 0);
-		updateQuery.bindValue(4, orig.uploaded);
-		updateQuery.exec();
+		sqlQuery.bindValue(0, modified.purchased);
+		sqlQuery.bindValue(1, modified.price);
+		sqlQuery.bindValue(2, modified.partner);
+		sqlQuery.bindValue(3, modified.onStock ? 1 : 0);
+		sqlQuery.bindValue(4, orig.uploaded);
+		sqlQuery.exec();
 	}
 
 	tr.commit();
@@ -153,21 +149,21 @@ void ItemDb::update(const Item & orig, const Item & modified)
 
 void ItemDb::del(const Item & i)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM items WHERE uploaded = ?");
-	deleteQuery.bindValue(0, i.uploaded);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM items WHERE uploaded = ?");
+	sqlQuery.bindValue(0, i.uploaded);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery sqlQuery(sql);
 	/* assemble command */
 	QString cmd("SELECT "
 			" MAX(items.uploaded) AS uploaded,"
@@ -219,10 +215,10 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 
 void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
 //	csjp::Time stopper = csjp::Time::unixTime();
-	SqlQuery sqlQuery(sql);
 
 	/* assemble command */
 	QString cmd("SELECT"

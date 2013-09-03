@@ -182,9 +182,9 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		return QApplication::notify(receiver, event);
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);
-		info = e.what();
+		info = QString::fromUtf8(e.what());
 	} catch(std::exception& e) {
-		info = e.what();
+		info = QString::fromUtf8(e.what());
 	}
 
 	QMessageBox(	QMessageBox::Warning, "Exception thrown", info,

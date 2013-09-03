@@ -48,7 +48,7 @@ void CustomModel::addShoppingItem(int row)
 {
 	const Item & i = item(row);
 	Item shoppingItem;
-	shoppingItem.uploaded <<= QDateTime::currentDateTime();
+	shoppingItem.uploaded = QDateTime::currentDateTime();
 	shoppingItem.name = i.name;
 	shoppingItem.category = i.category;
 	db.insert(shoppingItem);

@@ -42,30 +42,30 @@ PartnerDb::~PartnerDb()
 
 void PartnerDb::insert(const Partner & s)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
-	insertQuery.prepare("INSERT INTO partners "
+	sqlQuery.prepare("INSERT INTO partners "
 			"(name, country, city, postal_code, address, company, store_name) "
 			"VALUES(?, ?, ?, ?, ?, ?, ?)");
-	insertQuery.bindValue(0, s.name);
-	insertQuery.bindValue(1, s.country);
-	insertQuery.bindValue(2, s.city);
-	insertQuery.bindValue(3, s.postalCode);
-	insertQuery.bindValue(4, s.address);
-	insertQuery.bindValue(5, s.company);
-	insertQuery.bindValue(6, s.storeName);
-	insertQuery.exec();
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.bindValue(1, s.country);
+	sqlQuery.bindValue(2, s.city);
+	sqlQuery.bindValue(3, s.postalCode);
+	sqlQuery.bindValue(4, s.address);
+	sqlQuery.bindValue(5, s.company);
+	sqlQuery.bindValue(6, s.storeName);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void PartnerDb::update(const Partner & orig, const Partner & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery updateQuery(sql);
-	updateQuery.prepare("UPDATE partners SET "
+	sqlQuery.prepare("UPDATE partners SET "
 			"name = ?, "
 			"country = ?, "
 			"city = ?, "
@@ -74,58 +74,58 @@ void PartnerDb::update(const Partner & orig, const Partner & modified)
 			"company = ?, "
 			"store_name = ? "
 			"WHERE name = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, modified.country);
-	updateQuery.bindValue(2, modified.city);
-	updateQuery.bindValue(3, modified.postalCode);
-	updateQuery.bindValue(4, modified.address);
-	updateQuery.bindValue(5, modified.company);
-	updateQuery.bindValue(6, modified.storeName);
-	updateQuery.bindValue(7, orig.name);
-	updateQuery.exec();
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.country);
+	sqlQuery.bindValue(2, modified.city);
+	sqlQuery.bindValue(3, modified.postalCode);
+	sqlQuery.bindValue(4, modified.address);
+	sqlQuery.bindValue(5, modified.company);
+	sqlQuery.bindValue(6, modified.storeName);
+	sqlQuery.bindValue(7, orig.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void PartnerDb::del(const Partner & s)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM partners WHERE name = ?");
-	deleteQuery.bindValue(0, s.name);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM partners WHERE name = ?");
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void PartnerDb::query(PartnerSet & ss)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery selectQuery(sql);
-	selectQuery.prepare("SELECT "
+	sqlQuery.prepare("SELECT "
 			"name, country, city, postal_code, address, company, store_name "
 			"FROM partners");
-	selectQuery.exec();
+	sqlQuery.exec();
 	ss.clear();
-	int nameNo = selectQuery.colIndex("name");
-	int countryNo = selectQuery.colIndex("country");
-	int cityNo = selectQuery.colIndex("city");
-	int postalCodeNo = selectQuery.colIndex("postal_code");
-	int addressNo = selectQuery.colIndex("address");
-	int companyNo = selectQuery.colIndex("company");
-	int storeNameNo = selectQuery.colIndex("store_name");
+	int nameNo = sqlQuery.colIndex("name");
+	int countryNo = sqlQuery.colIndex("country");
+	int cityNo = sqlQuery.colIndex("city");
+	int postalCodeNo = sqlQuery.colIndex("postal_code");
+	int addressNo = sqlQuery.colIndex("address");
+	int companyNo = sqlQuery.colIndex("company");
+	int storeNameNo = sqlQuery.colIndex("store_name");
 	DBG("----- Partner query result:");
-	while(selectQuery.next()) {
+	while(sqlQuery.next()) {
 		Partner *s = new Partner();
-		s->name = selectQuery.text(nameNo);
-		s->country = selectQuery.text(countryNo);
-		s->city = selectQuery.text(cityNo);
-		s->postalCode = selectQuery.text(postalCodeNo);
-		s->address = selectQuery.text(addressNo);
-		s->company = selectQuery.text(companyNo);
-		s->storeName = selectQuery.text(storeNameNo);
+		s->name = sqlQuery.text(nameNo);
+		s->country = sqlQuery.text(countryNo);
+		s->city = sqlQuery.text(cityNo);
+		s->postalCode = sqlQuery.text(postalCodeNo);
+		s->address = sqlQuery.text(addressNo);
+		s->company = sqlQuery.text(companyNo);
+		s->storeName = sqlQuery.text(storeNameNo);
 		ss.add(s);
 	}
 	DBG("-----");

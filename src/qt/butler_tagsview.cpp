@@ -36,6 +36,7 @@ TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	setWindowIcon(QIcon(Path::icon("tag.png")));
 
 	tableView.setModel(&model);
+	tableView.hideColumn(Tag::LastModified);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);

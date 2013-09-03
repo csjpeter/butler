@@ -94,49 +94,46 @@ QueryDb::~QueryDb()
 
 void QueryDb::insert(const Query & query)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery insertQuery(sql);
-	if(!insertQuery.isPrepared())
-		insertQuery.prepare("INSERT INTO queries "
+	if(!sqlQuery.isPrepared())
+		sqlQuery.prepare("INSERT INTO queries "
 			"(query_name, stock_option, tag_option, start_date, end_date) "
 			"VALUES (?, ?, ?, ?, ?)");
-	insertQuery.bindValue(0, query.name);
-	insertQuery.bindValue(1, (int)query.stockOption);
-	insertQuery.bindValue(2, (int)query.tagOption);
-	insertQuery.bindValue(3, query.startDate);
-	insertQuery.bindValue(4, query.endDate);
-	insertQuery.exec();
+	sqlQuery.bindValue(0, query.name);
+	sqlQuery.bindValue(1, (int)query.stockOption);
+	sqlQuery.bindValue(2, (int)query.tagOption);
+	sqlQuery.bindValue(3, query.startDate);
+	sqlQuery.bindValue(4, query.endDate);
+	sqlQuery.exec();
 
 	unsigned i, s = query.partners.size();
 	for(i=0; i<s; i++){
 		const Text & partnerName = query.partners.queryAt(i);
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_partners "
+		sqlQuery.prepare("INSERT INTO query_partners "
 					"(query_name, partner) VALUES (?, ?)");
-		insertQuery.bindValue(0, query.name);
-		insertQuery.bindValue(1, partnerName);
-		insertQuery.exec();
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.bindValue(1, partnerName);
+		sqlQuery.exec();
 	}
 
 	s = query.wares.size();
 	for(i=0; i<s; i++){
 		const Text & wareName = query.wares.queryAt(i);
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
-		insertQuery.bindValue(0, query.name);
-		insertQuery.bindValue(1, wareName);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.bindValue(1, wareName);
+		sqlQuery.exec();
 	}
 
 	s = query.withTags.size();
 	for(i=0; i<s; i++){
 		const Text & tagName = query.withTags.queryAt(i);
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
-		insertQuery.bindValue(0, query.name);
-		insertQuery.bindValue(1, tagName);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.bindValue(1, tagName);
+		sqlQuery.exec();
 	}
 
 	tr.commit();
@@ -144,47 +141,45 @@ void QueryDb::insert(const Query & query)
 
 void QueryDb::update(const Query & orig, const Query & modified)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery updateQuery(sql);
-	updateQuery.prepare("UPDATE queries SET "
+	sqlQuery.prepare("UPDATE queries SET "
 			"query_name = ?, "
 			"stock_option = ?, "
 			"tag_option = ?, "
 			"start_date = ?, "
 			"end_date = ? "
 			"WHERE query_name = ?");
-	updateQuery.bindValue(0, modified.name);
-	updateQuery.bindValue(1, (int)modified.stockOption);
-	updateQuery.bindValue(2, (int)modified.tagOption);
-	updateQuery.bindValue(3, modified.startDate);
-	updateQuery.bindValue(4, modified.endDate);
-	updateQuery.bindValue(5, orig.name);
-	updateQuery.exec();
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, (int)modified.stockOption);
+	sqlQuery.bindValue(2, (int)modified.tagOption);
+	sqlQuery.bindValue(3, modified.startDate);
+	sqlQuery.bindValue(4, modified.endDate);
+	sqlQuery.bindValue(5, orig.name);
+	sqlQuery.exec();
 
 	unsigned i, s = modified.partners.size();
 	for(i=0; i<s; i++){
 		const Text & partnerName = modified.partners.queryAt(i);
 		if(orig.partners.has(partnerName))
 			continue;
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_partners "
+		sqlQuery.prepare("INSERT INTO query_partners "
 					"(query_name, partner) VALUES (?, ?)");
-		insertQuery.bindValue(0, modified.name);
-		insertQuery.bindValue(1, partnerName);
-		insertQuery.exec();
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, partnerName);
+		sqlQuery.exec();
 	}
 	s = orig.partners.size();
 	for(i=0; i<s; i++){
 		const Text & partnerName = orig.partners.queryAt(i);
 		if(modified.partners.has(partnerName))
 			continue;
-		SqlQuery deleteQuery(sql);
-		deleteQuery.prepare(
+		sqlQuery.prepare(
 				"DELETE FROM query_partners WHERE query_name = ? AND partner = ?");
-		deleteQuery.bindValue(0, modified.name);
-		deleteQuery.bindValue(1, partnerName);
-		deleteQuery.exec();
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, partnerName);
+		sqlQuery.exec();
 	}
 
 	s = modified.wares.size();
@@ -192,22 +187,20 @@ void QueryDb::update(const Query & orig, const Query & modified)
 		const Text & wareName = modified.wares.queryAt(i);
 		if(orig.wares.has(wareName))
 			continue;
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
-		insertQuery.bindValue(0, modified.name);
-		insertQuery.bindValue(1, wareName);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, wareName);
+		sqlQuery.exec();
 	}
 	s = orig.wares.size();
 	for(i=0; i<s; i++){
 		const Text & wareName = orig.wares.queryAt(i);
 		if(modified.wares.has(wareName))
 			continue;
-		SqlQuery deleteQuery(sql);
-		deleteQuery.prepare("DELETE FROM query_wares WHERE query_name = ? AND ware = ?");
-		deleteQuery.bindValue(0, modified.name);
-		deleteQuery.bindValue(1, wareName);
-		deleteQuery.exec();
+		sqlQuery.prepare("DELETE FROM query_wares WHERE query_name = ? AND ware = ?");
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, wareName);
+		sqlQuery.exec();
 	}
 
 	s = modified.withTags.size();
@@ -215,22 +208,20 @@ void QueryDb::update(const Query & orig, const Query & modified)
 		const Text & tagName = modified.withTags.queryAt(i);
 		if(orig.withTags.has(tagName))
 			continue;
-		SqlQuery insertQuery(sql);
-		insertQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
-		insertQuery.bindValue(0, modified.name);
-		insertQuery.bindValue(1, tagName);
-		insertQuery.exec();
+		sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, tagName);
+		sqlQuery.exec();
 	}
 	s = orig.withTags.size();
 	for(i=0; i<s; i++){
 		const Text & tagName = orig.withTags.queryAt(i);
 		if(modified.withTags.has(tagName))
 			continue;
-		SqlQuery deleteQuery(sql);
-		deleteQuery.prepare("DELETE FROM query_tags WHERE query_name = ? AND tag = ?");
-		deleteQuery.bindValue(0, modified.name);
-		deleteQuery.bindValue(1, tagName);
-		deleteQuery.exec();
+		sqlQuery.prepare("DELETE FROM query_tags WHERE query_name = ? AND tag = ?");
+		sqlQuery.bindValue(0, modified.name);
+		sqlQuery.bindValue(1, tagName);
+		sqlQuery.exec();
 	}
 
 	tr.commit();
@@ -238,39 +229,39 @@ void QueryDb::update(const Query & orig, const Query & modified)
 
 void QueryDb::del(const Query & query)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery deleteQuery(sql);
-	deleteQuery.prepare("DELETE FROM queries WHERE query_name = ?");
-	deleteQuery.bindValue(0, query.name);
-	deleteQuery.exec();
+	sqlQuery.prepare("DELETE FROM queries WHERE query_name = ?");
+	sqlQuery.bindValue(0, query.name);
+	sqlQuery.exec();
 
 	tr.commit();
 }
 
 void QueryDb::query(QuerySet & queries)
 {
+	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	SqlQuery selectAllQuery(sql);
-	selectAllQuery.prepare("SELECT query_name, stock_option, tag_option, start_date, end_date "
+	sqlQuery.prepare("SELECT query_name, stock_option, tag_option, start_date, end_date "
 		"FROM queries");
-	selectAllQuery.exec();
+	sqlQuery.exec();
 	queries.clear();
-	int queryNameNo = selectAllQuery.colIndex("query_name");
-	int stockOptionNo = selectAllQuery.colIndex("stock_option");
-	int tagOptionNo = selectAllQuery.colIndex("tag_option");
-	int startDateNo = selectAllQuery.colIndex("start_date");
-	int endDateNo = selectAllQuery.colIndex("end_date");
+	int queryNameNo = sqlQuery.colIndex("query_name");
+	int stockOptionNo = sqlQuery.colIndex("stock_option");
+	int tagOptionNo = sqlQuery.colIndex("tag_option");
+	int startDateNo = sqlQuery.colIndex("start_date");
+	int endDateNo = sqlQuery.colIndex("end_date");
 	DBG("----- Query query result:");
-	while (selectAllQuery.next()) {
+	while (sqlQuery.next()) {
 		DBG("Next row");
 		Query *query = new Query();
-		query->name = selectAllQuery.text(queryNameNo);
-		query->stockOption = (enum Query::StockOptions)selectAllQuery.number(stockOptionNo);
-		query->tagOption = (enum Query::TagOptions)selectAllQuery.number(tagOptionNo);
-		query->startDate = selectAllQuery.dateTime(startDateNo);
-		query->endDate = selectAllQuery.dateTime(endDateNo);
+		query->name = sqlQuery.text(queryNameNo);
+		query->stockOption = (enum Query::StockOptions)sqlQuery.number(stockOptionNo);
+		query->tagOption = (enum Query::TagOptions)sqlQuery.number(tagOptionNo);
+		query->startDate = sqlQuery.dateTime(startDateNo);
+		query->endDate = sqlQuery.dateTime(endDateNo);
 
 		queries.add(query);
 	}
@@ -280,45 +271,42 @@ void QueryDb::query(QuerySet & queries)
 	for(unsigned i=0; i<s; i++){
 		Query & query = queries.queryAt(i);
 
-		SqlQuery selectQuery(sql);
-		selectQuery.prepare("SELECT query_name, partner FROM query_partners "
+		sqlQuery.prepare("SELECT query_name, partner FROM query_partners "
 				"WHERE query_name = ?");
-		selectQuery.bindValue(0, query.name);
-		selectQuery.exec();
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.exec();
 		query.partners.clear();
-		int partnerNo = selectQuery.colIndex("partner");
+		int partnerNo = sqlQuery.colIndex("partner");
 		DBG("----- Query partners query result:");
-		while (selectQuery.next()) {
+		while (sqlQuery.next()) {
 			DBG("Next row");
-			query.partners.add(new Text(selectQuery.text(partnerNo)));
+			query.partners.add(new Text(sqlQuery.text(partnerNo)));
 		}
 		DBG("-----");
 
-		SqlQuery selectWaresQuery(sql);
-		selectWaresQuery.prepare(
+		sqlQuery.prepare(
 				"SELECT query_name, ware FROM query_wares WHERE query_name = ?");
-		selectWaresQuery.bindValue(0, query.name);
-		selectWaresQuery.exec();
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.exec();
 		query.wares.clear();
-		int wareNo = selectWaresQuery.colIndex("ware");
+		int wareNo = sqlQuery.colIndex("ware");
 		DBG("----- Query wares query result:");
-		while (selectWaresQuery.next()) {
+		while (sqlQuery.next()) {
 			DBG("Next row");
-			query.wares.add(new Text(selectWaresQuery.text(wareNo)));
+			query.wares.add(new Text(sqlQuery.text(wareNo)));
 		}
 		DBG("-----");
 
-		SqlQuery selectTagsQuery(sql);
-		selectTagsQuery.prepare(
+		sqlQuery.prepare(
 				"SELECT query_name, tag FROM query_tags WHERE query_name = ?");
-		selectTagsQuery.bindValue(0, query.name);
-		selectTagsQuery.exec();
+		sqlQuery.bindValue(0, query.name);
+		sqlQuery.exec();
 		query.withTags.clear();
-		int tagNo = selectTagsQuery.colIndex("tag");
+		int tagNo = sqlQuery.colIndex("tag");
 		DBG("----- Query withTags query result:");
-		while (selectTagsQuery.next()) {
+		while (sqlQuery.next()) {
 			DBG("Next row");
-			query.withTags.add(new Text(selectTagsQuery.text(tagNo)));
+			query.withTags.add(new Text(sqlQuery.text(tagNo)));
 		}
 		DBG("-----");
 

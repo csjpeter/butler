@@ -37,6 +37,7 @@ PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
 	setWindowIcon(QIcon(Path::icon("partner.png")));
 
 	tableView.setModel(&model);
+	tableView.hideColumn(Partner::LastModified);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);
