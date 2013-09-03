@@ -87,18 +87,18 @@ void WareDb::insert(const Ware & ware)
 	sqlQuery.exec();
 
 	unsigned i, s = ware.tags.size();
+	sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
 	for(i=0; i<s; i++){
 		const Text & tag = ware.tags.queryAt(i);
-		sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
 		sqlQuery.bindValue(0, ware.name);
 		sqlQuery.bindValue(1, tag);
 		sqlQuery.exec();
 	}
 
 	s = ware.categories.size();
+	sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
 	for(i=0; i<s; i++){
 		const Text & category = ware.categories.queryAt(i);
-		sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
 		sqlQuery.bindValue(0, ware.name);
 		sqlQuery.bindValue(1, category);
 		sqlQuery.exec();
@@ -124,23 +124,23 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 
 	unsigned i, s;
 	s = modified.tags.size();
+	sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
 	for(i=0; i<s; i++){
 		const Text & tag = modified.tags.queryAt(i);
 		if(orig.tags.has(tag))
 			continue;
-		sqlQuery.prepare("INSERT INTO ware_tags (name, tag) VALUES(?, ?)");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, tag);
 		sqlQuery.exec();
 	}
 	s = orig.tags.size();
+	sqlQuery.prepare("DELETE FROM ware_tags WHERE name = ? AND tag = ?");
 	for(i=0; i<s; i++){
 		const Text & tag = orig.tags.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If wares table is updated already.) */
 		if(!modified.tags.has(tag)){
-			sqlQuery.prepare("DELETE FROM ware_tags WHERE name = ? AND tag = ?");
 			sqlQuery.bindValue(0, modified.name);
 			sqlQuery.bindValue(1, tag);
 			sqlQuery.exec();
@@ -148,26 +148,23 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 	}
 
 	s = modified.categories.size();
+	sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
 	for(i=0; i<s; i++){
 		const Text & category = modified.categories.queryAt(i);
 		if(orig.categories.has(category))
 			continue;
-		sqlQuery.prepare("INSERT INTO ware_categories "
-				"(name, category) "
-				"VALUES(?, ?)");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, category);
 		sqlQuery.exec();
 	}
 	s = orig.categories.size();
+	sqlQuery.prepare("DELETE FROM ware_categories WHERE name = ? AND category = ?");
 	for(i=0; i<s; i++){
 		const Text & category = orig.categories.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If Wares table is updated already.) */
 		if(!modified.categories.has(category)){
-			sqlQuery.prepare("DELETE FROM ware_categories WHERE "
-						"name = ? AND category = ?");
 			sqlQuery.bindValue(0, modified.name);
 			sqlQuery.bindValue(1, category);
 			sqlQuery.exec();

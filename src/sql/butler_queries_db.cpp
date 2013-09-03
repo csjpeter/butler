@@ -109,28 +109,27 @@ void QueryDb::insert(const Query & query)
 	sqlQuery.exec();
 
 	unsigned i, s = query.partners.size();
+	sqlQuery.prepare("INSERT INTO query_partners (query_name, partner) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & partnerName = query.partners.queryAt(i);
-		sqlQuery.prepare("INSERT INTO query_partners "
-					"(query_name, partner) VALUES (?, ?)");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.bindValue(1, partnerName);
 		sqlQuery.exec();
 	}
 
 	s = query.wares.size();
+	sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & wareName = query.wares.queryAt(i);
-		sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.bindValue(1, wareName);
 		sqlQuery.exec();
 	}
 
 	s = query.withTags.size();
+	sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & tagName = query.withTags.queryAt(i);
-		sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.bindValue(1, tagName);
 		sqlQuery.exec();
@@ -160,65 +159,63 @@ void QueryDb::update(const Query & orig, const Query & modified)
 	sqlQuery.exec();
 
 	unsigned i, s = modified.partners.size();
+	sqlQuery.prepare("INSERT INTO query_partners (query_name, partner) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & partnerName = modified.partners.queryAt(i);
 		if(orig.partners.has(partnerName))
 			continue;
-		sqlQuery.prepare("INSERT INTO query_partners "
-					"(query_name, partner) VALUES (?, ?)");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, partnerName);
 		sqlQuery.exec();
 	}
 	s = orig.partners.size();
+	sqlQuery.prepare("DELETE FROM query_partners WHERE query_name = ? AND partner = ?");
 	for(i=0; i<s; i++){
 		const Text & partnerName = orig.partners.queryAt(i);
 		if(modified.partners.has(partnerName))
 			continue;
-		sqlQuery.prepare(
-				"DELETE FROM query_partners WHERE query_name = ? AND partner = ?");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, partnerName);
 		sqlQuery.exec();
 	}
 
 	s = modified.wares.size();
+	sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & wareName = modified.wares.queryAt(i);
 		if(orig.wares.has(wareName))
 			continue;
-		sqlQuery.prepare("INSERT INTO query_wares (query_name, ware) VALUES (?, ?)");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, wareName);
 		sqlQuery.exec();
 	}
 	s = orig.wares.size();
+	sqlQuery.prepare("DELETE FROM query_wares WHERE query_name = ? AND ware = ?");
 	for(i=0; i<s; i++){
 		const Text & wareName = orig.wares.queryAt(i);
 		if(modified.wares.has(wareName))
 			continue;
-		sqlQuery.prepare("DELETE FROM query_wares WHERE query_name = ? AND ware = ?");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, wareName);
 		sqlQuery.exec();
 	}
 
 	s = modified.withTags.size();
+	sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
 	for(i=0; i<s; i++){
 		const Text & tagName = modified.withTags.queryAt(i);
 		if(orig.withTags.has(tagName))
 			continue;
-		sqlQuery.prepare("INSERT INTO query_tags (query_name, tag) VALUES (?, ?)");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, tagName);
 		sqlQuery.exec();
 	}
 	s = orig.withTags.size();
+	sqlQuery.prepare("DELETE FROM query_tags WHERE query_name = ? AND tag = ?");
 	for(i=0; i<s; i++){
 		const Text & tagName = orig.withTags.queryAt(i);
 		if(modified.withTags.has(tagName))
 			continue;
-		sqlQuery.prepare("DELETE FROM query_tags WHERE query_name = ? AND tag = ?");
 		sqlQuery.bindValue(0, modified.name);
 		sqlQuery.bindValue(1, tagName);
 		sqlQuery.exec();
@@ -268,11 +265,10 @@ void QueryDb::query(QuerySet & queries)
 	DBG("-----");
 
 	unsigned s = queries.size();
+	sqlQuery.prepare("SELECT query_name, partner FROM query_partners WHERE query_name = ?");
 	for(unsigned i=0; i<s; i++){
 		Query & query = queries.queryAt(i);
 
-		sqlQuery.prepare("SELECT query_name, partner FROM query_partners "
-				"WHERE query_name = ?");
 		sqlQuery.bindValue(0, query.name);
 		sqlQuery.exec();
 		query.partners.clear();
