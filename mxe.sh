@@ -1,5 +1,7 @@
 #!/bin/bash
 
+JOBS=$(expr $(cat /proc/cpuinfo | grep processor | wc -l) + 1)
+
 #export LDFLAGS="-Wl,-subsystem,console"
 #export LIBS="-lpthread"
 #export LIBS="-lgnurx"
@@ -32,7 +34,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 	--prefix=${PKGNAME_BASE} \
 	--gnu-source \
 	--static \
-	--libs=\"-lgnurx -lpq\" \
+	--libs=\\\"-lgnurx -lpq\\\" \
 	--ldflags=\\\"-static-libgcc -static-libstdc++\\\" \
 	--ldflags=-Wl,-subsystem,windows \
 	--stlcompatible || exit $?
@@ -40,7 +42,7 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 #--ldflags=-Wl,-subsystem,console
 
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe make $@ || exit $?
+exec_in_dir ${DISTRIB_CODENAME}-x-mxe make -j${JOBS} $@ || exit $?
 
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe unix2dos nsis/license.txt || exit $?
 exec_in_dir ${DISTRIB_CODENAME}-x-mxe makensis nsis/$(basename $(ls -1 ${DISTRIB_CODENAME}-x-mxe/nsis/*.nsi))

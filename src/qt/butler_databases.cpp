@@ -214,15 +214,14 @@ void loadDatabaseConfigs()
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
 		csjp::ObjectTree & dbt = tree.objects.queryAt(i);
 		desc->name <<= dbt.name;
-		csjp::Map<csjp::String, csjp::String> & props = dbt.properties;
-		desc->driver <<= props["driver"];
-		desc->databaseName <<= props["databaseName"];
-		desc->username <<= props["username"];
-		desc->password <<= props["password"];
+		desc->driver <<= dbt.properties["driver"];
+		desc->databaseName <<= dbt.properties["databaseName"];
+		desc->username <<= dbt.properties["username"];
+		desc->password <<= dbt.properties["password"];
 		if(!desc->password.isEmpty())
 			desc->savePassword = true;
-		desc->host <<= props["host"];
-		desc->port <<= props["port"];
+		desc->host <<= dbt.properties["host"];
+		desc->port <<= dbt.properties["port"];
 		descriptorSet.add(desc);
 	}
 
@@ -258,7 +257,7 @@ void saveDatabaseConfigs()
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
 		csjp::String name(C_STR(desc.name));
-		csjp::Map<csjp::String, csjp::String> & props = tree[name].properties;
+		auto & props = tree[name].properties;
 		props["driver"] <<= desc.driver; // for example "QSQLITE"
 		props["databaseName"] <<= desc.databaseName; //file name in case of sqlite
 		props["username"] <<= desc.username;
