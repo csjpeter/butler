@@ -58,19 +58,32 @@ public:
 	{
 	}
 
-	explicit Ware(const Ware & i)
-	{
-		copy(i);
-	}
+	explicit Ware(const Ware & w) :
+		name(w.name),
+		lastModified(w.lastModified),
+		unit(w.unit),
+		categories(w.categories),
+		tags(w.tags)
+	{}
 
 	~Ware()
 	{
 	}
 
-	Ware& operator=(const Ware & i)
+	Ware& operator=(const Ware & w)
 	{
-		copy(i);
+		Ware copy(w);
+		swap(copy);
 		return *this;
+	}
+
+	void swap(Ware & w)
+	{
+		name.swap(w.name);
+		lastModified.swap(w.lastModified); /* non editable */
+		unit.swap(w.unit);
+		categories.swap(w.categories);
+		tags.swap(w.tags);
 	}
 
 	bool isEqual(const Ware & w) const
@@ -84,9 +97,9 @@ public:
 		return true;
 	}
 
-	bool isLess(const Ware & i) const
+	bool isLess(const Ware & w) const
 	{
-		return name < i.name;
+		return name < w.name;
 	}
 
 	bool isLess(const QString & s) const
@@ -97,16 +110,6 @@ public:
 	bool isMore(const QString & s) const
 	{
 		return s < name;
-	}
-
-private:
-	void copy(const Ware & w)
-	{
-		name = w.name;
-		lastModified = w.lastModified;
-		unit = w.unit;
-		categories.copy(w.categories);
-		tags.copy(w.tags);
 	}
 };
 
