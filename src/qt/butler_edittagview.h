@@ -6,7 +6,7 @@
 #ifndef BUTLER_EDITTAGVIEW_H
 #define BUTLER_EDITTAGVIEW_H
 
-#include <butler_tag.h>
+#include <butler_dataclasses.h>
 #include <butler_pannview.h>
 
 class EditTagView : public PannView

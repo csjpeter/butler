@@ -6,7 +6,6 @@
 #include <QtGui>
 
 #include "butler_databasesmodel.h"
-#include "butler_database_descriptor.h"
 
 extern DatabaseDescriptorSet descriptorSet;
 

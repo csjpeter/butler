@@ -6,7 +6,7 @@
 #ifndef BUTLER_EDITWAREVIEW_H
 #define BUTLER_EDITWAREVIEW_H
 
-#include <butler_ware.h>
+#include <butler_dataclasses.h>
 #include <butler_pannview.h>
 #include <butler_tagwidget.h>
 

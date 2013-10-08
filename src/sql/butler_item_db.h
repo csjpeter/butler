@@ -6,9 +6,6 @@
 #ifndef BUTLER_ITEM_DB_H
 #define BUTLER_ITEM_DB_H
 
-#include <butler_tag.h>
-#include <butler_item.h>
-#include <butler_query.h>
 #include <butler_sql_connection.h>
 
 class ItemDb

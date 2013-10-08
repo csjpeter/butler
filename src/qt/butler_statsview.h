@@ -7,7 +7,7 @@
 #define BUTLER_STATSVIEW_H
 
 #include <butler_item.h>
-#include <butler_query.h>
+#include <butler_dataclasses.h>
 #include <butler_pannview.h>
 
 class StatsView : public PannView

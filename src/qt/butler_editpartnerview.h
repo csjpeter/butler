@@ -6,7 +6,7 @@
 #ifndef BUTLER_EDITPARTNERVIEW_H
 #define BUTLER_EDITPARTNERVIEW_H
 
-#include <butler_partner.h>
+#include <butler_dataclasses.h>
 #include <butler_pannview.h>
 
 class EditPartnerView : public PannView

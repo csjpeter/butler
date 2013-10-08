@@ -6,7 +6,6 @@
 #ifndef BUTLER_WARE_DB_H
 #define BUTLER_WARE_DB_H
 
-#include <butler_ware.h>
 #include <butler_sql_connection.h>
 
 class WareDb

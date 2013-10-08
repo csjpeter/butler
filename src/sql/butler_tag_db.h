@@ -6,7 +6,6 @@
 #ifndef BUTLER_TAG_DB_H
 #define BUTLER_TAG_DB_H
 
-#include <butler_tag.h>
 #include <butler_sql_connection.h>
 
 class TagDb

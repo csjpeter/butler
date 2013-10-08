@@ -6,7 +6,7 @@
 #ifndef BUTLER_QUERYOPTIONSVIEW_H
 #define BUTLER_QUERYOPTIONSVIEW_H
 
-#include <butler_query.h>
+#include <butler_dataclasses.h>
 #include <butler_tagwidget.h>
 #include <butler_pannview.h>
 

@@ -6,7 +6,6 @@
 #ifndef BUTLER_QUERY_DB_H
 #define BUTLER_QUERY_DB_H
 
-#include <butler_query.h>
 #include <butler_sql_connection.h>
 
 class QueryDb

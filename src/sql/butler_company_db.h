@@ -6,7 +6,6 @@
 #ifndef BUTLER_COMPANY_DB_H
 #define BUTLER_COMPANY_DB_H
 
-#include <butler_company.h>
 #include <butler_sql_connection.h>
 
 class CompanyDb

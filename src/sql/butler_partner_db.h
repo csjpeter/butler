@@ -6,7 +6,6 @@
 #ifndef BUTLER_PARTNER_DB_H
 #define BUTLER_PARTNER_DB_H
 
-#include <butler_partner.h>
 #include <butler_sql_connection.h>
 
 class PartnerDb

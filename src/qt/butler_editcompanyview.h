@@ -6,7 +6,7 @@
 #ifndef BUTLER_EDITCOMPANYVIEW_H
 #define BUTLER_EDITCOMPANYVIEW_H
 
-#include <butler_company.h>
+#include <butler_dataclasses.h>
 #include <butler_pannview.h>
 
 class EditCompanyView : public PannView

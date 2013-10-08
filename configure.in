@@ -36,7 +36,8 @@ function generate ()
 		-e "s|@ICONS_PREFIX@|${ICONS_PREFIX}|g" \
 		-e "s|@CSS_PREFIX@|${CSS_PREFIX}|g" \
 		-e "s|@TRANSLATIONS_PREFIX@|${TRANSLATIONS_PREFIX}|g" \
-                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}n\"|g" \
+                -e "s|@DATACLASS_GENERATOR@|\"${DATACLASS_GENERATOR}\"|g" \
+                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\"|g" \
 		> $2 || exit $?
 }
 
@@ -187,6 +188,7 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 	PKGCONFIG=${TARGET_ARCH}-pkg-config
 }
 
+DATACLASS_GENERATOR=$(${PKGCONFIG} --variable prefix libcsjp0.3)bin/libcsjp0.3-data-class-generator
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)" || exit $?
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)" || exit $?

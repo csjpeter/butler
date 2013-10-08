@@ -1,6 +1,6 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
 #ifndef BUTLER_DATABASE_DESCRIPTOR_H

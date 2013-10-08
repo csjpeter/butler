@@ -6,8 +6,6 @@
 #ifndef BUTLER_CUSTOMMODEL_H
 #define BUTLER_CUSTOMMODEL_H
 
-#include <butler_query.h>
-
 #include "butler_itemsmodel.h"
 
 class Item;

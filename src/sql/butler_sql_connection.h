@@ -13,13 +13,7 @@
 
 #include <QVariant>
 
-/*
-#include <butler_query.h>
-#include <butler_query_set.h>
-#include <butler_item.h>
-#include <butler_item_set.h>
-*/
-#include <butler_database_descriptor.h>
+#include <butler_dataclasses.h>
 
 DECL_EXCEPTION(csjp::Exception, DbError);
 DECL_EXCEPTION(DbError, DbIncompatibleTableError);

@@ -147,7 +147,6 @@ public:
 		ordering(Tag::Name),
 		ascending(true){}
 	~TagSet() {}
-
 };
 
 typedef csjp::OwnerContainer<Text> TagNameSet;
