@@ -37,7 +37,7 @@ function generate ()
 		-e "s|@CSS_PREFIX@|${CSS_PREFIX}|g" \
 		-e "s|@TRANSLATIONS_PREFIX@|${TRANSLATIONS_PREFIX}|g" \
                 -e "s|@DATACLASS_GENERATOR@|\"${DATACLASS_GENERATOR}\"|g" \
-                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\"|g" \
+                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\n\"|g" \
 		> $2 || exit $?
 }
 
