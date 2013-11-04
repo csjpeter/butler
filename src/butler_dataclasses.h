@@ -51,6 +51,20 @@ public:
 		bool ascending;
 };
 
+typedef csjp::OwnerContainer<Text> WareNameSet;
+typedef csjp::OwnerContainer<Text> CompanyNameSet;
+typedef csjp::OwnerContainer<Text> PartnerNameSet;
+
+class QueryStat{
+public:
+	unsigned itemCount;
+	double sumQuantity;
+	double sumPrice;
+	double avgPrice;
+	double cheapestUnitPrice;
+	double mostExpUnitPrice;
+	double queryTime; /** How much time the query took. */
+};
 
 
 #include <../tmp/src/butler_dataclasses>
