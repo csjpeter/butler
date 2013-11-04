@@ -11,6 +11,8 @@
 
 csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
+const unsigned UnitPriceOffset = 0;
+
 SCC TidItemFieldCommonName	= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
 SCC TidItemFieldCategory	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
 SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
@@ -48,14 +50,13 @@ QModelIndex ItemsModel::index(	int row,
 
 Qt::ItemFlags ItemsModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)items.size() &&
-			index.column() < Item::UnitPrice){
+	if(index.row() < (int)items.size() && index.column() < Item::NumOfFields){
 		if(index.column() != Item::Uploaded)
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 		else
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else if(index.row() < (int)items.size() &&
-			index.column() < Item::NumOfFields){
+			index.column() < Item::NumOfFields + 0){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
@@ -119,8 +120,14 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		case Item::Comment :
 			return QVariant(items.queryAt(index.row()).comment);
 			break;
-		case Item::UnitPrice :
-			return QVariant(items.queryAt(index.row()).unitPrice());
+		case Item::NumOfFields + UnitPriceOffset :
+			{
+				Item & item = items.queryAt(index.row());
+				double unitPrice = 0;
+				//if(isnormal(item.quantity)) /*FIXME*/
+				unitPrice = item.price / item.quantity;
+				return QVariant(unitPrice);
+			}
 			break;
 		default :
 			return value;
@@ -169,7 +176,7 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Item::Comment :
 			return QVariant(tr(TidItemFieldComment));
 			break;
-		case Item::UnitPrice :
+		case Item::NumOfFields + UnitPriceOffset :
 			return QVariant(tr(TidItemFieldUnitPrice));
 			break;
 		default :

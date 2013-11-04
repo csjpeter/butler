@@ -20,7 +20,7 @@ ShoppingModel::~ShoppingModel()
 
 Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)items.size() && index.column() < Item::UnitPrice){
+	if(index.row() < (int)items.size() && index.column() < Item::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;

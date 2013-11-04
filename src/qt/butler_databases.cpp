@@ -10,7 +10,6 @@
 #include <csjp_map.h>
 
 #include "butler_databases.h"
-#include "butler_database_descriptor.h"
 
 #include <butler_sql_connection.h>
 

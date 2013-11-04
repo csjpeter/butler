@@ -131,7 +131,6 @@ source: \
 	$(DIST_DIR)/src/butler_text.h \
 	$(DIST_DIR)/src/butler_datetime.h \
 	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
-	$(DIST_DIR)/src/butler_item.h \
 	$(DIST_DIR)/src/butler_macros.h \
 	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/butler_dataclasses.json \
@@ -143,7 +142,6 @@ source: \
 	$(DIST_DIR)/src/sql/butler_company_db.cpp \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
 	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
-	$(DIST_DIR)/src/sql/butler_database_descriptor.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
 	$(DIST_DIR)/src/sql/butler_item_db.h \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \

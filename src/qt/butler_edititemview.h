@@ -6,7 +6,6 @@
 #ifndef BUTLER_EDITITEMVIEW_H
 #define BUTLER_EDITITEMVIEW_H
 
-#include <butler_item.h>
 #include <butler_tagwidget.h>
 #include <butler_pannview.h>
 
@@ -81,7 +80,7 @@ private:
 
 	QWidget * lastNumEdited;
 	QWidget * lastLastNumEdited;
-	QString lastWareName;
+	Text lastWareName;
 };
 
 #endif

@@ -12,6 +12,28 @@
 				},
 				key : name
 		},
+		Item : {
+				fields : {
+						uploaded : DateTime,	# non editable
+						name : Text,
+						category : Text,
+						quantity : double,		# amount to buy or bought
+						bought : bool,			# shows whether the below fields have sense
+						purchased : DateTime,	# item considered bought if valid,
+												# default value should suggested by
+												# gui but editable
+						partner : Text,
+						price : double,			# price of gross piece/amount quantity
+												# expected price if not yet bought;
+												# should set to 0 when bought to notify
+												# to set the real paid price.
+						onStock : bool,			# do we have it on store?
+												# when marked to no, advise to put on shopping list
+						comment : Text,
+						lastModified : DateTime	# non editable
+				},
+				key : uploaded
+		},
 		Tag : {
 				fields : {
 						name : Text,

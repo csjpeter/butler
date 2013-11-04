@@ -192,7 +192,7 @@ void WaresModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int WaresModel::index(const QString & name) const
+int WaresModel::index(const Text & name) const
 {
 	if(wares.has(name))
 		return wares.index(name);

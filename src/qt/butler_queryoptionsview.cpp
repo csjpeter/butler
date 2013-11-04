@@ -512,9 +512,10 @@ void QueryOptionsView::backClickedSlot()
 void QueryOptionsView::querySelectedSlot()
 {
 	QueriesModel & qm = queriesModel(dbname);
-	if(!qm.querySet().has(nameEditor.text()))
+	Text name(nameEditor.text());
+	if(!qm.querySet().has(name))
 		return;
-	query = qm.querySet().query(nameEditor.text());
+	query = qm.querySet().query(name);
 	mapToGui();
 }
 

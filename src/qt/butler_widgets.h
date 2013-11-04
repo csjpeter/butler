@@ -164,6 +164,7 @@ public:
 	virtual void keyPressEvent(QKeyEvent * e);
 	virtual void mousePressEvent(QMouseEvent * event);
 	virtual void inputMethodEvent(QInputMethodEvent * event);
+	Text text() { return Text(this->QLineEdit::text()); }
 
 private:
 	bool justFocusedIn;
@@ -319,7 +320,7 @@ private:
 public:
 	ComboSelector(QAbstractItemModel * model = 0, int column = 0, QWidget * parent = 0);
 
-	QString text() const;
+	Text text() const;
 	void setText(const QString & str);
 	virtual void keyPressEvent(QKeyEvent * event);
 	virtual void narrowLayout();

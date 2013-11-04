@@ -615,7 +615,7 @@ ComboSelector::ComboSelector(QAbstractItemModel * model, int column, QWidget * p
 	editor.setValidator(0);
 }
 
-QString ComboSelector::text() const { return editor.text(); }
+Text ComboSelector::text() const { return editor.text(); }
 void ComboSelector::setText(const QString & str) { editor.setText(str); }
 
 void ComboSelector::keyPressEvent(QKeyEvent * event)

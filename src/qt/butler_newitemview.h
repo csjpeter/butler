@@ -22,8 +22,6 @@ class QDataWidgetMapper;
 class QModelIndex;
 class QComboBox;
 
-#include <butler_item.h>
-
 #include "butler_databases.h"
 
 class NewItemView : public PannView

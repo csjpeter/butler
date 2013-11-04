@@ -48,7 +48,7 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const QString & name) const NO_FCLOG;
+	int index(const Text & name) const NO_FCLOG;
 	const Ware& ware(int row) const NO_FCLOG;
 	const WareSet & wareSet() const { return wares; };
 	void del(int row);

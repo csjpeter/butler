@@ -5,6 +5,9 @@
 
 #include "butler_item_db.h"
 
+#include <math.h>
+#include <float.h>
+
 ItemDb::ItemDb(SqlConnection & sql) :
 	sql(sql)
 {

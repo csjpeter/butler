@@ -17,9 +17,9 @@ public:
 		Text() : QString() {}
 		explicit Text(const QVariant & v) : QString(v.toString()) {}
 		explicit Text(const QString & t) : QString(t) {}
-		Text(const QString && t) : QString(csjp::move_cast(t)) {}
+		Text(QString && t) : QString(csjp::move_cast(t)) {}
 		explicit Text(const Text & t) : QString(t) {}
-		Text(const Text && t) : QString(csjp::move_cast(t)) {}
+		Text(Text && t) : QString(csjp::move_cast(t)) {}
 		explicit Text(const char * s) : QString(s) {}
 		explicit Text(const csjp::String & t) : QString(t.c_str()) {}
 		virtual ~Text() {}

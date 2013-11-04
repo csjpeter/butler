@@ -540,7 +540,7 @@ void EditItemView::grossPriceValueChangedSlot(double g)
 
 void EditItemView::wareNameEditFinishedSlot()
 {
-	if(wareEditor.editor.text() == lastWareName)
+	if(lastWareName == wareEditor.editor.text())
 		return;
 
 	lastWareName = wareEditor.editor.text();
