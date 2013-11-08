@@ -50,7 +50,7 @@ void CustomModel::addShoppingItem(int row)
 	Item shoppingItem;
 	shoppingItem.uploaded = QDateTime::currentDateTime();
 	shoppingItem.name = i.name;
-	shoppingItem.category = i.category;
+	shoppingItem.type = i.type;
 	db.insert(shoppingItem);
 	itemChange(db, shoppingItem);
 }

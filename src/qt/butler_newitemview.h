@@ -56,8 +56,8 @@ private:
 
 	QLineEdit *nameEditor;
 	QComboBox *nameBox;
-	QLineEdit *categoryEditor;
-	QComboBox *categoryBox;
+	QLineEdit *typeEditor;
+	QComboBox *typeBox;
 	QDoubleSpinBox *quantityEditor;
 	QTextEdit *commentEditor;
 

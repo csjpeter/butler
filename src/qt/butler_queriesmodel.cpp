@@ -221,7 +221,7 @@ void QueriesModel::query()
 	db.query(queries);
 }
 
-QString QueriesModel::categoriesToString(const CategoryNameSet & cat)
+QString QueriesModel::typesToString(const TypeNameSet & cat)
 {
 	QString result("");
 
@@ -257,7 +257,7 @@ QString QueriesModel::tagsToString(const TagNameSet & tags)
 	return result;
 }
 
-void QueriesModel::stringToCategories(const QString & value, CategoryNameSet & cat)
+void QueriesModel::stringToTypes(const QString & value, TypeNameSet & cat)
 {
 	cat.clear();
 	QStringList sl;

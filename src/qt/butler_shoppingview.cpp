@@ -64,7 +64,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	queryView.horizontalHeader()->setResizeMode(
 			Item::Name, QHeaderView::ResizeToContents);
 	queryView.horizontalHeader()->setResizeMode(
-			Item::Category, QHeaderView::ResizeToContents);
+			Item::Type, QHeaderView::ResizeToContents);
 	queryView.horizontalHeader()->setResizeMode(
 			Item::Quantity, QHeaderView::ResizeToContents);
 	queryView.horizontalHeader()->setResizeMode(
@@ -194,7 +194,7 @@ void ShoppingView::delItem()
 			QMessageBox::Question,
 			tr("Deleting item"),
 			tr("Shall we delete this item: ") + item.name +
-			(item.category.size() ? (" (" + item.category + ")") : ""),
+			(item.type.size() ? (" (" + item.type + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)

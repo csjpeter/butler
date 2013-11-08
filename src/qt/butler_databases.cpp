@@ -15,6 +15,7 @@
 
 #include <butler_tag_db.h>
 #include <butler_ware_db.h>
+#include <butler_brand_db.h>
 #include <butler_company_db.h>
 #include <butler_partner_db.h>
 #include <butler_item_db.h>
@@ -32,15 +33,17 @@ private:
 	TagDb * tagDb;
 	WareDb * wareDb;
 	CompanyDb * companyDb;
+	BrandDb * brandDb;
 	PartnerDb * partnerDb;
-	ItemDb * itemDb;
 	QueryDb * queryDb;
-	ShoppingModel * shoppingModel;
+	ItemDb * itemDb;
 	TagsModel * tagsModel;
-	PartnersModel * partnersModel;
-	CompanyModel * companyModel;
 	WaresModel * waresModel;
+	CompanyModel * companyModel;
+	BrandsModel * brandsModel;
+	PartnersModel * partnersModel;
 	QueriesModel * queriesModel;
+	ShoppingModel * shoppingModel;
 
 public:
 	Database(const QString & dbname) :
@@ -49,34 +52,38 @@ public:
 		tagDb(0),
 		wareDb(0),
 		companyDb(0),
+		brandDb(0),
 		partnerDb(0),
-		itemDb(0),
 		queryDb(0),
-		shoppingModel(0),
+		itemDb(0),
 		tagsModel(0),
-		partnersModel(0),
-		companyModel(0),
 		waresModel(0),
-		queriesModel(0)
+		companyModel(0),
+		brandsModel(0),
+		partnersModel(0),
+		queriesModel(0),
+		shoppingModel(0)
 	{
 	}
 
 	explicit Database(const Database &) = delete;
 	~Database()
 	{
-		delete queriesModel;
 		delete shoppingModel;
-		delete tagsModel;
+		delete queriesModel;
 		delete partnersModel;
 		delete companyModel;
+		delete brandsModel;
 		delete waresModel;
+		delete tagsModel;
 
-		delete tagDb;
-		delete wareDb;
-		delete companyDb;
-		delete partnerDb;
 		delete itemDb;
 		delete queryDb;
+		delete partnerDb;
+		delete companyDb;
+		delete brandDb;
+		delete wareDb;
+		delete tagDb;
 
 		delete sql;
 	}
@@ -109,15 +116,6 @@ public:
 		return csjp::Object<CustomModel>(new CustomModel(*itemDb, wares()));
 	}
 
-	ShoppingModel & shoppingItems()
-	{
-		if(!itemDb)
-			itemDb = new ItemDb(sqlConn());
-		if(!shoppingModel)
-			shoppingModel = new ShoppingModel(*itemDb, wares());
-		return *shoppingModel;
-	}
-
 	TagsModel & tags()
 	{
 		if(!tagDb)
@@ -125,24 +123,6 @@ public:
 		if(!tagsModel)
 			tagsModel = new TagsModel(*tagDb);
 		return *tagsModel;
-	}
-
-	PartnersModel & partners()
-	{
-		if(!partnerDb)
-			partnerDb = new PartnerDb(sqlConn());
-		if(!partnersModel)
-			partnersModel = new PartnersModel(*partnerDb);
-		return *partnersModel;
-	}
-
-	CompanyModel & company()
-	{
-		if(!companyDb)
-			companyDb = new CompanyDb(sqlConn());
-		if(!companyModel)
-			companyModel = new CompanyModel(*companyDb);
-		return *companyModel;
 	}
 
 	WaresModel & wares()
@@ -154,6 +134,33 @@ public:
 		return *waresModel;
 	}
 
+	CompanyModel & company()
+	{
+		if(!companyDb)
+			companyDb = new CompanyDb(sqlConn());
+		if(!companyModel)
+			companyModel = new CompanyModel(*companyDb);
+		return *companyModel;
+	}
+
+	BrandsModel & brands()
+	{
+		if(!brandDb)
+			brandDb = new BrandDb(sqlConn());
+		if(!brandsModel)
+			brandsModel = new BrandsModel(*brandDb);
+		return *brandsModel;
+	}
+
+	PartnersModel & partners()
+	{
+		if(!partnerDb)
+			partnerDb = new PartnerDb(sqlConn());
+		if(!partnersModel)
+			partnersModel = new PartnersModel(*partnerDb);
+		return *partnersModel;
+	}
+
 	QueriesModel & queries()
 	{
 		if(!queryDb)
@@ -161,6 +168,15 @@ public:
 		if(!queriesModel)
 			queriesModel = new QueriesModel(*queryDb);
 		return *queriesModel;
+	}
+
+	ShoppingModel & shoppingItems()
+	{
+		if(!itemDb)
+			itemDb = new ItemDb(sqlConn());
+		if(!shoppingModel)
+			shoppingModel = new ShoppingModel(*itemDb, wares());
+		return *shoppingModel;
 	}
 
 private:
@@ -285,29 +301,9 @@ Database & loadDatabase(const QString & name)
 	return databases.query(name);
 }
 
-csjp::Object<CustomModel> customModel(const QString & dbname)
-{
-	return loadDatabase(dbname).customItems();
-}
-
-ShoppingModel & shoppingModel(const QString & dbname)
-{
-	return loadDatabase(dbname).shoppingItems();
-}
-
 TagsModel & tagsModel(const QString & dbname)
 {
 	return loadDatabase(dbname).tags();
-}
-
-PartnersModel & partnersModel(const QString & dbname)
-{
-	return loadDatabase(dbname).partners();
-}
-
-CompanyModel & companyModel(const QString & dbname)
-{
-	return loadDatabase(dbname).company();
 }
 
 WaresModel & waresModel(const QString & dbname)
@@ -315,7 +311,32 @@ WaresModel & waresModel(const QString & dbname)
 	return loadDatabase(dbname).wares();
 }
 
+CompanyModel & companyModel(const QString & dbname)
+{
+	return loadDatabase(dbname).company();
+}
+
+BrandsModel & brandsModel(const QString & dbname)
+{
+	return loadDatabase(dbname).brands();
+}
+
+PartnersModel & partnersModel(const QString & dbname)
+{
+	return loadDatabase(dbname).partners();
+}
+
 QueriesModel & queriesModel(const QString & dbname)
 {
 	return loadDatabase(dbname).queries();
+}
+
+ShoppingModel & shoppingModel(const QString & dbname)
+{
+	return loadDatabase(dbname).shoppingItems();
+}
+
+csjp::Object<CustomModel> customModel(const QString & dbname)
+{
+	return loadDatabase(dbname).customItems();
 }

@@ -3,24 +3,24 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_QUERIESMODEL_H
-#define BUTLER_QUERIESMODEL_H
+#ifndef BUTLER_WARECATEGORIESMODEL_H
+#define BUTLER_WARECATEGORIESMODEL_H
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_queries_db.h>
+#include <butler_dataclasses.h>
 
 #include <butler_config.h>
 
-class QueriesModel : public AbstractTableModel
+class WareTypesModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT;
 
 public:
-	QueriesModel(QueryDb & db);
-	virtual ~QueriesModel();
+	WareTypesModel(TypeNameSet &);
+	virtual ~WareTypesModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -32,9 +32,11 @@ public:
 	virtual QVariant headerData(
 			int section, Qt::Orientation orientation,
 			int role = Qt::DisplayRole) const NO_FCLOG;
-	virtual bool setData(const QModelIndex & index, const QVariant & value,
+	virtual bool setData(
+			const QModelIndex & index, const QVariant & value,
 			int role = Qt::EditRole);
-	virtual bool setHeaderData(int section, Qt::Orientation orientation,
+	virtual bool setHeaderData(
+			int section, Qt::Orientation orientation,
 			const QVariant & value, int role = Qt::EditRole);
 	virtual int rowCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
 	virtual int columnCount(const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
@@ -45,23 +47,15 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const Text & name) const NO_FCLOG;
-	const Query& query(int row) NO_FCLOG;
+	int index(const QString & name) const NO_FCLOG;
+	const QString & type(int row) const NO_FCLOG;
 	void del(int row);
-	void addNew(Query & query);
-	virtual void update(int row, Query & modified);
-	void query();
-	const QuerySet & querySet() const { return queries; }
+	void addNew(const QString & cat);
 
-	static QString typesToString(const TypeNameSet & cat) NO_FCLOG;
-	static QString tagsToString(const TagNameSet & tags) NO_FCLOG;
-	static void stringToTypes(const QString & value, TypeNameSet & modified);
-	static void stringToTags(const QString & value, TagNameSet & modified);
 	void sort(int column, bool ascending);
 
 protected:
-	QueryDb & db;
-	QuerySet queries;
+	TypeNameSet & types;
 };
 
 #endif

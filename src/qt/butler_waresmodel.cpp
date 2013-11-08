@@ -13,7 +13,7 @@
 
 SCC TidWareFieldName = QT_TRANSLATE_NOOP("WaresModel", "Name");
 SCC TidWareFieldUnit = QT_TRANSLATE_NOOP("WaresModel", "Unit");
-SCC TidWareFieldCategories = QT_TRANSLATE_NOOP("WaresModel", "Categories");
+SCC TidWareFieldTypes = QT_TRANSLATE_NOOP("WaresModel", "Types");
 SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
 
 WaresModel::WaresModel(WareDb & db) :
@@ -62,8 +62,8 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 		case Ware::Unit :
 			return QVariant(wares.queryAt(index.row()).unit);
 			break;
-		case Ware::Categories :
-			return QVariant(categoriesToString(wares.queryAt(index.row()).categories));
+		case Ware::Types :
+			return QVariant(typesToString(wares.queryAt(index.row()).types));
 			break;
 		case Ware::Tags :
 			return QVariant(tagsToString(wares.queryAt(index.row()).tags));
@@ -91,8 +91,8 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Ware::Unit :
 			return QVariant(tr(TidWareFieldUnit));
 			break;
-		case Ware::Categories :
-			return QVariant(tr(TidWareFieldCategories));
+		case Ware::Types :
+			return QVariant(tr(TidWareFieldTypes));
 			break;
 		case Ware::Tags :
 			return QVariant(tr(TidWareFieldTags));
@@ -132,8 +132,8 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 			modified.unit <<= value;
 			update(row, modified);
 			break;
-		case Ware::Categories :
-			stringToCategories(value.toString(), modified.categories);
+		case Ware::Types :
+			stringToTypes(value.toString(), modified.types);
 			update(row, modified);
 			break;
 		case Ware::Tags :
@@ -234,7 +234,7 @@ void WaresModel::query()
 	db.query(wares);
 }
 
-QString WaresModel::categoriesToString(const CategoryNameSet & cat)
+QString WaresModel::typesToString(const TypeNameSet & cat)
 {
 	QString result("");
 
@@ -270,7 +270,7 @@ QString WaresModel::tagsToString(const TagNameSet & tags)
 	return result;
 }
 
-void WaresModel::stringToCategories(const QString & value, CategoryNameSet & cat)
+void WaresModel::stringToTypes(const QString & value, TypeNameSet & cat)
 {
 	cat.clear();
 	QStringList sl;

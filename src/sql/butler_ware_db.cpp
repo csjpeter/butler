@@ -19,7 +19,8 @@ WareDb::WareDb(SqlConnection & sql) :
 		sql.exec(
 				  "CREATE TABLE wares ("
 				  "name VARCHAR(64) NOT NULL PRIMARY KEY, "
-				  "unit VARCHAR(16) NOT NULL DEFAULT '' "
+				  "unit VARCHAR(16) NOT NULL DEFAULT '', "
+				  "icon BLOB"
 				  ")"
 				  );
 
@@ -50,26 +51,26 @@ WareDb::WareDb(SqlConnection & sql) :
 		throw DbIncompatibleTableError(
 			"Incompatible table ware_tags in the openend database.");
 
-	if(!tables.has("ware_categories")){
-		sql.exec("CREATE TABLE ware_categories ("
+	if(!tables.has("ware_types")){
+		sql.exec("CREATE TABLE ware_types ("
 				  "name VARCHAR(64) NOT NULL REFERENCES wares(name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "category VARCHAR(32) NOT NULL, "
-				  "UNIQUE (name, category) "
+				  "type VARCHAR(32) NOT NULL, "
+				  "UNIQUE (name, type) "
 				  ")"
 			    );
-		sql.exec("CREATE INDEX ware_categories_name_index "
-				"ON ware_categories(name)");
-		sql.exec("CREATE INDEX ware_categories_category_index "
-				"ON ware_categories(category)");
+		sql.exec("CREATE INDEX ware_types_name_index "
+				"ON ware_types(name)");
+		sql.exec("CREATE INDEX ware_types_type_index "
+				"ON ware_types(type)");
 	}
 
-	cols = sql.columns("ware_categories");
+	cols = sql.columns("ware_types");
 	if(		!cols.has("name") ||
-			!cols.has("category")
+			!cols.has("type")
 	  )
 		throw DbIncompatibleTableError(
-			"Incompatible table ware_categories in the openend database.");
+			"Incompatible table ware_types in the openend database.");
 }
 
 WareDb::~WareDb()
@@ -95,12 +96,12 @@ void WareDb::insert(const Ware & ware)
 		sqlQuery.exec();
 	}
 
-	s = ware.categories.size();
-	sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
+	s = ware.types.size();
+	sqlQuery.prepare("INSERT INTO ware_types (name, type) VALUES(?, ?)");
 	for(i=0; i<s; i++){
-		const Text & category = ware.categories.queryAt(i);
+		const Text & type = ware.types.queryAt(i);
 		sqlQuery.bindValue(0, ware.name);
-		sqlQuery.bindValue(1, category);
+		sqlQuery.bindValue(1, type);
 		sqlQuery.exec();
 	}
 
@@ -147,26 +148,26 @@ void WareDb::update(const Ware & orig, const Ware & modified)
 		}
 	}
 
-	s = modified.categories.size();
-	sqlQuery.prepare("INSERT INTO ware_categories (name, category) VALUES(?, ?)");
+	s = modified.types.size();
+	sqlQuery.prepare("INSERT INTO ware_types (name, type) VALUES(?, ?)");
 	for(i=0; i<s; i++){
-		const Text & category = modified.categories.queryAt(i);
-		if(orig.categories.has(category))
+		const Text & type = modified.types.queryAt(i);
+		if(orig.types.has(type))
 			continue;
 		sqlQuery.bindValue(0, modified.name);
-		sqlQuery.bindValue(1, category);
+		sqlQuery.bindValue(1, type);
 		sqlQuery.exec();
 	}
-	s = orig.categories.size();
-	sqlQuery.prepare("DELETE FROM ware_categories WHERE name = ? AND category = ?");
+	s = orig.types.size();
+	sqlQuery.prepare("DELETE FROM ware_types WHERE name = ? AND type = ?");
 	for(i=0; i<s; i++){
-		const Text & category = orig.categories.queryAt(i);
+		const Text & type = orig.types.queryAt(i);
 		/* We use modified as reference to ware since the ware's name might
 		 * has changed by the time this update is running.
 		 * (If Wares table is updated already.) */
-		if(!modified.categories.has(category)){
+		if(!modified.types.has(type)){
 			sqlQuery.bindValue(0, modified.name);
-			sqlQuery.bindValue(1, category);
+			sqlQuery.bindValue(1, type);
 			sqlQuery.exec();
 		}
 	}
@@ -218,18 +219,18 @@ void WareDb::query(WareSet & wares)
 	}
 	DBG("-----");
 
-	sqlQuery.exec("SELECT name, category FROM ware_categories");
+	sqlQuery.exec("SELECT name, type FROM ware_types");
 
 	nameNo = sqlQuery.colIndex("name");
-	int categoryNo = sqlQuery.colIndex("category");
+	int typeNo = sqlQuery.colIndex("type");
 
-	DBG("----- Ware categories query result:");
+	DBG("----- Ware types query result:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		Text name(sqlQuery.text(nameNo));
 		if(wares.has(name))
-			wares.query(name).categories.add(
-					new Text(sqlQuery.text(categoryNo)));
+			wares.query(name).types.add(
+					new Text(sqlQuery.text(typeNo)));
 	}
 	DBG("-----");
 

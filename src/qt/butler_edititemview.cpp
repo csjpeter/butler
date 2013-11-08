@@ -32,7 +32,7 @@ SCC TidNextButton = QT_TRANSLATE_NOOP("EditItemView", "Next item");
 SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "Bought:");
 SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "On stock:");
 
-SCC TidCategoryEditor = QT_TRANSLATE_NOOP("EditItemView", "Brand or type of ware:");
+SCC TidTypeEditor = QT_TRANSLATE_NOOP("EditItemView", "Brand or type of ware:");
 SCC TidQuantityEditor = QT_TRANSLATE_NOOP("EditItemView", "Quantity:");
 SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Unit price:");
 SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Gross price:");
@@ -94,7 +94,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&categoryEditor.box, SIGNAL(editTextChanged(const QString &)),
+	connect(&typeEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&quantityEditor, SIGNAL(valueChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -176,7 +176,7 @@ void EditItemView::mapToGui()
 
 	wareEditor.setText(item.name);
 	wareNameEditFinishedSlot();
-	categoryEditor.setText(item.category);
+	typeEditor.setText(item.type);
 
 	quantityEditor.blockSignals(true);
 	quantityEditor.setValue(item.quantity);
@@ -204,7 +204,7 @@ void EditItemView::mapFromGui()
 
 	item.partner = partnerEditor.text();
 	item.name = wareEditor.text();
-	item.category = categoryEditor.text();
+	item.type = typeEditor.text();
 	item.quantity = quantityEditor.value();
 	item.comment = commentEditor.edit.toPlainText();
 
@@ -216,8 +216,8 @@ void EditItemView::mapFromGui()
 
 	ware.name = item.name;
 	ware.tags = tagsWidget.selectedTags();
-	if(categoryEditor.text().size() && !ware.categories.has(item.category))
-		ware.categories.add(new Text(categoryEditor.text()));
+	if(typeEditor.text().size() && !ware.types.has(item.type))
+		ware.types.add(new Text(typeEditor.text()));
 }
 
 void EditItemView::changeEvent(QEvent * event)
@@ -243,7 +243,7 @@ void EditItemView::retranslate()
 
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
-	categoryEditor.label.setText(tr(TidCategoryEditor));
+	typeEditor.label.setText(tr(TidTypeEditor));
 	quantityEditor.label.setText(tr(TidQuantityEditor));
 	unitPriceEditor.label.setText(tr(TidUnitPriceEditor));
 	grossPriceEditor.label.setText(tr(TidGrossPriceEditor));
@@ -280,7 +280,7 @@ void EditItemView::applyLayout(bool test)
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&wareEditor);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&categoryEditor);
+	mainLayout->addWidget(&typeEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addLayout(h2layout);
 	mainLayout->addStretch(0);
@@ -306,7 +306,7 @@ void EditItemView::relayout()
 {
 	{
 		wareEditor.wideLayout();
-		categoryEditor.wideLayout();
+		typeEditor.wideLayout();
 		quantityEditor.wideLayout();
 		unitPriceEditor.wideLayout();
 		grossPriceEditor.wideLayout();
@@ -318,7 +318,7 @@ void EditItemView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		wareEditor.wideLayout();
-		categoryEditor.wideLayout();
+		typeEditor.wideLayout();
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
@@ -330,7 +330,7 @@ void EditItemView::relayout()
 	}
 	if(width() < sizeHint().width()){
 		wareEditor.narrowLayout();
-		categoryEditor.narrowLayout();
+		typeEditor.narrowLayout();
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
@@ -350,7 +350,7 @@ void EditItemView::updateToolButtonStates()
 	bool modified = !(
 			item.partner == partnerEditor.text() &&
 			item.name == wareEditor.text() &&
-			item.category == categoryEditor.text() &&
+			item.type == typeEditor.text() &&
 			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
 			item.comment == commentEditor.edit.toPlainText() &&
 			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
@@ -545,8 +545,8 @@ void EditItemView::wareNameEditFinishedSlot()
 
 	lastWareName = wareEditor.editor.text();
 
-	QString lastCat = categoryEditor.text();
-	categoryEditor.box.clear();
+	QString lastCat = typeEditor.text();
+	typeEditor.box.clear();
 
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(lastWareName);
@@ -558,9 +558,9 @@ void EditItemView::wareNameEditFinishedSlot()
 	quantityEditor.setSuffix(ware.unit);
 	tagsWidget.setTags(ware.tags);
 
-	QString cats = WaresModel::categoriesToString(ware.categories);
-	categoryEditor.box.addItem(lastCat);
-	categoryEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
+	QString cats = WaresModel::typesToString(ware.types);
+	typeEditor.box.addItem(lastCat);
+	typeEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 

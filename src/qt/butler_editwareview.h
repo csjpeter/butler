@@ -58,7 +58,7 @@ private:
 
 	InputEditor nameEditor;
 	InputEditor unitEditor;
-	InputEditor categoriesEditor;
+	InputEditor typesEditor;
 	TagWidget tagsWidget;
 };
 

@@ -19,14 +19,14 @@ ItemDb::ItemDb(SqlConnection & sql) :
 				"uploaded TIMESTAMP NOT NULL PRIMARY KEY "
 						"CHECK('1970-01-01T00:00:00' < uploaded), "
 				"name VARCHAR(256) NOT NULL, "
-				"category VARCHAR(256) NOT NULL, "
+				"type VARCHAR(256) NOT NULL, "
 				"quantity REAL NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
 				"comment TEXT NOT NULL DEFAULT ''"
 				")"
 				);
 	cols = sql.columns("items");
 	if(		!cols.has("name") ||
-			!cols.has("category") ||
+			!cols.has("type") ||
 			!cols.has("uploaded") ||
 			!cols.has("quantity") ||
 			!cols.has("comment")
@@ -65,10 +65,10 @@ void ItemDb::insert(const Item & i)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO items (name, category, uploaded, "
+	sqlQuery.prepare("INSERT INTO items (name, type, uploaded, "
 			"quantity, comment) VALUES(?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, i.name);
-	sqlQuery.bindValue(1, i.category);
+	sqlQuery.bindValue(1, i.type);
 	sqlQuery.bindValue(2, i.uploaded);
 	sqlQuery.bindValue(3, i.quantity);
 	sqlQuery.bindValue(4, i.comment);
@@ -100,12 +100,12 @@ void ItemDb::update(const Item & orig, const Item & modified)
 		throw DbLogicError("The modified item is a different item than the original.");
 	sqlQuery.prepare("UPDATE items SET "
 			"name = ?, "
-			"category = ?, "
+			"type = ?, "
 			"quantity = ?, "
 			"comment = ? "
 			"WHERE uploaded = ?");
 	sqlQuery.bindValue(0, modified.name);
-	sqlQuery.bindValue(1, modified.category);
+	sqlQuery.bindValue(1, modified.type);
 	sqlQuery.bindValue(2, modified.quantity);
 	sqlQuery.bindValue(3, modified.comment);
 	sqlQuery.bindValue(4, orig.uploaded);
@@ -171,7 +171,7 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 	QString cmd("SELECT "
 			" MAX(items.uploaded) AS uploaded,"
 			" MAX(items.name) AS name,"
-			" MAX(items.category) AS category,"
+			" MAX(items.type) AS type,"
 			" MAX(items.comment) AS comment,"
 			" MAX(items.quantity) AS quantity"
 			" FROM items"
@@ -197,7 +197,7 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 	items.clear();
 	int uploadedNo = sqlQuery.colIndex("uploaded");
 	int nameNo = sqlQuery.colIndex("name");
-	int categoryNo = sqlQuery.colIndex("category");
+	int typeNo = sqlQuery.colIndex("type");
 	int quantityNo = sqlQuery.colIndex("quantity");
 	int commentNo = sqlQuery.colIndex("comment");
 	DBG("----- Item query result:");
@@ -206,7 +206,7 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 		Item *item = new Item();
 		item->uploaded = sqlQuery.dateTime(uploadedNo);
 		item->name = sqlQuery.text(nameNo);
-		item->category = sqlQuery.text(categoryNo);
+		item->type = sqlQuery.text(typeNo);
 		item->quantity = sqlQuery.real(quantityNo);
 		item->comment = sqlQuery.text(commentNo);
 		items.add(item);
@@ -228,7 +228,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 			" MAX(items.uploaded) AS uploaded,"
 			" MAX(items_bought.purchased) AS purchased,"
 			" MAX(items.name) AS name,"
-			" MAX(items.category) AS category,"
+			" MAX(items.type) AS type,"
 			" MAX(items.comment) AS comment,"
 			" MAX(items.quantity) AS quantity,"
 			" MAX(items_bought.price) AS price,"
@@ -352,7 +352,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	int uploadedNo = sqlQuery.colIndex("uploaded");
 	int purchasedNo = sqlQuery.colIndex("purchased");
 	int nameNo = sqlQuery.colIndex("name");
-	int categoryNo = sqlQuery.colIndex("category");
+	int typeNo = sqlQuery.colIndex("type");
 	int commentNo = sqlQuery.colIndex("comment");
 	int quantityNo = sqlQuery.colIndex("quantity");
 	int priceNo = sqlQuery.colIndex("price");
@@ -375,7 +375,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		item->uploaded = sqlQuery.dateTime(uploadedNo);
 		item->purchased = sqlQuery.dateTime(purchasedNo);
 		item->name = sqlQuery.text(nameNo);
-		item->category = sqlQuery.text(categoryNo);
+		item->type = sqlQuery.text(typeNo);
 		item->comment = sqlQuery.text(commentNo);
 		item->quantity = sqlQuery.real(quantityNo);
 		item->price = sqlQuery.real(priceNo);
@@ -414,5 +414,5 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 }
 
 /*
-select * from (select Items.uploaded as id, Items.name as ware, Items.category as category, items_bought.purchased as bought, items_bought.price as price from Items left join items_bought on Items.uploaded = items_bought.uploaded left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < items_bought.purchased and items_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.uploaded);
+select * from (select Items.uploaded as id, Items.name as ware, Items.type as type, items_bought.purchased as bought, items_bought.price as price from Items left join items_bought on Items.uploaded = items_bought.uploaded left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < items_bought.purchased and items_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.uploaded);
 */

@@ -35,14 +35,14 @@ NewItemView::NewItemView(const QString & dbname, QWidget * parent) :
 	nameBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
 	gridLayout->addWidget(nameBox, 0, 1, 1, 3);
 
-	label = new QLabel(tr("Category name :"));
+	label = new QLabel(tr("Type name :"));
 	gridLayout->addWidget(label, 1, 0, 1, 1);
-	categoryEditor = new QLineEdit;
-	categoryBox = new QComboBox;
-	categoryBox->setEditable(true);
-	categoryBox->setLineEdit(categoryEditor);
-	categoryBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
-	gridLayout->addWidget(categoryBox, 1, 1, 1, 3);
+	typeEditor = new QLineEdit;
+	typeBox = new QComboBox;
+	typeBox->setEditable(true);
+	typeBox->setLineEdit(typeEditor);
+	typeBox->completer()->setCompletionMode(QCompleter::PopupCompletion);
+	gridLayout->addWidget(typeBox, 1, 1, 1, 3);
 
 	label = new QLabel(tr("Quantity :"));
 	gridLayout->addWidget(label, 3, 0, 1, 1);
@@ -111,7 +111,7 @@ void NewItemView::mapToGui()
 {
 	nameEditor->setText(item.name);
 	nameEditFinishedSlot();
-	categoryEditor->setText(item.category);
+	typeEditor->setText(item.type);
 	quantityEditor->setValue(item.quantity);
 	commentEditor->setText(item.comment);
 }
@@ -120,7 +120,7 @@ void NewItemView::mapFromGui()
 {
 	item.uploaded = QDateTime::currentDateTime();
 	item.name = nameEditor->text();
-	item.category = categoryEditor->text();
+	item.type = typeEditor->text();
 	item.quantity = quantityEditor->value();
 	item.comment = commentEditor->toPlainText();
 }
@@ -131,18 +131,18 @@ void NewItemView::doneClickedSlot(bool toggled)
 
 	mapFromGui();
 	model.addNew(item);
-	/* We want to save any new ware and category before closing dialog. */
+	/* We want to save any new ware and type before closing dialog. */
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
 	if(i == -1){
 		Ware ware;
 		ware.name <<= nameEditor->text();
-		if(categoryEditor->text().size())
-			ware.categories.add(new Text(categoryEditor->text()));
+		if(typeEditor->text().size())
+			ware.types.add(new Text(typeEditor->text()));
 		wm.addNew(ware);
-	} else if(!wm.ware(i).categories.has(categoryEditor->text())) {
+	} else if(!wm.ware(i).types.has(typeEditor->text())) {
 		Ware modified(wm.ware(i));
-		modified.categories.add(new Text(categoryEditor->text()));
+		modified.types.add(new Text(typeEditor->text()));
 		wm.update(i, modified);
 	}
 	item = Item();
@@ -152,7 +152,7 @@ void NewItemView::doneClickedSlot(bool toggled)
 
 void NewItemView::nameEditFinishedSlot()
 {
-	categoryBox->clear();
+	typeBox->clear();
 
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(nameEditor->text());
@@ -163,8 +163,8 @@ void NewItemView::nameEditFinishedSlot()
 
 	const Ware & w = wm.ware(i);
 
-	QString cats = WaresModel::categoriesToString(w.categories);
-	categoryBox->addItems(cats.split(", ", QString::SkipEmptyParts));
+	QString cats = WaresModel::typesToString(w.types);
+	typeBox->addItems(cats.split(", ", QString::SkipEmptyParts));
 	
 	quantityEditor->setSuffix(w.unit);
 }

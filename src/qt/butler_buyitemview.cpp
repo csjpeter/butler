@@ -131,7 +131,7 @@ void BuyItemView::setItem(unsigned itemRow, unsigned partnerRow)
 
 void BuyItemView::mapToGui()
 {
-	nameLabel->setText(item.name + (item.category.size() ? (" (" + item.category) + ")" : ""));
+	nameLabel->setText(item.name + (item.type.size() ? (" (" + item.type) + ")" : ""));
 
 	quantityEditor->blockSignals(true);
 	quantityEditor->setValue(item.quantity);

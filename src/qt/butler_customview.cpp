@@ -268,7 +268,7 @@ void CustomView::delItem()
 			QMessageBox::Question,
 			tr("Deleting an item"),
 			tr("Shall we delete this item: ") + item.name +
-			(item.category.size() ? (" (" + item.category + ")") : ""),
+			(item.type.size() ? (" (" + item.type + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
@@ -289,7 +289,7 @@ void CustomView::shoppingItem()
 			QMessageBox::Question,
 			tr("Adding to shopping list"),
 			QString("Shall we add a corresponding item to the shopping list:\n") +
-			item.name + (item.category.size() ? (" (" + item.category + ")") : ""),
+			item.name + (item.type.size() ? (" (" + item.type + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
 	int res = msg->exec();
 	if(res == QMessageBox::Yes)

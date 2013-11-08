@@ -84,10 +84,10 @@ void WaresView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
-				Ware::Categories, QHeaderView::Stretch);
+				Ware::Types, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setResizeMode(
-				Ware::Categories, QHeaderView::ResizeToContents);
+				Ware::Types, QHeaderView::ResizeToContents);
 
 	applyLayout();
 

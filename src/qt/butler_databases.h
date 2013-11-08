@@ -9,24 +9,27 @@
 #include <csjp_exception.h>
 #include <csjp_object.h>
 
-#include <butler_itemsmodel.h>
-#include <butler_custommodel.h>
-#include <butler_shoppingmodel.h>
 #include <butler_tagsmodel.h>
+#include <butler_brandsmodel.h>
 #include <butler_waresmodel.h>
 #include <butler_companymodel.h>
+#include <butler_brandsmodel.h>
 #include <butler_partnersmodel.h>
 #include <butler_queriesmodel.h>
+#include <butler_shoppingmodel.h>
+#include <butler_itemsmodel.h>
+#include <butler_custommodel.h>
 
 void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
-csjp::Object<CustomModel> customModel(const QString & dbname);
-ShoppingModel & shoppingModel(const QString & dbname);
 TagsModel & tagsModel(const QString & dbname);
-PartnersModel & partnersModel(const QString & dbname);
-CompanyModel & companyModel(const QString & dbname);
 WaresModel & waresModel(const QString & dbname);
+CompanyModel & companyModel(const QString & dbname);
+BrandsModel & brandsModel(const QString & dbname);
+PartnersModel & partnersModel(const QString & dbname);
 QueriesModel & queriesModel(const QString & dbname);
+ShoppingModel & shoppingModel(const QString & dbname);
+csjp::Object<CustomModel> customModel(const QString & dbname);
 
 #endif

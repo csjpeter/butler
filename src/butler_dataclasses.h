@@ -17,23 +17,23 @@
 
 typedef csjp::OwnerContainer<Text> TagNameSet;
 
-class CategoryNameSet : public csjp::SorterOwnerContainer<Text>
+class TypeNameSet : public csjp::SorterOwnerContainer<Text>
 {
 public:
-		CategoryNameSet() : csjp::SorterOwnerContainer<Text>(), ascending(true){}
-		CategoryNameSet(const CategoryNameSet & cns) :
+		TypeNameSet() : csjp::SorterOwnerContainer<Text>(), ascending(true){}
+		TypeNameSet(const TypeNameSet & cns) :
 				csjp::SorterOwnerContainer<Text>(cns),
 				ascending(cns.ascending)
 		{}
-		CategoryNameSet(CategoryNameSet && temp) :
+		TypeNameSet(TypeNameSet && temp) :
 				csjp::SorterOwnerContainer<Text>(csjp::move_cast(temp)),
 				ascending(temp.ascending)
 		{
 				temp.ascending = true;
 		}
-		~CategoryNameSet() {}
+		~TypeNameSet() {}
 
-		const CategoryNameSet & operator=(CategoryNameSet && temp)
+		const TypeNameSet & operator=(TypeNameSet && temp)
 		{
 				csjp::SorterOwnerContainer<Text>::operator=(csjp::move_cast(temp));
 				ascending = temp.ascending;

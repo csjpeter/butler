@@ -14,7 +14,7 @@ csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 const unsigned UnitPriceOffset = 0;
 
 SCC TidItemFieldCommonName	= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
-SCC TidItemFieldCategory	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
+SCC TidItemFieldType	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
 SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
 SCC TidItemFieldIsBought	= QT_TRANSLATE_NOOP("ItemsModel", "Bought");
 SCC TidItemFieldPurchaseDate	= QT_TRANSLATE_NOOP("ItemsModel", "Bought on");
@@ -82,8 +82,8 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		case Item::Name :
 			return QVariant(items.queryAt(index.row()).name);
 			break;
-		case Item::Category :
-			return QVariant(items.queryAt(index.row()).category);
+		case Item::Type :
+			return QVariant(items.queryAt(index.row()).type);
 			break;
 		case Item::Uploaded :
 			return QVariant(items.queryAt(index.row()).uploaded);
@@ -149,8 +149,8 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Item::Name :
 			return QVariant(tr(TidItemFieldCommonName));
 			break;
-		case Item::Category :
-			return QVariant(tr(TidItemFieldCategory));
+		case Item::Type :
+			return QVariant(tr(TidItemFieldType));
 			break;
 		case Item::Uploaded :
 			return QVariant(tr(TidItemFieldUploadDate));
@@ -208,8 +208,8 @@ bool ItemsModel::setData(const QModelIndex & index, const QVariant & value, int 
 			modified.name <<= value;
 			update(row, modified);
 			break;
-		case Item::Category :
-			modified.category <<= value;
+		case Item::Type :
+			modified.type <<= value;
 			update(row, modified);
 			break;
 		case Item::Uploaded :

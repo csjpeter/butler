@@ -128,6 +128,15 @@ $(DIST_DIR)/%: %
 	cp -pd $< $@
 
 source: \
+	$(DIST_DIR)/config \
+	$(DIST_DIR)/configure \
+	$(DIST_DIR)/Makefile.in \
+	$(DIST_DIR)/source-license \
+	$(DIST_DIR)/enduser-license \
+	$(DIST_DIR)/share/translations/en.qm \
+	$(DIST_DIR)/share/translations/hu.qm \
+	$(DIST_DIR)/share/css/application.css.in \
+	\
 	$(DIST_DIR)/src/butler_text.h \
 	$(DIST_DIR)/src/butler_datetime.h \
 	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
@@ -135,98 +144,125 @@ source: \
 	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/butler_dataclasses.json \
 	$(DIST_DIR)/src/butler_dataclasses.h \
-	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
-	$(DIST_DIR)/src/sql/butler_item_db.cpp \
-	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
-	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
-	$(DIST_DIR)/src/sql/butler_company_db.cpp \
-	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
-	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
-	$(DIST_DIR)/src/sql/butler_sql_connection.h \
-	$(DIST_DIR)/src/sql/butler_item_db.h \
-	$(DIST_DIR)/src/sql/butler_queries_db.h \
-	$(DIST_DIR)/src/sql/butler_partner_db.h \
-	$(DIST_DIR)/src/sql/butler_company_db.h \
-	$(DIST_DIR)/src/sql/butler_tag_db.h \
-	$(DIST_DIR)/src/sql/butler_ware_db.h \
-	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
-	$(DIST_DIR)/src/qt/butler_application.cpp \
-	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
-	$(DIST_DIR)/src/qt/butler_config.cpp \
-	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
-	$(DIST_DIR)/src/qt/butler_customview.cpp \
-	$(DIST_DIR)/src/qt/butler_databasesview.cpp \
-	$(DIST_DIR)/src/qt/butler_editpartnerview.cpp \
-	$(DIST_DIR)/src/qt/butler_editcompanyview.cpp \
-	$(DIST_DIR)/src/qt/butler_editdbdescview.cpp \
-	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
-	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
-	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_databases.cpp \
-	$(DIST_DIR)/src/qt/butler_mainview.cpp \
-	$(DIST_DIR)/src/qt/butler_infoview.cpp \
-	$(DIST_DIR)/src/qt/butler_newitemview.cpp \
-	$(DIST_DIR)/src/qt/butler_queryoptionsview.cpp \
-	$(DIST_DIR)/src/qt/butler_shoppingmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
-	$(DIST_DIR)/src/qt/butler_partnersmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_partnersview.cpp \
-	$(DIST_DIR)/src/qt/butler_companymodel.cpp \
-	$(DIST_DIR)/src/qt/butler_companyview.cpp \
-	$(DIST_DIR)/src/qt/butler_tagfilterview.cpp \
-	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
-	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
-	$(DIST_DIR)/src/qt/butler_waresmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_waresview.cpp \
-	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_databasesmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_edititemview.h \
-	$(DIST_DIR)/src/qt/butler_application.h \
-	$(DIST_DIR)/src/qt/butler_buyitemview.h \
+	\
+	$(DIST_DIR)/src/config.h.in \
 	$(DIST_DIR)/src/qt/butler_config.h \
-	$(DIST_DIR)/src/qt/butler_custommodel.h \
-	$(DIST_DIR)/src/qt/butler_customview.h \
-	$(DIST_DIR)/src/qt/butler_databasesview.h \
-	$(DIST_DIR)/src/qt/butler_editpartnerview.h \
-	$(DIST_DIR)/src/qt/butler_editcompanyview.h \
-	$(DIST_DIR)/src/qt/butler_editdbdescview.h \
-	$(DIST_DIR)/src/qt/butler_edittagview.h \
-	$(DIST_DIR)/src/qt/butler_editwareview.h \
-	$(DIST_DIR)/src/qt/butler_itemsmodel.h \
-	$(DIST_DIR)/src/qt/butler_databases.h \
-	$(DIST_DIR)/src/qt/butler_mainview.h \
-	$(DIST_DIR)/src/qt/butler_infoview.h \
-	$(DIST_DIR)/src/qt/butler_newitemview.h \
-	$(DIST_DIR)/src/qt/butler_queryoptionsview.h \
-	$(DIST_DIR)/src/qt/butler_shoppingmodel.h \
-	$(DIST_DIR)/src/qt/butler_shoppingview.h \
-	$(DIST_DIR)/src/qt/butler_partnersmodel.h \
-	$(DIST_DIR)/src/qt/butler_partnersview.h \
-	$(DIST_DIR)/src/qt/butler_companymodel.h \
-	$(DIST_DIR)/src/qt/butler_companyview.h \
-	$(DIST_DIR)/src/qt/butler_tagfilterview.h \
-	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
-	$(DIST_DIR)/src/qt/butler_tagsview.h \
-	$(DIST_DIR)/src/qt/butler_tagwidget.h \
-	$(DIST_DIR)/src/qt/butler_waresmodel.h \
-	$(DIST_DIR)/src/qt/butler_warecategoriesmodel.h \
-	$(DIST_DIR)/src/qt/butler_waresview.h \
-	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
-	$(DIST_DIR)/src/qt/butler_databasesmodel.h \
-	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
-	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
-	$(DIST_DIR)/src/qt/butler_pannview.h \
-	$(DIST_DIR)/src/qt/butler_pannview.cpp \
+	$(DIST_DIR)/src/qt/butler_config.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_texts.h \
+	$(DIST_DIR)/src/qt/butler_texts.cpp \
+	\
 	$(DIST_DIR)/src/qt/butler_widgets.h \
 	$(DIST_DIR)/src/qt/butler_widgets.cpp \
-	$(DIST_DIR)/src/qt/butler_statsview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_pannview.h \
+	$(DIST_DIR)/src/qt/butler_pannview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
+	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
+	\
+	$(DIST_DIR)/src/sql/butler_sql_connection.h \
+	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
+	$(DIST_DIR)/src/sql/butler_tag_db.h \
+	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
+	$(DIST_DIR)/src/sql/butler_ware_db.h \
+	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
+	$(DIST_DIR)/src/sql/butler_company_db.h \
+	$(DIST_DIR)/src/sql/butler_company_db.cpp \
+	$(DIST_DIR)/src/sql/butler_brand_db.h \
+	$(DIST_DIR)/src/sql/butler_brand_db.cpp \
+	$(DIST_DIR)/src/sql/butler_partner_db.h \
+	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
+	$(DIST_DIR)/src/sql/butler_queries_db.h \
+	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
+	$(DIST_DIR)/src/sql/butler_item_db.h \
+	$(DIST_DIR)/src/sql/butler_item_db.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
+	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_tagsview.h \
+	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
+	$(DIST_DIR)/src/qt/butler_edittagview.h \
+	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
+	$(DIST_DIR)/src/qt/butler_tagfilterview.h \
+	$(DIST_DIR)/src/qt/butler_tagfilterview.cpp \
+	$(DIST_DIR)/src/qt/butler_tagwidget.h \
+	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_waresmodel.h \
+	$(DIST_DIR)/src/qt/butler_waresmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_waretypesmodel.h \
+	$(DIST_DIR)/src/qt/butler_waretypesmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_waresview.h \
+	$(DIST_DIR)/src/qt/butler_waresview.cpp \
+	$(DIST_DIR)/src/qt/butler_editwareview.h \
+	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_companymodel.h \
+	$(DIST_DIR)/src/qt/butler_companymodel.cpp \
+	$(DIST_DIR)/src/qt/butler_companyview.h \
+	$(DIST_DIR)/src/qt/butler_companyview.cpp \
+	$(DIST_DIR)/src/qt/butler_editcompanyview.h \
+	$(DIST_DIR)/src/qt/butler_editcompanyview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_brandsmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_brandsmodel.h \
+	\
+	$(DIST_DIR)/src/qt/butler_partnersmodel.h \
+	$(DIST_DIR)/src/qt/butler_partnersmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_partnersview.h \
+	$(DIST_DIR)/src/qt/butler_partnersview.cpp \
+	$(DIST_DIR)/src/qt/butler_editpartnerview.h \
+	$(DIST_DIR)/src/qt/butler_editpartnerview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_queriesmodel.h \
+	$(DIST_DIR)/src/qt/butler_queriesmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_queryoptionsview.h \
+	$(DIST_DIR)/src/qt/butler_queryoptionsview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_itemsmodel.h \
+	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_edititemview.h \
+	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
+	$(DIST_DIR)/src/qt/butler_buyitemview.h \
+	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
+	$(DIST_DIR)/src/qt/butler_newitemview.h \
+	$(DIST_DIR)/src/qt/butler_newitemview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_shoppingmodel.h \
+	$(DIST_DIR)/src/qt/butler_shoppingmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_shoppingview.h \
+	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_custommodel.h \
+	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
+	$(DIST_DIR)/src/qt/butler_customview.h \
+	$(DIST_DIR)/src/qt/butler_customview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_databases.h \
+	$(DIST_DIR)/src/qt/butler_databases.cpp \
+	$(DIST_DIR)/src/qt/butler_databasesmodel.h \
+	$(DIST_DIR)/src/qt/butler_databasesmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_databasesview.h \
+	$(DIST_DIR)/src/qt/butler_databasesview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_editdbdescview.h \
+	$(DIST_DIR)/src/qt/butler_editdbdescview.cpp \
+	\
 	$(DIST_DIR)/src/qt/butler_statsview.h \
-	$(DIST_DIR)/src/qt/butler_texts.cpp \
-	$(DIST_DIR)/src/qt/butler_texts.h \
+	$(DIST_DIR)/src/qt/butler_statsview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_infoview.h \
+	$(DIST_DIR)/src/qt/butler_infoview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_mainview.h \
+	$(DIST_DIR)/src/qt/butler_mainview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_application.h \
+	$(DIST_DIR)/src/qt/butler_application.cpp \
+	\
 	$(DIST_DIR)/src/qt/main.cpp \
-	$(DIST_DIR)/share/icons/copyright \
+	\
 	$(DIST_DIR)/share/icons/accounting.png \
 	$(DIST_DIR)/share/icons/analitics.png \
 	$(DIST_DIR)/share/icons/add.png \
@@ -256,14 +292,7 @@ source: \
 	$(DIST_DIR)/share/icons/databases.png \
 	$(DIST_DIR)/share/icons/use.png \
 	$(DIST_DIR)/share/icons/butler.png \
-	$(DIST_DIR)/config \
-	$(DIST_DIR)/configure \
-	$(DIST_DIR)/Makefile.in \
-	$(DIST_DIR)/src/config.h.in \
-	$(DIST_DIR)/source-license \
-	$(DIST_DIR)/enduser-license \
-	$(DIST_DIR)/share/translations/en.qm \
-	$(DIST_DIR)/share/translations/hu.qm \
-	$(DIST_DIR)/share/css/application.css.in
+	\
+	$(DIST_DIR)/share/icons/copyright
 	@true
 

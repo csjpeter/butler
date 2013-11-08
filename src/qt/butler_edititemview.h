@@ -66,7 +66,7 @@ private:
 	Button nextButton;
 
 	ComboSelector wareEditor;
-	ComboSelector categoryEditor;
+	ComboSelector typeEditor;
 	QuantityEditor quantityEditor;
 	PriceEditor unitPriceEditor;
 	PriceEditor grossPriceEditor;

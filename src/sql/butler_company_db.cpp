@@ -18,7 +18,8 @@ CompanyDb::CompanyDb(SqlConnection & sql) :
 				"city VARCHAR(64) NOT NULL, "
 				"postal_code VARCHAR(32) NOT NULL, "
 				"address VARCHAR(256) NOT NULL, "
-				"tax_id VARCHAR(32) NOT NULL "
+				"tax_id VARCHAR(32) NOT NULL, "
+				"icon BLOB"
 				")"
 			       );
 	cols = sql.columns("company");

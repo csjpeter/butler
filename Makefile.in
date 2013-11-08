@@ -124,94 +124,118 @@ TEST_BINARIES=\
 
 SQL_OBJECTS+= \
 	tmp/src/sql/butler_sql_connection.opp \
-	tmp/src/sql/butler_item_db.opp \
-	tmp/src/sql/butler_queries_db.opp \
-	tmp/src/sql/butler_partner_db.opp \
-	tmp/src/sql/butler_company_db.opp \
 	tmp/src/sql/butler_tag_db.opp \
-	tmp/src/sql/butler_ware_db.opp
+	tmp/src/sql/butler_ware_db.opp \
+	tmp/src/sql/butler_company_db.opp \
+	tmp/src/sql/butler_brand_db.opp \
+	tmp/src/sql/butler_partner_db.opp \
+	tmp/src/sql/butler_item_db.opp \
+	tmp/src/sql/butler_queries_db.opp
 
 SQL_INCLUDES=-Isrc/sql
 
 STATIC_LIBSQL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-sql.a
 
 BUTLERQT_OBJECTS+= \
-	tmp/src/qt/main.opp \
+	\
 	tmp/src/qt/butler_config.opp \
-	tmp/src/qt/butler_databases.opp \
-	tmp/src/qt/butler_mainview.opp \
-	tmp/src/qt/butler_infoview.opp \
-	tmp/src/qt/butler_tagsmodel.opp \
-	tmp/src/qt/butler_partnersmodel.opp \
-	tmp/src/qt/moc/butler_partnersmodel.opp \
-	tmp/src/qt/butler_companymodel.opp \
-	tmp/src/qt/moc/butler_companymodel.opp \
-	tmp/src/qt/butler_waresmodel.opp \
-	tmp/src/qt/butler_warecategoriesmodel.opp \
-	tmp/src/qt/butler_itemsmodel.opp \
-	tmp/src/qt/butler_custommodel.opp \
-	tmp/src/qt/butler_shoppingmodel.opp \
-	tmp/src/qt/butler_queriesmodel.opp \
-	tmp/src/qt/butler_databasesmodel.opp \
-	tmp/src/qt/butler_customview.opp \
-	tmp/src/qt/butler_databasesview.opp \
-	tmp/src/qt/butler_edititemview.opp \
-	tmp/src/qt/butler_application.opp \
-	tmp/src/qt/butler_buyitemview.opp \
-	tmp/src/qt/butler_editpartnerview.opp \
-	tmp/src/qt/butler_editcompanyview.opp \
-	tmp/src/qt/butler_editdbdescview.opp \
-	tmp/src/qt/butler_edittagview.opp \
-	tmp/src/qt/butler_editwareview.opp \
-	tmp/src/qt/butler_newitemview.opp \
-	tmp/src/qt/butler_queryoptionsview.opp \
-	tmp/src/qt/butler_shoppingview.opp \
-	tmp/src/qt/butler_partnersview.opp \
-	tmp/src/qt/butler_companyview.opp \
-	tmp/src/qt/butler_tagfilterview.opp \
-	tmp/src/qt/butler_tagsview.opp \
-	tmp/src/qt/butler_tagwidget.opp \
-	tmp/src/qt/butler_waresview.opp \
-	tmp/src/qt/butler_pannview.opp \
-	tmp/src/qt/butler_widgets.opp \
-	tmp/src/qt/butler_texts.opp \
 	tmp/src/qt/moc/butler_config.opp \
-	tmp/src/qt/moc/butler_databases.opp \
-	tmp/src/qt/moc/butler_mainview.opp \
-	tmp/src/qt/moc/butler_infoview.opp \
-	tmp/src/qt/moc/butler_tagsmodel.opp \
-	tmp/src/qt/moc/butler_waresmodel.opp \
-	tmp/src/qt/moc/butler_warecategoriesmodel.opp \
-	tmp/src/qt/moc/butler_itemsmodel.opp \
-	tmp/src/qt/moc/butler_custommodel.opp \
-	tmp/src/qt/moc/butler_shoppingmodel.opp \
-	tmp/src/qt/moc/butler_queriesmodel.opp \
-	tmp/src/qt/moc/butler_databasesmodel.opp \
-	tmp/src/qt/moc/butler_customview.opp \
-	tmp/src/qt/moc/butler_databasesview.opp \
-	tmp/src/qt/moc/butler_newitemview.opp \
-	tmp/src/qt/moc/butler_application.opp \
-	tmp/src/qt/moc/butler_buyitemview.opp \
-	tmp/src/qt/moc/butler_editpartnerview.opp \
-	tmp/src/qt/moc/butler_editcompanyview.opp \
-	tmp/src/qt/moc/butler_editdbdescview.opp \
-	tmp/src/qt/moc/butler_edittagview.opp \
-	tmp/src/qt/moc/butler_editwareview.opp \
-	tmp/src/qt/moc/butler_edititemview.opp \
-	tmp/src/qt/moc/butler_queryoptionsview.opp \
-	tmp/src/qt/moc/butler_shoppingview.opp \
-	tmp/src/qt/moc/butler_partnersview.opp \
-	tmp/src/qt/moc/butler_companyview.opp \
-	tmp/src/qt/moc/butler_tagfilterview.opp \
-	tmp/src/qt/moc/butler_tagsview.opp \
-	tmp/src/qt/moc/butler_tagwidget.opp \
-	tmp/src/qt/moc/butler_waresview.opp \
-	tmp/src/qt/moc/butler_pannview.opp \
+	\
+	tmp/src/qt/butler_texts.opp \
+	\
+	tmp/src/qt/butler_widgets.opp \
 	tmp/src/qt/moc/butler_widgets.opp \
+	\
+	tmp/src/qt/butler_pannview.opp \
+	tmp/src/qt/moc/butler_pannview.opp \
+	\
 	tmp/src/qt/butler_kineticscroller.opp \
 	tmp/src/qt/moc/butler_kineticscroller.opp \
+	\
+	tmp/src/qt/butler_tagsmodel.opp \
+	tmp/src/qt/butler_tagsview.opp \
+	tmp/src/qt/butler_edittagview.opp \
+	tmp/src/qt/butler_tagfilterview.opp \
+	tmp/src/qt/butler_tagwidget.opp \
+	tmp/src/qt/moc/butler_tagsmodel.opp \
+	tmp/src/qt/moc/butler_tagsview.opp \
+	tmp/src/qt/moc/butler_edittagview.opp \
+	tmp/src/qt/moc/butler_tagfilterview.opp \
+	tmp/src/qt/moc/butler_tagwidget.opp \
+	\
+	tmp/src/qt/butler_waresmodel.opp \
+	tmp/src/qt/butler_waretypesmodel.opp \
+	tmp/src/qt/butler_waresview.opp \
+	tmp/src/qt/butler_editwareview.opp \
+	tmp/src/qt/moc/butler_waresmodel.opp \
+	tmp/src/qt/moc/butler_waretypesmodel.opp \
+	tmp/src/qt/moc/butler_waresview.opp \
+	tmp/src/qt/moc/butler_editwareview.opp \
+	\
+	tmp/src/qt/butler_companymodel.opp \
+	tmp/src/qt/butler_companyview.opp \
+	tmp/src/qt/butler_editcompanyview.opp \
+	tmp/src/qt/moc/butler_companymodel.opp \
+	tmp/src/qt/moc/butler_companyview.opp \
+	tmp/src/qt/moc/butler_editcompanyview.opp \
+	\
+	tmp/src/qt/butler_brandsmodel.opp \
+	tmp/src/qt/moc/butler_brandsmodel.opp \
+	\
+	tmp/src/qt/butler_partnersmodel.opp \
+	tmp/src/qt/butler_partnersview.opp \
+	tmp/src/qt/butler_editpartnerview.opp \
+	tmp/src/qt/moc/butler_partnersmodel.opp \
+	tmp/src/qt/moc/butler_partnersview.opp \
+	tmp/src/qt/moc/butler_editpartnerview.opp \
+	\
+	tmp/src/qt/butler_queriesmodel.opp \
+	tmp/src/qt/butler_queryoptionsview.opp \
+	tmp/src/qt/moc/butler_queriesmodel.opp \
+	tmp/src/qt/moc/butler_queryoptionsview.opp \
+	\
+	tmp/src/qt/butler_itemsmodel.opp \
+	tmp/src/qt/butler_buyitemview.opp \
+	tmp/src/qt/butler_newitemview.opp \
+	tmp/src/qt/butler_edititemview.opp \
+	tmp/src/qt/moc/butler_itemsmodel.opp \
+	tmp/src/qt/moc/butler_newitemview.opp \
+	tmp/src/qt/moc/butler_buyitemview.opp \
+	tmp/src/qt/moc/butler_edititemview.opp \
+	\
+	tmp/src/qt/moc/butler_shoppingmodel.opp \
+	tmp/src/qt/moc/butler_shoppingview.opp \
+	tmp/src/qt/butler_shoppingmodel.opp \
+	tmp/src/qt/butler_shoppingview.opp \
+	\
+	tmp/src/qt/butler_custommodel.opp \
+	tmp/src/qt/butler_customview.opp \
+	tmp/src/qt/moc/butler_custommodel.opp \
+	tmp/src/qt/moc/butler_customview.opp \
+	\
+	tmp/src/qt/butler_databases.opp \
+	tmp/src/qt/butler_databasesmodel.opp \
+	tmp/src/qt/butler_databasesview.opp \
+	tmp/src/qt/moc/butler_databases.opp \
+	tmp/src/qt/moc/butler_databasesmodel.opp \
+	tmp/src/qt/moc/butler_databasesview.opp \
+	\
+	tmp/src/qt/butler_editdbdescview.opp \
+	tmp/src/qt/moc/butler_editdbdescview.opp \
+	\
 	tmp/src/qt/butler_statsview.opp \
-	tmp/src/qt/moc/butler_statsview.opp
+	tmp/src/qt/moc/butler_statsview.opp \
+	\
+	tmp/src/qt/butler_infoview.opp \
+	tmp/src/qt/moc/butler_infoview.opp \
+	\
+	tmp/src/qt/butler_mainview.opp \
+	tmp/src/qt/moc/butler_mainview.opp \
+	\
+	tmp/src/qt/butler_application.opp \
+	tmp/src/qt/moc/butler_application.opp \
+	\
+	tmp/src/qt/main.opp
 
 BUTLERQT_INCLUDES=-Isrc/qt
 
@@ -309,7 +333,7 @@ FORCE:
 tmp/src/butler_dataclasses: \
 		src/butler_dataclasses.json
 	test -d $(dir $@) || mkdir -p $(dir $@)
-	$(DATACLASS_GENERATOR) -f $^ >> $@
+	$(DATACLASS_GENERATOR) -f $^ > $@
 
 $(STATIC_LIBSQL): \
 		$(SQL_OBJECTS)

@@ -23,7 +23,7 @@ SCC TidNextButton = QT_TRANSLATE_NOOP("EditWareView", "Next ware");
 
 SCC TidWareName = QT_TRANSLATE_NOOP("EditWareView", "Ware name:");
 SCC TidWareUnit = QT_TRANSLATE_NOOP("EditWareView", "Unit:");
-SCC TidWareCategories = QT_TRANSLATE_NOOP("EditWareView", "Categories:");
+SCC TidWareTypes = QT_TRANSLATE_NOOP("EditWareView", "Types:");
 SCC TidWareTags = QT_TRANSLATE_NOOP("EditWareView", "Tags:");
 
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditWareView", "Please fill the ware name field.");
@@ -60,7 +60,7 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&unitEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&categoriesEditor.editor, SIGNAL(textChanged(const QString &)),
+	connect(&typesEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&tagsWidget, SIGNAL(selectionChanged()),
 			this, SLOT(updateToolButtonStates()));
@@ -105,7 +105,7 @@ void EditWareView::mapToGui()
 
 	nameEditor.editor.setText(ware.name);
 	unitEditor.editor.setText(ware.unit);
-	categoriesEditor.editor.setText(WaresModel::categoriesToString(ware.categories));
+	typesEditor.editor.setText(WaresModel::typesToString(ware.types));
 	tagsWidget.setTags(ware.tags);
 
 	updateToolButtonStates();
@@ -115,7 +115,7 @@ void EditWareView::mapFromGui()
 {
 	ware.name = nameEditor.editor.text();
 	ware.unit = unitEditor.editor.text();
-	WaresModel::stringToCategories(categoriesEditor.editor.text(), ware.categories);
+	WaresModel::stringToTypes(typesEditor.editor.text(), ware.types);
 	ware.tags = tagsWidget.selectedTags();
 }
 
@@ -142,7 +142,7 @@ void EditWareView::retranslate()
 
 	nameEditor.label.setText(tr(TidWareName));
 	unitEditor.label.setText(tr(TidWareUnit));
-	categoriesEditor.label.setText(tr(TidWareCategories));
+	typesEditor.label.setText(tr(TidWareTypes));
 	tagsWidget.label.setText(tr(TidWareTags));
 
 	relayout();
@@ -156,7 +156,7 @@ void EditWareView::applyLayout(bool test)
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&unitEditor);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&categoriesEditor);
+	mainLayout->addWidget(&typesEditor);
 	mainLayout->addStretch(0);
 	if(!test){
 		mainLayout->addWidget(&tagsWidget);
@@ -173,13 +173,13 @@ void EditWareView::relayout()
 	{
 		nameEditor.wideLayout();
 		unitEditor.wideLayout();
-		categoriesEditor.wideLayout();
+		typesEditor.wideLayout();
 		applyLayout(true);
 	}
 	if(width() < sizeHint().width()){
 		nameEditor.narrowLayout();
 		unitEditor.narrowLayout();
-		categoriesEditor.narrowLayout();
+		typesEditor.narrowLayout();
 		applyLayout(true);
 	}
 
@@ -189,12 +189,12 @@ void EditWareView::relayout()
 
 void EditWareView::updateToolButtonStates()
 {
-	CategoryNameSet categories;
-	WaresModel::stringToCategories(categoriesEditor.editor.text(), categories);
+	TypeNameSet types;
+	WaresModel::stringToTypes(typesEditor.editor.text(), types);
 	bool modified = !(
 			ware.name == nameEditor.editor.text() &&
 			ware.unit == unitEditor.editor.text() &&
-			ware.categories == categories &&
+			ware.types == types &&
 			ware.tags == tagsWidget.selectedTags()
 			);
 
