@@ -1,0 +1,128 @@
+/** 
+ * Author: Csaszar, Peter <csjpeter@gmail.com>
+ * Copyright (C) 2013 Csaszar, Peter
+ */
+
+#include "butler_companies_db.h"
+
+CompaniesDb::CompaniesDb(SqlConnection & sql) :
+	sql(sql)
+{
+	SqlColumns cols;
+	const SqlTableNames & tables = sql.tables();
+
+	if(!tables.has("companies"))
+		sql.exec("CREATE TABLE companies ("
+				"name VARCHAR(64) NOT NULL PRIMARY KEY, "
+				"country VARCHAR(64) NOT NULL, "
+				"city VARCHAR(64) NOT NULL, "
+				"postal_code VARCHAR(32) NOT NULL, "
+				"address VARCHAR(256) NOT NULL, "
+				"tax_id VARCHAR(32) NOT NULL, "
+				"icon BLOB"
+				")"
+			       );
+	cols = sql.columns("companies");
+	if(		!cols.has("name") ||
+			!cols.has("country") ||
+			!cols.has("city") ||
+			!cols.has("postal_code") ||
+			!cols.has("address") ||
+			!cols.has("tax_id")
+	  )
+		throw DbIncompatibleTableError(
+			"Incompatible table companies in the openend database.");
+}
+
+CompaniesDb::~CompaniesDb()
+{
+}
+
+void CompaniesDb::insert(const Company & s)
+{
+	SqlQuery sqlQuery(sql);
+	SqlTransaction tr(sql);
+
+	sqlQuery.prepare("INSERT INTO companies "
+			"(name, country, city, postal_code, "
+			"address, tax_id) "
+			"VALUES(?, ?, ?, ?, ?, ?)");
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.bindValue(1, s.country);
+	sqlQuery.bindValue(2, s.city);
+	sqlQuery.bindValue(3, s.postalCode);
+	sqlQuery.bindValue(4, s.address);
+	sqlQuery.bindValue(5, s.taxId);
+	sqlQuery.exec();
+
+	tr.commit();
+}
+
+void CompaniesDb::update(const Company & orig, const Company & modified)
+{
+	SqlQuery sqlQuery(sql);
+	SqlTransaction tr(sql);
+
+	sqlQuery.prepare("UPDATE companies SET "
+			"name = ?, "
+			"country = ?, "
+			"city = ?, "
+			"postal_code = ?, "
+			"address = ?, "
+			"tax_id = ? "
+			"WHERE name = ?");
+	sqlQuery.bindValue(0, modified.name);
+	sqlQuery.bindValue(1, modified.country);
+	sqlQuery.bindValue(2, modified.city);
+	sqlQuery.bindValue(3, modified.postalCode);
+	sqlQuery.bindValue(4, modified.address);
+	sqlQuery.bindValue(5, modified.taxId);
+	sqlQuery.bindValue(6, orig.name);
+	sqlQuery.exec();
+
+	tr.commit();
+}
+
+void CompaniesDb::del(const Company & s)
+{
+	SqlQuery sqlQuery(sql);
+	SqlTransaction tr(sql);
+
+	sqlQuery.prepare("DELETE FROM companies WHERE name = ?");
+	sqlQuery.bindValue(0, s.name);
+	sqlQuery.exec();
+
+	tr.commit();
+}
+
+void CompaniesDb::query(CompanySet & ss)
+{
+	SqlQuery sqlQuery(sql);
+	SqlTransaction tr(sql);
+
+	sqlQuery.prepare("SELECT name, country, city, postal_code, address, tax_id "
+			"FROM companies");
+	sqlQuery.exec();
+	ss.clear();
+	int nameNo = sqlQuery.colIndex("name");
+	int countryNo = sqlQuery.colIndex("country");
+	int cityNo = sqlQuery.colIndex("city");
+	int postalCodeNo = sqlQuery.colIndex("postal_code");
+	int addressNo = sqlQuery.colIndex("address");
+	int taxIdNo = sqlQuery.colIndex("tax_id");
+	DBG("----- companies query result:");
+	while(sqlQuery.next()) {
+		Company *s = new Company();
+		s->name = sqlQuery.text(nameNo);
+		s->country = sqlQuery.text(countryNo);
+		s->city = sqlQuery.text(cityNo);
+		s->postalCode = sqlQuery.text(postalCodeNo);
+		s->address = sqlQuery.text(addressNo);
+		s->taxId = sqlQuery.text(taxIdNo);
+
+		ss.add(s);
+	}
+	DBG("-----");
+
+	tr.commit();
+}

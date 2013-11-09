@@ -9,16 +9,17 @@
 
 #include "butler_databases.h"
 
-#include "butler_shoppingview.h"
-#include "butler_edititemview.h"
-#include "butler_partnersview.h"
-#include "butler_companyview.h"
+#include "butler_databasesview.h"
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
-#include "butler_customview.h"
-#include "butler_databasesview.h"
+#include "butler_companyview.h"
+#include "butler_brandsview.h"
+#include "butler_partnersview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
+#include "butler_shoppingview.h"
+#include "butler_edititemview.h"
+#include "butler_customview.h"
 
 #include "butler_config.h"
 
@@ -35,6 +36,7 @@ SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
 SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
 SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
 SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
+SCC TidBrandButton = QT_TRANSLATE_NOOP("MainView", "Brands");
 SCC TidDatabasesButton = QT_TRANSLATE_NOOP("MainView", "Databases");
 SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
 SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
@@ -62,12 +64,14 @@ MainView::MainView(QWidget *parent) :
 			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
 	tagButton(QIcon(Path::icon("tag.png")),
 			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
+	brandButton(QIcon(Path::icon("brand.png")),
+			TidBrandButton, TidContext, QKeySequence(Qt::Key_F8)),
 	databasesButton(QIcon(Path::icon("databases.png")),
-			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F8)),
+			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F9)),
 	infoButton(QIcon(Path::icon("info.png")),
-			TidInfoButton, TidContext, QKeySequence(Qt::Key_F9)),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F10)),
 	quitButton(QIcon(Path::icon("delete.png")),
-			TidQuitButton, TidContext, QKeySequence(Qt::Key_F10)),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F11)),
 	shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
@@ -75,6 +79,7 @@ MainView::MainView(QWidget *parent) :
 	companyView(NULL),
 	waresView(NULL),
 	tagsView(NULL),
+	brandsView(NULL),
 	databasesView(NULL),
 	queryOptionsView(NULL),
 	infoView(NULL)
@@ -92,6 +97,7 @@ MainView::MainView(QWidget *parent) :
 	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
 	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
+	connect(&brandButton, SIGNAL(clicked()), this, SLOT(openBrandsView()));
 	connect(&databasesButton, SIGNAL(clicked()), this, SLOT(openDatabasesView()));
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
@@ -109,6 +115,7 @@ MainView::~MainView()
 	delete partnersView;
 	delete companyView;
 	delete tagsView;
+	delete brandsView;
 	delete databasesView;
 	delete waresView;
 	delete queryOptionsView;
@@ -139,6 +146,7 @@ void MainView::applyLayout()
 	layout->addWidget(&analiticsButton);
 	layout->addWidget(&wareButton);
 	layout->addWidget(&tagButton);
+	layout->addWidget(&brandButton);
 	layout->addWidget(&partnersButton);
 	layout->addWidget(&companyButton);
 	layout->addWidget(&databasesButton);
@@ -164,6 +172,7 @@ void MainView::relayout()
 	companyButton.expanding();
 	wareButton.expanding();
 	tagButton.expanding();
+	brandButton.expanding();
 	databasesButton.expanding();
 	infoButton.expanding();
 	quitButton.expanding();
@@ -222,6 +231,8 @@ void MainView::loadState()
 			openWaresView();
 		if(settings.value(prefix + "/tagsview", false).toBool())
 			openTagsView();
+		if(settings.value(prefix + "/tagsview", false).toBool())
+			openBrandsView();
 		if(settings.value(prefix + "/databasesview", false).toBool())
 			openDatabasesView();
 		if(settings.value(prefix + "/queryoptionsview", false).toBool())
@@ -258,6 +269,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = waresView;
 	else if(activeWindowName == "tagsView")
 		activeWindow = tagsView;
+	else if(activeWindowName == "brandsView")
+		activeWindow = brandsView;
 	else if(activeWindowName == "databasesView")
 		activeWindow = databasesView;
 	else if(activeWindowName == "queryOptionsView")
@@ -281,6 +294,7 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(partnersView);
 	SAVE_VIEW_STATE(companyView);
 	SAVE_VIEW_STATE(tagsView);
+	SAVE_VIEW_STATE(brandsView);
 	SAVE_VIEW_STATE(waresView);
 	SAVE_VIEW_STATE(databasesView);
 	SAVE_VIEW_STATE(queryOptionsView);
@@ -304,6 +318,8 @@ void MainView::saveState()
 		activeWindowName = "waresView";
 	else if(activeWindow == tagsView)
 		activeWindowName = "tagsView";
+	else if(activeWindow == brandsView)
+		activeWindowName = "brandsView";
 	else if(activeWindow == databasesView)
 		activeWindowName = "databasesView";
 	else if(activeWindow == queryOptionsView)
@@ -433,6 +449,20 @@ void MainView::openTagsView()
 		anotherTagsView = new TagsView(Config::defaultDbName);
 		anotherTagsView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherTagsView->activate();
+	}
+}
+
+void MainView::openBrandsView()
+{
+	if(!brandsView)
+		brandsView = new BrandsView(Config::defaultDbName);
+	if(brandsView->dbname == Config::defaultDbName){
+		brandsView->activate();
+	} else {
+		BrandsView *anotherBrandsView;
+		anotherBrandsView = new BrandsView(Config::defaultDbName);
+		anotherBrandsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherBrandsView->activate();
 	}
 }
 

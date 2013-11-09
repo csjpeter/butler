@@ -39,7 +39,7 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
-	companyEditor(&companyModel(dbname), Company::Name)
+	companyEditor(&companiesModel(dbname), Company::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -275,7 +275,7 @@ void EditPartnerView::saveSlot()
 	mapFromGui();
 
 	/* Add company if not yet known. */
-	CompanyModel & cm = companyModel(dbname);
+	CompaniesModel & cm = companiesModel(dbname);
 	int i = cm.index(companyEditor.text());
 	if(i == -1){
 		Company company;

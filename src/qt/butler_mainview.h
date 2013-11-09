@@ -16,6 +16,7 @@ class PartnersView;
 class CompanyView;
 class WaresView;
 class TagsView;
+class BrandsView;
 class DatabasesView;
 class QueryOptionsView;
 class InfoView;
@@ -55,6 +56,7 @@ private slots:
 	void openCompanyView();
 	void openWaresView();
 	void openTagsView();
+	void openBrandsView();
 	void openDatabasesView();
 	void openQueryOptionsView();
 	void openInfoView();
@@ -70,6 +72,7 @@ private:
 	ToolButton companyButton;
 	ToolButton wareButton;
 	ToolButton tagButton;
+	ToolButton brandButton;
 	ToolButton databasesButton;
 	ToolButton infoButton;
 	ToolButton quitButton;
@@ -82,6 +85,7 @@ private:
 	CompanyView *companyView;
 	WaresView *waresView;
 	TagsView *tagsView;
+	BrandsView *brandsView;
 	DatabasesView *databasesView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;

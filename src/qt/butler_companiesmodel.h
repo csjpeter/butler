@@ -3,8 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_COMPANYMODEL_H
-#define BUTLER_COMPANYMODEL_H
+#ifndef BUTLER_COMPANIESMODEL_H
+#define BUTLER_COMPANIESMODEL_H
 
 #include <butler_abstract_table_model.h>
 
@@ -12,15 +12,15 @@
 
 #include <butler_config.h>
 
-class CompanyModel : public AbstractTableModel
+class CompaniesModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT;
 
 public:
-	CompanyModel(CompanyDb & db);
-	virtual ~CompanyModel();
+	CompaniesModel(CompaniesDb & db);
+	virtual ~CompaniesModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -49,7 +49,7 @@ public slots:
 public:
 	int index(const Text & name) const NO_FCLOG;
 	const Company& company(int row) NO_FCLOG;
-	const CompanySet & companySet() const { return companys; };
+	const CompanySet & companySet() const { return companies; };
 	void del(int row);
 	void addNew(Company & company);
 	virtual void update(int row, Company & modified);
@@ -57,8 +57,8 @@ public:
 	void sort(int column, bool ascending);
 
 protected:
-	CompanyDb & db;
-	CompanySet companys;
+	CompaniesDb & db;
+	CompanySet companies;
 };
 
 #endif

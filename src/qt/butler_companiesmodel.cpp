@@ -7,37 +7,37 @@
 
 #include "butler_companiesmodel.h"
 
-SCC TidCompanyFieldName		= QT_TRANSLATE_NOOP("CompanyModel", "Name");
-SCC TidCompanyFieldCountry	= QT_TRANSLATE_NOOP("CompanyModel", "Country");
-SCC TidCompanyFieldCity		= QT_TRANSLATE_NOOP("CompanyModel", "City");
-SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompanyModel", "Postal code");
-SCC TidCompanyFieldAddress	= QT_TRANSLATE_NOOP("CompanyModel", "Address");
-SCC TidCompanyFieldTaxId	= QT_TRANSLATE_NOOP("CompanyModel", "Tax Id");
+SCC TidCompanyFieldName		= QT_TRANSLATE_NOOP("CompaniesModel", "Name");
+SCC TidCompanyFieldCountry	= QT_TRANSLATE_NOOP("CompaniesModel", "Country");
+SCC TidCompanyFieldCity		= QT_TRANSLATE_NOOP("CompaniesModel", "City");
+SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompaniesModel", "Postal code");
+SCC TidCompanyFieldAddress	= QT_TRANSLATE_NOOP("CompaniesModel", "Address");
+SCC TidCompanyFieldTaxId	= QT_TRANSLATE_NOOP("CompaniesModel", "Tax Id");
 
-CompanyModel::CompanyModel(CompanyDb & db) :
+CompaniesModel::CompaniesModel(CompaniesDb & db) :
 	db(db)
 {
 	query();
 }
 
-CompanyModel::~CompanyModel()
+CompaniesModel::~CompaniesModel()
 {
 }
 
-QModelIndex CompanyModel::index(int row, int column, const QModelIndex & parent) const
+QModelIndex CompaniesModel::index(int row, int column, const QModelIndex & parent) const
 {
 	return QAbstractTableModel::index(row, column, parent);
 }
 
-Qt::ItemFlags CompanyModel::flags(const QModelIndex & index) const
+Qt::ItemFlags CompaniesModel::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)companys.size() && index.column() < Company::NumOfFields){
+	if(index.row() < (int)companies.size() && index.column() < Company::NumOfFields){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
 }
 
-QVariant CompanyModel::data(const QModelIndex & index, int role) const 
+QVariant CompaniesModel::data(const QModelIndex & index, int role) const 
 {
 	if(!index.isValid())
 		return QVariant();
@@ -48,27 +48,27 @@ QVariant CompanyModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
 		return QVariant();
 
-	if((int)companys.size() <= index.row())
+	if((int)companies.size() <= index.row())
 		return QVariant();
 
 	switch(index.column()){
 		case Company::Name :
-			return QVariant(companys.queryAt(index.row()).name);
+			return QVariant(companies.queryAt(index.row()).name);
 			break;
 		case Company::Country :
-			return QVariant(companys.queryAt(index.row()).country);
+			return QVariant(companies.queryAt(index.row()).country);
 			break;
 		case Company::City :
-			return QVariant(companys.queryAt(index.row()).city);
+			return QVariant(companies.queryAt(index.row()).city);
 			break;
 		case Company::PostalCode :
-			return QVariant(companys.queryAt(index.row()).postalCode);
+			return QVariant(companies.queryAt(index.row()).postalCode);
 			break;
 		case Company::Address :
-			return QVariant(companys.queryAt(index.row()).address);
+			return QVariant(companies.queryAt(index.row()).address);
 			break;
 		case Company::TaxId :
-			return QVariant(companys.queryAt(index.row()).taxId);
+			return QVariant(companies.queryAt(index.row()).taxId);
 			break;
 		default :
 			return QVariant();
@@ -77,7 +77,7 @@ QVariant CompanyModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
-QVariant CompanyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant CompaniesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
 	if(role != Qt::DisplayRole)
@@ -112,7 +112,7 @@ QVariant CompanyModel::headerData(int section, Qt::Orientation orientation, int 
 	return QVariant();
 }
 
-bool CompanyModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool CompaniesModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if(!index.isValid())
 		return false;
@@ -123,11 +123,11 @@ bool CompanyModel::setData(const QModelIndex & index, const QVariant & value, in
 	if(role != Qt::EditRole)
 		return false;
 
-	if((int)companys.size() <= index.row())
+	if((int)companies.size() <= index.row())
 		return false;
 
 	int row = index.row();
-	Company modified(companys.queryAt(row));
+	Company modified(companies.queryAt(row));
 
 	switch(index.column()){
 		case Company::Name :
@@ -162,7 +162,7 @@ bool CompanyModel::setData(const QModelIndex & index, const QVariant & value, in
 	return true;
 }
 
-bool CompanyModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
+bool CompaniesModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
 {
 	(void)section;
 	(void)orientation;
@@ -173,89 +173,89 @@ bool CompanyModel::setHeaderData(int section, Qt::Orientation orientation, const
 	return false;
 }
 
-int CompanyModel::rowCount(const QModelIndex & parent) const
+int CompaniesModel::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return companys.size();
+	return companies.size();
 }
 
-int CompanyModel::columnCount(const QModelIndex & parent) const
+int CompaniesModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
 	return Company::NumOfFields;
 }
 
-bool CompanyModel::removeRows(
+bool CompaniesModel::removeRows(
 		int row, int count, const QModelIndex & parent)
 {
 		ModelRemoveGuard g(this, parent, row, row + count - 1);
 		return true;
 }
 
-bool CompanyModel::insertRows(
+bool CompaniesModel::insertRows(
 		int row, int count, const QModelIndex & parent)
 {
 		ModelInsertGuard g(this, parent, row, row + count - 1);
 		return true;
 }
 
-void CompanyModel::sort(int column, Qt::SortOrder order)
+void CompaniesModel::sort(int column, Qt::SortOrder order)
 {
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int CompanyModel::index(const Text & name) const
+int CompaniesModel::index(const Text & name) const
 {
-	if(companys.has(name))
-		return companys.index(name);
+	if(companies.has(name))
+		return companies.index(name);
 	else
 		return -1;
 }
 
-const Company& CompanyModel::company(int row)
+const Company& CompaniesModel::company(int row)
 {
-	return companys.queryAt(row);
+	return companies.queryAt(row);
 }
 
-void CompanyModel::del(int row)
+void CompaniesModel::del(int row)
 {
-	Company & company = companys.queryAt(row);
+	Company & company = companies.queryAt(row);
 	db.del(company);
 
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	companys.removeAt(row);
+	companies.removeAt(row);
 }
 
-void CompanyModel::addNew(Company & company)
+void CompaniesModel::addNew(Company & company)
 {
 	db.insert(company);
-	ModelInsertGuard g(this, QModelIndex(), companys.size(), companys.size());
-	companys.add(new Company(company));
+	ModelInsertGuard g(this, QModelIndex(), companies.size(), companies.size());
+	companies.add(new Company(company));
 }
 
-void CompanyModel::update(int row, Company & modified)
+void CompaniesModel::update(int row, Company & modified)
 {
-	Company & orig = companys.queryAt(row);
+	Company & orig = companies.queryAt(row);
 	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, Company::NumOfFields-1));
 }
 
-void CompanyModel::query()
+void CompaniesModel::query()
 {
 		ModelResetGuard g(this);
-		db.query(companys);
+		db.query(companies);
 }
 
-void CompanyModel::sort(int column, bool ascending)
+void CompaniesModel::sort(int column, bool ascending)
 {
-	if(companys.ascending == ascending && companys.ordering == column)
+	if(companies.ascending == ascending && companies.ordering == column)
 		return;
 
 		ModelResetGuard g(this);
-		companys.ascending = ascending;
-		companys.ordering = static_cast<Company::Fields>(column);
-		companys.sort();
+		companies.ascending = ascending;
+		companies.ordering = static_cast<Company::Fields>(column);
+		companies.sort();
 }

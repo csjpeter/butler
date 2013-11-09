@@ -16,7 +16,7 @@
 #include <butler_tag_db.h>
 #include <butler_ware_db.h>
 #include <butler_brand_db.h>
-#include <butler_company_db.h>
+#include <butler_companies_db.h>
 #include <butler_partner_db.h>
 #include <butler_item_db.h>
 #include <butler_queries_db.h>
@@ -32,14 +32,14 @@ private:
 	SqlConnection * sql;
 	TagDb * tagDb;
 	WareDb * wareDb;
-	CompanyDb * companyDb;
+	CompaniesDb * companyDb;
 	BrandDb * brandDb;
 	PartnerDb * partnerDb;
 	QueryDb * queryDb;
 	ItemDb * itemDb;
 	TagsModel * tagsModel;
 	WaresModel * waresModel;
-	CompanyModel * companyModel;
+	CompaniesModel * companyModel;
 	BrandsModel * brandsModel;
 	PartnersModel * partnersModel;
 	QueriesModel * queriesModel;
@@ -134,12 +134,12 @@ public:
 		return *waresModel;
 	}
 
-	CompanyModel & company()
+	CompaniesModel & company()
 	{
 		if(!companyDb)
-			companyDb = new CompanyDb(sqlConn());
+			companyDb = new CompaniesDb(sqlConn());
 		if(!companyModel)
-			companyModel = new CompanyModel(*companyDb);
+			companyModel = new CompaniesModel(*companyDb);
 		return *companyModel;
 	}
 
@@ -311,7 +311,7 @@ WaresModel & waresModel(const QString & dbname)
 	return loadDatabase(dbname).wares();
 }
 
-CompanyModel & companyModel(const QString & dbname)
+CompaniesModel & companiesModel(const QString & dbname)
 {
 	return loadDatabase(dbname).company();
 }

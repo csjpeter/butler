@@ -420,7 +420,7 @@ void EditItemView::saveSlot()
 		partner.name = partnerEditor.text();
 		partner.company = partnerEditor.text();
 		/* Add company if not yet known. */
-		CompanyModel & cm = companyModel(dbname);
+		CompaniesModel & cm = companiesModel(dbname);
 		int i = cm.index(partner.company);
 		if(i == -1){
 			Company company;

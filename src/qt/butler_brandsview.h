@@ -1,26 +1,26 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
-#ifndef BUTLER_COMPANYVIEW_H
-#define BUTLER_COMPANYVIEW_H
+#ifndef BUTLER_BRANDSVIEW_H
+#define BUTLER_BRANDSVIEW_H
 
 #include <butler_pannview.h>
 #include <butler_databases.h>
 
 /*forwards*/
-class EditCompanyView;
+class EditBrandView;
 
-class CompanyView : public PannView
+class BrandsView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	CompanyView(const QString & dbname, QWidget * parent = 0);
-	virtual ~CompanyView();
+	BrandsView(const QString & dbname, QWidget * parent = 0);
+	virtual ~BrandsView();
 
 	virtual void loadState();
 	virtual void saveState();
@@ -39,9 +39,9 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void newCompany();
-	void editCompany();
-	void delCompany();
+	void newBrand();
+	void editBrand();
+	void delBrand();
 	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
@@ -49,7 +49,7 @@ private slots:
 public:
 	const QString dbname;
 private:
-	CompaniesModel & model;
+	BrandsModel & model;
 
 	ToolButton addButton;
 	ToolButton delButton;
@@ -58,8 +58,8 @@ private:
 
 	TableView tableView;
 
-	EditCompanyView * newCompanyView;
-	EditCompanyView * editCompanyView;
+	EditBrandView * newBrandView;
+	EditBrandView * editBrandView;
 };
 
 #endif

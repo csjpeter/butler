@@ -12,7 +12,7 @@
 #include <butler_tagsmodel.h>
 #include <butler_brandsmodel.h>
 #include <butler_waresmodel.h>
-#include <butler_companymodel.h>
+#include <butler_companiesmodel.h>
 #include <butler_brandsmodel.h>
 #include <butler_partnersmodel.h>
 #include <butler_queriesmodel.h>
@@ -25,7 +25,7 @@ void saveDatabaseConfigs();
 
 TagsModel & tagsModel(const QString & dbname);
 WaresModel & waresModel(const QString & dbname);
-CompanyModel & companyModel(const QString & dbname);
+CompaniesModel & companiesModel(const QString & dbname);
 BrandsModel & brandsModel(const QString & dbname);
 PartnersModel & partnersModel(const QString & dbname);
 QueriesModel & queriesModel(const QString & dbname);

@@ -7,7 +7,7 @@
 
 #include "butler_config.h"
 #include "butler_editcompanyview.h"
-#include "butler_companymodel.h"
+#include "butler_companiesmodel.h"
 
 SCC TidContext = "EditCompanyView";
 
@@ -33,7 +33,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditCompanyView", "Company is updated.
 EditCompanyView::EditCompanyView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(companyModel(dbname)),
+	model(companiesModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),

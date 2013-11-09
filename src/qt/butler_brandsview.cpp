@@ -1,28 +1,27 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
 #include <QtGui>
 
 #include <config.h>
 
-#include "butler_companyview.h"
-#include "butler_editcompanyview.h"
-#include "butler_config.h"
+#include "butler_brandsview.h"
+#include "butler_editbrandview.h"
 
-SCC TidContext = "CompanyView";
+SCC TidContext = "BrandsView";
 
-SCC TidCompanyWindowTitle = QT_TRANSLATE_NOOP("CompanyView", "Companies");
-SCC TidAddButton = QT_TRANSLATE_NOOP("CompanyView", "Add new company");
-SCC TidEditButton = QT_TRANSLATE_NOOP("CompanyView", "Edit company");
-SCC TidDelButton = QT_TRANSLATE_NOOP("CompanyView", "Delete company");
-SCC TidRefreshButton = QT_TRANSLATE_NOOP("CompanyView", "Refresh company list");
+SCC TidBrandsWindowTitle = QT_TRANSLATE_NOOP("BrandsView", "Brand list");
+SCC TidAddButton = QT_TRANSLATE_NOOP("BrandsView", "Add new brand");
+SCC TidEditButton = QT_TRANSLATE_NOOP("BrandsView", "Edit brand");
+SCC TidDelButton = QT_TRANSLATE_NOOP("BrandsView", "Delete brand");
+SCC TidRefreshButton = QT_TRANSLATE_NOOP("BrandsView", "Refresh brand list");
 
-CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
+BrandsView::BrandsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(companiesModel(dbname)),
+	model(brandsModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -31,23 +30,22 @@ CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
 			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
 	refreshButton(QIcon(Path::icon("refresh.png")),
 			TidRefreshButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	newCompanyView(NULL),
-	editCompanyView(NULL)
+	newBrandView(NULL),
+	editBrandView(NULL)
 {
-	setWindowIcon(QIcon(Path::icon("company.png")));
+	setWindowIcon(QIcon(Path::icon("brand.png")));
 
 	tableView.setModel(&model);
-	tableView.hideColumn(Company::LastModified);
-	tableView.hideColumn(Company::Icon);
+	tableView.hideColumn(Brand::LastModified);
 
 	toolBar.addToolWidget(addButton);
 	toolBar.addToolWidget(editButton);
 	toolBar.addToolWidget(delButton);
 	toolBar.addToolWidget(refreshButton);
 
-	connect(&addButton, SIGNAL(clicked()), this, SLOT(newCompany()));
-	connect(&editButton, SIGNAL(clicked()), this, SLOT(editCompany()));
-	connect(&delButton, SIGNAL(clicked()), this, SLOT(delCompany()));
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(newBrand()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editBrand()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delBrand()));
 	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refresh()));
 
 	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
@@ -58,20 +56,20 @@ CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
 	loadState();
 }
 
-CompanyView::~CompanyView()
+BrandsView::~BrandsView()
 {
-	delete newCompanyView;
-	delete editCompanyView;
+	delete newBrandView;
+	delete editBrandView;
 }
 
-void CompanyView::retranslate()
+void BrandsView::retranslate()
 {
 	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
-	setWindowTitle(titlePrefix + tr(TidCompanyWindowTitle));
+	setWindowTitle(titlePrefix + tr(TidBrandsWindowTitle));
 	relayout();
 }
 
-void CompanyView::applyLayout()
+void BrandsView::applyLayout()
 {
 	delete layout();
 
@@ -81,21 +79,21 @@ void CompanyView::applyLayout()
 	setLayout(mainLayout);
 }
 
-void CompanyView::relayout()
+void BrandsView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setResizeMode(
-				Company::TaxId, QHeaderView::Stretch);
+				Brand::Company, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setResizeMode(
-				Company::TaxId, QHeaderView::ResizeToContents);
+				Brand::Company, QHeaderView::ResizeToContents);
 
 	applyLayout();
 
 	updateToolButtonStates();
 }
 
-void CompanyView::updateToolButtonStates()
+void BrandsView::updateToolButtonStates()
 {
 	if(tableView.currentIndex().isValid()){
 		editButton.show();
@@ -107,14 +105,14 @@ void CompanyView::updateToolButtonStates()
 	toolBar.updateButtons();
 }
 
-void CompanyView::changeEvent(QEvent * event)
+void BrandsView::changeEvent(QEvent * event)
 {
 	QWidget::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
 }
 
-void CompanyView::resizeEvent(QResizeEvent * event)
+void BrandsView::resizeEvent(QResizeEvent * event)
 {
 	if(layout() && (event->size() == event->oldSize()))
 		return;
@@ -122,122 +120,121 @@ void CompanyView::resizeEvent(QResizeEvent * event)
 	relayout();
 }
 
-void CompanyView::keyPressEvent(QKeyEvent * event)
+void BrandsView::keyPressEvent(QKeyEvent * event)
 {
 	qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
-void CompanyView::showEvent(QShowEvent *event)
+void BrandsView::showEvent(QShowEvent *event)
 {
 	PannView::showEvent(event);
 	relayout();
 }
 
-void CompanyView::closeEvent(QCloseEvent *event)
+void BrandsView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 	PannView::closeEvent(event);
 }
 
-void CompanyView::loadState()
+void BrandsView::loadState()
 {
-	QString prefix("CompanyView");
+	QString prefix("BrandsView");
 	PannView::loadState(prefix);
 	QSettings settings;
 
 	tableView.loadState(prefix);
 
-	Text name(settings.value(prefix + "/currentitem", ""));
+	Text name;
+	name <<= settings.value(prefix + "/currentitem", "");
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.companySet().has(name))
+	if(model.brandSet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
-	if(settings.value(prefix + "/editCompanyView", false).toBool())
+	if(settings.value(prefix + "/editBrandView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
-
-	updateToolButtonStates();
 }
 
-void CompanyView::saveState()
+void BrandsView::saveState()
 {
-	QString prefix("CompanyView");
+	QString prefix("BrandsView");
 	PannView::saveState(prefix);
 	QSettings settings;
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.company(tableView.currentIndex().row()).name;
+		name = model.brand(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
 	tableView.saveState(prefix);
 
-	SAVE_VIEW_STATE(editCompanyView);
+	SAVE_VIEW_STATE(editBrandView);
 }
 
-void CompanyView::newCompany()
+void BrandsView::newBrand()
 {
-	if(!newCompanyView)
-		newCompanyView = new EditCompanyView(dbname);
+	if(!newBrandView)
+		newBrandView = new EditBrandView(dbname);
 
-	newCompanyView->activate();
+	newBrandView->activate();
 }
 
-void CompanyView::editCompany()
+void BrandsView::editBrand()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select company first."));
+				tr("Please select brand first."));
 		return;
 	}
 
-	if(!editCompanyView)
-		editCompanyView = new EditCompanyView(dbname);
+	if(!editBrandView)
+		editBrandView = new EditBrandView(dbname);
 
-	editCompanyView->setCursor(tableView.currentIndex());
-	editCompanyView->activate();
+	editBrandView->setCursor(tableView.currentIndex());
+	editBrandView->activate();
 }
 
-void CompanyView::delCompany()
+void BrandsView::delBrand()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
-				tr("Please select company first."));
+				tr("Please select brand first."));
 		return;
 	}
 
 	int row = tableView.currentIndex().row();
-	const Company & company = model.company(row);
+	const Brand & brand = model.brand(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
-			tr("Deleting a company"),
-			tr("Shall we delete this company: ") + company.name,
+			tr("Deleting a brand"),
+			tr("Shall we delete this brand: ") + brand.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model.del(row);
 }
 
-void CompanyView::refresh()
+void BrandsView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.company(tableView.currentIndex().row()).name;
+		name = model.brand(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.companySet().has(name))
+	if(model.brandSet().has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
 
-void CompanyView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
+void BrandsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
 	model.sort(logicalIndex, order == Qt::AscendingOrder);
 }
 
-void CompanyView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+void BrandsView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
 {
 	if(current.isValid() == previous.isValid())
 		return;
