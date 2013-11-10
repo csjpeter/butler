@@ -51,6 +51,29 @@
 				},
 				key : name
 		},
+		Inventories : {
+				fields : {
+						name : Text,
+						comment : Text,
+						lastModified : DateTime # non editable
+				},
+				key : name
+		},
+		InventoryChange : {
+				fields : {
+						uploadDate : DateTime,	# non editable
+						name : Text,
+						type : Text,
+						brand : Text,
+						quantity : double,		# amount to buy or bought
+						partner : Text,
+						inventory : Text,
+						comment : Text,
+						invChangeDate : DateTime, # when ownership changes
+						lastModified : DateTime	# non editable
+				},
+				key : uploadDate
+		},
 		Partner : {
 				fields : {
 						name : Text, # Kertvárosi tesco
@@ -63,6 +86,29 @@
 						lastModified : DateTime # non editable
 				},
 				key : name
+		},
+		Accounts : {
+				fields : {
+						name : Text,
+						currency : Text,
+						bankOffice : Text,
+						iban : Text,
+						swiftCode : Text,
+						lastModified : DateTime # non editable
+				},
+				key : name
+		},
+		Payments : {
+				fields : {
+						uploadDate : DateTime,
+						account : Text,
+						partner : Text,
+						amount : double,
+						subject : DateTime,
+						payDate : DateTime,
+						lastModified : DateTime # non editable
+				},
+				key : uploadDate
 		},
 		Query : {
 				enums : {

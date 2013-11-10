@@ -171,6 +171,8 @@ source: \
 	$(DIST_DIR)/src/sql/butler_companies_db.cpp \
 	$(DIST_DIR)/src/sql/butler_brand_db.h \
 	$(DIST_DIR)/src/sql/butler_brand_db.cpp \
+	$(DIST_DIR)/src/sql/butler_inventories_db.h \
+	$(DIST_DIR)/src/sql/butler_inventories_db.cpp \
 	$(DIST_DIR)/src/sql/butler_partner_db.h \
 	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \
