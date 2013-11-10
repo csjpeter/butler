@@ -33,7 +33,8 @@ EditBrandView::EditBrandView(const QString & dbname, QWidget * parent) :
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
-	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right))
+	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
+	companyEditor(&companiesModel(dbname), Company::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -53,7 +54,7 @@ EditBrandView::EditBrandView(const QString & dbname, QWidget * parent) :
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&companyEditor.editor, SIGNAL(textChanged(const QString &)),
+	connect(&companyEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
@@ -95,7 +96,7 @@ void EditBrandView::mapToGui()
 		brand = Brand(model.brand(cursor.row()));
 
 	nameEditor.editor.setText(brand.name);
-	companyEditor.editor.setText(brand.company);
+	companyEditor.setText(brand.company);
 
 	updateToolButtonStates();
 }
@@ -103,7 +104,7 @@ void EditBrandView::mapToGui()
 void EditBrandView::mapFromGui()
 {
 	brand.name <<= nameEditor.editor.text();
-	brand.company <<= companyEditor.editor.text();
+	brand.company <<= companyEditor.text();
 }
 
 void EditBrandView::changeEvent(QEvent * event)
@@ -167,7 +168,7 @@ void EditBrandView::updateToolButtonStates()
 {
 	bool modified = !(
 			brand.name == nameEditor.editor.text() &&
-			brand.company == companyEditor.editor.text()
+			brand.company == companyEditor.text()
 			);
 
 	bool mandatoriesGiven = nameEditor.editor.text().size();
@@ -217,6 +218,15 @@ void EditBrandView::nextClickedSlot()
 void EditBrandView::saveSlot()
 {
 	mapFromGui();
+
+	/* Add company if not yet known. */
+	CompaniesModel & cm = companiesModel(dbname);
+	int i = cm.index(companyEditor.text());
+	if(i == -1){
+		Company company;
+		company.name = companyEditor.text();
+		cm.addNew(company);
+	}
 
 	if(cursor.isValid()){
 		if(model.brand(cursor.row()) != brand)

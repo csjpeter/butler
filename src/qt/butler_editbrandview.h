@@ -56,7 +56,7 @@ private:
 	Button nextButton;
 
 	InputEditor nameEditor;
-	InputEditor companyEditor;
+	ComboSelector companyEditor;
 };
 
 #endif
