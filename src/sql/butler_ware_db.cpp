@@ -17,12 +17,13 @@ WareDb::WareDb(SqlConnection & sql) :
 
 	if(!tables.has("wares"))
 		sql.exec(
-				  "CREATE TABLE wares ("
-				  "name VARCHAR(64) NOT NULL PRIMARY KEY, "
-				  "unit VARCHAR(16) NOT NULL DEFAULT '', "
-				  "icon BLOB"
-				  ")"
-				  );
+				"CREATE TABLE wares ("
+				"name TEXT NOT NULL PRIMARY KEY, "
+				"unit TEXT NOT NULL DEFAULT '', "
+				"icon TEXT, "
+				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				")"
+				);
 
 	cols = sql.columns("wares");
 	if(		!cols.has("name") ||
@@ -33,9 +34,9 @@ WareDb::WareDb(SqlConnection & sql) :
 
 	if(!tables.has("ware_tags")){
 		sql.exec("CREATE TABLE ware_tags ("
-				"name VARCHAR(64) NOT NULL REFERENCES wares(name) "
+				"name TEXT NOT NULL REFERENCES wares(name) "
 				"ON DELETE CASCADE ON UPDATE CASCADE, "
-				"tag VARCHAR(64) NOT NULL REFERENCES tags(name) "
+				"tag TEXT NOT NULL REFERENCES tags(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				"UNIQUE (name, tag) "
 				")"
@@ -53,9 +54,9 @@ WareDb::WareDb(SqlConnection & sql) :
 
 	if(!tables.has("ware_types")){
 		sql.exec("CREATE TABLE ware_types ("
-				  "name VARCHAR(64) NOT NULL REFERENCES wares(name) "
+				  "name TEXT NOT NULL REFERENCES wares(name) "
 				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "type VARCHAR(32) NOT NULL, "
+				  "type TEXT NOT NULL, "
 				  "UNIQUE (name, type) "
 				  ")"
 			    );

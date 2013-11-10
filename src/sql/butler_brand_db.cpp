@@ -1,6 +1,6 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
 //#define DEBUG
@@ -17,13 +17,14 @@ BrandDb::BrandDb(SqlConnection & sql) :
 
 	if(!tables.has("brands"))
 		sql.exec(
-				  "CREATE TABLE brands ("
-				  "name VARCHAR(64) NOT NULL PRIMARY KEY, "
-				  "company VARCHAR(64) NOT NULL REFERENCES companies(name) "
-				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
-				  "icon BLOB"
-				  ")"
-				  );
+				"CREATE TABLE brands ("
+				"name TEXT NOT NULL PRIMARY KEY, "
+				"company TEXT NOT NULL REFERENCES companies(name) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"icon TEXT, "
+				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				")"
+				);
 
 	cols = sql.columns("brands");
 	if(		!cols.has("name") ||

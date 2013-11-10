@@ -15,7 +15,7 @@
 class DateTime : public QDateTime
 {
 public:
-		DateTime() : QDateTime(QDate(0,0,0), QTime(0,0,0)) {}
+		DateTime() : QDateTime(QDate(2000,1,1), QTime(0,0,0)) {}
 		explicit DateTime(const QVariant & v) : QDateTime(v.toDateTime()) {}
 		explicit DateTime(const QDateTime & t) : QDateTime(t) {}
 		explicit DateTime(const DateTime & t) : QDateTime(t) {}

@@ -15,8 +15,12 @@ SCC TidNewCompanyWindowTitle = QT_TRANSLATE_NOOP("EditDbDescView", "Add new data
 SCC TidEditCompanyWindowTitle = QT_TRANSLATE_NOOP("EditDbDescView", "Editing database connection");
 
 SCC TidDriverOptions = QT_TRANSLATE_NOOP("EditDbDescView", "Driver:");
+SCC TidQSqliteDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "Qt SQLite");
+SCC TidQPsqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "Qt Postgre SQL");
+SCC TidQMysqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "Qt My SQL");
 SCC TidSqliteDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "SQLite");
 SCC TidPsqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "Postgre SQL");
+SCC TidMysqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "My SQL");
 
 SCC TidDoneButton = QT_TRANSLATE_NOOP("EditDbDescView", "Done");
 SCC TidResetButton = QT_TRANSLATE_NOOP("EditDbDescView", "Reset");
@@ -47,8 +51,12 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 
+	driverOptions.group.addButton(&qSqliteDriverOption);
+	driverOptions.group.addButton(&qPSqlDriverOption);
+	driverOptions.group.addButton(&qMysqlDriverOption);
 	driverOptions.group.addButton(&sqliteDriverOption);
 	driverOptions.group.addButton(&psqlDriverOption);
+	driverOptions.group.addButton(&mysqlDriverOption);
 
 	toolBar.addToolWidget(doneButton);
 	toolBar.addToolWidget(resetButton);
@@ -79,8 +87,12 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 	connect(&portEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
+	connect(&qSqliteDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&qPSqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&qMysqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 	connect(&sqliteDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 	connect(&psqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&mysqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 
 	passwordEditor.editor.setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
@@ -131,12 +143,24 @@ void EditDbDescView::mapToGui()
 	hostEditor.editor.setText(dbdesc.host);
 	portEditor.setValue(dbdesc.port);
 
+	qSqliteDriverOption.setChecked(false);
+	qPSqlDriverOption.setChecked(false);
+	qMysqlDriverOption.setChecked(false);
 	sqliteDriverOption.setChecked(false);
 	psqlDriverOption.setChecked(false);
+	mysqlDriverOption.setChecked(false);
 	if(dbdesc.driver == "QSQLITE")
-		sqliteDriverOption.setChecked(true);
+		qSqliteDriverOption.setChecked(true);
 	else if(dbdesc.driver == "QPSQL")
+		qPSqlDriverOption.setChecked(true);
+	else if(dbdesc.driver == "QMYSQL")
+		qMysqlDriverOption.setChecked(true);
+	else if(dbdesc.driver == "SQLITE")
+		sqliteDriverOption.setChecked(true);
+	else if(dbdesc.driver == "PSQL")
 		psqlDriverOption.setChecked(true);
+	else if(dbdesc.driver == "MYSQL")
+		mysqlDriverOption.setChecked(true);
 
 	updateToolButtonStates();
 }
@@ -151,10 +175,18 @@ void EditDbDescView::mapFromGui()
 	dbdesc.host = hostEditor.editor.text();
 	dbdesc.port = portEditor.value();
 
-	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
+	if(driverOptions.group.checkedButton() == &qSqliteDriverOption)
 		dbdesc.driver = "QSQLITE";
-	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
+	else if(driverOptions.group.checkedButton() == &qPSqlDriverOption)
 		dbdesc.driver = "QPSQL";
+	else if(driverOptions.group.checkedButton() == &qMysqlDriverOption)
+		dbdesc.driver = "QMYSQL";
+	else if(driverOptions.group.checkedButton() == &sqliteDriverOption)
+		dbdesc.driver = "SQLITE";
+	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
+		dbdesc.driver = "PSQL";
+	else if(driverOptions.group.checkedButton() == &mysqlDriverOption)
+		dbdesc.driver = "MYSQL";
 }
 
 void EditDbDescView::changeEvent(QEvent * event)
@@ -179,8 +211,12 @@ void EditDbDescView::retranslate()
 		setWindowTitle(tr(TidNewCompanyWindowTitle));
 
 	driverOptions.label.setText(tr(TidDriverOptions));
+	qSqliteDriverOption.setText(tr(TidQSqliteDriverOption));
+	qPSqlDriverOption.setText(tr(TidQPsqlDriverOption));
+	qMysqlDriverOption.setText(tr(TidQMysqlDriverOption));
 	sqliteDriverOption.setText(tr(TidSqliteDriverOption));
 	psqlDriverOption.setText(tr(TidPsqlDriverOption));
+	mysqlDriverOption.setText(tr(TidMysqlDriverOption));
 
 	nameEditor.label.setText(tr(TidDbConnName));
 	databaseNameEditor.label.setText(tr(TidDbName));
@@ -204,9 +240,17 @@ void EditDbDescView::applyLayout(LayoutState state)
 
 	driverOptionsLayout->addWidget(&driverOptions);
 	driverOptionsLayout->addStretch(0);
+	driverOptionsLayout->addWidget(&qSqliteDriverOption);
+	driverOptionsLayout->addStretch(0);
+	driverOptionsLayout->addWidget(&qPSqlDriverOption);
+	driverOptionsLayout->addStretch(0);
+	driverOptionsLayout->addWidget(&qMysqlDriverOption);
+	driverOptionsLayout->addStretch(0);
 	driverOptionsLayout->addWidget(&sqliteDriverOption);
 	driverOptionsLayout->addStretch(0);
 	driverOptionsLayout->addWidget(&psqlDriverOption);
+	driverOptionsLayout->addStretch(0);
+	driverOptionsLayout->addWidget(&mysqlDriverOption);
 	driverOptionsLayout->addStretch(0);
 
 	VLayout * mainLayout = new VLayout;
@@ -286,10 +330,22 @@ void EditDbDescView::updateToolButtonStates()
 
 	if(!modified){
 		if(dbdesc.driver == "QSQLITE" &&
-				driverOptions.group.checkedButton() != &sqliteDriverOption)
+				driverOptions.group.checkedButton() != &qSqliteDriverOption)
 			modified = true;
 		else if(dbdesc.driver == "QPSQL" &&
+				driverOptions.group.checkedButton() != &qPSqlDriverOption)
+			modified = true;
+		else if(dbdesc.driver == "QMYSQL" &&
+				driverOptions.group.checkedButton() != &qMysqlDriverOption)
+			modified = true;
+		else if(dbdesc.driver == "SQLITE" &&
+				driverOptions.group.checkedButton() != &sqliteDriverOption)
+			modified = true;
+		else if(dbdesc.driver == "PSQL" &&
 				driverOptions.group.checkedButton() != &psqlDriverOption)
+			modified = true;
+		else if(dbdesc.driver == "MYSQL" &&
+				driverOptions.group.checkedButton() != &mysqlDriverOption)
 			modified = true;
 	}
 
@@ -308,13 +364,17 @@ void EditDbDescView::updateToolButtonStates()
 			toolBar.clearInfo();
 	}
 
-	if(driverOptions.group.checkedButton() == &sqliteDriverOption){
+	if(driverOptions.group.checkedButton() == &qSqliteDriverOption ||
+	   driverOptions.group.checkedButton() == &sqliteDriverOption){
 		usernameEditor.setVisible(false);
 		passwordEditor.setVisible(false);
 		savePasswordCheckBox.setVisible(false);
 		hostEditor.setVisible(false);
 		portEditor.setVisible(false);
-	} else if(driverOptions.group.checkedButton() == &psqlDriverOption){
+	} else if(driverOptions.group.checkedButton() == &qPSqlDriverOption ||
+		  driverOptions.group.checkedButton() == &qMysqlDriverOption ||
+		  driverOptions.group.checkedButton() == &psqlDriverOption ||
+		  driverOptions.group.checkedButton() == &mysqlDriverOption){
 		usernameEditor.setVisible(true);
 		passwordEditor.setVisible(true);
 		savePasswordCheckBox.setVisible(true);

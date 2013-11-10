@@ -13,12 +13,13 @@ QueryDb::QueryDb(SqlConnection & sql) :
 
 	if(!tables.has("queries"))
 		sql.exec("CREATE TABLE queries ("
-				  "query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
-				  "stock_option INTEGER NOT NULL, "
-				  "tag_option INTEGER NOT NULL, "
-				  "start_date TIMESTAMP NOT NULL, "
-				  "end_date TIMESTAMP NOT NULL"
-				  ")"
+				"query_name VARCHAR(64) NOT NULL PRIMARY KEY, "
+				"stock_option INTEGER NOT NULL, "
+				"tag_option INTEGER NOT NULL, "
+				"start_date TIMESTAMP NOT NULL, "
+				"end_date TIMESTAMP NOT NULL, "
+				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				")"
 			    );
 	cols = sql.columns("queries");
 	if(		!cols.has("query_name") ||

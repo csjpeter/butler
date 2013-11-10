@@ -13,10 +13,20 @@ TagDb::TagDb(SqlConnection & sql) :
 
 	if(!tables.has("tags"))
 		sql.exec(	"CREATE TABLE tags ("
-				"name VARCHAR(64) PRIMARY KEY, "
-				"description TEXT NOT NULL DEFAULT ''"
+				"name TEXT PRIMARY KEY, "
+				"description TEXT NOT NULL DEFAULT '', "
+				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 				);
+	/*sql.exec("CREATE TRIGGER update_last_modified "
+		"BEFORE INSERT OR UPDATE ON tags "
+		"BEGIN "
+			"FOR EACH ROW "
+			"IF (NEW != OLD) THEN "
+				"NEW.lastModified = CURRENT_TIMESTAMP; "
+				"NEW.lastModified = datetime('now'); "
+			"END IF; "
+		"END;");*/
 
 	cols = sql.columns("tags");
 	if(	!cols.has("name") ||
