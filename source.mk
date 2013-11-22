@@ -167,12 +167,12 @@ source: \
 	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
 	$(DIST_DIR)/src/sql/butler_ware_db.h \
 	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
-	$(DIST_DIR)/src/sql/butler_companies_db.h \
-	$(DIST_DIR)/src/sql/butler_companies_db.cpp \
+	$(DIST_DIR)/src/sql/butler_company_db.h \
+	$(DIST_DIR)/src/sql/butler_company_db.cpp \
 	$(DIST_DIR)/src/sql/butler_brand_db.h \
 	$(DIST_DIR)/src/sql/butler_brand_db.cpp \
-	$(DIST_DIR)/src/sql/butler_inventories_db.h \
-	$(DIST_DIR)/src/sql/butler_inventories_db.cpp \
+	$(DIST_DIR)/src/sql/butler_inventory_db.h \
+	$(DIST_DIR)/src/sql/butler_inventory_db.cpp \
 	$(DIST_DIR)/src/sql/butler_partner_db.h \
 	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
 	$(DIST_DIR)/src/sql/butler_queries_db.h \
@@ -213,6 +213,13 @@ source: \
 	$(DIST_DIR)/src/qt/butler_brandsview.cpp \
 	$(DIST_DIR)/src/qt/butler_editbrandview.h \
 	$(DIST_DIR)/src/qt/butler_editbrandview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_inventoriesmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_inventoriesmodel.h \
+	$(DIST_DIR)/src/qt/butler_inventoriesview.h \
+	$(DIST_DIR)/src/qt/butler_inventoriesview.cpp \
+	$(DIST_DIR)/src/qt/butler_editinventoryview.h \
+	$(DIST_DIR)/src/qt/butler_editinventoryview.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_partnersmodel.h \
 	$(DIST_DIR)/src/qt/butler_partnersmodel.cpp \
@@ -279,6 +286,7 @@ source: \
 	$(DIST_DIR)/share/icons/shopping.png \
 	$(DIST_DIR)/share/icons/tag.png \
 	$(DIST_DIR)/share/icons/brand.png \
+	$(DIST_DIR)/share/icons/inventory.png \
 	$(DIST_DIR)/share/icons/trash.png \
 	$(DIST_DIR)/share/icons/cancel.png \
 	$(DIST_DIR)/share/icons/ok.png \

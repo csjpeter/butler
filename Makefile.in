@@ -126,9 +126,9 @@ SQL_OBJECTS+= \
 	tmp/src/sql/butler_sql_connection.opp \
 	tmp/src/sql/butler_tag_db.opp \
 	tmp/src/sql/butler_ware_db.opp \
-	tmp/src/sql/butler_companies_db.opp \
+	tmp/src/sql/butler_company_db.opp \
 	tmp/src/sql/butler_brand_db.opp \
-	tmp/src/sql/butler_inventories_db.opp \
+	tmp/src/sql/butler_inventory_db.opp \
 	tmp/src/sql/butler_partner_db.opp \
 	tmp/src/sql/butler_item_db.opp \
 	tmp/src/sql/butler_queries_db.opp
@@ -186,6 +186,13 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/moc/butler_brandsmodel.opp \
 	tmp/src/qt/moc/butler_brandsview.opp \
 	tmp/src/qt/moc/butler_editbrandview.opp \
+	\
+	tmp/src/qt/butler_inventoriesmodel.opp \
+	tmp/src/qt/butler_inventoriesview.opp \
+	tmp/src/qt/butler_editinventoryview.opp \
+	tmp/src/qt/moc/butler_inventoriesmodel.opp \
+	tmp/src/qt/moc/butler_inventoriesview.opp \
+	tmp/src/qt/moc/butler_editinventoryview.opp \
 	\
 	tmp/src/qt/butler_partnersmodel.opp \
 	tmp/src/qt/butler_partnersview.opp \
@@ -258,6 +265,7 @@ BUTLER_IMAGES+=\
 	$(ICONS_DIR)/shopping.png \
 	$(ICONS_DIR)/tag.png \
 	$(ICONS_DIR)/brand.png \
+	$(ICONS_DIR)/inventory.png \
 	$(ICONS_DIR)/trash.png \
 	$(ICONS_DIR)/cancel.png \
 	$(ICONS_DIR)/ok.png \

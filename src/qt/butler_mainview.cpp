@@ -14,6 +14,7 @@
 #include "butler_waresview.h"
 #include "butler_companyview.h"
 #include "butler_brandsview.h"
+#include "butler_inventoriesview.h"
 #include "butler_partnersview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
@@ -37,6 +38,7 @@ SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
 SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
 SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
 SCC TidBrandButton = QT_TRANSLATE_NOOP("MainView", "Brands");
+SCC TidInventoryButton = QT_TRANSLATE_NOOP("MainView", "Inventories");
 SCC TidDatabasesButton = QT_TRANSLATE_NOOP("MainView", "Databases");
 SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
 SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
@@ -66,12 +68,14 @@ MainView::MainView(QWidget *parent) :
 			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
 	brandButton(QIcon(Path::icon("brand.png")),
 			TidBrandButton, TidContext, QKeySequence(Qt::Key_F8)),
+	inventoryButton(QIcon(Path::icon("inventory.png")),
+			TidInventoryButton, TidContext, QKeySequence(Qt::Key_F9)),
 	databasesButton(QIcon(Path::icon("databases.png")),
-			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F9)),
+			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F10)),
 	infoButton(QIcon(Path::icon("info.png")),
-			TidInfoButton, TidContext, QKeySequence(Qt::Key_F10)),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F11)),
 	quitButton(QIcon(Path::icon("delete.png")),
-			TidQuitButton, TidContext, QKeySequence(Qt::Key_F11)),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F12)),
 	shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
@@ -80,6 +84,7 @@ MainView::MainView(QWidget *parent) :
 	waresView(NULL),
 	tagsView(NULL),
 	brandsView(NULL),
+	inventoriesView(NULL),
 	databasesView(NULL),
 	queryOptionsView(NULL),
 	infoView(NULL)
@@ -98,6 +103,7 @@ MainView::MainView(QWidget *parent) :
 	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	connect(&brandButton, SIGNAL(clicked()), this, SLOT(openBrandsView()));
+	connect(&inventoryButton, SIGNAL(clicked()), this, SLOT(openInventoriesView()));
 	connect(&databasesButton, SIGNAL(clicked()), this, SLOT(openDatabasesView()));
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
@@ -115,6 +121,7 @@ MainView::~MainView()
 	delete partnersView;
 	delete companyView;
 	delete tagsView;
+	delete inventoriesView;
 	delete brandsView;
 	delete databasesView;
 	delete waresView;
@@ -147,6 +154,7 @@ void MainView::applyLayout()
 	layout->addWidget(&wareButton);
 	layout->addWidget(&tagButton);
 	layout->addWidget(&brandButton);
+	layout->addWidget(&inventoryButton);
 	layout->addWidget(&partnersButton);
 	layout->addWidget(&companyButton);
 	layout->addWidget(&databasesButton);
@@ -173,6 +181,8 @@ void MainView::relayout()
 	wareButton.expanding();
 	tagButton.expanding();
 	brandButton.expanding();
+	inventoryButton.expanding();
+	inventoryButton.expanding();
 	databasesButton.expanding();
 	infoButton.expanding();
 	quitButton.expanding();
@@ -271,6 +281,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = tagsView;
 	else if(activeWindowName == "brandsView")
 		activeWindow = brandsView;
+	else if(activeWindowName == "inventoriesView")
+		activeWindow = inventoriesView;
 	else if(activeWindowName == "databasesView")
 		activeWindow = databasesView;
 	else if(activeWindowName == "queryOptionsView")
@@ -295,6 +307,7 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(companyView);
 	SAVE_VIEW_STATE(tagsView);
 	SAVE_VIEW_STATE(brandsView);
+	SAVE_VIEW_STATE(inventoriesView);
 	SAVE_VIEW_STATE(waresView);
 	SAVE_VIEW_STATE(databasesView);
 	SAVE_VIEW_STATE(queryOptionsView);
@@ -320,6 +333,8 @@ void MainView::saveState()
 		activeWindowName = "tagsView";
 	else if(activeWindow == brandsView)
 		activeWindowName = "brandsView";
+	else if(activeWindow == inventoriesView)
+		activeWindowName = "inventoriesView";
 	else if(activeWindow == databasesView)
 		activeWindowName = "databasesView";
 	else if(activeWindow == queryOptionsView)
@@ -463,6 +478,20 @@ void MainView::openBrandsView()
 		anotherBrandsView = new BrandsView(Config::defaultDbName);
 		anotherBrandsView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherBrandsView->activate();
+	}
+}
+
+void MainView::openInventoriesView()
+{
+	if(!inventoriesView)
+		inventoriesView = new InventoriesView(Config::defaultDbName);
+	if(inventoriesView->dbname == Config::defaultDbName){
+		inventoriesView->activate();
+	} else {
+		InventoriesView *anotherInventoriesView;
+		anotherInventoriesView = new InventoriesView(Config::defaultDbName);
+		anotherInventoriesView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherInventoriesView->activate();
 	}
 }
 

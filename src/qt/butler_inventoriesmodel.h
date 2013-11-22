@@ -1,26 +1,28 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
-#ifndef BUTLER_COMPANIESMODEL_H
-#define BUTLER_COMPANIESMODEL_H
+#ifndef BUTLER_INVENTORIESMODEL_H
+#define BUTLER_INVENTORIESMODEL_H
+
+#include <QString>
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_company_db.h>
+#include <butler_inventory_db.h>
 
 #include <butler_config.h>
 
-class CompaniesModel : public AbstractTableModel
+class InventoriesModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT;
 
 public:
-	CompaniesModel(CompanyDb & db);
-	virtual ~CompaniesModel();
+	InventoriesModel(InventoryDb & db);
+	virtual ~InventoriesModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -33,8 +35,7 @@ public:
 			int section, Qt::Orientation orientation,
 			int role = Qt::DisplayRole) const NO_FCLOG;
 	virtual bool setData(
-			const QModelIndex & index, const QVariant & value,
-			int role = Qt::EditRole);
+			const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
 	virtual bool setHeaderData(
 			int section, Qt::Orientation orientation,
 			const QVariant & value, int role = Qt::EditRole);
@@ -48,17 +49,18 @@ public slots:
 
 public:
 	int index(const Text & name) const NO_FCLOG;
-	const Company& company(int row) NO_FCLOG;
-	const CompanySet & companySet() const { return companies; };
+	const Inventory& inventory(int row) const NO_FCLOG;
+	const InventorySet & inventorySet() const { return inventories; };
 	void del(int row);
-	void addNew(Company & company);
-	virtual void update(int row, Company & modified);
+	void addNew(Inventory & inventory);
+	virtual void update(int row, Inventory & modified);
 	void query();
+
 	void sort(int column, bool ascending);
 
 protected:
-	CompanyDb & db;
-	CompanySet companies;
+	InventoryDb & db;
+	InventorySet inventories;
 };
 
 #endif

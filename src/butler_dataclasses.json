@@ -51,7 +51,7 @@
 				},
 				key : name
 		},
-		Inventories : {
+		Inventory : {
 				fields : {
 						name : Text,
 						comment : Text,

@@ -8,13 +8,13 @@
 
 #include <butler_sql_connection.h>
 
-class CompaniesDb
+class CompanyDb
 {
 public:
-	CompaniesDb(SqlConnection & sql);
-	virtual ~CompaniesDb();
+	CompanyDb(SqlConnection & sql);
+	virtual ~CompanyDb();
 private:
-	CompaniesDb();
+	CompanyDb();
 
 public:
 	void insert(const Company &);

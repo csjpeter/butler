@@ -14,7 +14,7 @@ SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompaniesModel", "Postal code
 SCC TidCompanyFieldAddress	= QT_TRANSLATE_NOOP("CompaniesModel", "Address");
 SCC TidCompanyFieldTaxId	= QT_TRANSLATE_NOOP("CompaniesModel", "Tax Id");
 
-CompaniesModel::CompaniesModel(CompaniesDb & db) :
+CompaniesModel::CompaniesModel(CompanyDb & db) :
 	db(db)
 {
 	query();

@@ -16,7 +16,8 @@
 #include <butler_tag_db.h>
 #include <butler_ware_db.h>
 #include <butler_brand_db.h>
-#include <butler_companies_db.h>
+#include <butler_inventory_db.h>
+#include <butler_company_db.h>
 #include <butler_partner_db.h>
 #include <butler_item_db.h>
 #include <butler_queries_db.h>
@@ -32,8 +33,9 @@ private:
 	SqlConnection * sql;
 	TagDb * tagDb;
 	WareDb * wareDb;
-	CompaniesDb * companyDb;
+	CompanyDb * companyDb;
 	BrandDb * brandDb;
+	InventoryDb * inventoryDb;
 	PartnerDb * partnerDb;
 	QueryDb * queryDb;
 	ItemDb * itemDb;
@@ -41,6 +43,7 @@ private:
 	WaresModel * waresModel;
 	CompaniesModel * companyModel;
 	BrandsModel * brandsModel;
+	InventoriesModel * inventoriesModel;
 	PartnersModel * partnersModel;
 	QueriesModel * queriesModel;
 	ShoppingModel * shoppingModel;
@@ -53,6 +56,7 @@ public:
 		wareDb(0),
 		companyDb(0),
 		brandDb(0),
+		inventoryDb(0),
 		partnerDb(0),
 		queryDb(0),
 		itemDb(0),
@@ -60,6 +64,7 @@ public:
 		waresModel(0),
 		companyModel(0),
 		brandsModel(0),
+		inventoriesModel(0),
 		partnersModel(0),
 		queriesModel(0),
 		shoppingModel(0)
@@ -73,6 +78,7 @@ public:
 		delete queriesModel;
 		delete partnersModel;
 		delete companyModel;
+		delete inventoriesModel;
 		delete brandsModel;
 		delete waresModel;
 		delete tagsModel;
@@ -81,6 +87,7 @@ public:
 		delete queryDb;
 		delete partnerDb;
 		delete companyDb;
+		delete inventoryDb;
 		delete brandDb;
 		delete wareDb;
 		delete tagDb;
@@ -137,7 +144,7 @@ public:
 	CompaniesModel & company()
 	{
 		if(!companyDb)
-			companyDb = new CompaniesDb(sqlConn());
+			companyDb = new CompanyDb(sqlConn());
 		if(!companyModel)
 			companyModel = new CompaniesModel(*companyDb);
 		return *companyModel;
@@ -150,6 +157,15 @@ public:
 		if(!brandsModel)
 			brandsModel = new BrandsModel(*brandDb);
 		return *brandsModel;
+	}
+
+	InventoriesModel & inventories()
+	{
+		if(!inventoryDb)
+			inventoryDb = new InventoryDb(sqlConn());
+		if(!inventoriesModel)
+			inventoriesModel = new InventoriesModel(*inventoryDb);
+		return *inventoriesModel;
 	}
 
 	PartnersModel & partners()
@@ -319,6 +335,11 @@ CompaniesModel & companiesModel(const QString & dbname)
 BrandsModel & brandsModel(const QString & dbname)
 {
 	return loadDatabase(dbname).brands();
+}
+
+InventoriesModel & inventoriesModel(const QString & dbname)
+{
+	return loadDatabase(dbname).inventories();
 }
 
 PartnersModel & partnersModel(const QString & dbname)

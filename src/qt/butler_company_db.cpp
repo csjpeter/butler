@@ -5,7 +5,7 @@
 
 #include "butler_companies_db.h"
 
-CompaniesDb::CompaniesDb(SqlConnection & sql) :
+CompanyDb::CompanyDb(SqlConnection & sql) :
 	sql(sql)
 {
 	SqlColumns cols;
@@ -35,11 +35,11 @@ CompaniesDb::CompaniesDb(SqlConnection & sql) :
 			"Incompatible table companies in the openend database.");
 }
 
-CompaniesDb::~CompaniesDb()
+CompanyDb::~CompanyDb()
 {
 }
 
-void CompaniesDb::insert(const Company & s)
+void CompanyDb::insert(const Company & s)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
@@ -59,7 +59,7 @@ void CompaniesDb::insert(const Company & s)
 	tr.commit();
 }
 
-void CompaniesDb::update(const Company & orig, const Company & modified)
+void CompanyDb::update(const Company & orig, const Company & modified)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
@@ -84,7 +84,7 @@ void CompaniesDb::update(const Company & orig, const Company & modified)
 	tr.commit();
 }
 
-void CompaniesDb::del(const Company & s)
+void CompanyDb::del(const Company & s)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
@@ -96,7 +96,7 @@ void CompaniesDb::del(const Company & s)
 	tr.commit();
 }
 
-void CompaniesDb::query(CompanySet & ss)
+void CompanyDb::query(CompanySet & ss)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
