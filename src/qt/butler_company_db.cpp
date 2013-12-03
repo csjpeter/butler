@@ -16,9 +16,9 @@ CompanyDb::CompanyDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"country TEXT NOT NULL, "
 				"city TEXT NOT NULL, "
-				"postal_code TEXT NOT NULL, "
+				"postalCode TEXT NOT NULL, "
 				"address TEXT NOT NULL, "
-				"tax_id TEXT NOT NULL, "
+				"taxId TEXT NOT NULL, "
 				"icon TEXT, "
 				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
@@ -27,9 +27,9 @@ CompanyDb::CompanyDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("country") ||
 			!cols.has("city") ||
-			!cols.has("postal_code") ||
+			!cols.has("postalCode") ||
 			!cols.has("address") ||
-			!cols.has("tax_id")
+			!cols.has("taxId")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table companies in the openend database.");
@@ -45,8 +45,8 @@ void CompanyDb::insert(const Company & s)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO companies "
-			"(name, country, city, postal_code, "
-			"address, tax_id) "
+			"(name, country, city, postalCode, "
+			"address, taxId) "
 			"VALUES(?, ?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, s.name);
 	sqlQuery.bindValue(1, s.country);
@@ -68,9 +68,9 @@ void CompanyDb::update(const Company & orig, const Company & modified)
 			"name = ?, "
 			"country = ?, "
 			"city = ?, "
-			"postal_code = ?, "
+			"postalCode = ?, "
 			"address = ?, "
-			"tax_id = ? "
+			"taxId = ? "
 			"WHERE name = ?");
 	sqlQuery.bindValue(0, modified.name);
 	sqlQuery.bindValue(1, modified.country);
@@ -101,16 +101,16 @@ void CompanyDb::query(CompanySet & ss)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("SELECT name, country, city, postal_code, address, tax_id "
+	sqlQuery.prepare("SELECT name, country, city, postalCode, address, taxId "
 			"FROM companies");
 	sqlQuery.exec();
 	ss.clear();
 	int nameNo = sqlQuery.colIndex("name");
 	int countryNo = sqlQuery.colIndex("country");
 	int cityNo = sqlQuery.colIndex("city");
-	int postalCodeNo = sqlQuery.colIndex("postal_code");
+	int postalCodeNo = sqlQuery.colIndex("postalCode");
 	int addressNo = sqlQuery.colIndex("address");
-	int taxIdNo = sqlQuery.colIndex("tax_id");
+	int taxIdNo = sqlQuery.colIndex("taxId");
 	DBG("----- companies query result:");
 	while(sqlQuery.next()) {
 		Company *s = new Company();

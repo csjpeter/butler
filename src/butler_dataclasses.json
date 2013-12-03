@@ -24,6 +24,13 @@
 				fields : {
 						name : Text,
 						unit : Text,
+#						types : {
+#								type : TypeNameSet,
+#								sqlTable : WareTypes,
+#								sqlColumn : type,
+#								sqlType : Text
+#						},
+#						types : TypeNameSet[Set of Texts] @ WareTypes.type : Text,
 						types : TypeNameSet,
 						tags : TagNameSet,
 						lastModified : DateTime # non editable
@@ -113,9 +120,9 @@
 		Query : {
 				enums : {
 						StockOptions : {
-								AllBoughtItem : "",
-								ItemsOnStock : "",
-								ItemsUsedUp : ""
+								AllItemChanges : "",
+								Gains : "",
+								Looses : ""
 						},
 						TagOptions : {
 								MatchAll : "",

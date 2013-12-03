@@ -16,11 +16,11 @@ PartnerDb::PartnerDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"country TEXT NOT NULL, "
 				"city TEXT NOT NULL, "
-				"postal_code TEXT NOT NULL, "
+				"postalCode TEXT NOT NULL, "
 				"address TEXT NOT NULL, "
 				"company TEXT NOT NULL REFERENCES companies(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
-				"store_name TEXT NOT NULL, "
+				"storeName TEXT NOT NULL, "
 				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 			       );
@@ -28,10 +28,10 @@ PartnerDb::PartnerDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("country") ||
 			!cols.has("city") ||
-			!cols.has("postal_code") ||
+			!cols.has("postalCode") ||
 			!cols.has("address") ||
 			!cols.has("company") ||
-			!cols.has("store_name")
+			!cols.has("storeName")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table partners in the openend database.");
@@ -47,7 +47,7 @@ void PartnerDb::insert(const Partner & s)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO partners "
-			"(name, country, city, postal_code, address, company, store_name) "
+			"(name, country, city, postalCode, address, company, storeName) "
 			"VALUES(?, ?, ?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, s.name);
 	sqlQuery.bindValue(1, s.country);
@@ -70,10 +70,10 @@ void PartnerDb::update(const Partner & orig, const Partner & modified)
 			"name = ?, "
 			"country = ?, "
 			"city = ?, "
-			"postal_code = ?, "
+			"postalCode = ?, "
 			"address = ?, "
 			"company = ?, "
-			"store_name = ? "
+			"storeName = ? "
 			"WHERE name = ?");
 	sqlQuery.bindValue(0, modified.name);
 	sqlQuery.bindValue(1, modified.country);
@@ -106,17 +106,17 @@ void PartnerDb::query(PartnerSet & ss)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT "
-			"name, country, city, postal_code, address, company, store_name "
+			"name, country, city, postalCode, address, company, storeName "
 			"FROM partners");
 	sqlQuery.exec();
 	ss.clear();
 	int nameNo = sqlQuery.colIndex("name");
 	int countryNo = sqlQuery.colIndex("country");
 	int cityNo = sqlQuery.colIndex("city");
-	int postalCodeNo = sqlQuery.colIndex("postal_code");
+	int postalCodeNo = sqlQuery.colIndex("postalCode");
 	int addressNo = sqlQuery.colIndex("address");
 	int companyNo = sqlQuery.colIndex("company");
-	int storeNameNo = sqlQuery.colIndex("store_name");
+	int storeNameNo = sqlQuery.colIndex("storeName");
 	DBG("----- Partner query result:");
 	while(sqlQuery.next()) {
 		Partner *s = new Partner();
