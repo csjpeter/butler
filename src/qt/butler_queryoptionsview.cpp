@@ -179,11 +179,11 @@ void QueryOptionsView::mapToGui()
 		partnerFilter.box.blockSignals(false);
 	}
 
-	if(query.stockOption == Query::StockOptions::AllBoughtItem)
+	if(query.stockOption == Query::StockOptions::AllItemChanges)
 		stockOptAll.setChecked(true);
-	else if(query.stockOption == Query::StockOptions::ItemsOnStock)
+	else if(query.stockOption == Query::StockOptions::Gains)
 		stockOptOnStock.setChecked(true);
-	else if(query.stockOption == Query::StockOptions::ItemsUsedUp)
+	else if(query.stockOption == Query::StockOptions::Looses)
 		stockOptUsedUp.setChecked(true);
 
 	if(query.withTags.size()){
@@ -238,11 +238,11 @@ void QueryOptionsView::mapFromGui()
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
-		query.stockOption = Query::StockOptions::AllBoughtItem;
+		query.stockOption = Query::StockOptions::AllItemChanges;
 	else if(stockOptions.group.checkedButton() == &stockOptOnStock)
-		query.stockOption = Query::StockOptions::ItemsOnStock;
+		query.stockOption = Query::StockOptions::Gains;
 	else if(stockOptions.group.checkedButton() == &stockOptUsedUp)
-		query.stockOption = Query::StockOptions::ItemsUsedUp;
+		query.stockOption = Query::StockOptions::Looses;
 
 	if(withTagFilter.box.isChecked()){
 		if(tagOptions.group.checkedButton() == &tagOptAllMatch)
@@ -559,15 +559,15 @@ void QueryOptionsView::updateToolButtonStates()
 
 	if(!modified){
 		switch(query.stockOption) {
-			case Query::StockOptions::AllBoughtItem :
+			case Query::StockOptions::AllItemChanges :
 				if(stockOptions.group.checkedButton() != &stockOptAll)
 					modified = true;
 				break;
-			case Query::StockOptions::ItemsOnStock :
+			case Query::StockOptions::Gains :
 				if(stockOptions.group.checkedButton() != &stockOptOnStock)
 					modified = true;
 				break;
-			case Query::StockOptions::ItemsUsedUp :
+			case Query::StockOptions::Looses :
 				if(stockOptions.group.checkedButton() != &stockOptUsedUp)
 					modified = true;
 				break;

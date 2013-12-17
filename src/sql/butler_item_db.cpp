@@ -242,11 +242,11 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	
 	QString filter;
 
-	if(q.stockOption == Query::StockOptions::ItemsOnStock){
+	if(q.stockOption == Query::StockOptions::Gains){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " on_stock = '1'";
-	} else if(q.stockOption == Query::StockOptions::ItemsUsedUp){
+	} else if(q.stockOption == Query::StockOptions::Looses){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " on_stock = '0'";
