@@ -27,7 +27,9 @@ WareDb::WareDb(SqlConnection & sql) :
 
 	cols = sql.columns("wares");
 	if(		!cols.has("name") ||
-			!cols.has("unit")
+			!cols.has("unit") ||
+			!cols.has("icon") ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table wares in the openend database.");

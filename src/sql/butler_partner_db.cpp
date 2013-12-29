@@ -28,10 +28,11 @@ PartnerDb::PartnerDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("country") ||
 			!cols.has("city") ||
-			!cols.has("postalCode") ||
+			( !cols.has("postalCode") && !cols.has("postalcode") ) ||
 			!cols.has("address") ||
 			!cols.has("company") ||
-			!cols.has("storeName")
+			( !cols.has("storeName") && !cols.has("storename") ) ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table partners in the openend database.");

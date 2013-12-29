@@ -28,9 +28,10 @@ PaymentDb::PaymentDb(SqlConnection & sql) :
 	cols = sql.columns("payments");
 	if(		!cols.has("account") ||
 			!cols.has("partner") ||
-			!cols.has("uploadDate") ||
+			( !cols.has("uploadDate") && !cols.has("uploaddate") ) ||
 			!cols.has("amount") ||
-			!cols.has("comment")
+			!cols.has("comment") ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table payments in the openend database.");

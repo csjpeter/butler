@@ -228,8 +228,19 @@ void DatabasesView::useDbDesc()
 {
 	int row = tableView.currentIndex().row();
 	try {
-		companiesModel(model.query(row).name);
-		Config::defaultDbName = model.query(row).name;
+		QString dbname(model.query(row).name);
+
+		tagsModel(dbname);
+		waresModel(dbname);
+		companiesModel(dbname);
+		brandsModel(dbname);
+		inventoriesModel(dbname);
+		partnersModel(dbname);
+		queriesModel(dbname);
+		shoppingModel(dbname);
+		csjp::Object<CustomModel> tmpModel(customModel(dbname));
+
+		Config::defaultDbName = dbname;
 		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
 		activeDbChanged();
 	} catch (DbConnectError & e) {

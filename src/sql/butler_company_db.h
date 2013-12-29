@@ -1,10 +1,10 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2013 Csaszar, Peter
  */
 
-#ifndef BUTLER_COMPANY_DB_H
-#define BUTLER_COMPANY_DB_H
+#ifndef BUTLER_COMPANIES_DB_H
+#define BUTLER_COMPANIES_DB_H
 
 #include <butler_sql_connection.h>
 

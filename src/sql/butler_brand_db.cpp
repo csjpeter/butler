@@ -28,7 +28,9 @@ BrandDb::BrandDb(SqlConnection & sql) :
 
 	cols = sql.columns("brands");
 	if(		!cols.has("name") ||
-			!cols.has("company")
+			!cols.has("company") ||
+			!cols.has("icon") ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table brands in the openend database.");

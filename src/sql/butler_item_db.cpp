@@ -21,8 +21,7 @@ ItemDb::ItemDb(SqlConnection & sql) :
 				"name TEXT NOT NULL, "
 				"type TEXT NOT NULL, "
 				"quantity DECIMAL(15,3) NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
-				"comment TEXT NOT NULL DEFAULT '',"
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"comment TEXT NOT NULL DEFAULT ''"
 				")"
 				);
 	cols = sql.columns("items");

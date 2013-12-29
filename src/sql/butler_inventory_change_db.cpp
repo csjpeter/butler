@@ -32,7 +32,7 @@ InventoryChangeDb::InventoryChangeDb(SqlConnection & sql) :
 				")"
 				);
 	cols = sql.columns("inventoryChanges");
-	if(		!cols.has("uploadDate") ||
+	if(		( !cols.has("uploadDate") && !cols.has("uploaddate") ) ||
 			!cols.has("name") ||
 			!cols.has("type") ||
 			!cols.has("brand") ||
@@ -40,8 +40,8 @@ InventoryChangeDb::InventoryChangeDb(SqlConnection & sql) :
 			!cols.has("partner") ||
 			!cols.has("inventory") ||
 			!cols.has("comment") ||
-			!cols.has("invChangeDate") ||
-			!cols.has("lastModified")
+			( !cols.has("invChangeDate") && !cols.has("invchangedate") ) ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table inventoryChanges in the openend database.");

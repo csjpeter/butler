@@ -27,7 +27,9 @@ InventoryDb::InventoryDb(SqlConnection & sql) :
 
 	cols = sql.columns("inventories");
 	if(		!cols.has("name") ||
-			!cols.has("comment")
+			!cols.has("comment") ||
+			!cols.has("icon") ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table inventories in the openend database.");

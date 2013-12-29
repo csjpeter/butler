@@ -16,7 +16,7 @@ AccountDb::AccountDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"currency TEXT NOT NULL, "
 				"bankOffice TEXT NOT NULL, "
-				"postal_code TEXT NOT NULL, "
+				"postalCode TEXT NOT NULL, "
 				"swiftCode TEXT NOT NULL, "
 				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
@@ -24,9 +24,10 @@ AccountDb::AccountDb(SqlConnection & sql) :
 	cols = sql.columns("accounts");
 	if(		!cols.has("name") ||
 			!cols.has("currency") ||
-			!cols.has("bankOffice") ||
-			!cols.has("postal_code") ||
-			!cols.has("swiftCode")
+			( !cols.has("bankOffice") && !cols.has("bankoffice") ) ||
+			!cols.has("postalCode") ||
+			( !cols.has("swiftCode") && !cols.has("swiftcode") ) ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table accounts in the openend database.");
@@ -42,7 +43,7 @@ void AccountDb::insert(const Account & s)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO accounts "
-			"(name, currency, bankOffice, postal_code, swiftCode) "
+			"(name, currency, bankOffice, postalCode, swiftCode) "
 			"VALUES(?, ?, ?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, s.name);
 	sqlQuery.bindValue(1, s.currency);
@@ -63,7 +64,7 @@ void AccountDb::update(const Account & orig, const Account & modified)
 			"name = ?, "
 			"currency = ?, "
 			"bankOffice = ?, "
-			"postal_code = ?, "
+			"postalCode = ?, "
 			"swiftCode = ?, "
 			"WHERE name = ?");
 	sqlQuery.bindValue(0, modified.name);
@@ -95,14 +96,14 @@ void AccountDb::query(AccountSet & ss)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT "
-			"name, currency, bankOffice, postal_code, swiftCode "
+			"name, currency, bankOffice, postalCode, swiftCode "
 			"FROM accounts");
 	sqlQuery.exec();
 	ss.clear();
 	int nameNo = sqlQuery.colIndex("name");
 	int currencyNo = sqlQuery.colIndex("currency");
 	int bankOfficeNo = sqlQuery.colIndex("bankOffice");
-	int ibanNo = sqlQuery.colIndex("postal_code");
+	int ibanNo = sqlQuery.colIndex("postalCode");
 	int swiftCodeNo = sqlQuery.colIndex("swiftCode");
 	DBG("----- Account query result:");
 	while(sqlQuery.next()) {

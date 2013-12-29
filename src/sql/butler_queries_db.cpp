@@ -26,7 +26,8 @@ QueryDb::QueryDb(SqlConnection & sql) :
 			!cols.has("stock_option") ||
 			!cols.has("tag_option") ||
 			!cols.has("start_date") ||
-			!cols.has("end_date")
+			!cols.has("end_date") ||
+			( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table queries in the openend database.");

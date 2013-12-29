@@ -30,7 +30,8 @@ TagDb::TagDb(SqlConnection & sql) :
 
 	cols = sql.columns("tags");
 	if(	!cols.has("name") ||
-		!cols.has("description")
+		!cols.has("description") ||
+		( !cols.has("lastModified") && !cols.has("lastmodified") )
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table tags in the openend database.");
