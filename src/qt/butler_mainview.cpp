@@ -108,8 +108,8 @@ MainView::MainView(QWidget *parent) :
 	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
 	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-	loadState();
 	retranslate();
+	loadState();
 }
 
 MainView::~MainView()

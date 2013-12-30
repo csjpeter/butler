@@ -58,8 +58,8 @@ EditBrandView::EditBrandView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditBrandView::showEvent(QShowEvent *event)

@@ -44,6 +44,7 @@ PannView::PannView(QWidget * parent) :
 
 	installEventFilter(this);
 	setSizeIncrement(0, 0);
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 PannView::~PannView() {}
 
@@ -67,7 +68,10 @@ void PannView::setLayout(QLayout * layout)
 
 QSize PannView::sizeHint()
 {
-	return main.sizeHint();
+	QSize s(scrollArea.sizeHint());
+	/*LOG("Size hint for viewport %d, %d for window with title: %s.",
+			s.rwidth(), s.rheight(), C_STR(titleLabel.text()));*/
+	return QSize(s.rwidth() + 50, s.rheight() + 50);
 }
 
 int PannView::width()

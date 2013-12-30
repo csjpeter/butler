@@ -66,8 +66,8 @@ EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditWareView::showEvent(QShowEvent *event)

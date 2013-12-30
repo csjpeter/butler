@@ -113,8 +113,8 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 QueryOptionsView::~QueryOptionsView()

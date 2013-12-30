@@ -124,8 +124,8 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 			this, SLOT(wareNameEditFinishedSlot(int)));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 EditItemView::~EditItemView()

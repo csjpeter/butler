@@ -69,8 +69,8 @@ EditCompanyView::EditCompanyView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditCompanyView::showEvent(QShowEvent *event)

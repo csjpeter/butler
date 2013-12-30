@@ -97,8 +97,8 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 	passwordEditor.editor.setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditDbDescView::showEvent(QShowEvent *event)

@@ -73,8 +73,8 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditPartnerView::showEvent(QShowEvent *event)

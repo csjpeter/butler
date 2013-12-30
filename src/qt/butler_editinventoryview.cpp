@@ -57,8 +57,8 @@ EditInventoryView::EditInventoryView(const QString & dbname, QWidget * parent) :
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
-	loadState();
 	retranslate();
+	loadState();
 }
 
 void EditInventoryView::showEvent(QShowEvent *event)
