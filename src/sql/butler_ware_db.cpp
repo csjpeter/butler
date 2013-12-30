@@ -21,7 +21,7 @@ WareDb::WareDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"unit TEXT NOT NULL DEFAULT '', "
 				"icon TEXT, "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 				);
 
@@ -29,7 +29,7 @@ WareDb::WareDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("unit") ||
 			!cols.has("icon") ||
-			( !cols.has("lastModified") && !cols.has("lastmodified") )
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table wares in the openend database.");

@@ -18,7 +18,7 @@ QueryDb::QueryDb(SqlConnection & sql) :
 				"tag_option INTEGER NOT NULL, "
 				"start_date TIMESTAMP NOT NULL, "
 				"end_date TIMESTAMP NOT NULL, "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 			    );
 	cols = sql.columns("queries");
@@ -27,7 +27,7 @@ QueryDb::QueryDb(SqlConnection & sql) :
 			!cols.has("tag_option") ||
 			!cols.has("start_date") ||
 			!cols.has("end_date") ||
-			( !cols.has("lastModified") && !cols.has("lastmodified") )
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table queries in the openend database.");

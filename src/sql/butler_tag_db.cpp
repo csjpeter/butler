@@ -15,7 +15,7 @@ TagDb::TagDb(SqlConnection & sql) :
 		sql.exec(	"CREATE TABLE tags ("
 				"name TEXT PRIMARY KEY, "
 				"description TEXT NOT NULL DEFAULT '', "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 				);
 	/*sql.exec("CREATE TRIGGER update_last_modified "
@@ -23,15 +23,15 @@ TagDb::TagDb(SqlConnection & sql) :
 		"BEGIN "
 			"FOR EACH ROW "
 			"IF (NEW != OLD) THEN "
-				"NEW.lastModified = CURRENT_TIMESTAMP; "
-				"NEW.lastModified = datetime('now'); "
+				"NEW.last_modified = CURRENT_TIMESTAMP; "
+				"NEW.last_modified = datetime('now'); "
 			"END IF; "
 		"END;");*/
 
 	cols = sql.columns("tags");
 	if(	!cols.has("name") ||
 		!cols.has("description") ||
-		( !cols.has("lastModified") && !cols.has("lastmodified") )
+		!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table tags in the openend database.");

@@ -22,7 +22,7 @@ BrandDb::BrandDb(SqlConnection & sql) :
 				"company TEXT NOT NULL REFERENCES companies(name) "
 				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				"icon TEXT, "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 				);
 
@@ -30,7 +30,7 @@ BrandDb::BrandDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("company") ||
 			!cols.has("icon") ||
-			( !cols.has("lastModified") && !cols.has("lastmodified") )
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table brands in the openend database.");

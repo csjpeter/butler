@@ -16,18 +16,18 @@ AccountDb::AccountDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"currency TEXT NOT NULL, "
 				"bankOffice TEXT NOT NULL, "
-				"postalCode TEXT NOT NULL, "
-				"swiftCode TEXT NOT NULL, "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"postal_code TEXT NOT NULL, "
+				"swift_code TEXT NOT NULL, "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 			       );
 	cols = sql.columns("accounts");
 	if(		!cols.has("name") ||
 			!cols.has("currency") ||
-			( !cols.has("bankOffice") && !cols.has("bankoffice") ) ||
-			!cols.has("postalCode") ||
-			( !cols.has("swiftCode") && !cols.has("swiftcode") ) ||
-			( !cols.has("lastModified") && !cols.has("lastmodified") )
+			!cols.has("bankOffice") ||
+			!cols.has("postal_code") ||
+			!cols.has("swift_code") ||
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table accounts in the openend database.");
@@ -43,13 +43,13 @@ void AccountDb::insert(const Account & s)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO accounts "
-			"(name, currency, bankOffice, postalCode, swiftCode) "
+			"(name, currency, bankOffice, postal_code, swift_code) "
 			"VALUES(?, ?, ?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, s.name);
 	sqlQuery.bindValue(1, s.currency);
 	sqlQuery.bindValue(2, s.bankOffice);
 	sqlQuery.bindValue(3, s.iban);
-	sqlQuery.bindValue(4, s.swiftCode);
+	sqlQuery.bindValue(4, s.swift_code);
 	sqlQuery.exec();
 
 	tr.commit();
@@ -64,14 +64,14 @@ void AccountDb::update(const Account & orig, const Account & modified)
 			"name = ?, "
 			"currency = ?, "
 			"bankOffice = ?, "
-			"postalCode = ?, "
-			"swiftCode = ?, "
+			"postal_code = ?, "
+			"swift_code = ?, "
 			"WHERE name = ?");
 	sqlQuery.bindValue(0, modified.name);
 	sqlQuery.bindValue(1, modified.currency);
 	sqlQuery.bindValue(2, modified.bankOffice);
 	sqlQuery.bindValue(3, modified.iban);
-	sqlQuery.bindValue(4, modified.swiftCode);
+	sqlQuery.bindValue(4, modified.swift_code);
 	sqlQuery.bindValue(5, orig.name);
 	sqlQuery.exec();
 
@@ -96,15 +96,15 @@ void AccountDb::query(AccountSet & ss)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT "
-			"name, currency, bankOffice, postalCode, swiftCode "
+			"name, currency, bankOffice, postal_code, swift_code "
 			"FROM accounts");
 	sqlQuery.exec();
 	ss.clear();
 	int nameNo = sqlQuery.colIndex("name");
 	int currencyNo = sqlQuery.colIndex("currency");
 	int bankOfficeNo = sqlQuery.colIndex("bankOffice");
-	int ibanNo = sqlQuery.colIndex("postalCode");
-	int swiftCodeNo = sqlQuery.colIndex("swiftCode");
+	int ibanNo = sqlQuery.colIndex("postal_code");
+	int swift_codeNo = sqlQuery.colIndex("swift_code");
 	DBG("----- Account query result:");
 	while(sqlQuery.next()) {
 		Account *s = new Account();
@@ -112,7 +112,7 @@ void AccountDb::query(AccountSet & ss)
 		s->currency = sqlQuery.text(currencyNo);
 		s->bankOffice = sqlQuery.text(bankOfficeNo);
 		s->iban = sqlQuery.text(ibanNo);
-		s->swiftCode = sqlQuery.text(swiftCodeNo);
+		s->swift_code = sqlQuery.text(swift_codeNo);
 		ss.add(s);
 	}
 	DBG("-----");

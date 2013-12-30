@@ -21,7 +21,7 @@ InventoryDb::InventoryDb(SqlConnection & sql) :
 				"name TEXT NOT NULL PRIMARY KEY, "
 				"comment TEXT NOT NULL DEFAULT '',"
 				"icon TEXT, "
-				"lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
 				")"
 				);
 
@@ -29,7 +29,7 @@ InventoryDb::InventoryDb(SqlConnection & sql) :
 	if(		!cols.has("name") ||
 			!cols.has("comment") ||
 			!cols.has("icon") ||
-			( !cols.has("lastModified") && !cols.has("lastmodified") )
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table inventories in the openend database.");
