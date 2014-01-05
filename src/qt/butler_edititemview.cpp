@@ -29,14 +29,14 @@ SCC TidResetButton = QT_TRANSLATE_NOOP("EditItemView", "Reset");
 SCC TidPrevButton = QT_TRANSLATE_NOOP("EditItemView", "Previous item");
 SCC TidNextButton = QT_TRANSLATE_NOOP("EditItemView", "Next item");
 
-SCC TidBoughtFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "Bought:");
-SCC TidOnStockFormCheckBox = QT_TRANSLATE_NOOP("EditItemView", "On stock:");
-
-SCC TidTypeEditor = QT_TRANSLATE_NOOP("EditItemView", "Brand or type of ware:");
+SCC TidTypeEditor = QT_TRANSLATE_NOOP("EditItemView", "Type of ware:");
+SCC TidBrandSelector = QT_TRANSLATE_NOOP("EditItemView", "Brand of ware:");
 SCC TidQuantityEditor = QT_TRANSLATE_NOOP("EditItemView", "Quantity:");
 SCC TidUnitPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Unit price:");
 SCC TidGrossPriceEditor = QT_TRANSLATE_NOOP("EditItemView", "Gross price:");
 SCC TidPartnerSelector = QT_TRANSLATE_NOOP("EditItemView", "Business partner:");
+SCC TidAccountSelector = QT_TRANSLATE_NOOP("EditItemView", "Account (bank):");
+SCC TidInventorySelector = QT_TRANSLATE_NOOP("EditItemView", "Inventory:");
 SCC TidWareSelector = QT_TRANSLATE_NOOP("EditItemView", "Common ware name:");
 SCC TidPurchaseDateTimeEditor = QT_TRANSLATE_NOOP("EditItemView", "Date of purchase:");
 SCC TidUploadDateTimeEditor = QT_TRANSLATE_NOOP("EditItemView", "Date of upload:");
@@ -50,7 +50,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is updated.");
 
 EditItemView * EditItemView::newItemViewFactory(const QString & dbname)
 {
-	csjp::Object<CustomModel> ownModel = customModel(dbname);
+	csjp::Object<ItemsModel> ownModel = itemModel(dbname);
 	EditItemView * view = new EditItemView(dbname, *ownModel);
 	view->ownModel = ownModel.release();
 	return view;
@@ -66,7 +66,10 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&waresModel(dbname), Ware::Name),
+	brandEditor(&brandsModel(dbname), Brand::Name),
+	accountEditor(&accountsModel(dbname), Account::Name),
 	partnerEditor(&partnersModel(dbname), Partner::Name),
+	inventoryEditor(&inventoriesModel(dbname), Inventory::Name),
 	tagsWidget(dbname),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
@@ -75,8 +78,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 	
-	item.bought = true;
-	item.purchased = QDateTime::currentDateTime();
+	item.invChangeDate = QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
 	tagsWidget.label.setWordWrap(true);
 
@@ -94,17 +96,19 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
+	connect(&brandEditor.box, SIGNAL(editTextChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
 	connect(&typeEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&quantityEditor, SIGNAL(valueChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&onStockCheck.box, SIGNAL(stateChanged(int)),
-			this, SLOT(updateToolButtonStates()));
-	connect(&boughtCheck.box, SIGNAL(stateChanged(int)),
+	connect(&accountEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&partnerEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&purchaseDateTime.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
+	connect(&inventoryEditor.box, SIGNAL(editTextChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&invChangeDateTime.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
 			this, SLOT(updateToolButtonStates()));
 	connect(&commentEditor.edit, SIGNAL(textChanged()),
 			this, SLOT(updateToolButtonStates()));
@@ -123,6 +127,11 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	connect(&wareEditor.box, SIGNAL(currentIndexChanged(int)),
 			this, SLOT(wareNameEditFinishedSlot(int)));
 
+	connect(&accountEditor.editor, SIGNAL(editingFinished()),
+			this, SLOT(accountNameEditFinishedSlot()));
+	connect(&accountEditor.box, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(accountNameEditFinishedSlot(int)));
+
 	setupView();
 	retranslate();
 	loadState();
@@ -137,6 +146,7 @@ EditItemView::~EditItemView()
 void EditItemView::showEvent(QShowEvent *event)
 {
 	lastWareName.clear();
+	lastAccountName.clear();
 	mapToGui();
 	if(!cursor.isValid())
 		uploadDateTime.edit.setDateTime(QDateTime::currentDateTime());
@@ -168,21 +178,27 @@ void EditItemView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.item(cursor.row()));
+		accountEditor.setText(item.partner);
+		accountNameEditFinishedSlot();
 		partnerEditor.setText(item.partner);
+		inventoryEditor.setText(item.partner);
 	}
 
-	uploadDateTime.edit.setDateTime(item.uploaded);
-	purchaseDateTime.edit.setDateTime(item.purchased);
+	uploadDateTime.edit.setDateTime(item.uploadDate);
 
 	wareEditor.setText(item.name);
 	wareNameEditFinishedSlot();
+
 	typeEditor.setText(item.type);
+	brandEditor.setText(item.brand);
 
 	quantityEditor.blockSignals(true);
 	quantityEditor.setValue(item.quantity);
 	quantityEditor.blockSignals(false);
 
 	commentEditor.edit.setText(item.comment);
+
+	invChangeDateTime.edit.setDateTime(item.invChangeDate);
 
 	unitPriceEditor.blockSignals(true);
 	unitPriceEditor.setValue((0.001 <= item.quantity) ? item.price / item.quantity : 0);
@@ -192,27 +208,26 @@ void EditItemView::mapToGui()
 	grossPriceEditor.setValue(item.price);
 	grossPriceEditor.blockSignals(false);
 
-	onStockCheck.box.setCheckState(item.onStock ? Qt::Checked : Qt::Unchecked);
-	boughtCheck.box.setCheckState(item.bought ? Qt::Checked : Qt::Unchecked);
-
 	updateToolButtonStates();
 }
 
 void EditItemView::mapFromGui()
 {
-	item.uploaded = uploadDateTime.edit.dateTime();
+	item.uploadDate = uploadDateTime.edit.dateTime();
 
+	item.account = partnerEditor.text();
 	item.partner = partnerEditor.text();
+	item.inventory = partnerEditor.text();
 	item.name = wareEditor.text();
+	item.unit <<= quantityEditor.getSuffix();
 	item.type = typeEditor.text();
+	item.brand = brandEditor.text();
 	item.quantity = quantityEditor.value();
 	item.comment = commentEditor.edit.toPlainText();
 
-	item.bought = (boughtCheck.box.checkState() == Qt::Checked);
 	item.price = grossPriceEditor.value();
-	item.purchased = purchaseDateTime.edit.dateTime();
-
-	item.onStock = (onStockCheck.box.checkState() == Qt::Checked);
+	item.currency <<= grossPriceEditor.getSuffix();
+	item.invChangeDate = invChangeDateTime.edit.dateTime();
 
 	ware.name = item.name;
 	ware.tags = tagsWidget.selectedTags();
@@ -244,15 +259,16 @@ void EditItemView::retranslate()
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
 	typeEditor.label.setText(tr(TidTypeEditor));
+	brandEditor.label.setText(tr(TidBrandSelector));
 	quantityEditor.label.setText(tr(TidQuantityEditor));
 	unitPriceEditor.label.setText(tr(TidUnitPriceEditor));
 	grossPriceEditor.label.setText(tr(TidGrossPriceEditor));
+	accountEditor.label.setText(tr(TidAccountSelector));
 	partnerEditor.label.setText(tr(TidPartnerSelector));
-	purchaseDateTime.label.setText(tr(TidPurchaseDateTimeEditor));
+	inventoryEditor.label.setText(tr(TidInventorySelector));
+	invChangeDateTime.label.setText(tr(TidPurchaseDateTimeEditor));
 	uploadDateTime.label.setText(tr(TidUploadDateTimeEditor));
 	commentEditor.label.setText(tr(TidCommentEditor));
-	onStockCheck.label.setText(tr(TidOnStockFormCheckBox));
-	boughtCheck.label.setText(tr(TidBoughtFormCheckBox));
 
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 
@@ -268,12 +284,6 @@ void EditItemView::applyLayout(bool test)
 	hlayout->addStretch();
 	hlayout->addWidget(&unitPriceEditor);
 
-	HLayout * h2layout = new HLayout;
-	h2layout->addWidget(&onStockCheck);
-	h2layout->addStretch();
-	h2layout->addWidget(&boughtCheck);
-	h2layout->addStretch();
-
 	VLayout * mainLayout = new VLayout;
 	mainLayout->addStretch(0);
 	mainLayout->addLayout(hlayout);
@@ -282,11 +292,15 @@ void EditItemView::applyLayout(bool test)
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&typeEditor);
 	mainLayout->addStretch(0);
-	mainLayout->addLayout(h2layout);
+	mainLayout->addWidget(&brandEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&accountEditor);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&partnerEditor);
 	mainLayout->addStretch(0);
-	mainLayout->addWidget(&purchaseDateTime);
+	mainLayout->addWidget(&inventoryEditor);
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&invChangeDateTime);
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&uploadDateTime);
 	mainLayout->addStretch(0);
@@ -307,11 +321,14 @@ void EditItemView::relayout()
 	{
 		wareEditor.wideLayout();
 		typeEditor.wideLayout();
+		brandEditor.wideLayout();
 		quantityEditor.wideLayout();
 		unitPriceEditor.wideLayout();
 		grossPriceEditor.wideLayout();
+		accountEditor.wideLayout();
 		partnerEditor.wideLayout();
-		purchaseDateTime.wideLayout();
+		inventoryEditor.wideLayout();
+		invChangeDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
 		applyLayout( true);
@@ -319,11 +336,14 @@ void EditItemView::relayout()
 	if(width() < sizeHint().width()){
 		wareEditor.wideLayout();
 		typeEditor.wideLayout();
+		brandEditor.wideLayout();
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
+		accountEditor.wideLayout();
 		partnerEditor.wideLayout();
-		purchaseDateTime.wideLayout();
+		inventoryEditor.wideLayout();
+		invChangeDateTime.wideLayout();
 		uploadDateTime.wideLayout();
 		commentEditor.wideLayout();
 		applyLayout(true);
@@ -331,11 +351,14 @@ void EditItemView::relayout()
 	if(width() < sizeHint().width()){
 		wareEditor.narrowLayout();
 		typeEditor.narrowLayout();
+		brandEditor.narrowLayout();
 		quantityEditor.narrowLayout();
 		unitPriceEditor.narrowLayout();
 		grossPriceEditor.narrowLayout();
+		accountEditor.narrowLayout();
 		partnerEditor.narrowLayout();
-		purchaseDateTime.narrowLayout();
+		inventoryEditor.narrowLayout();
+		invChangeDateTime.narrowLayout();
 		uploadDateTime.narrowLayout();
 		commentEditor.narrowLayout();
 		applyLayout(true);
@@ -348,15 +371,16 @@ void EditItemView::relayout()
 void EditItemView::updateToolButtonStates()
 {
 	bool modified = !(
+			item.account == accountEditor.text() &&
 			item.partner == partnerEditor.text() &&
+			item.inventory == inventoryEditor.text() &&
 			item.name == wareEditor.text() &&
 			item.type == typeEditor.text() &&
+			item.brand == brandEditor.text() &&
 			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
 			item.comment == commentEditor.edit.toPlainText() &&
-			item.bought == (boughtCheck.box.checkState() == Qt::Checked) &&
 			fabs(item.price - grossPriceEditor.value()) < 0.01 &&
-			item.purchased == purchaseDateTime.edit.dateTime() &&
-			item.onStock == (onStockCheck.box.checkState() == Qt::Checked)
+			item.invChangeDate == invChangeDateTime.edit.dateTime()
 			);
 
 	/* tag states might have changed for ware */
@@ -388,7 +412,6 @@ void EditItemView::setCursor(const QModelIndex& index)
 	ENSURE(index.model() == &model, csjp::LogicError);
 
 	cursor = index;
-	boughtCheck.show();
 	setWindowTitle(tr(TidEditItemWindowTitle));
 	mapToGui();
 }
@@ -430,6 +453,24 @@ void EditItemView::saveSlot()
 		sm.addNew(partner);
 	}
 
+	/* Add account if not yet known. */
+	AccountsModel & am = accountsModel(dbname);
+	i = am.index(accountEditor.text());
+	if(i == -1){
+		Account account;
+		account.name = accountEditor.text();
+		am.addNew(account);
+	}
+
+	/* Add inventory if not yet known. */
+	InventoriesModel & im = inventoriesModel(dbname);
+	i = im.index(inventoryEditor.text());
+	if(i == -1){
+		Inventory inventory;
+		inventory.name = inventoryEditor.text();
+		im.addNew(inventory);
+	}
+
 	/* Add/update ware if neccessary. */
 	WaresModel & wm = waresModel(dbname);
 	i = wm.index(ware.name);
@@ -447,8 +488,7 @@ void EditItemView::saveSlot()
 		model.addNew(item);
 
 		item = Item();
-		item.bought = true;
-		item.uploaded = QDateTime::currentDateTime();
+		item.uploadDate = QDateTime::currentDateTime();
 		ware = Ware();
 		mapToGui();
 		toolBar.setInfo(tr(TidInfoNewSaved));
@@ -564,9 +604,32 @@ void EditItemView::wareNameEditFinishedSlot()
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 
-/* We need this for cases when keybaord focus was not used,
+/* We need this for cases when keyboard focus was not used,
  * just a mouse selection from the drop down popup. */
 void EditItemView::wareNameEditFinishedSlot(int)
 {
 	wareNameEditFinishedSlot();
+}
+
+void EditItemView::accountNameEditFinishedSlot()
+{
+	if(lastAccountName == accountEditor.editor.text())
+		return;
+
+	lastAccountName = accountEditor.editor.text();
+
+	Account account;
+	AccountsModel & am = accountsModel(dbname);
+	int i = am.index(lastAccountName);
+	if(i != -1)
+		account = am.account(i);
+
+	grossPriceEditor.setSuffix(account.currency);
+}
+
+/* We need this for cases when keyboard focus was not used,
+ * just a mouse selection from the drop down popup. */
+void EditItemView::accountNameEditFinishedSlot(int)
+{
+	accountNameEditFinishedSlot();
 }

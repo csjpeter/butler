@@ -3,7 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
-#include "butler_inventoryChange_db.h"
+#include "butler_inventory_change_db.h"
 
 #include <math.h>
 #include <float.h>
@@ -16,27 +16,44 @@ InventoryChangeDb::InventoryChangeDb(SqlConnection & sql) :
 
 	if(!tables.has("inventoryChanges"))
 		sql.exec("CREATE TABLE inventoryChanges ("
-				"upload_date TIMESTAMP NOT NULL PRIMARY KEY "
-						"CHECK('1970-01-01T00:00:00' < upload_date), "
+				"upload_date TIMESTAMP NOT NULL CHECK('1970-01-01T00:00:00' < upload_date)"
 				"name TEXT NOT NULL, "
+				"unit TEXT NOT NULL, "
 				"type TEXT NOT NULL, "
 				"brand TEXT NOT NULL, "
-				"quantity DECIMAL(15,3) NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
-				"partner TEXT NOT NULL REFERENCES partners(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
-				"inventory TEXT NOT NULL REFERENCES inventories(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"quantity DECIMAL(15,3) NOT NULL, "
+				"price DECIMAL(15,2) NOT NULL, "
+				"currency TEXT NOT NULL, "
+				"account TEXT NOT NULL, "
+				"partner TEXT NOT NULL, "
+				"inventory TEXT NOT NULL, "
 				"comment TEXT NOT NULL DEFAULT '',"
-				"inv_change_date TIMESTAMP NOT NULL, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"inv_change_date TIMESTAMP, "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (upload_date), "
+				"FOREIGN KEY (name, unit) REFERENCES wares(name, unit) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (name, type) REFERENCES ware_types(name, type) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (account, currency) REFERENCES accounts(name, currency) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (partner) REFERENCES partners(name) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (inventory) REFERENCES inventories(name) "
+				"ON DELETE RESTRICT ON UPDATE CASCADE, "
 				")"
 				);
 	cols = sql.columns("inventoryChanges");
 	if(		!cols.has("upload_date") ||
 			!cols.has("name") ||
+			!cols.has("unit") ||
 			!cols.has("type") ||
 			!cols.has("brand") ||
 			!cols.has("quantity") ||
+			!cols.has("price") ||
+			!cols.has("currency") ||
+			!cols.has("account") ||
 			!cols.has("partner") ||
 			!cols.has("inventory") ||
 			!cols.has("comment") ||
@@ -56,18 +73,22 @@ void InventoryChangeDb::insert(const InventoryChange & i)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO inventoryChanges (upload_date, name, type, brand, "
-			"partner, inventory, quantity, comment, inv_change_date) "
+	sqlQuery.prepare("INSERT INTO inventoryChanges (upload_date, name, unit, type, brand, "
+			"quantity, price, currency, account, partner, inventory, comment, inv_change_date) "
 			"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	sqlQuery.bindValue(0, i.upload_date);
-	sqlQuery.bindValue(1, i.name);
-	sqlQuery.bindValue(2, i.type);
-	sqlQuery.bindValue(3, i.brand);
-	sqlQuery.bindValue(4, i.quantity);
-	sqlQuery.bindValue(5, i.partner);
-	sqlQuery.bindValue(6, i.inventory);
-	sqlQuery.bindValue(7, i.comment);
-	sqlQuery.bindValue(8, i.inv_change_date);
+	sqlQuery.bindValue(0, i.uploadDate);
+	sqlQuery.bindValue(1, i.unit);
+	sqlQuery.bindValue(2, i.name);
+	sqlQuery.bindValue(3, i.type);
+	sqlQuery.bindValue(4, i.brand);
+	sqlQuery.bindValue(5, i.quantity);
+	sqlQuery.bindValue(6, i.price);
+	sqlQuery.bindValue(7, i.currency);
+	sqlQuery.bindValue(8, i.account);
+	sqlQuery.bindValue(9, i.partner);
+	sqlQuery.bindValue(10, i.inventory);
+	sqlQuery.bindValue(11, i.comment);
+	sqlQuery.bindValue(12, i.invChangeDate);
 	sqlQuery.exec();
 
 	tr.commit();
@@ -80,28 +101,36 @@ void InventoryChangeDb::update(const InventoryChange & orig, const InventoryChan
 
 	/* The orig and modified object should describe
 	 * the same inventoryChange's old and new content. */
-	if(orig.upload_date != modified.upload_date)
+	if(orig.uploadDate != modified.uploadDate)
 		throw DbLogicError("The modified inventoryChange is a different "
 						"inventoryChange than the original.");
 	sqlQuery.prepare("UPDATE inventoryChanges SET "
 					"name = ?, "
+					"unit = ?, "
 					"type = ?, "
 					"brand = ?, "
 					"quantity = ?, "
+					"price = ?, "
+					"currency = ?, "
+					"account = ?, "
 					"partner = ?, "
 					"inventory = ?, "
 					"comment = ?, "
 					"inv_change_date = ?, "
-					"WHERE upload_date = ?");
+					"WHERE uploadDate = ?");
 	sqlQuery.bindValue(0, orig.name);
-	sqlQuery.bindValue(1, orig.type);
-	sqlQuery.bindValue(2, orig.brand);
-	sqlQuery.bindValue(3, orig.quantity);
-	sqlQuery.bindValue(4, orig.partner);
-	sqlQuery.bindValue(5, orig.inventory);
-	sqlQuery.bindValue(6, orig.comment);
-	sqlQuery.bindValue(7, orig.inv_change_date);
-	sqlQuery.bindValue(8, orig.upload_date);
+	sqlQuery.bindValue(1, orig.unit);
+	sqlQuery.bindValue(2, orig.type);
+	sqlQuery.bindValue(3, orig.brand);
+	sqlQuery.bindValue(4, orig.quantity);
+	sqlQuery.bindValue(5, orig.price);
+	sqlQuery.bindValue(6, orig.currency);
+	sqlQuery.bindValue(7, orig.account);
+	sqlQuery.bindValue(8, orig.partner);
+	sqlQuery.bindValue(9, orig.inventory);
+	sqlQuery.bindValue(10, orig.comment);
+	sqlQuery.bindValue(11, orig.invChangeDate);
+	sqlQuery.bindValue(12, orig.uploadDate);
 	sqlQuery.exec();
 
 	tr.commit();
@@ -112,8 +141,8 @@ void InventoryChangeDb::del(const InventoryChange & i)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM inventoryChanges WHERE upload_date = ?");
-	sqlQuery.bindValue(0, i.upload_date);
+	sqlQuery.prepare("DELETE FROM inventoryChanges WHERE uploadDate = ?");
+	sqlQuery.bindValue(0, i.uploadDate);
 	sqlQuery.exec();
 
 	tr.commit();
@@ -128,9 +157,13 @@ void InventoryChangeDb::query(const TagNameSet & tags, InventoryChangeSet & inve
 	QString cmd("SELECT "
 			" MAX(inventoryChanges.upload_date) AS upload_date,"
 			" MAX(inventoryChanges.name) AS name,"
+			" MAX(inventoryChanges.unit) AS unit,"
 			" MAX(inventoryChanges.type) AS type,"
 			" MAX(inventoryChanges.brand) AS brand,"
 			" MAX(inventoryChanges.quantity) AS quantity, "
+			" MAX(inventoryChanges.price) AS price,"
+			" MAX(inventoryChanges.currency) AS currency,"
+			" MAX(inventoryChanges.account) AS account,"
 			" MAX(inventoryChanges.partner) AS partner,"
 			" MAX(inventoryChanges.inventory) AS inventory,"
 			" MAX(inventoryChanges.comment) AS comment,"
@@ -155,28 +188,36 @@ void InventoryChangeDb::query(const TagNameSet & tags, InventoryChangeSet & inve
 	cmd += " GROUP BY inventoryChanges.upload_date ORDER BY inventoryChanges.upload_date DESC";
 	sqlQuery.exec(cmd);
 	inventoryChanges.clear();
-	int upload_dateNo = sqlQuery.colIndex("upload_date");
+	int uploadDateNo = sqlQuery.colIndex("upload_date");
 	int nameNo = sqlQuery.colIndex("name");
+	int unitNo = sqlQuery.colIndex("unit");
 	int typeNo = sqlQuery.colIndex("type");
 	int brandNo = sqlQuery.colIndex("brand");
 	int quantityNo = sqlQuery.colIndex("quantity");
+	int priceNo = sqlQuery.colIndex("price");
+	int currencyNo = sqlQuery.colIndex("currency");
+	int accountNo = sqlQuery.colIndex("account");
 	int partnerNo = sqlQuery.colIndex("partner");
 	int inventoryNo = sqlQuery.colIndex("inventory");
 	int commentNo = sqlQuery.colIndex("comment");
-	int inv_change_dateNo = sqlQuery.colIndex("inv_change_date");
+	int invChangeDateNo = sqlQuery.colIndex("inv_change_date");
 	DBG("----- InventoryChange query result:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		InventoryChange *inventoryChange = new InventoryChange();
-		inventoryChange->upload_date = sqlQuery.dateTime(upload_dateNo);
+		inventoryChange->uploadDate = sqlQuery.dateTime(uploadDateNo);
 		inventoryChange->name = sqlQuery.text(nameNo);
+		inventoryChange->unit = sqlQuery.text(unitNo);
 		inventoryChange->type = sqlQuery.text(typeNo);
 		inventoryChange->brand = sqlQuery.text(brandNo);
 		inventoryChange->quantity = sqlQuery.real(quantityNo);
+		inventoryChange->price = sqlQuery.text(priceNo);
+		inventoryChange->currency = sqlQuery.text(currencyNo);
+		inventoryChange->account = sqlQuery.text(accountNo);
 		inventoryChange->partner = sqlQuery.text(partnerNo);
 		inventoryChange->inventory = sqlQuery.text(inventoryNo);
 		inventoryChange->comment = sqlQuery.text(commentNo);
-		inventoryChange->inv_change_date = sqlQuery.text(inv_change_dateNo);
+		inventoryChange->invChangeDate = sqlQuery.dateTime(invChangeDateNo);
 		inventoryChanges.add(inventoryChange);
 	}
 	DBG("-----");
@@ -195,9 +236,13 @@ void InventoryChangeDb::query(const Query & q, QueryStat & stat, InventoryChange
 	QString cmd("SELECT"
 			" MAX(inventoryChanges.upload_date) AS upload_date,"
 			" MAX(inventoryChanges.name) AS name,"
+			" MAX(inventoryChanges.unit) AS unit,"
 			" MAX(inventoryChanges.type) AS type,"
 			" MAX(inventoryChanges.brand) AS brand,"
 			" MAX(inventoryChanges.quantity) AS quantity, "
+			" MAX(inventoryChanges.price) AS price,"
+			" MAX(inventoryChanges.currency) AS currency,"
+			" MAX(inventoryChanges.account) AS account,"
 			" MAX(inventoryChanges.partner) AS partner,"
 			" MAX(inventoryChanges.inventory) AS inventory,"
 			" MAX(inventoryChanges.comment) AS comment,"
@@ -316,15 +361,19 @@ void InventoryChangeDb::query(const Query & q, QueryStat & stat, InventoryChange
 	inventoryChanges.clear();
 
 	/* evaluate query result */
-	int upload_dateNo = sqlQuery.colIndex("upload_date");
+	int uploadDateNo = sqlQuery.colIndex("upload_date");
 	int nameNo = sqlQuery.colIndex("name");
+	int unitNo = sqlQuery.colIndex("unit");
 	int typeNo = sqlQuery.colIndex("type");
 	int brandNo = sqlQuery.colIndex("brand");
 	int quantityNo = sqlQuery.colIndex("quantity");
+	int priceNo = sqlQuery.colIndex("price");
+	int currencyNo = sqlQuery.colIndex("currency");
+	int accountNo = sqlQuery.colIndex("account");
 	int partnerNo = sqlQuery.colIndex("partner");
 	int inventoryNo = sqlQuery.colIndex("inventory");
 	int commentNo = sqlQuery.colIndex("comment");
-	int inv_change_dateNo = sqlQuery.colIndex("inv_change_date");
+	int invChangeDateNo = sqlQuery.colIndex("inv_change_date");
 
 	/* statistics */
 	stat.inventoryChangeCount = 0;
@@ -339,20 +388,24 @@ void InventoryChangeDb::query(const Query & q, QueryStat & stat, InventoryChange
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		InventoryChange *inventoryChange = new InventoryChange();
-		inventoryChange->upload_date = sqlQuery.dateTime(upload_dateNo);
+		inventoryChange->uploadDate = sqlQuery.dateTime(uploadDateNo);
 		inventoryChange->name = sqlQuery.text(nameNo);
+		inventoryChange->unit = sqlQuery.text(unitNo);
 		inventoryChange->type = sqlQuery.text(typeNo);
 		inventoryChange->brand = sqlQuery.text(brandNo);
 		inventoryChange->quantity = sqlQuery.real(quantityNo);
+		inventoryChange->price = sqlQuery.text(priceNo);
+		inventoryChange->currency = sqlQuery.text(currencyNo);
+		inventoryChange->account = sqlQuery.text(accountNo);
 		inventoryChange->partner = sqlQuery.text(partnerNo);
 		inventoryChange->inventory = sqlQuery.text(inventoryNo);
 		inventoryChange->comment = sqlQuery.text(commentNo);
-		inventoryChange->inv_change_date = sqlQuery.text(inv_change_dateNo);
+		inventoryChange->invChangeDate = sqlQuery.dateTime(invChangeDateNo);
 
 		/* statistics */
 		stat.inventoryChangeCount++;
 		stat.sumQuantity += inventoryChange->quantity;
-		/*stat.sumPrice += inventoryChange->price;
+		stat.sumPrice += inventoryChange->price;
 		if(DBL_EPSILON <= inventoryChange->quantity && DBL_EPSILON <= inventoryChange->price){
 			sumQuantity += inventoryChange->quantity;
 			sumPrice += inventoryChange->price;
@@ -362,17 +415,17 @@ void InventoryChangeDb::query(const Query & q, QueryStat & stat, InventoryChange
 				stat.cheapestUnitPrice = unitPrice;
 			if(stat.mostExpUnitPrice < unitPrice)
 				stat.mostExpUnitPrice = unitPrice;
-		}*/
+		}
 
 		inventoryChanges.add(inventoryChange);
 	}
-/*
+
 	stat.avgPrice = sumPrice / sumQuantity;
 	if(!stat.inventoryChangeCount){
 		stat.cheapestUnitPrice = NAN;
 		stat.mostExpUnitPrice = NAN;
 	}
-*/
+
 	DBG("-----");
 //	stat.queryTime = stopper - csjp::Time::unixTime();
 

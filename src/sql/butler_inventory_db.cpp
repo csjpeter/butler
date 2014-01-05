@@ -18,10 +18,12 @@ InventoryDb::InventoryDb(SqlConnection & sql) :
 	if(!tables.has("inventories"))
 		sql.exec(
 				"CREATE TABLE inventories ("
-				"name TEXT NOT NULL PRIMARY KEY, "
+				"name TEXT, "
 				"comment TEXT NOT NULL DEFAULT '',"
 				"icon TEXT, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name)"
 				")"
 				);
 

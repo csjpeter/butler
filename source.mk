@@ -173,12 +173,16 @@ source: \
 	$(DIST_DIR)/src/sql/butler_brand_db.cpp \
 	$(DIST_DIR)/src/sql/butler_inventory_db.h \
 	$(DIST_DIR)/src/sql/butler_inventory_db.cpp \
-	$(DIST_DIR)/src/sql/butler_partner_db.h \
-	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
-	$(DIST_DIR)/src/sql/butler_queries_db.h \
-	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
 	$(DIST_DIR)/src/sql/butler_item_db.h \
 	$(DIST_DIR)/src/sql/butler_item_db.cpp \
+	$(DIST_DIR)/src/sql/butler_partner_db.h \
+	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
+	$(DIST_DIR)/src/sql/butler_account_db.h \
+	$(DIST_DIR)/src/sql/butler_account_db.cpp \
+	$(DIST_DIR)/src/sql/butler_payment_db.h \
+	$(DIST_DIR)/src/sql/butler_payment_db.cpp \
+	$(DIST_DIR)/src/sql/butler_queries_db.h \
+	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \
@@ -221,6 +225,13 @@ source: \
 	$(DIST_DIR)/src/qt/butler_editinventoryview.h \
 	$(DIST_DIR)/src/qt/butler_editinventoryview.cpp \
 	\
+	$(DIST_DIR)/src/qt/butler_accountsmodel.h \
+	$(DIST_DIR)/src/qt/butler_accountsmodel.cpp \
+	$(DIST_DIR)/src/qt/butler_accountsview.h \
+	$(DIST_DIR)/src/qt/butler_accountsview.cpp \
+	$(DIST_DIR)/src/qt/butler_editaccountview.h \
+	$(DIST_DIR)/src/qt/butler_editaccountview.cpp \
+	\
 	$(DIST_DIR)/src/qt/butler_partnersmodel.h \
 	$(DIST_DIR)/src/qt/butler_partnersmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_partnersview.h \
@@ -247,8 +258,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_shoppingview.h \
 	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_custommodel.h \
-	$(DIST_DIR)/src/qt/butler_custommodel.cpp \
 	$(DIST_DIR)/src/qt/butler_customview.h \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \
 	\
@@ -298,6 +307,7 @@ source: \
 	$(DIST_DIR)/share/icons/right.png \
 	$(DIST_DIR)/share/icons/tick.png \
 	$(DIST_DIR)/share/icons/partner.png \
+	$(DIST_DIR)/share/icons/account.png \
 	$(DIST_DIR)/share/icons/company.png \
 	$(DIST_DIR)/share/icons/refresh.png \
 	$(DIST_DIR)/share/icons/statistics.png \

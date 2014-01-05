@@ -50,6 +50,7 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
+	void query();
 	int index(const QDateTime & uploaded) const NO_FCLOG;
 	const Item & item(int row) const NO_FCLOG;
 	const ItemSet & itemSet() const { return items; };
@@ -60,11 +61,16 @@ public:
 
 protected:
 	static void itemChange(const ItemDb & db, const Item & modified);
-	void itemChangeListener(const ItemDb & db, const Item & modified);
 	/* return true if 'modified' should be in query list */
-	virtual bool queryFilter(const Item & modified) = 0;
+	bool queryFilter(const Item & modified);
+	void itemChangeListener(const ItemDb & db, const Item & modified);
 	static void itemRemoved(const ItemDb & db, const Item & removed);
 	void itemRemovedListener(const ItemDb & db, const Item & removed);
+
+public:
+	QuerySet queries;
+	Query opts;
+	QueryStat stat;
 
 protected:
 	ItemDb & db;

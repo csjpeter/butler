@@ -18,11 +18,14 @@ BrandDb::BrandDb(SqlConnection & sql) :
 	if(!tables.has("brands"))
 		sql.exec(
 				"CREATE TABLE brands ("
-				"name TEXT NOT NULL PRIMARY KEY, "
-				"company TEXT NOT NULL REFERENCES companies(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"name TEXT, "
+				"company TEXT NOT NULL, "
 				"icon TEXT, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name), "
+				"FOREIGN KEY (company) REFERENCES companies(name) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE "
 				")"
 				);
 

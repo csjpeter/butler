@@ -16,44 +16,54 @@ ItemDb::ItemDb(SqlConnection & sql) :
 
 	if(!tables.has("items"))
 		sql.exec("CREATE TABLE items ("
-				"uploaded TIMESTAMP NOT NULL PRIMARY KEY "
-						"CHECK('1970-01-01T00:00:00' < uploaded), "
+				"upload_date TIMESTAMP NOT NULL CHECK('1970-01-01T00:00:00' < upload_date), "
 				"name TEXT NOT NULL, "
+				"unit TEXT NOT NULL, "
 				"type TEXT NOT NULL, "
-				"quantity DECIMAL(15,3) NOT NULL DEFAULT 0 CHECK(0 <= quantity), "
-				"comment TEXT NOT NULL DEFAULT ''"
+				"brand TEXT NOT NULL, "
+				"quantity DECIMAL(15,3) NOT NULL, "
+				"price DECIMAL(15,2) NOT NULL, "
+				"currency TEXT NOT NULL, "
+				"account TEXT NOT NULL, "
+				"partner TEXT NOT NULL, "
+				"inventory TEXT NOT NULL, "
+				"comment TEXT NOT NULL DEFAULT '',"
+				"inv_change_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (upload_date), "
+				"FOREIGN KEY (name, unit) REFERENCES wares(name, unit) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (name, type) REFERENCES ware_types(name, type) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (brand) REFERENCES brands(name) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (account, currency) REFERENCES accounts(name, currency) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (partner) REFERENCES partners(name) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"FOREIGN KEY (inventory) REFERENCES inventories(name) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE "
 				")"
 				);
 	cols = sql.columns("items");
-	if(		!cols.has("name") ||
+	if(		!cols.has("upload_date") ||
+			!cols.has("name") ||
+			!cols.has("unit") ||
 			!cols.has("type") ||
-			!cols.has("uploaded") ||
+			!cols.has("brand") ||
 			!cols.has("quantity") ||
-			!cols.has("comment")
+			!cols.has("price") ||
+			!cols.has("currency") ||
+			!cols.has("account") ||
+			!cols.has("partner") ||
+			!cols.has("inventory") ||
+			!cols.has("comment") ||
+			!cols.has("inv_change_date") ||
+			!cols.has("last_modified")
 	  )
 		throw DbIncompatibleTableError(
 				"Incompatible table items in the openend database.");
-
-	if(!tables.has("items_bought"))
-		sql.exec("CREATE TABLE items_bought ("
-				  "uploaded TIMESTAMP NOT NULL REFERENCES Items(uploaded) "
-				  "ON DELETE CASCADE ON UPDATE CASCADE, "
-				  "purchased TIMESTAMP NOT NULL, "
-				  "price DECIMAL(15,2) NOT NULL DEFAULT 0 CHECK(0 <= price), "
-				  "partner TEXT NOT NULL REFERENCES partners(name) "
-				  "ON DELETE RESTRICT ON UPDATE CASCADE, "
-				  "on_stock INT NOT NULL DEFAULT 0 CHECK(on_stock = 0 OR on_stock = 1)"
-				  ")"
-			    );
-	cols = sql.columns("items_bought");
-	if(		!cols.has("uploaded") ||
-			!cols.has("purchased") ||
-			!cols.has("price") ||
-			!cols.has("partner") ||
-			!cols.has("on_stock")
-	  )
-		throw DbIncompatibleTableError(
-				"Incompatible table items_bought in the openend database.");
 }
 
 ItemDb::~ItemDb()
@@ -65,26 +75,23 @@ void ItemDb::insert(const Item & i)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO items (name, type, uploaded, "
-			"quantity, comment) VALUES(?, ?, ?, ?, ?)");
-	sqlQuery.bindValue(0, i.name);
-	sqlQuery.bindValue(1, i.type);
-	sqlQuery.bindValue(2, i.uploaded);
-	sqlQuery.bindValue(3, i.quantity);
-	sqlQuery.bindValue(4, i.comment);
+	sqlQuery.prepare("INSERT INTO items (upload_date, name, unit, type, brand, "
+			"quantity, price, currency, account, partner, inventory, comment, inv_change_date) "
+			"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	sqlQuery.bindValue(0, i.uploadDate);
+	sqlQuery.bindValue(1, i.unit);
+	sqlQuery.bindValue(2, i.name);
+	sqlQuery.bindValue(3, i.type);
+	sqlQuery.bindValue(4, i.brand);
+	sqlQuery.bindValue(5, i.quantity);
+	sqlQuery.bindValue(6, i.price);
+	sqlQuery.bindValue(7, i.currency);
+	sqlQuery.bindValue(8, i.account);
+	sqlQuery.bindValue(9, i.partner);
+	sqlQuery.bindValue(10, i.inventory);
+	sqlQuery.bindValue(11, i.comment);
+	sqlQuery.bindValue(12, i.invChangeDate);
 	sqlQuery.exec();
-
-	if(i.bought){
-		sqlQuery.prepare("INSERT INTO items_bought "
-				"(uploaded, purchased, price, partner, on_stock) "
-				"VALUES(?, ?, ?, ?, ?)");
-		sqlQuery.bindValue(0, i.uploaded);
-		sqlQuery.bindValue(1, i.purchased);
-		sqlQuery.bindValue(2, i.price);
-		sqlQuery.bindValue(3, i.partner);
-		sqlQuery.bindValue(4, i.onStock ? 1 : 0);
-		sqlQuery.exec();
-	}
 
 	tr.commit();
 }
@@ -95,57 +102,38 @@ void ItemDb::update(const Item & orig, const Item & modified)
 	SqlTransaction tr(sql);
 
 	/* The orig and modified object should describe
-	 * the same item's old and new content. */
-	if(orig.uploaded != modified.uploaded)
-		throw DbLogicError("The modified item is a different item than the original.");
+	 * the same inventoryChange's old and new content. */
+	if(orig.uploadDate != modified.uploadDate)
+		throw DbLogicError("The modified inventoryChange is a different "
+						"inventoryChange than the original.");
 	sqlQuery.prepare("UPDATE items SET "
-			"name = ?, "
-			"type = ?, "
-			"quantity = ?, "
-			"comment = ? "
-			"WHERE uploaded = ?");
-	sqlQuery.bindValue(0, modified.name);
-	sqlQuery.bindValue(1, modified.type);
-	sqlQuery.bindValue(2, modified.quantity);
-	sqlQuery.bindValue(3, modified.comment);
-	sqlQuery.bindValue(4, orig.uploaded);
+					"name = ?, "
+					"unit = ?, "
+					"type = ?, "
+					"brand = ?, "
+					"quantity = ?, "
+					"price = ?, "
+					"currency = ?, "
+					"account = ?, "
+					"partner = ?, "
+					"inventory = ?, "
+					"comment = ?, "
+					"inv_change_date = ?, "
+					"WHERE uploadDate = ?");
+	sqlQuery.bindValue(0, orig.name);
+	sqlQuery.bindValue(1, orig.unit);
+	sqlQuery.bindValue(2, orig.type);
+	sqlQuery.bindValue(3, orig.brand);
+	sqlQuery.bindValue(4, orig.quantity);
+	sqlQuery.bindValue(5, orig.price);
+	sqlQuery.bindValue(6, orig.currency);
+	sqlQuery.bindValue(7, orig.account);
+	sqlQuery.bindValue(8, orig.partner);
+	sqlQuery.bindValue(9, orig.inventory);
+	sqlQuery.bindValue(10, orig.comment);
+	sqlQuery.bindValue(11, orig.invChangeDate);
+	sqlQuery.bindValue(12, orig.uploadDate);
 	sqlQuery.exec();
-
-	if(!orig.bought && modified.bought){
-		sqlQuery.prepare("INSERT INTO items_bought "
-				"(uploaded, purchased, "
-				"price, partner, on_stock) "
-				"VALUES(?, ?, ?, ?, ?)");
-		sqlQuery.bindValue(0, modified.uploaded);
-		sqlQuery.bindValue(1, modified.purchased);
-		sqlQuery.bindValue(2, modified.price);
-		sqlQuery.bindValue(3, modified.partner);
-		sqlQuery.bindValue(4, modified.onStock ? 1 : 0);
-		sqlQuery.exec();
-	} else if(orig.bought && !modified.bought){
-		sqlQuery.prepare("DELETE FROM items_bought WHERE uploaded = ?");
-		sqlQuery.bindValue(0, orig.uploaded);
-		sqlQuery.exec();
-	} else if(orig.bought && modified.bought){
-		/* The orig and modified object should describe
-		 * the same item's old and new content. */
-		if(orig.uploaded != modified.uploaded)
-			throw DbLogicError(
-					"The modified item is a different item than the original.");
-
-		sqlQuery.prepare("UPDATE items_bought SET "
-				"purchased = ?, "
-				"price = ?, "
-				"partner = ?, "
-				"on_stock = ? "
-				"WHERE uploaded = ?");
-		sqlQuery.bindValue(0, modified.purchased);
-		sqlQuery.bindValue(1, modified.price);
-		sqlQuery.bindValue(2, modified.partner);
-		sqlQuery.bindValue(3, modified.onStock ? 1 : 0);
-		sqlQuery.bindValue(4, orig.uploaded);
-		sqlQuery.exec();
-	}
 
 	tr.commit();
 }
@@ -155,8 +143,8 @@ void ItemDb::del(const Item & i)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM items WHERE uploaded = ?");
-	sqlQuery.bindValue(0, i.uploaded);
+	sqlQuery.prepare("DELETE FROM items WHERE uploadDate = ?");
+	sqlQuery.bindValue(0, i.uploadDate);
 	sqlQuery.exec();
 
 	tr.commit();
@@ -169,19 +157,26 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 
 	/* assemble command */
 	QString cmd("SELECT "
-			" MAX(items.uploaded) AS uploaded,"
+			" MAX(items.upload_date) AS upload_date,"
 			" MAX(items.name) AS name,"
+			" MAX(items.unit) AS unit,"
 			" MAX(items.type) AS type,"
+			" MAX(items.brand) AS brand,"
+			" MAX(items.quantity) AS quantity, "
+			" MAX(items.price) AS price,"
+			" MAX(items.currency) AS currency,"
+			" MAX(items.account) AS account,"
+			" MAX(items.partner) AS partner,"
+			" MAX(items.inventory) AS inventory,"
 			" MAX(items.comment) AS comment,"
-			" MAX(items.quantity) AS quantity"
+			" MAX(items.inv_change_date) AS inv_change_date"
 			" FROM items"
-			" LEFT JOIN items_bought ON items.uploaded = items_bought.uploaded"
 			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
-			" WHERE items_bought.uploaded IS NULL");
+			" WHERE ");
 	{
 		unsigned i, s = tags.size();
 		if(s)
-			cmd += " AND (";
+			cmd += "  (";
 		for(i=0; i<s; i++){
 			if(0 < i)
 				cmd += " OR";
@@ -192,24 +187,40 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 		if(0 < s)
 			cmd += ")";
 	}
-	cmd += " GROUP BY items.uploaded ORDER BY items.uploaded DESC";
+	cmd += " GROUP BY items.upload_date ORDER BY items.upload_date DESC";
 	sqlQuery.exec(cmd);
 	items.clear();
-	int uploadedNo = sqlQuery.colIndex("uploaded");
+	int uploadDateNo = sqlQuery.colIndex("upload_date");
 	int nameNo = sqlQuery.colIndex("name");
+	int unitNo = sqlQuery.colIndex("unit");
 	int typeNo = sqlQuery.colIndex("type");
+	int brandNo = sqlQuery.colIndex("brand");
 	int quantityNo = sqlQuery.colIndex("quantity");
+	int priceNo = sqlQuery.colIndex("price");
+	int currencyNo = sqlQuery.colIndex("currency");
+	int accountNo = sqlQuery.colIndex("account");
+	int partnerNo = sqlQuery.colIndex("partner");
+	int inventoryNo = sqlQuery.colIndex("inventory");
 	int commentNo = sqlQuery.colIndex("comment");
+	int invChangeDateNo = sqlQuery.colIndex("inv_change_date");
 	DBG("----- Item query result:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
-		Item *item = new Item();
-		item->uploaded = sqlQuery.dateTime(uploadedNo);
-		item->name = sqlQuery.text(nameNo);
-		item->type = sqlQuery.text(typeNo);
-		item->quantity = sqlQuery.real(quantityNo);
-		item->comment = sqlQuery.text(commentNo);
-		items.add(item);
+		Item *inventoryChange = new Item();
+		inventoryChange->uploadDate = sqlQuery.dateTime(uploadDateNo);
+		inventoryChange->name = sqlQuery.text(nameNo);
+		inventoryChange->unit = sqlQuery.text(unitNo);
+		inventoryChange->type = sqlQuery.text(typeNo);
+		inventoryChange->brand = sqlQuery.text(brandNo);
+		inventoryChange->quantity = sqlQuery.real(quantityNo);
+		inventoryChange->price = sqlQuery.real(priceNo);
+		inventoryChange->currency = sqlQuery.text(currencyNo);
+		inventoryChange->account = sqlQuery.text(accountNo);
+		inventoryChange->partner = sqlQuery.text(partnerNo);
+		inventoryChange->inventory = sqlQuery.text(inventoryNo);
+		inventoryChange->comment = sqlQuery.text(commentNo);
+		inventoryChange->invChangeDate = sqlQuery.dateTime(invChangeDateNo);
+		items.add(inventoryChange);
 	}
 	DBG("-----");
 
@@ -225,41 +236,44 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 
 	/* assemble command */
 	QString cmd("SELECT"
-			" MAX(items.uploaded) AS uploaded,"
-			" MAX(items_bought.purchased) AS purchased,"
+			" MAX(items.upload_date) AS upload_date,"
 			" MAX(items.name) AS name,"
+			" MAX(items.unit) AS unit,"
 			" MAX(items.type) AS type,"
+			" MAX(items.brand) AS brand,"
+			" MAX(items.quantity) AS quantity, "
+			" MAX(items.price) AS price,"
+			" MAX(items.currency) AS currency,"
+			" MAX(items.account) AS account,"
+			" MAX(items.partner) AS partner,"
+			" MAX(items.inventory) AS inventory,"
 			" MAX(items.comment) AS comment,"
-			" MAX(items.quantity) AS quantity,"
-			" MAX(items_bought.price) AS price,"
-			" MAX(items_bought.partner) AS partner,"
-			" MAX(items_bought.on_stock) AS on_stock"
-			" FROM items_bought"
-			" LEFT JOIN items ON items_bought.uploaded = items.uploaded"
+			" MAX(items.inv_change_date) AS inv_change_date"
+			" FROM items"
 			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
-			" LEFT JOIN partners ON items_bought.partner = partners.name");
+			" LEFT JOIN partners ON items.partner = partners.name");
 	
 	QString filter;
 
 	if(q.stockOption == Query::StockOptions::Gains){
 		if(!filter.isEmpty())
 			filter += " AND";
-		filter += " on_stock = '1'";
+		filter += " 0 < quantity";
 	} else if(q.stockOption == Query::StockOptions::Looses){
 		if(!filter.isEmpty())
 			filter += " AND";
-		filter += " on_stock = '0'";
+		filter += " quantity < 0";
 	}
 
 	if(!filter.isEmpty())
 		filter += " AND";
 	filter += " '";
 	filter += q.startDate.isoUtcString();
-	filter += "' < purchased";
+	filter += "' < inv_change_date";
 
 	if(!filter.isEmpty())
 		filter += " AND";
-	filter += " purchased < '";
+	filter += " inv_change_date < '";
 	filter += q.endDate.isoUtcString();
 	filter += "'";
 
@@ -337,7 +351,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		cmd += filter;
 	}
 	
-	cmd += " GROUP BY items.uploaded";
+	cmd += " GROUP BY items.upload_date";
 
 	if(q.tagOption == Query::TagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";
@@ -349,15 +363,19 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	items.clear();
 
 	/* evaluate query result */
-	int uploadedNo = sqlQuery.colIndex("uploaded");
-	int purchasedNo = sqlQuery.colIndex("purchased");
+	int uploadDateNo = sqlQuery.colIndex("upload_date");
 	int nameNo = sqlQuery.colIndex("name");
+	int unitNo = sqlQuery.colIndex("unit");
 	int typeNo = sqlQuery.colIndex("type");
-	int commentNo = sqlQuery.colIndex("comment");
+	int brandNo = sqlQuery.colIndex("brand");
 	int quantityNo = sqlQuery.colIndex("quantity");
 	int priceNo = sqlQuery.colIndex("price");
+	int currencyNo = sqlQuery.colIndex("currency");
+	int accountNo = sqlQuery.colIndex("account");
 	int partnerNo = sqlQuery.colIndex("partner");
-	int onStockNo = sqlQuery.colIndex("on_stock");
+	int inventoryNo = sqlQuery.colIndex("inventory");
+	int commentNo = sqlQuery.colIndex("comment");
+	int invChangeDateNo = sqlQuery.colIndex("inv_change_date");
 
 	/* statistics */
 	stat.itemCount = 0;
@@ -371,34 +389,37 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	DBG("----- Item query result:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
-		Item *item = new Item();
-		item->uploaded = sqlQuery.dateTime(uploadedNo);
-		item->purchased = sqlQuery.dateTime(purchasedNo);
-		item->name = sqlQuery.text(nameNo);
-		item->type = sqlQuery.text(typeNo);
-		item->comment = sqlQuery.text(commentNo);
-		item->quantity = sqlQuery.real(quantityNo);
-		item->price = sqlQuery.real(priceNo);
-		item->partner = sqlQuery.text(partnerNo);
-		item->onStock = sqlQuery.number(onStockNo);
-		item->bought = true;
+		Item *inventoryChange = new Item();
+		inventoryChange->uploadDate = sqlQuery.dateTime(uploadDateNo);
+		inventoryChange->name = sqlQuery.text(nameNo);
+		inventoryChange->unit = sqlQuery.text(unitNo);
+		inventoryChange->type = sqlQuery.text(typeNo);
+		inventoryChange->brand = sqlQuery.text(brandNo);
+		inventoryChange->quantity = sqlQuery.real(quantityNo);
+		inventoryChange->price = sqlQuery.real(priceNo);
+		inventoryChange->currency = sqlQuery.text(currencyNo);
+		inventoryChange->account = sqlQuery.text(accountNo);
+		inventoryChange->partner = sqlQuery.text(partnerNo);
+		inventoryChange->inventory = sqlQuery.text(inventoryNo);
+		inventoryChange->comment = sqlQuery.text(commentNo);
+		inventoryChange->invChangeDate = sqlQuery.dateTime(invChangeDateNo);
 
 		/* statistics */
 		stat.itemCount++;
-		stat.sumQuantity += item->quantity;
-		stat.sumPrice += item->price;
-		if(DBL_EPSILON <= item->quantity && DBL_EPSILON <= item->price){
-			sumQuantity += item->quantity;
-			sumPrice += item->price;
+		stat.sumQuantity += inventoryChange->quantity;
+		stat.sumPrice += inventoryChange->price;
+		if(DBL_EPSILON <= inventoryChange->quantity && DBL_EPSILON <= inventoryChange->price){
+			sumQuantity += inventoryChange->quantity;
+			sumPrice += inventoryChange->price;
 
-			double unitPrice = item->price / item->quantity;
+			double unitPrice = inventoryChange->price / inventoryChange->quantity;
 			if(unitPrice < stat.cheapestUnitPrice)
 				stat.cheapestUnitPrice = unitPrice;
 			if(stat.mostExpUnitPrice < unitPrice)
 				stat.mostExpUnitPrice = unitPrice;
 		}
 
-		items.add(item);
+		items.add(inventoryChange);
 	}
 
 	stat.avgPrice = sumPrice / sumQuantity;
@@ -414,5 +435,5 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 }
 
 /*
-select * from (select Items.uploaded as id, Items.name as ware, Items.type as type, items_bought.purchased as bought, items_bought.price as price from Items left join items_bought on Items.uploaded = items_bought.uploaded left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < items_bought.purchased and items_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.uploaded);
+select * from (select Items.upload_date as id, Items.name as ware, Items.type as type, items_bought.purchased as bought, items_bought.price as price from Items left join items_bought on Items.upload_date = items_bought.upload_date left join WareTags on Items.name = WareTags.name where '2012-02-01T00:00:00' < items_bought.purchased and items_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Items.upload_date);
 */

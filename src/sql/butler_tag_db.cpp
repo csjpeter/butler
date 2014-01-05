@@ -13,9 +13,11 @@ TagDb::TagDb(SqlConnection & sql) :
 
 	if(!tables.has("tags"))
 		sql.exec(	"CREATE TABLE tags ("
-				"name TEXT PRIMARY KEY, "
+				"name TEXT, "
 				"description TEXT NOT NULL DEFAULT '', "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name)"
 				")"
 				);
 	/*sql.exec("CREATE TRIGGER update_last_modified "

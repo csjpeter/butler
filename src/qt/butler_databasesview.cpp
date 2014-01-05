@@ -232,13 +232,14 @@ void DatabasesView::useDbDesc()
 
 		tagsModel(dbname);
 		waresModel(dbname);
-		companiesModel(dbname);
-		brandsModel(dbname);
 		inventoriesModel(dbname);
+		companiesModel(dbname);
 		partnersModel(dbname);
+		accountsModel(dbname);
+		brandsModel(dbname);
 		queriesModel(dbname);
-		shoppingModel(dbname);
-		csjp::Object<CustomModel> tmpModel(customModel(dbname));
+		//shoppingModel(dbname);
+		csjp::Object<ItemsModel> tmpModel(itemModel(dbname));
 
 		Config::defaultDbName = dbname;
 		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));

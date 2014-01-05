@@ -463,6 +463,11 @@ void DoubleEditor::setSuffix(const QString & newSuffix)
 	setValue(val);
 }
 
+const QString & DoubleEditor::getSuffix()
+{
+	return suffix;
+}
+
 void DoubleEditor::setValue(double v)
 {
 	//QString vStr(Config::locale.toString(v, 'f', precision));

@@ -36,6 +36,7 @@ private:
 	CompanyDb * companyDb;
 	BrandDb * brandDb;
 	InventoryDb * inventoryDb;
+	AccountDb * accountDb;
 	PartnerDb * partnerDb;
 	QueryDb * queryDb;
 	ItemDb * itemDb;
@@ -44,6 +45,7 @@ private:
 	CompaniesModel * companyModel;
 	BrandsModel * brandsModel;
 	InventoriesModel * inventoriesModel;
+	AccountsModel * accountsModel;
 	PartnersModel * partnersModel;
 	QueriesModel * queriesModel;
 	ShoppingModel * shoppingModel;
@@ -57,6 +59,7 @@ public:
 		companyDb(0),
 		brandDb(0),
 		inventoryDb(0),
+		accountDb(0),
 		partnerDb(0),
 		queryDb(0),
 		itemDb(0),
@@ -65,6 +68,7 @@ public:
 		companyModel(0),
 		brandsModel(0),
 		inventoriesModel(0),
+		accountsModel(0),
 		partnersModel(0),
 		queriesModel(0),
 		shoppingModel(0)
@@ -77,6 +81,7 @@ public:
 		delete shoppingModel;
 		delete queriesModel;
 		delete partnersModel;
+		delete accountsModel;
 		delete companyModel;
 		delete inventoriesModel;
 		delete brandsModel;
@@ -86,6 +91,7 @@ public:
 		delete itemDb;
 		delete queryDb;
 		delete partnerDb;
+		delete accountDb;
 		delete companyDb;
 		delete inventoryDb;
 		delete brandDb;
@@ -115,12 +121,12 @@ private:
 	}
 
 public:
-	csjp::Object<CustomModel> customItems()
+	csjp::Object<ItemsModel> items()
 	{
 		if(!itemDb)
 			itemDb = new ItemDb(sqlConn());
-		/* Each custom view shall have its own special custom model. */
-		return csjp::Object<CustomModel>(new CustomModel(*itemDb, wares()));
+		/* Each item view shall have its own special item model. */
+		return csjp::Object<ItemsModel>(new ItemsModel(*itemDb, wares()));
 	}
 
 	TagsModel & tags()
@@ -168,6 +174,15 @@ public:
 		return *inventoriesModel;
 	}
 
+	AccountsModel & accounts()
+	{
+		if(!accountDb)
+			accountDb = new AccountDb(sqlConn());
+		if(!accountsModel)
+			accountsModel = new AccountsModel(*accountDb);
+		return *accountsModel;
+	}
+
 	PartnersModel & partners()
 	{
 		if(!partnerDb)
@@ -185,7 +200,7 @@ public:
 			queriesModel = new QueriesModel(*queryDb);
 		return *queriesModel;
 	}
-
+/*
 	ShoppingModel & shoppingItems()
 	{
 		if(!itemDb)
@@ -194,7 +209,7 @@ public:
 			shoppingModel = new ShoppingModel(*itemDb, wares());
 		return *shoppingModel;
 	}
-
+*/
 private:
 	void equal(const Database & tag);
 };
@@ -342,6 +357,11 @@ InventoriesModel & inventoriesModel(const QString & dbname)
 	return loadDatabase(dbname).inventories();
 }
 
+AccountsModel & accountsModel(const QString & dbname)
+{
+	return loadDatabase(dbname).accounts();
+}
+
 PartnersModel & partnersModel(const QString & dbname)
 {
 	return loadDatabase(dbname).partners();
@@ -351,13 +371,13 @@ QueriesModel & queriesModel(const QString & dbname)
 {
 	return loadDatabase(dbname).queries();
 }
-
+/*
 ShoppingModel & shoppingModel(const QString & dbname)
 {
 	return loadDatabase(dbname).shoppingItems();
 }
-
-csjp::Object<CustomModel> customModel(const QString & dbname)
+*/
+csjp::Object<ItemsModel> itemModel(const QString & dbname)
 {
-	return loadDatabase(dbname).customItems();
+	return loadDatabase(dbname).items();
 }

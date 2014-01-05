@@ -54,6 +54,7 @@ public:
 typedef csjp::OwnerContainer<Text> WareNameSet;
 typedef csjp::OwnerContainer<Text> CompanyNameSet;
 typedef csjp::OwnerContainer<Text> PartnerNameSet;
+typedef csjp::OwnerContainer<Text> AccountNameSet;
 
 class QueryStat{
 public:

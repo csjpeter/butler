@@ -70,7 +70,7 @@ private:
 	QDoubleSpinBox *quantityEditor;
 	QDoubleSpinBox *unitPriceEditor;
 	QDoubleSpinBox *grossPriceEditor;
-	QDateTimeEdit *purchaseDateTime;
+	QDateTimeEdit *invChangeDateTime;
 	QComboBox *partnerBox;
 
 	QPushButton *buyButton;

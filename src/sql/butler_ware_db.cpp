@@ -18,10 +18,13 @@ WareDb::WareDb(SqlConnection & sql) :
 	if(!tables.has("wares"))
 		sql.exec(
 				"CREATE TABLE wares ("
-				"name TEXT NOT NULL PRIMARY KEY, "
+				"name TEXT, "
 				"unit TEXT NOT NULL DEFAULT '', "
 				"icon TEXT, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name), "
+				"UNIQUE (name, unit) "
 				")"
 				);
 

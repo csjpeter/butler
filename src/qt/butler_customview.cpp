@@ -28,7 +28,7 @@ SCC TidStatsItemButton = QT_TRANSLATE_NOOP("CustomView", "Statistics");
 CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(customModel(dbname)),
+	model(itemModel(dbname)),
 	editButton(QIcon(Path::icon("edit.png")),
 			TidEditItemButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -49,12 +49,11 @@ CustomView::CustomView(const QString & dbname, QWidget * parent) :
 	setWindowIcon(QIcon(Path::icon("list.png")));
 
 	tableView.setModel(&model);
-	tableView.hideColumn(Item::Bought);
 	tableView.hideColumn(Item::LastModified);
 
 	toolBar.addToolWidget(editButton);
 	toolBar.addToolWidget(delButton);
-	toolBar.addToolWidget(shoppingButton);
+	//toolBar.addToolWidget(shoppingButton);
 	toolBar.addToolWidget(statsButton);
 	toolBar.addToolWidget(refreshButton);
 	toolBar.addToolWidget(filterButton);
@@ -132,7 +131,7 @@ void CustomView::updateToolButtonStates()
 	if(tableView.currentIndex().isValid()){
 		editButton.show();
 		delButton.show();
-		shoppingButton.show();
+		//shoppingButton.show();
 	} else {
 		editButton.hide();
 		delButton.hide();
@@ -187,10 +186,10 @@ void CustomView::loadState()
 
 	tableView.loadState(prefix);
 
-	DateTime uploaded(settings.value(prefix + "/currentitem", ""));
+	DateTime uploadDate(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model->itemSet().has(uploaded))
-		tableView.setCurrentIndex(model->index(model->index(uploaded), col));
+	if(model->itemSet().has(uploadDate))
+		tableView.setCurrentIndex(model->index(model->index(uploadDate), col));
 
 	if(settings.value(prefix + "/editItemView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editItem()));
@@ -209,12 +208,12 @@ void CustomView::saveState()
 
 	settings.setValue(prefix + "/query", model->opts.name);
 
-	QString uploaded;
+	QString uploadDate;
 	if(tableView.currentIndex().isValid()){
 		const Item & item = model->item(tableView.currentIndex().row());
-		uploaded = item.uploaded.toString(Qt::ISODate);
+		uploadDate = item.uploadDate.toString(Qt::ISODate);
 	}
-	settings.setValue(prefix + "/currentitem", uploaded);
+	settings.setValue(prefix + "/currentitem", uploadDate);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
 	tableView.saveState(prefix);
@@ -225,16 +224,16 @@ void CustomView::saveState()
 
 void CustomView::refreshItems()
 {
-	DateTime uploaded;
+	DateTime uploadDate;
 	if(tableView.currentIndex().isValid()){
 		const Item & item = model->item(tableView.currentIndex().row());
-		uploaded = item.uploaded;
+		uploadDate = item.uploadDate;
 	}
 
 	model->query();
 
-	if(model->itemSet().has(uploaded))
-		tableView.setCurrentIndex(model->index(model->index(uploaded), 0));
+	if(model->itemSet().has(uploadDate))
+		tableView.setCurrentIndex(model->index(model->index(uploadDate), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
@@ -292,8 +291,9 @@ void CustomView::shoppingItem()
 			item.name + (item.type.size() ? (" (" + item.type + ")") : ""),
 			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
 	int res = msg->exec();
-	if(res == QMessageBox::Yes)
-		model->addShoppingItem(row);
+	if(res == QMessageBox::Yes){
+		//model->addShoppingItem(row);
+	}
 }
 
 void CustomView::editWare()

@@ -118,7 +118,7 @@ void NewItemView::mapToGui()
 
 void NewItemView::mapFromGui()
 {
-	item.uploaded = QDateTime::currentDateTime();
+	item.uploadDate = QDateTime::currentDateTime();
 	item.name = nameEditor->text();
 	item.type = typeEditor->text();
 	item.quantity = quantityEditor->value();

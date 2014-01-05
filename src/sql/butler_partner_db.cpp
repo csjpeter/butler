@@ -13,15 +13,18 @@ PartnerDb::PartnerDb(SqlConnection & sql) :
 
 	if(!tables.has("partners"))
 		sql.exec("CREATE TABLE partners ("
-				"name TEXT NOT NULL PRIMARY KEY, "
+				"name TEXT, "
 				"country TEXT NOT NULL, "
 				"city TEXT NOT NULL, "
 				"postal_code TEXT NOT NULL, "
 				"address TEXT NOT NULL, "
-				"company TEXT NOT NULL REFERENCES companies(name) "
-				"ON DELETE RESTRICT ON UPDATE CASCADE, "
+				"company TEXT, "
 				"store_name TEXT NOT NULL, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name), "
+				"FOREIGN KEY (company) REFERENCES companies(name) "
+				"		ON DELETE RESTRICT ON UPDATE CASCADE "
 				")"
 			       );
 	cols = sql.columns("partners");

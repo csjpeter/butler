@@ -56,10 +56,10 @@ BuyItemView::BuyItemView(const QString & dbname, QWidget * parent) :
 
 	label = new QLabel(tr("Date of purchase:"));
 	gridLayout->addWidget(label, 7, 0, 1, 1);
-	purchaseDateTime = new QDateTimeEdit;
-	purchaseDateTime->setCalendarPopup(true);
-	purchaseDateTime->setDisplayFormat(Config::dateTimeFormat());
-	gridLayout->addWidget(purchaseDateTime, 7, 1, 1, 3);
+	invChangeDateTime = new QDateTimeEdit;
+	invChangeDateTime->setCalendarPopup(true);
+	invChangeDateTime->setDisplayFormat(Config::dateTimeFormat());
+	gridLayout->addWidget(invChangeDateTime, 7, 1, 1, 3);
 
 	label = new QLabel(tr("Partner:"));
 	gridLayout->addWidget(label, 8, 0, 1, 1);
@@ -147,7 +147,7 @@ void BuyItemView::mapToGui()
 	grossPriceEditor->blockSignals(false);
 
 	partnerBox->setCurrentIndex(partnerCursor);
-	purchaseDateTime->setDateTime(QDateTime::currentDateTime());
+	invChangeDateTime->setDateTime(QDateTime::currentDateTime());
 	
 	WaresModel & wm = waresModel(dbname);
 	int i = wm.index(item.name);
@@ -162,7 +162,7 @@ void BuyItemView::mapToGui()
 void BuyItemView::mapFromGui()
 {
 	PartnersModel & pm = partnersModel(dbname);
-	item.purchased = purchaseDateTime->dateTime();
+	item.invChangeDate = invChangeDateTime->dateTime();
 	item.quantity = quantityEditor->value();
 	item.price = grossPriceEditor->value();
 	item.partner = pm.partner(partnerBox->currentIndex()).name;

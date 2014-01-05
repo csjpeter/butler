@@ -16,13 +16,14 @@ PaymentDb::PaymentDb(SqlConnection & sql) :
 
 	if(!tables.has("payments"))
 		sql.exec("CREATE TABLE payments ("
-				"upload_date TIMESTAMP NOT NULL PRIMARY KEY "
-						"CHECK('1970-01-01T00:00:00' < upload_date), "
+				"upload_date TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date), "
 				"account TEXT NOT NULL, "
 				"partner TEXT NOT NULL, "
-				"amount DECIMAL(15,3) NOT NULL DEFAULT 0 CHECK(0 <= amount), "
+				"amount DECIMAL(15,3) NOT NULL, "
 				"comment TEXT NOT NULL DEFAULT '',"
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (upload_date) "
 				")"
 				);
 	cols = sql.columns("payments");

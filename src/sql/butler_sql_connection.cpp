@@ -128,8 +128,7 @@ void SqlConnection::open()
 
 		q.next();
 
-		DBG("Reference constraint support: %s",
-				(q.value(0).toInt()) ? "yes" : "no");
+		DBG("Reference constraint support: %s", (q.value(0).toInt()) ? "yes" : "no");
 
 		if(q.value(0).toInt() != 1){
 			priv->db.close();

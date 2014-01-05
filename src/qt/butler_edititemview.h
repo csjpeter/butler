@@ -50,6 +50,8 @@ private slots:
 	void grossPriceValueChangedSlot(double q);
 	void wareNameEditFinishedSlot();
 	void wareNameEditFinishedSlot(int);
+	void accountNameEditFinishedSlot();
+	void accountNameEditFinishedSlot(int);
 
 public:
 	const QString & dbname;
@@ -67,13 +69,14 @@ private:
 
 	ComboSelector wareEditor;
 	ComboSelector typeEditor;
+	ComboSelector brandEditor;
 	QuantityEditor quantityEditor;
 	PriceEditor unitPriceEditor;
 	PriceEditor grossPriceEditor;
-	FormCheckBox onStockCheck;
-	FormCheckBox boughtCheck;
+	ComboSelector accountEditor;
 	ComboSelector partnerEditor;
-	DateTimeEditor purchaseDateTime;
+	ComboSelector inventoryEditor;
+	DateTimeEditor invChangeDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
 	TagWidget tagsWidget;
@@ -81,6 +84,7 @@ private:
 	QWidget * lastNumEdited;
 	QWidget * lastLastNumEdited;
 	Text lastWareName;
+	Text lastAccountName;
 };
 
 #endif

@@ -1,27 +1,26 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2014 Csaszar, Peter
  */
 
-#ifndef BUTLER_CUSTOMVIEW_H
-#define BUTLER_CUSTOMVIEW_H
+#ifndef BUTLER_ACCOUNTSVIEW_H
+#define BUTLER_ACCOUNTSVIEW_H
 
 #include <butler_pannview.h>
+#include <butler_databases.h>
 
-class EditItemView;
-class EditItemView;
-class QueryOptionsView;
-class EditWareView;
-class StatsView;
+/*forwards*/
+class EditAccountView;
 
-class CustomView : public PannView
+class AccountsView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
+
 public:
-	CustomView(const QString & dbname, QWidget *parent = 0);
-	virtual ~CustomView();
+	AccountsView(const QString & dbname, QWidget * parent = 0);
+	virtual ~AccountsView();
 
 	virtual void loadState();
 	virtual void saveState();
@@ -40,35 +39,27 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void editItem();
-	void delItem();
-	void shoppingItem();
-	void refreshItems();
-	void editWare();
-	void filterItems();
-	void applyNewFilter();
-	void statsItems();
+	void newAccount();
+	void editAccount();
+	void delAccount();
+	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 public:
 	const QString dbname;
 private:
-	csjp::Object<ItemsModel> model;
+	AccountsModel & model;
 
-	ToolButton editButton;
+	ToolButton addButton;
 	ToolButton delButton;
-	ToolButton shoppingButton;
-	ToolButton statsButton;
+	ToolButton editButton;
 	ToolButton refreshButton;
-	ToolButton filterButton;
 
 	TableView tableView;
 
-	EditItemView *editItemView;
-	QueryOptionsView *queryOptsView;
-	EditWareView *editWareView;
-	StatsView *statsView;
+	EditAccountView * newAccountView;
+	EditAccountView * editAccountView;
 };
 
 #endif

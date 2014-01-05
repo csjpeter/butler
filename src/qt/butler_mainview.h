@@ -12,8 +12,9 @@
 class ShoppingView;
 class EditItemView;
 class CustomView;
-class PartnersView;
 class CompanyView;
+class PartnersView;
+class AccountsView;
 class WaresView;
 class TagsView;
 class BrandsView;
@@ -49,12 +50,13 @@ private:
 private slots:
 	void activateSavedActiveWindow();
 	void activeDbChanged();
-	void openTodoView();
-	void openShoppingView();
+	//void openTodoView();
+	//void openShoppingView();
 	void openEditItemView();
 	void openCustomView();
-	void openPartnersView();
 	void openCompanyView();
+	void openPartnersView();
+	void openAccountsView();
 	void openWaresView();
 	void openTagsView();
 	void openBrandsView();
@@ -70,8 +72,9 @@ private:
 	ToolButton shoppingButton;
 	ToolButton newItemButton;
 	ToolButton analiticsButton;
-	ToolButton partnersButton;
 	ToolButton companyButton;
+	ToolButton partnersButton;
+	ToolButton accountsButton;
 	ToolButton wareButton;
 	ToolButton tagButton;
 	ToolButton brandButton;
@@ -84,8 +87,9 @@ private:
 	ShoppingView *shoppingView;
 	EditItemView *newItemView;
 	CustomView *customView;
-	PartnersView *partnersView;
 	CompanyView *companyView;
+	PartnersView *partnersView;
+	AccountsView *accountsView;
 	WaresView *waresView;
 	TagsView *tagsView;
 	BrandsView *brandsView;

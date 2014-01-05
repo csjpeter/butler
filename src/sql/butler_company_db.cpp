@@ -13,14 +13,16 @@ CompanyDb::CompanyDb(SqlConnection & sql) :
 
 	if(!tables.has("companies"))
 		sql.exec("CREATE TABLE companies ("
-				"name TEXT NOT NULL PRIMARY KEY, "
+				"name TEXT, "
 				"country TEXT NOT NULL, "
 				"city TEXT NOT NULL, "
 				"postal_code TEXT NOT NULL, "
 				"address TEXT NOT NULL, "
 				"tax_id TEXT NOT NULL, "
 				"icon TEXT, "
-				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP "
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"" // keys
+				"PRIMARY KEY (name)"
 				")"
 			       );
 	cols = sql.columns("companies");

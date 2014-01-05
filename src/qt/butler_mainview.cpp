@@ -13,9 +13,10 @@
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
 #include "butler_companyview.h"
+#include "butler_partnersview.h"
+#include "butler_accountsview.h"
 #include "butler_brandsview.h"
 #include "butler_inventoriesview.h"
-#include "butler_partnersview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 #include "butler_shoppingview.h"
@@ -33,8 +34,9 @@ SCC TidTodoButton = QT_TRANSLATE_NOOP("MainView", "Todo notes");
 SCC TidShoppingButton = QT_TRANSLATE_NOOP("MainView", "Shopping list");
 SCC TidNewItemButton = QT_TRANSLATE_NOOP("MainView", "Expense/Income");
 SCC TidAnaliticsButton = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
-SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
 SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
+SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
+SCC TidAccountsButton = QT_TRANSLATE_NOOP("MainView", "Accounts");
 SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
 SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
 SCC TidBrandButton = QT_TRANSLATE_NOOP("MainView", "Brands");
@@ -58,10 +60,12 @@ MainView::MainView(QWidget *parent) :
 			TidNewItemButton, TidContext, QKeySequence(Qt::Key_F3)),
 	analiticsButton(QIcon(Path::icon("analitics.png")),
 			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F4)),
-	partnersButton(QIcon(Path::icon("partner.png")),
-			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F5)),
 	companyButton(QIcon(Path::icon("company.png")),
 			TidCompanyButton, TidContext, QKeySequence(Qt::Key_F5)),
+	partnersButton(QIcon(Path::icon("partner.png")),
+			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F5)),
+	accountsButton(QIcon(Path::icon("account.png")),
+			TidAccountsButton, TidContext, QKeySequence(Qt::Key_F5)),
 	wareButton(QIcon(Path::icon("ware.png")),
 			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
 	tagButton(QIcon(Path::icon("tag.png")),
@@ -79,8 +83,9 @@ MainView::MainView(QWidget *parent) :
 	shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
-	partnersView(NULL),
 	companyView(NULL),
+	partnersView(NULL),
+	accountsView(NULL),
 	waresView(NULL),
 	tagsView(NULL),
 	brandsView(NULL),
@@ -95,11 +100,12 @@ MainView::MainView(QWidget *parent) :
 	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(accept()));
 
 //	connect(&todoButton, SIGNAL(clicked()), this, SLOT(openTodoView()));
-	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
+//	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	connect(&newItemButton, SIGNAL(clicked()), this, SLOT(openEditItemView()));
 	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
-	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
 	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
+	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
+	connect(&accountsButton, SIGNAL(clicked()), this, SLOT(openAccountsView()));
 	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
 	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
 	connect(&brandButton, SIGNAL(clicked()), this, SLOT(openBrandsView()));
@@ -118,6 +124,7 @@ MainView::~MainView()
 	delete shoppingView;
 	delete newItemView;
 	delete customView;
+	delete accountsView;
 	delete partnersView;
 	delete companyView;
 	delete tagsView;
@@ -148,7 +155,7 @@ void MainView::applyLayout()
 	layout->addStretch(0);
 
 //	layout->addWidget(&todoButton);
-	layout->addWidget(&shoppingButton);
+//	layout->addWidget(&shoppingButton);
 	layout->addWidget(&newItemButton);
 	layout->addWidget(&analiticsButton);
 	layout->addWidget(&wareButton);
@@ -156,6 +163,7 @@ void MainView::applyLayout()
 	layout->addWidget(&brandButton);
 	layout->addWidget(&inventoryButton);
 	layout->addWidget(&partnersButton);
+	layout->addWidget(&accountsButton);
 	layout->addWidget(&companyButton);
 	layout->addWidget(&databasesButton);
 	layout->addWidget(&infoButton);
@@ -176,8 +184,9 @@ void MainView::relayout()
 	shoppingButton.expanding();
 	newItemButton.expanding();
 	analiticsButton.expanding();
-	partnersButton.expanding();
 	companyButton.expanding();
+	partnersButton.expanding();
+	accountsButton.expanding();
 	wareButton.expanding();
 	tagButton.expanding();
 	brandButton.expanding();
@@ -227,8 +236,8 @@ void MainView::loadState()
 	try {
 		//if(settings.value(prefix + "/todoview", false).toBool())
 		//	openTodoView();
-		if(settings.value(prefix + "/shoppingview", false).toBool())
-			openShoppingView();
+		//if(settings.value(prefix + "/shoppingview", false).toBool())
+		//	openShoppingView();
 		if(settings.value(prefix + "/newitemview", false).toBool())
 			openEditItemView();
 		if(settings.value(prefix + "/customview", false).toBool())
@@ -351,14 +360,14 @@ void MainView::activeDbChanged()
 	else
 		infoLabel.setText("");
 }
-
+/*
 void MainView::openTodoView()
 {
-/*	if(!todoView)
+	if(!todoView)
 		todoView = new TodoView(Config::defaultDbName);
-	todoView->activate();*/
-}
-
+	todoView->activate();
+}*/
+/*
 void MainView::openShoppingView()
 {
 	if(!shoppingView)
@@ -372,7 +381,7 @@ void MainView::openShoppingView()
 		anotherShoppingView->activate();
 	}
 }
-
+*/
 void MainView::openEditItemView()
 {
 	if(!newItemView)
@@ -402,6 +411,20 @@ void MainView::openCustomView()
 	}
 }
 
+void MainView::openCompanyView()
+{
+	if(!companyView)
+		companyView = new CompanyView(Config::defaultDbName);
+	if(companyView->dbname == Config::defaultDbName){
+		companyView->activate();
+	} else {
+		CompanyView *anotherCompanyView;
+		anotherCompanyView = new CompanyView(Config::defaultDbName);
+		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherCompanyView->activate();
+	}
+}
+
 void MainView::openPartnersView()
 {
 	if(!partnersView)
@@ -416,17 +439,17 @@ void MainView::openPartnersView()
 	}
 }
 
-void MainView::openCompanyView()
+void MainView::openAccountsView()
 {
-	if(!companyView)
-		companyView = new CompanyView(Config::defaultDbName);
-	if(companyView->dbname == Config::defaultDbName){
-		companyView->activate();
+	if(!accountsView)
+		accountsView = new AccountsView(Config::defaultDbName);
+	if(accountsView->dbname == Config::defaultDbName){
+		accountsView->activate();
 	} else {
-		CompanyView *anotherCompanyView;
-		anotherCompanyView = new CompanyView(Config::defaultDbName);
-		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
-		anotherCompanyView->activate();
+		AccountsView *anotherAccountsView;
+		anotherAccountsView = new AccountsView(Config::defaultDbName);
+		anotherAccountsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherAccountsView->activate();
 	}
 }
 

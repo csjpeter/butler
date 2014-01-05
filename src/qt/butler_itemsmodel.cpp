@@ -13,16 +13,19 @@ csjp::ReferenceContainer<ItemsModel> ItemsModel::itemOperationListeners;
 
 const unsigned UnitPriceOffset = 0;
 
-SCC TidItemFieldCommonName	= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
-SCC TidItemFieldType	= QT_TRANSLATE_NOOP("ItemsModel", "Brand or type");
 SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
-SCC TidItemFieldIsBought	= QT_TRANSLATE_NOOP("ItemsModel", "Bought");
-SCC TidItemFieldPurchaseDate	= QT_TRANSLATE_NOOP("ItemsModel", "Bought on");
-SCC TidItemFieldPartner		= QT_TRANSLATE_NOOP("ItemsModel", "Partner");
-SCC TidItemFieldGrossPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Gross price");
+SCC TidItemFieldCommonName	= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
+SCC TidItemFieldUnit		= QT_TRANSLATE_NOOP("ItemsModel", "Unit");
+SCC TidItemFieldType		= QT_TRANSLATE_NOOP("ItemsModel", "Type");
+SCC TidItemFieldBrand		= QT_TRANSLATE_NOOP("ItemsModel", "Brand");
 SCC TidItemFieldQuantity	= QT_TRANSLATE_NOOP("ItemsModel", "Quantity");
-SCC TidItemFieldOnStock		= QT_TRANSLATE_NOOP("ItemsModel", "On stock");
+SCC TidItemFieldPrice		= QT_TRANSLATE_NOOP("ItemsModel", "Price");
+SCC TidItemFieldCurrency	= QT_TRANSLATE_NOOP("ItemsModel", "Currency");
+SCC TidItemFieldAccount		= QT_TRANSLATE_NOOP("ItemsModel", "Account");
+SCC TidItemFieldPartner		= QT_TRANSLATE_NOOP("ItemsModel", "Partner");
+SCC TidItemFieldInventory	= QT_TRANSLATE_NOOP("ItemsModel", "Inventory");
 SCC TidItemFieldComment		= QT_TRANSLATE_NOOP("ItemsModel", "Comment");
+SCC TidItemFieldInvChangeDate	= QT_TRANSLATE_NOOP("ItemsModel", "Change date");
 SCC TidItemFieldUnitPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Unit price");
 
 ItemsModel::ItemsModel(ItemDb & db, const WaresModel & wmodel) :
@@ -51,7 +54,7 @@ QModelIndex ItemsModel::index(	int row,
 Qt::ItemFlags ItemsModel::flags(const QModelIndex & index) const
 {
 	if(index.row() < (int)items.size() && index.column() < Item::NumOfFields){
-		if(index.column() != Item::Uploaded)
+		if(index.column() != Item::UploadDate)
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 		else
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -79,26 +82,20 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 		return value;
 
 	switch(index.column()){
+		case Item::UploadDate :
+			return QVariant(items.queryAt(index.row()).uploadDate);
+			break;
 		case Item::Name :
+			return QVariant(items.queryAt(index.row()).name);
+			break;
+		case Item::Unit :
 			return QVariant(items.queryAt(index.row()).name);
 			break;
 		case Item::Type :
 			return QVariant(items.queryAt(index.row()).type);
 			break;
-		case Item::Uploaded :
-			return QVariant(items.queryAt(index.row()).uploaded);
-			break;
-		case Item::Bought :
-			return QVariant(true);
-			break;
-		case Item::Purchased :
-			return QVariant(items.queryAt(index.row()).purchased);
-			break;
-		case Item::Partner :
-			return QVariant(items.queryAt(index.row()).partner);
-			break;
-		case Item::Price :
-			return QVariant(items.queryAt(index.row()).price);
+		case Item::Brand :
+			return QVariant(items.queryAt(index.row()).brand);
 			break;
 		case Item::Quantity :
 			{
@@ -114,11 +111,26 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 				return QVariant(val);
 			}
 			break;
-		case Item::OnStock :
-			return QVariant(items.queryAt(index.row()).onStock);
+		case Item::Price :
+			return QVariant(items.queryAt(index.row()).price);
+			break;
+		case Item::Currency :
+			return QVariant(items.queryAt(index.row()).currency);
+			break;
+		case Item::Account :
+			return QVariant(items.queryAt(index.row()).account);
+			break;
+		case Item::Partner :
+			return QVariant(items.queryAt(index.row()).partner);
+			break;
+		case Item::Inventory :
+			return QVariant(items.queryAt(index.row()).inventory);
 			break;
 		case Item::Comment :
 			return QVariant(items.queryAt(index.row()).comment);
+			break;
+		case Item::InvChangeDate :
+			return QVariant(items.queryAt(index.row()).invChangeDate);
 			break;
 		case Item::NumOfFields + UnitPriceOffset :
 			{
@@ -146,35 +158,44 @@ QVariant ItemsModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant("");
 
 	switch(section){
+		case Item::UploadDate :
+			return QVariant(tr(TidItemFieldUploadDate));
+			break;
 		case Item::Name :
 			return QVariant(tr(TidItemFieldCommonName));
+			break;
+		case Item::Unit :
+			return QVariant(tr(TidItemFieldUnit));
 			break;
 		case Item::Type :
 			return QVariant(tr(TidItemFieldType));
 			break;
-		case Item::Uploaded :
-			return QVariant(tr(TidItemFieldUploadDate));
-			break;
-		case Item::Bought :
-			return QVariant(tr(TidItemFieldIsBought));
-			break;
-		case Item::Purchased :
-			return QVariant(tr(TidItemFieldPurchaseDate));
-			break;
-		case Item::Partner :
-			return QVariant(tr(TidItemFieldPartner));
-			break;
-		case Item::Price :
-			return QVariant(tr(TidItemFieldGrossPrice));
+		case Item::Brand :
+			return QVariant(tr(TidItemFieldBrand));
 			break;
 		case Item::Quantity :
 			return QVariant(tr(TidItemFieldQuantity));
 			break;
-		case Item::OnStock :
-			return QVariant(tr(TidItemFieldOnStock));
+		case Item::Price :
+			return QVariant(tr(TidItemFieldPrice));
+			break;
+		case Item::Currency :
+			return QVariant(tr(TidItemFieldCurrency));
+			break;
+		case Item::Account :
+			return QVariant(tr(TidItemFieldAccount));
+			break;
+		case Item::Partner :
+			return QVariant(tr(TidItemFieldPartner));
+			break;
+		case Item::Inventory :
+			return QVariant(tr(TidItemFieldInventory));
 			break;
 		case Item::Comment :
 			return QVariant(tr(TidItemFieldComment));
+			break;
+		case Item::InvChangeDate :
+			return QVariant(tr(TidItemFieldInvChangeDate));
 			break;
 		case Item::NumOfFields + UnitPriceOffset :
 			return QVariant(tr(TidItemFieldUnitPrice));
@@ -204,40 +225,56 @@ bool ItemsModel::setData(const QModelIndex & index, const QVariant & value, int 
 	Item modified(items.queryAt(row));
 
 	switch(index.column()){
+		case Item::UploadDate :
+			modified.uploadDate <<= value;
+			update(row, modified);
+			break;
 		case Item::Name :
 			modified.name <<= value;
+			update(row, modified);
+			break;
+		case Item::Unit :
+			modified.unit <<= value;
 			update(row, modified);
 			break;
 		case Item::Type :
 			modified.type <<= value;
 			update(row, modified);
 			break;
-		case Item::Uploaded :
-			modified.uploaded <<= value;
-			update(row, modified);
-			break;
-		case Item::Purchased :
-			modified.purchased <<= value;
-			update(row, modified);
-			break;
-		case Item::Partner :
-			modified.partner <<= value;
-			update(row, modified);
-			break;
-		case Item::Price :
-			modified.price <<= value;
+		case Item::Brand :
+			modified.brand <<= value;
 			update(row, modified);
 			break;
 		case Item::Quantity :
 			modified.quantity <<= value;
 			update(row, modified);
 			break;
-		case Item::OnStock :
-			modified.onStock <<= value;
+		case Item::Price :
+			modified.price <<= value;
+			update(row, modified);
+			break;
+		case Item::Currency :
+			modified.currency <<= value;
+			update(row, modified);
+			break;
+		case Item::Account :
+			modified.account <<= value;
+			update(row, modified);
+			break;
+		case Item::Partner :
+			modified.partner <<= value;
+			update(row, modified);
+			break;
+		case Item::Inventory :
+			modified.inventory <<= value;
 			update(row, modified);
 			break;
 		case Item::Comment :
 			modified.comment <<= value;
+			update(row, modified);
+			break;
+		case Item::InvChangeDate :
+			modified.invChangeDate <<= value;
 			update(row, modified);
 			break;
 		default :
@@ -292,9 +329,15 @@ void ItemsModel::sort(int column, Qt::SortOrder order)
 	sort(column, order == Qt::AscendingOrder);
 }
 
-int ItemsModel::index(const QDateTime & uploaded) const
+void ItemsModel::query()
 {
-	DateTime dt(uploaded);
+	ModelResetGuard g(this);
+	db.query(opts, stat, items);
+}
+
+int ItemsModel::index(const QDateTime & uploadDate) const
+{
+	DateTime dt(uploadDate);
 	if(items.has(dt))
 		return items.index(dt);
 	else
@@ -325,10 +368,10 @@ void ItemsModel::itemRemovedListener(const ItemDb & db, const Item & removed)
 	if(& db != &(this->db))
 		return;
 
-	if(!items.has(removed.uploaded))
+	if(!items.has(removed.uploadDate))
 		return;
 
-	int row = items.index(removed.uploaded);
+	int row = items.index(removed.uploadDate);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
 	items.removeAt(row);
 }
@@ -356,14 +399,20 @@ void ItemsModel::itemChange(const ItemDb & db, const Item & modified)
 		itemOperationListeners.queryAt(i).itemChangeListener(db, modified);
 }
 
+bool ItemsModel::queryFilter(const Item & modified)
+{
+	(void)(modified);
+	return true;
+}
+
 void ItemsModel::itemChangeListener(const ItemDb & db, const Item & modified)
 {
 	if(& db != &(this->db))
 		return;
 
 	bool want = queryFilter(modified);
-	if(items.has(modified.uploaded)){
-		int row = items.index(modified.uploaded);
+	if(items.has(modified.uploadDate)){
+		int row = items.index(modified.uploadDate);
 		if(want){
 			items.queryAt(row) = modified;
 			dataChanged(index(row, 0), index(row, Item::NumOfFields-1));

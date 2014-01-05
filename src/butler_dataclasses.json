@@ -66,17 +66,21 @@
 				},
 				key : name
 		},
-		InventoryChange : {
+		Item : {
 				fields : {
 						uploadDate : DateTime,	# non editable
 						name : Text,
+						unit : Text,
 						type : Text,
 						brand : Text,
 						quantity : double,		# amount to buy or bought
+						price : double,			# price of gross piece/amount quantity
+						currency : Text,
+						account : Text,
 						partner : Text,
 						inventory : Text,
 						comment : Text,
-						invChangeDate : DateTime, # when ownership changes
+						invChangeDate : DateTime,
 						lastModified : DateTime	# non editable
 				},
 				key : uploadDate
@@ -94,7 +98,7 @@
 				},
 				key : name
 		},
-		Accounts : {
+		Account : {
 				fields : {
 						name : Text,
 						currency : Text,
@@ -105,7 +109,7 @@
 				},
 				key : name
 		},
-		Payments : {
+		Payment : {
 				fields : {
 						uploadDate : DateTime,
 						account : Text,
@@ -142,27 +146,5 @@
 						lastModified : DateTime # Non editable
 				},
 				key : name
-		},
-		Item : {
-				fields : {
-						uploaded : DateTime,	# non editable
-						name : Text,
-						type : Text,
-						quantity : double,		# amount to buy or bought
-						bought : bool,			# shows whether the below fields have sense
-						purchased : DateTime,	# item considered bought if valid,
-												# default value should suggested by
-												# gui but editable
-						partner : Text,
-						price : double,			# price of gross piece/amount quantity
-												# expected price if not yet bought;
-												# should set to 0 when bought to notify
-												# to set the real paid price.
-						onStock : bool,			# do we have it on store?
-												# when marked to no, advise to put on shopping list
-						comment : Text,
-						lastModified : DateTime	# non editable
-				},
-				key : uploaded
 		}
 }
