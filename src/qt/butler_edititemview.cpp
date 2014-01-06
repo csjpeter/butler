@@ -215,9 +215,9 @@ void EditItemView::mapFromGui()
 {
 	item.uploadDate = uploadDateTime.edit.dateTime();
 
-	item.account = partnerEditor.text();
+	item.account = accountEditor.text();
 	item.partner = partnerEditor.text();
-	item.inventory = partnerEditor.text();
+	item.inventory = inventoryEditor.text();
 	item.name = wareEditor.text();
 	item.unit <<= quantityEditor.getSuffix();
 	item.type = typeEditor.text();
@@ -434,10 +434,11 @@ void EditItemView::nextClickedSlot()
 void EditItemView::saveSlot()
 {
 	mapFromGui();
+	int i;
 
 	/* Add partner if not yet known. */
 	PartnersModel & sm = partnersModel(dbname);
-	int i = sm.index(partnerEditor.text());
+	i = sm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;
 		partner.name = partnerEditor.text();
@@ -451,6 +452,24 @@ void EditItemView::saveSlot()
 			cm.addNew(company);
 		}
 		sm.addNew(partner);
+	}
+
+	/* Add brand if not yet known. */
+	BrandsModel & bm = brandsModel(dbname);
+	i = bm.index(brandEditor.text());
+	if(i == -1){
+		Brand brand;
+		brand.name = brandEditor.text();
+		brand.company = partnerEditor.text();
+		/* Add company if not yet known. */
+		CompaniesModel & cm = companiesModel(dbname);
+		int i = cm.index(brand.company);
+		if(i == -1){
+			Company company;
+			company.name = brand.company;
+			cm.addNew(company);
+		}
+		bm.addNew(brand);
 	}
 
 	/* Add account if not yet known. */

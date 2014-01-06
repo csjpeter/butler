@@ -89,7 +89,7 @@ QVariant ItemsModel::data(const QModelIndex & index, int role) const
 			return QVariant(items.queryAt(index.row()).name);
 			break;
 		case Item::Unit :
-			return QVariant(items.queryAt(index.row()).name);
+			return QVariant(items.queryAt(index.row()).unit);
 			break;
 		case Item::Type :
 			return QVariant(items.queryAt(index.row()).type);

@@ -47,7 +47,7 @@ void AccountDb::insert(const Account & s)
 
 	sqlQuery.prepare("INSERT INTO accounts "
 			"(name, currency, bank_office, iban, swift_code) "
-			"VALUES(?, ?, ?, ?, ?, ?, ?)");
+			"VALUES(?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, s.name);
 	sqlQuery.bindValue(1, s.currency);
 	sqlQuery.bindValue(2, s.bankOffice);

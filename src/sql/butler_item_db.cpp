@@ -77,10 +77,10 @@ void ItemDb::insert(const Item & i)
 
 	sqlQuery.prepare("INSERT INTO items (upload_date, name, unit, type, brand, "
 			"quantity, price, currency, account, partner, inventory, comment, inv_change_date) "
-			"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	sqlQuery.bindValue(0, i.uploadDate);
-	sqlQuery.bindValue(1, i.unit);
-	sqlQuery.bindValue(2, i.name);
+	sqlQuery.bindValue(1, i.name);
+	sqlQuery.bindValue(2, i.unit);
 	sqlQuery.bindValue(3, i.type);
 	sqlQuery.bindValue(4, i.brand);
 	sqlQuery.bindValue(5, i.quantity);
