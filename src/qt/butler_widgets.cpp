@@ -463,9 +463,9 @@ void DoubleEditor::setSuffix(const QString & newSuffix)
 	setValue(val);
 }
 
-const QString & DoubleEditor::getSuffix()
+const QString DoubleEditor::getSuffix()
 {
-	return suffix;
+	return suffix.trimmed();
 }
 
 void DoubleEditor::setValue(double v)

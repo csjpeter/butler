@@ -3,11 +3,14 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+//#define DEBUG 1
+
 #include <QtGui>
 
 #include "butler_config.h"
 #include "butler_tagwidget.h"
 #include "butler_waresmodel.h"
+
 
 TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
 	QWidget(parent),
@@ -75,7 +78,7 @@ QSize TagWidget::sizeHint() const
 	int lw = label.sizeHint().width();
 	if(w < lw)
 		w = lw;
-	DBG("SizeHint: %d, %d", w, h);
+	DBG("SizeHint: %d, %d", w, -1);
 	return QSize(w, -1);
 }
 
@@ -148,7 +151,8 @@ void TagWidget::populate()
 				maxTagCheckboxWidth = w;
 		}
 
-		relayout();
+		applyLayout();
+		//relayout();
 	}
 }
 
@@ -183,10 +187,7 @@ void TagWidget::setTags(const TagNameSet & tags)
 TagNameSet TagWidget::selectedTags()
 {
 	if(tagSet.size() != btnContainer.size())
-		throw csjp::InvariantFailure("Number of tags in TagSet since "
-				"opening the view containing TagWidget changed.\n"
-				"You should use this widget only in "
-				"top-level dialogs.");
+		populate();
 
 	TagNameSet tags;
 	unsigned i, s = btnContainer.size();

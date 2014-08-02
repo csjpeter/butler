@@ -60,6 +60,8 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 {
 	setWindowModality(Qt::ApplicationModal);
 
+	query.endDate = DateTime::now();
+
 	stockOptions.group.addButton(&stockOptAll);
 	stockOptions.group.addButton(&stockOptOnStock);
 	stockOptions.group.addButton(&stockOptUsedUp);
@@ -482,6 +484,7 @@ void QueryOptionsView::delClickedSlot()
 		if(qm.querySet().has(query.name))
 			qm.del(qm.index(query.name));
 		query = Query();
+		query.endDate = DateTime::now();
 		mapToGui();
 	}
 }

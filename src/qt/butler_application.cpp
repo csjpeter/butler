@@ -3,6 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+//#define DEBUG
+
 #include <QtGui>
 
 #include <config.h>
@@ -128,7 +130,9 @@ void Application::loadCSS()
 
 bool Application::notify(QObject * receiver, QEvent * event)
 {
+	//DBG("receiver: %p event: %p", receiver, event);
 	QString info;
+	static bool altPressed = false;
 
 	try {
 		switch(event->type()){
@@ -148,7 +152,21 @@ bool Application::notify(QObject * receiver, QEvent * event)
 				if(keyEvent->key() == Qt::Key_Return)
 					postEvent(receiver, new QEvent(
 							  QEvent::CloseSoftwareInputPanel));
+				if(keyEvent->key() == Qt::Key_Alt && altPressed == true)
+					return true;//repeated alt press QT BUG return as if handled
+				else
+					altPressed = true;
 				DBG("Key press 0x%x for %s:%p",
+						keyEvent->key(),
+						receiver->metaObject()->className(), receiver);
+			}
+			break;
+		case QEvent::KeyRelease:
+			{
+				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+				if(keyEvent->key() == Qt::Key_Alt)
+					altPressed = false;
+				DBG("Key release 0x%x for %s:%p",
 						keyEvent->key(),
 						receiver->metaObject()->className(), receiver);
 			}
@@ -163,6 +181,7 @@ bool Application::notify(QObject * receiver, QEvent * event)
 						pos.x(), pos.y(),
 						receiver->metaObject()->className(), receiver);
 			}
+			break;
 #endif
 		case QEvent::MouseMove:
 			{
@@ -179,7 +198,12 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		default:
 			break;
 		}
-		return QApplication::notify(receiver, event);
+		/*DBG("Event %d:%p for %s:%p",
+				event->type(), event,
+				receiver->metaObject()->className(), receiver);*/
+		bool res = QApplication::notify(receiver, event);
+		DBG("Res %s", (res) ? "true" : "false");
+		return res;
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);
 		info = QString::fromUtf8(e.what());

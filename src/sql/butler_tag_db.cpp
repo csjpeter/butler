@@ -42,6 +42,11 @@ TagDb::TagDb(SqlConnection & sql) :
 TagDb::~TagDb()
 {
 }
+/*
+UPDATE table SET field='C', field2='Z' WHERE id=3;
+INSERT INTO table (id, field, field2)
+	SELECT 3, 'C', 'Z' WHERE NOT EXISTS (SELECT 1 FROM table WHERE id=3);
+*/
 
 void TagDb::insert(const Tag & t)
 {

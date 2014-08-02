@@ -232,7 +232,7 @@ public slots:
 	void textChangedSlot(const QString & newText);
 	void setPrecision(unsigned prec = 0);
 	void setSuffix(const QString & newSuffix = "");
-	const QString & getSuffix();
+	const QString getSuffix();
 	void setValue(double v);
 
 public:

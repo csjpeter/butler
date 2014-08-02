@@ -26,6 +26,11 @@ public:
 				QDateTime(QDateTime::fromString(QString(t.c_str()), Qt::ISODate)) {}
 		virtual ~DateTime() {}
 
+		static DateTime now()
+		{
+			return DateTime(QDateTime::currentDateTime());
+		}
+
 		DateTime & operator=(const char * s)
 		{
 				QDateTime & dt = *this;
