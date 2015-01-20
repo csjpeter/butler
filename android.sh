@@ -108,6 +108,10 @@ case "${CMD}" in
 
 		exec_in_dir ${DIST}/android ant debug || exit $?
 	;;
+	(install-apk)
+		DIST=${ANDROID_SDK_API}-${ARCH}
+		adb -d install -r ${DIST}/android/bin/${PKGNAME_BASE}-debug.apk
+	;;
 	(*)
 		test "x$1" = "x" || { export ANDROID_SDK_API=$1 ; shift ; }
 		test "x$1" = "x" || { ARCH=$1 ; shift ; }
