@@ -60,14 +60,14 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	queryView.verticalHeader()->hide();
 	queryView.horizontalHeader()->setMovable(true);
 	queryView.horizontalHeader()->setSortIndicatorShown(true);
-	queryView.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	queryView.horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+	queryView.horizontalHeader()->setSectionResizeMode(
 			Item::Name, QHeaderView::ResizeToContents);
-	queryView.horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setSectionResizeMode(
 			Item::Type, QHeaderView::ResizeToContents);
-	queryView.horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setSectionResizeMode(
 			Item::Quantity, QHeaderView::ResizeToContents);
-	queryView.horizontalHeader()->setResizeMode(
+	queryView.horizontalHeader()->setSectionResizeMode(
 			Item::Comment, QHeaderView::Stretch);
 	queryView.setSelectionBehavior(QAbstractItemView::SelectRows);
 	queryView.setSelectionMode(QAbstractItemView::SingleSelection);

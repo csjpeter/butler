@@ -83,10 +83,10 @@ void PartnersView::applyLayout()
 void PartnersView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Partner::StoreName, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Partner::StoreName, QHeaderView::ResizeToContents);
 
 	applyLayout();

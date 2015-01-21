@@ -82,10 +82,10 @@ void TagsView::applyLayout()
 void TagsView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Tag::Description, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Tag::Description, QHeaderView::ResizeToContents);
 
 	applyLayout();

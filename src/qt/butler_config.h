@@ -8,13 +8,13 @@
 
 #include <QLocale>
 #include <QString>
-#include <csjp_object_tree.h>
+#include <csjp_json.h>
 
 #include <butler_texts.h>
 #include <butler_macros.h>
 #include <butler_conversions.h>
 
-extern csjp::ObjectTree config;
+extern csjp::Json config;
 
 namespace Config {
 	extern QString configFileName;

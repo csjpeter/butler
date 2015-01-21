@@ -26,23 +26,20 @@
 			const char * disambiguation = 0, int n = -1) { \
 		return translationVariant(QCoreApplication::translate( \
 				  context ? context : this->metaObject()->className(), \
-				  sourceText, disambiguation, QCoreApplication::UnicodeUTF8, n \
-				  ), TextVariant::Short); \
+				  sourceText, disambiguation, n ), TextVariant::Short); \
 	} \
 	QString trMed(const char * sourceText, const char * context = 0, \
 			const char * disambiguation = 0, int n = -1) { \
 		return translationVariant(QCoreApplication::translate( \
 				  context ? context : this->metaObject()->className(), \
-				  sourceText, disambiguation, QCoreApplication::UnicodeUTF8, n \
-				  ), TextVariant::Medium); \
+				  sourceText, disambiguation, n ), TextVariant::Medium); \
 	} \
 	QString trLong(const char * sourceText, const char * context = 0, \
 			const char * disambiguation = 0, int n = -1) \
 	{ \
 		return translationVariant(QCoreApplication::translate( \
 				  context ? context : this->metaObject()->className(), \
-				  sourceText, disambiguation, QCoreApplication::UnicodeUTF8, n \
-				  ), TextVariant::Long); \
+				  sourceText, disambiguation, n ), TextVariant::Long); \
 	}
 
 #define SCC static const char*

@@ -254,11 +254,11 @@ QString defaultSQLiteDbFileName()
 void loadDatabaseConfigs()
 {
 	descriptorSet.clear();
-	csjp::ObjectTree & tree = config["database-connections"];
+	csjp::Json & tree = config["database-connections"];
 	unsigned s = tree.objects.size();
 	for(unsigned i = 0; i < s; i++){
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
-		csjp::ObjectTree & dbt = tree.objects.queryAt(i);
+		csjp::Json & dbt = tree.objects.queryAt(i);
 		desc->name <<= dbt.name;
 		desc->driver <<= dbt.properties["driver"];
 		desc->databaseName <<= dbt.properties["databaseName"];
@@ -298,7 +298,7 @@ void loadDatabaseConfigs()
 
 void saveDatabaseConfigs()
 {
-	csjp::ObjectTree tree("database-connections");
+	csjp::Json tree("database-connections");
 	unsigned s = descriptorSet.size();
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
@@ -313,7 +313,7 @@ void saveDatabaseConfigs()
 		props["host"] <<= desc.host; // domain name or ip
 		props["port"] = desc.port;
 	}
-	csjp::ObjectTree & origTree = config["database-connections"];
+	csjp::Json & origTree = config["database-connections"];
 	origTree = move_cast(tree);
 }
 

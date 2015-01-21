@@ -86,10 +86,10 @@ void DatabasesView::applyLayout()
 void DatabasesView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				DatabaseDescriptor::DatabaseName, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				DatabaseDescriptor::DatabaseName, QHeaderView::ResizeToContents);
 
 	applyLayout();

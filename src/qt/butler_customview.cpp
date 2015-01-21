@@ -102,10 +102,10 @@ void CustomView::applyLayout()
 void CustomView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Item::Comment, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Item::Comment, QHeaderView::ResizeToContents);
 
 //	LayoutState newState = LayoutState::Wide;

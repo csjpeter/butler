@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="hu_HU">
+<TS version="2.1" language="hu_HU">
 <context>
     <name>AccountingView</name>
     <message>
@@ -110,6 +110,147 @@
     </message>
 </context>
 <context>
+    <name>AccountsModel</name>
+    <message>
+        <location filename="../../src/qt/butler_accountsmodel.cpp" line="10"/>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsmodel.cpp" line="11"/>
+        <source>Currency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsmodel.cpp" line="12"/>
+        <source>Bank Office</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsmodel.cpp" line="13"/>
+        <source>IBAN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsmodel.cpp" line="14"/>
+        <source>Swift code</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AccountsView</name>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="16"/>
+        <source>Business accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="17"/>
+        <source>Add new account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="18"/>
+        <source>Edit account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="19"/>
+        <source>Delete account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="20"/>
+        <source>Refresh account list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="188"/>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="203"/>
+        <source>Information</source>
+        <translation type="unfinished">Tájékoztatás</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="189"/>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="204"/>
+        <source>Please select account first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="212"/>
+        <source>Deleting a account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_accountsview.cpp" line="213"/>
+        <source>Shall we delete this account: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BrandsModel</name>
+    <message>
+        <location filename="../../src/qt/butler_brandsmodel.cpp" line="14"/>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsmodel.cpp" line="15"/>
+        <source>Company</source>
+        <translation type="unfinished">Képviselt cég</translation>
+    </message>
+</context>
+<context>
+    <name>BrandsView</name>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="15"/>
+        <source>Brand list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="16"/>
+        <source>Add new brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="17"/>
+        <source>Edit brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="18"/>
+        <source>Delete brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="19"/>
+        <source>Refresh brand list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="186"/>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="201"/>
+        <source>Information</source>
+        <translation type="unfinished">Tájékoztatás</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="187"/>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="202"/>
+        <source>Please select brand first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="210"/>
+        <source>Deleting a brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_brandsview.cpp" line="211"/>
+        <source>Shall we delete this brand: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BuyItemView</name>
     <message>
         <location filename="../../src/qt/butler_buyitemview.cpp" line="21"/>
@@ -154,6 +295,39 @@
         <location filename="../../src/qt/butler_buyitemview.cpp" line="71"/>
         <source>Mark bought</source>
         <translation>Megjelölés fizetettként</translation>
+    </message>
+</context>
+<context>
+    <name>CompaniesModel</name>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="10"/>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="11"/>
+        <source>Country</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="12"/>
+        <source>City</source>
+        <translation type="unfinished">Város</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="13"/>
+        <source>Postal code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="14"/>
+        <source>Address</source>
+        <translation type="unfinished">Cím</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_companiesmodel.cpp" line="15"/>
+        <source>Tax Id</source>
+        <translation type="unfinished">Adószám</translation>
     </message>
 </context>
 <context>
@@ -217,24 +391,24 @@
         <translation>Céglist frissítése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_companyview.cpp" line="186"/>
-        <location filename="../../src/qt/butler_companyview.cpp" line="201"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="189"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="204"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_companyview.cpp" line="187"/>
-        <location filename="../../src/qt/butler_companyview.cpp" line="202"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="190"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="205"/>
         <source>Please select company first.</source>
         <translation>Kérlek előbb válassz céget!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_companyview.cpp" line="210"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="213"/>
         <source>Deleting a company</source>
         <translation>Cég törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_companyview.cpp" line="211"/>
+        <location filename="../../src/qt/butler_companyview.cpp" line="214"/>
         <source>Shall we delete this company: </source>
         <translation>Töröljük a következő céget? :</translation>
     </message>
@@ -277,37 +451,37 @@
         <translation>Kimutatások</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="243"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="258"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="279"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="300"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="244"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="259"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="280"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="302"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="244"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="259"/>
-        <location filename="../../src/qt/butler_customview.cpp" line="280"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="245"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="260"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="281"/>
         <source>Please select item first.</source>
         <translation>Kérlek válassz egy tételt előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="301"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="303"/>
         <source>Please select an item first.</source>
         <translation>Kérlek válassz egy tételt előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="267"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="268"/>
         <source>Deleting an item</source>
         <translation>Tétel törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="268"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="269"/>
         <source>Shall we delete this item: </source>
         <translation>Töröljük a tételt? : </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_customview.cpp" line="288"/>
+        <location filename="../../src/qt/butler_customview.cpp" line="289"/>
         <source>Adding to shopping list</source>
         <translation>Tétel hozzáadása bevásárló listához</translation>
     </message>
@@ -315,37 +489,37 @@
 <context>
     <name>DatabasesModel</name>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="13"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="12"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="14"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="13"/>
         <source>Driver</source>
         <translation>Driver</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="15"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="14"/>
         <source>Database name</source>
         <translation>Adatbázis név</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="16"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="15"/>
         <source>Username</source>
         <translation>Felhasználónév</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="17"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="16"/>
         <source>Password</source>
         <translation>Jelszó</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="18"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="17"/>
         <source>Host</source>
         <translation>Kiszolgáló</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesmodel.cpp" line="19"/>
+        <location filename="../../src/qt/butler_databasesmodel.cpp" line="18"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
@@ -399,19 +573,19 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="194"/>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="209"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="195"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="210"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="195"/>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="210"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="196"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="211"/>
         <source>Please select item first.</source>
         <translation>Kérlek válassz egy tételt előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="218"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="219"/>
         <source>Deleting an database connection</source>
         <translation variants="yes">
             <lengthvariant>Adatbázis-kapcsolat törlése</lengthvariant>
@@ -419,9 +593,146 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_databasesview.cpp" line="219"/>
+        <location filename="../../src/qt/butler_databasesview.cpp" line="220"/>
         <source>Shall we delete this database connection: </source>
         <translation>Töröljük a következő adatbázis-kapcsolatot? :</translation>
+    </message>
+</context>
+<context>
+    <name>EditAccountView</name>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="14"/>
+        <source>Add new account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="15"/>
+        <source>Editing a account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="17"/>
+        <source>Done</source>
+        <translation type="unfinished">Kész</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="18"/>
+        <source>Reset</source>
+        <translation type="unfinished" variants="yes">
+            <lengthvariant>Visszaállítás</lengthvariant>
+            <lengthvariant>Visszaáll.</lengthvariant>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="19"/>
+        <source>Previous account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="20"/>
+        <source>Next account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="22"/>
+        <source>Account name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="23"/>
+        <source>Currency:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="24"/>
+        <source>IBAN:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="25"/>
+        <source>Swift code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="26"/>
+        <source>Bank office:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="28"/>
+        <source>Please fill the account name field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="29"/>
+        <source>Account is saved, you may add another.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editaccountview.cpp" line="30"/>
+        <source>Account is updated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditBrandView</name>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="14"/>
+        <source>Add new brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="15"/>
+        <source>Editing a brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="17"/>
+        <source>Done</source>
+        <translation type="unfinished">Kész</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="18"/>
+        <source>Reset</source>
+        <translation type="unfinished" variants="yes">
+            <lengthvariant>Visszaállítás</lengthvariant>
+            <lengthvariant>Visszaáll.</lengthvariant>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="19"/>
+        <source>Previous brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="20"/>
+        <source>Next brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="22"/>
+        <source>Brand name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="23"/>
+        <source>Company:</source>
+        <translation type="unfinished">Képviselt cég:</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="25"/>
+        <source>Please fill the brand name field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="26"/>
+        <source>Brand is saved, you may add another.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editbrandview.cpp" line="27"/>
+        <source>Brand is updated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -531,21 +842,41 @@
     </message>
     <message>
         <location filename="../../src/qt/butler_editdbdescview.cpp" line="18"/>
+        <source>Qt SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="19"/>
+        <source>Qt Postgre SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="20"/>
+        <source>Qt My SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="21"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="19"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="22"/>
         <source>Postgre SQL</source>
         <translation>Postgre SQL</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="21"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="23"/>
+        <source>My SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="25"/>
         <source>Done</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="22"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="26"/>
         <source>Reset</source>
         <translation variants="yes">
             <lengthvariant>Visszaállítás</lengthvariant>
@@ -553,7 +884,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="23"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="27"/>
         <source>Previous database connection</source>
         <translation variants="yes">
             <lengthvariant>Előző adatbázis-kapcsolat</lengthvariant>
@@ -561,7 +892,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="24"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="28"/>
         <source>Next database connection</source>
         <translation variants="yes">
             <lengthvariant>Következő adatbázis-kapcsolat</lengthvariant>
@@ -570,70 +901,136 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="26"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="30"/>
         <source>Name for database connection:</source>
         <translation>Adatbázis-kapcsolat neve:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="27"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="31"/>
         <source>Database name:</source>
         <translation>Adatbázis név:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="28"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="32"/>
         <source>Username:</source>
         <translation>Felhasználó név:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="29"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="33"/>
         <source>Password:</source>
         <translation>Jelszó:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="30"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="34"/>
+        <source>Save plain password :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="35"/>
         <source>Host:</source>
         <translation>Kiszolgáló:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="31"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="36"/>
         <source>Port:</source>
         <translation>Port:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="33"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="38"/>
         <source>Please fill the name field.</source>
         <translation>Kérlek töltsd ki a név mezőt!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="34"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="39"/>
         <source>Database connection is saved, you may add another.</source>
         <translation>Az adatbáziskapcsolat el lett mentve. Felvihető egy újabb.</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_editdbdescview.cpp" line="35"/>
+        <location filename="../../src/qt/butler_editdbdescview.cpp" line="40"/>
         <source>Database connection is updated.</source>
         <translation>Az adatbázis kapcsolat adatai el lettek mentve.</translation>
     </message>
 </context>
 <context>
+    <name>EditInventoryView</name>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="14"/>
+        <source>Add new inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="15"/>
+        <source>Editing a inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="17"/>
+        <source>Done</source>
+        <translation type="unfinished">Kész</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="18"/>
+        <source>Reset</source>
+        <translation type="unfinished" variants="yes">
+            <lengthvariant>Visszaállítás</lengthvariant>
+            <lengthvariant>Visszaáll.</lengthvariant>
+        </translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="19"/>
+        <source>Previous inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="20"/>
+        <source>Next inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="22"/>
+        <source>Inventory name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="23"/>
+        <source>Comment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="25"/>
+        <source>Please fill the inventory name field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="26"/>
+        <source>Inventory is saved, you may add another.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_editinventoryview.cpp" line="27"/>
+        <source>Inventory is updated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EditItemView</name>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="20"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="24"/>
         <source>Already bought new item</source>
         <translation>Könyvelés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="21"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="25"/>
         <source>Editing an existing item</source>
         <translation>Meglévő tétel szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="23"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="27"/>
         <source>Done</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="24"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="28"/>
         <source>Reset</source>
         <translation variants="yes">
             <lengthvariant>Visszaállítás</lengthvariant>
@@ -641,7 +1038,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="25"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="29"/>
         <source>Previous item</source>
         <translation variants="yes">
             <lengthvariant>Előző tétel</lengthvariant>
@@ -650,7 +1047,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="26"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="30"/>
         <source>Next item</source>
         <translation variants="yes">
             <lengthvariant>Következő tétel</lengthvariant>
@@ -659,88 +1056,105 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="28"/>
         <source>Bought:</source>
-        <translation variants="yes">
+        <translation type="vanished" variants="yes">
             <lengthvariant>Ki van fizetve:</lengthvariant>
             <lengthvariant>Fizetve:</lengthvariant>
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="29"/>
         <source>On stock:</source>
-        <translation variants="yes">
+        <translation type="vanished" variants="yes">
             <lengthvariant>Készleten van:</lengthvariant>
             <lengthvariant>Készleten:</lengthvariant>
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="31"/>
         <source>Brand or type of ware:</source>
-        <translation>Áru/szolgáltatás típusa/márkája:</translation>
+        <translation type="vanished">Áru/szolgáltatás típusa/márkája:</translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_edititemview.cpp" line="32"/>
+        <source>Type of ware:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="33"/>
+        <source>Brand of ware:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="34"/>
         <source>Quantity:</source>
         <translation>Mennyiség:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="33"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="35"/>
         <source>Unit price:</source>
         <translation>Egységár:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="34"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="36"/>
         <source>Gross price:</source>
         <translation>Összár:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="35"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="37"/>
         <source>Business partner:</source>
         <translation>Üzleti partner:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="36"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="38"/>
+        <source>Account (bank):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="39"/>
+        <source>Inventory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="40"/>
         <source>Common ware name:</source>
         <translation>Árú neve:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="37"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="41"/>
         <source>Date of purchase:</source>
         <translation>Kifizetés ideje:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="38"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="42"/>
         <source>Date of upload:</source>
         <translation>Rögzítés ideje:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="39"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="43"/>
         <source>Comments:</source>
         <translation>Megjegyzések:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="40"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="44"/>
         <source>Tags for &lt;i&gt;%1&lt;/i&gt; :</source>
         <translation>&lt;i&gt;%1&lt;/i&gt; cimkéi:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="42"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="46"/>
         <source>mandatory field</source>
         <translation>szükséges mező</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="43"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="47"/>
         <source>Please fill at least the mandatory fields.</source>
         <translation>Kérlek legalább az áru/szolgáltatás mezőt töltsd ki!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="44"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="48"/>
         <source>Item is saved, you may add another.</source>
         <translation>A tétel rögzítve lett. Írhatod a következőt.</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edititemview.cpp" line="45"/>
+        <location filename="../../src/qt/butler_edititemview.cpp" line="49"/>
         <source>Item is updated.</source>
         <translation>A tétel módosítása rögzítve lett.</translation>
     </message>
@@ -841,22 +1255,22 @@
 <context>
     <name>EditTagView</name>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="15"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="14"/>
         <source>Add new tag</source>
         <translation>Új cimke hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="16"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="15"/>
         <source>Editing a tag</source>
         <translation>Cimke szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="18"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="17"/>
         <source>Done</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="19"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="18"/>
         <source>Reset</source>
         <translation variants="yes">
             <lengthvariant>Visszaállítás</lengthvariant>
@@ -864,7 +1278,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="20"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="19"/>
         <source>Previous tag</source>
         <translation variants="yes">
             <lengthvariant>Előző cimke</lengthvariant>
@@ -872,7 +1286,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="21"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="20"/>
         <source>Next tag</source>
         <translation variants="yes">
             <lengthvariant>Következő cimke</lengthvariant>
@@ -880,27 +1294,27 @@
         </translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="23"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="22"/>
         <source>Tag name:</source>
         <translation>Cimke neve:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="24"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="23"/>
         <source>Description:</source>
         <translation>Leírás:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="26"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="25"/>
         <source>Please fill the tag name field.</source>
         <translation>Kérlek legalább a név mezőt töltsd ki!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="27"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="26"/>
         <source>Tag is saved, you may add another.</source>
         <translation>A cimke rögzítve lett. Megadhatsz egy újabbat.</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_edittagview.cpp" line="28"/>
+        <location filename="../../src/qt/butler_edittagview.cpp" line="27"/>
         <source>Tag is updated.</source>
         <translation>A cimke módosítása rögzítve lett.</translation>
     </message>
@@ -958,8 +1372,12 @@
     </message>
     <message>
         <location filename="../../src/qt/butler_editwareview.cpp" line="26"/>
+        <source>Types:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Categories:</source>
-        <translation>Márkák, típusok listája:</translation>
+        <translation type="vanished">Márkák, típusok listája:</translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_editwareview.cpp" line="27"/>
@@ -991,16 +1409,78 @@
     </message>
 </context>
 <context>
+    <name>InventoriesModel</name>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesmodel.cpp" line="14"/>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesmodel.cpp" line="15"/>
+        <source>Comment</source>
+        <translation type="unfinished">Megjegyzés</translation>
+    </message>
+</context>
+<context>
+    <name>InventoriesView</name>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="15"/>
+        <source>Inventory list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="16"/>
+        <source>Add new inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="17"/>
+        <source>Edit inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="18"/>
+        <source>Delete inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="19"/>
+        <source>Refresh inventory list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="186"/>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="201"/>
+        <source>Information</source>
+        <translation type="unfinished">Tájékoztatás</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="187"/>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="202"/>
+        <source>Please select inventory first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="210"/>
+        <source>Deleting a inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_inventoriesview.cpp" line="211"/>
+        <source>Shall we delete this inventory: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ItemsModel</name>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="14"/>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="17"/>
         <source>Common name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="15"/>
         <source>Brand or type</source>
-        <translation>Márka/Típus</translation>
+        <translation type="vanished">Márka/Típus</translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_itemsmodel.cpp" line="16"/>
@@ -1008,17 +1488,15 @@
         <translation>Rögzítés ideje</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="17"/>
         <source>Bought</source>
-        <translation>Fizetve</translation>
+        <translation type="vanished">Fizetve</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="18"/>
         <source>Bought on</source>
-        <translation>Vásárlás ideje</translation>
+        <translation type="vanished">Vásárlás ideje</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="19"/>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="25"/>
         <source>Partner</source>
         <translation>Partner</translation>
     </message>
@@ -1027,9 +1505,8 @@
         <translation type="obsolete">Partner</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="20"/>
         <source>Gross price</source>
-        <translation>Ár</translation>
+        <translation type="vanished">Ár</translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_itemsmodel.cpp" line="21"/>
@@ -1037,17 +1514,56 @@
         <translation>Mennyiség</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="22"/>
         <source>On stock</source>
-        <translation>Készleten</translation>
+        <translation type="vanished">Készleten</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="18"/>
+        <source>Unit</source>
+        <translation type="unfinished">Mértékegység</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="19"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="20"/>
+        <source>Brand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="22"/>
+        <source>Price</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_itemsmodel.cpp" line="23"/>
+        <source>Currency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="24"/>
+        <source>Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="26"/>
+        <source>Inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="27"/>
         <source>Comment</source>
         <translation>Megjegyzés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_itemsmodel.cpp" line="24"/>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="28"/>
+        <source>Change date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_itemsmodel.cpp" line="29"/>
         <source>Unit price</source>
         <translation>Egységár</translation>
     </message>
@@ -1055,17 +1571,17 @@
 <context>
     <name>MainView</name>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="31"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="32"/>
         <source>%1 - main view</source>
         <translation>%1 - fő nézet</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="32"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="33"/>
         <source>Todo notes</source>
         <translation>Teendők</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="33"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="34"/>
         <source>Shopping list</source>
         <translation>Bevásárló lista</translation>
     </message>
@@ -1074,7 +1590,7 @@
         <translation type="obsolete">Könyvelés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="35"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="36"/>
         <source>Analitics / History</source>
         <translation>Lekéredzések</translation>
     </message>
@@ -1083,12 +1599,12 @@
         <translation type="obsolete">Üzleti partnerek</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="34"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="35"/>
         <source>Expense/Income</source>
         <translation>Kiadás/Bevétel</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="36"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="38"/>
         <source>Partners</source>
         <translation>Partnerek</translation>
     </message>
@@ -1098,32 +1614,47 @@
         <translation>Cégek</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="38"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="39"/>
+        <source>Accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_mainview.cpp" line="40"/>
         <source>Wares</source>
         <translation>Árúk/Szolgáltatások</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="39"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="41"/>
         <source>Tags</source>
         <translation>Címkék</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="40"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="42"/>
+        <source>Brands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_mainview.cpp" line="43"/>
+        <source>Inventories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_mainview.cpp" line="44"/>
         <source>Databases</source>
         <translation>Adatbázisok</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="41"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="45"/>
         <source>Legal informations</source>
         <translation>Jogi tájékoztató</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="42"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="46"/>
         <source>Quit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_mainview.cpp" line="43"/>
+        <location filename="../../src/qt/butler_mainview.cpp" line="47"/>
         <source>Current database: %1</source>
         <translation variants="yes">
             <lengthvariant>Aktív adatbázis: %1</lengthvariant>
@@ -1149,9 +1680,13 @@
         <translation>Név:</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_newitemview.cpp" line="38"/>
         <source>Category name :</source>
-        <translation>Márka vagy típus neve:</translation>
+        <translation type="vanished">Márka vagy típus neve:</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_newitemview.cpp" line="38"/>
+        <source>Type name :</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/qt/butler_newitemview.cpp" line="47"/>
@@ -1235,24 +1770,24 @@
         <translation>Lekérdezés ismétlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="186"/>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="201"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="188"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="203"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="187"/>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="202"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="189"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="204"/>
         <source>Please select partner first.</source>
         <translation>Kérlek válassz egy partnert előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="210"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="212"/>
         <source>Deleting a partner</source>
         <translation>Partner törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_partnersview.cpp" line="211"/>
+        <location filename="../../src/qt/butler_partnersview.cpp" line="213"/>
         <source>Shall we delete this partner: </source>
         <translation>Töröljük a következő partnert? :</translation>
     </message>
@@ -1408,12 +1943,12 @@
         <translation>elhasznált tételek</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="476"/>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="478"/>
         <source>Deleting a query</source>
         <translation>Lekérdezés törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="477"/>
+        <location filename="../../src/qt/butler_queryoptionsview.cpp" line="479"/>
         <source>Shall we delete this query: </source>
         <translation>Töröljük a következő lekérdezést? :</translation>
     </message>
@@ -1449,42 +1984,42 @@
 <context>
     <name>ShoppingView</name>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="26"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="27"/>
         <source>Shopping list</source>
         <translation>Bevásárló lista</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="31"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="32"/>
         <source>&amp;New</source>
         <translation>Új</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="35"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="36"/>
         <source>&amp;Edit</source>
         <translation>Módosítás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="39"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="40"/>
         <source>&amp;Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="43"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="44"/>
         <source>&amp;Bought</source>
         <translation>Vásárlás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="47"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="48"/>
         <source>&amp;Filter</source>
         <translation>Szűrés</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="54"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="55"/>
         <source>Partner (place of buy):</source>
         <translation>Partner (vásárlás helye):</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="213"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="214"/>
         <source>Please select partner.</source>
         <translation>Kérlek válassz egy partnert!</translation>
     </message>
@@ -1493,15 +2028,15 @@
         <translation type="obsolete">Üzlet (vásárlás helye):</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="185"/>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="206"/>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="212"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="186"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="207"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="213"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="186"/>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="207"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="187"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="208"/>
         <source>Please select item first.</source>
         <translation>Kérlek válassz egy tételt előbb!</translation>
     </message>
@@ -1510,12 +2045,12 @@
         <translation type="obsolete">Kérlek válaszd ki a partner akitől épp vásárolsz.</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="194"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="195"/>
         <source>Deleting item</source>
         <translation>Tétel törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_shoppingview.cpp" line="195"/>
+        <location filename="../../src/qt/butler_shoppingview.cpp" line="196"/>
         <source>Shall we delete this item: </source>
         <translation>Töröljük a következő tételt? : </translation>
     </message>
@@ -1632,24 +2167,24 @@
         <translation>Lekérdezés ismétlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="183"/>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="198"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="186"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="201"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="184"/>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="199"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="187"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="202"/>
         <source>Please select tag first.</source>
         <translation>Kérlek válassz ki egy cimkét előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="207"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="210"/>
         <source>Deleting a tag</source>
         <translation>Cimke törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_tagsview.cpp" line="208"/>
+        <location filename="../../src/qt/butler_tagsview.cpp" line="211"/>
         <source>Shall we delete this tag: </source>
         <translation>Töröljük a következő cimkét? :</translation>
     </message>
@@ -1657,7 +2192,7 @@
 <context>
     <name>ToolBar</name>
     <message>
-        <location filename="../../src/qt/butler_widgets.cpp" line="896"/>
+        <location filename="../../src/qt/butler_widgets.cpp" line="901"/>
         <source>Back</source>
         <translation>Bezár</translation>
     </message>
@@ -1665,30 +2200,41 @@
 <context>
     <name>WareCategoriesModel</name>
     <message>
-        <location filename="../../src/qt/butler_warecategoriesmodel.cpp" line="10"/>
         <source>Brand/Type</source>
-        <translation>Márka vagy típusnév</translation>
+        <translation type="vanished">Márka vagy típusnév</translation>
+    </message>
+</context>
+<context>
+    <name>WareTypesModel</name>
+    <message>
+        <location filename="../../src/qt/butler_waretypesmodel.cpp" line="10"/>
+        <source>Brand/Type</source>
+        <translation type="unfinished">Márka vagy típusnév</translation>
     </message>
 </context>
 <context>
     <name>WaresModel</name>
     <message>
-        <location filename="../../src/qt/butler_waresmodel.cpp" line="10"/>
+        <location filename="../../src/qt/butler_waresmodel.cpp" line="14"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresmodel.cpp" line="11"/>
+        <location filename="../../src/qt/butler_waresmodel.cpp" line="15"/>
         <source>Unit</source>
         <translation>Mértékegység</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresmodel.cpp" line="12"/>
-        <source>Categories</source>
-        <translation>Márkák, típusok listája</translation>
+        <location filename="../../src/qt/butler_waresmodel.cpp" line="16"/>
+        <source>Types</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresmodel.cpp" line="13"/>
+        <source>Categories</source>
+        <translation type="vanished">Márkák, típusok listája</translation>
+    </message>
+    <message>
+        <location filename="../../src/qt/butler_waresmodel.cpp" line="17"/>
         <source>Tags</source>
         <translation>Címkék</translation>
     </message>
@@ -1721,24 +2267,24 @@
         <translation>Lekérdezés ismétlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresview.cpp" line="184"/>
-        <location filename="../../src/qt/butler_waresview.cpp" line="199"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="186"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="201"/>
         <source>Information</source>
         <translation>Tájékoztatás</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresview.cpp" line="185"/>
-        <location filename="../../src/qt/butler_waresview.cpp" line="200"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="187"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="202"/>
         <source>Please select ware first.</source>
         <translation>Kérlek válassz egy árut/szolgáltatást előbb!</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresview.cpp" line="208"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="210"/>
         <source>Deleting a ware</source>
         <translation>Áru vagy szolgáltatás törlése</translation>
     </message>
     <message>
-        <location filename="../../src/qt/butler_waresview.cpp" line="209"/>
+        <location filename="../../src/qt/butler_waresview.cpp" line="211"/>
         <source>Shall we delete this ware: </source>
         <translation>Töröljük a következő árut/szolgáltatást? :</translation>
     </message>

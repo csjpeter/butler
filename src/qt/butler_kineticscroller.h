@@ -7,6 +7,7 @@
 #define BUTLER_KINETICSCROLLER_H
 
 #include <QtGui>
+#include <QtWidgets>
 
 #include <csjp_logger.h>
 
