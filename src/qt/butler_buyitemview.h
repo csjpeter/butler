@@ -57,8 +57,9 @@ private slots:
 	void unitPriceEditingFinishedSlot();
 	void grossPriceValueChangedSlot(double g);
 
+public:
+	const QString dbname;
 private:
-	const QString & dbname;
 	ShoppingModel & model;
 	unsigned itemCursor;
 	unsigned partnerCursor;

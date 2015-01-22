@@ -54,7 +54,7 @@ private slots:
 	void accountNameEditFinishedSlot(int);
 
 public:
-	const QString & dbname;
+	const QString dbname;
 private:
 	ItemsModel & model;
 	ItemsModel * ownModel;
