@@ -51,9 +51,9 @@ function config ()
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}/usr/include\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include/i686-linux-android\\\" \
-		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/include\\\" \
+		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/${ARM_CPU}/include\\\" \
 		--ldflags=\\\"--sysroot ${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}\\\" \
-		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/libsupc++.a\\\" \
+		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/${ARM_CPU}/libsupc++.a\\\" \
 		--libs=\\\"-llog\\\" \
 		--libs=\\\"/${TCROOT}/lib/libcsjp0.3.a\\\" \
 		|| exit $?
@@ -63,6 +63,10 @@ function config ()
 
 export ANDROID_SDK_API=android-14
 ARCH=arm
+export ARM_CPU=armeabi-v7a
+export ANDROID_ARMV=android_armv7
+export ARM_CPU=armeabi
+export ANDROID_ARMV=android_armv5
 
 CMD=$1
 
@@ -101,7 +105,7 @@ case "${CMD}" in
 		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
 		for f in $(echo "libcrypto.so libpq.so libqsqlpsql.so libssl.so"); do
 			cp /opt/${ANDROID_SDK_API}-${ARCH}/lib/$f \
-				${DIST}/android/libs/armeabi-v7a/ || exit $?
+				${DIST}/android/libs/${ARM_CPU}/ || exit $?
 		done
 		test -h ${DIST}/${APKGNAME} || exec_in_dir \
 				${DIST} ln -s android ${APKGNAME} || exit $?
