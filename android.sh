@@ -51,8 +51,9 @@ function config ()
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}/usr/include\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/include/i686-linux-android\\\" \
+		--cflags=\\\"-I${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/include\\\" \
 		--ldflags=\\\"--sysroot ${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}\\\" \
-		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/libsupc++.a\\\" \
+		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/libsupc++.a\\\" \
 		--libs=\\\"-llog\\\" \
 		--libs=\\\"/${TCROOT}/lib/libcsjp0.3.a\\\" \
 		|| exit $?
@@ -60,7 +61,7 @@ function config ()
 	exec_in_dir ${DIST} ./configure || exit $?
 }
 
-export ANDROID_SDK_API=android-9
+export ANDROID_SDK_API=android-14
 ARCH=arm
 
 CMD=$1
@@ -78,7 +79,7 @@ case "${CMD}" in
 		exec_in_dir ${DIST} debuild \
 			--no-tgz-check \
 			--preserve-envvar PATH \
-			--preserve-envvar NECESSITAS_HOME \
+			--preserve-envvar QT_HOME \
 			--preserve-envvar ANDROID_NDK_HOME \
 			--preserve-envvar ANDROID_SDK_HOME \
 			--preserve-envvar PKG_CONFIG_LIBDIR \
@@ -100,7 +101,7 @@ case "${CMD}" in
 		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
 		for f in $(echo "libcrypto.so libpq.so libqsqlpsql.so libssl.so"); do
 			cp /opt/${ANDROID_SDK_API}-${ARCH}/lib/$f \
-				${DIST}/android/libs/armeabi/ || exit $?
+				${DIST}/android/libs/armeabi-v7a/ || exit $?
 		done
 		test -h ${DIST}/${APKGNAME} || exec_in_dir \
 				${DIST} ln -s android ${APKGNAME} || exit $?

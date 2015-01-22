@@ -70,15 +70,23 @@ int main(int argc, char *args[])
 	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libandroid-9.so", libandroid))
 		LOG("Failed to create %s", libandroid);
 */
-	const char * libqsqlpsql = "/data/data/com." PRJNAME "/files/"
-			"qt/plugins/sqldrivers/libqsqlpsql.so";
+
+	const char * libqsqlpsql = "/data/data/com." PRJNAME
+					"/files/qt/plugins/sqldrivers/libqsqlpsql.so";
 	if(!QFile::remove(libqsqlpsql))
 		LOG("Failed to remove %s", libqsqlpsql);
 	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlpsql.so", libqsqlpsql))
 		LOG("Failed to create %s", libqsqlpsql);
 
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
-	app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
+	const char * libqsqlite = "/data/data/com." PRJNAME
+					"/files/qt/plugins/sqldrivers/libqsqlite.so";
+	if(!QFile::remove(libqsqlite))
+		LOG("Failed to remove %s", libqsqlite);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlite.so", libqsqlite))
+		LOG("Failed to create %s", libqsqlite);
+
+	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
+	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
 	app.addLibraryPath("/data/data/com." PRJNAME "/files/qt/plugins");
 #endif
 
