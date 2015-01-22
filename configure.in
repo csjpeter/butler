@@ -190,18 +190,21 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 
 DATACLASS_GENERATOR=$(${PKGCONFIG} --variable prefix libcsjp0.3)bin/libcsjp0.3-data-class-generator
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)" || exit $?
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Sql)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Gui)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Widgets)" || exit $?
 CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.3)" || exit $?
 echo "${CONFIG}" | grep staticbuild > /dev/null && {
 #	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)" || exit $?
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)" || exit $?
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Sql)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Gui)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Widgets)" || exit $?
 	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.3)" || exit $?
 } || {
 #	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)" || exit $?
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Sql)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Gui)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Widgets)" || exit $?
 	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.3)" || exit $?
 }
 

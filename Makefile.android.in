@@ -7,9 +7,9 @@ BUTLER_IMAGES+=\
 	android/res/drawable/icon.png
 
 BUILD_DEPS+=\
-	android/libs/armeabi/lib@PKGNAME_BASE@.so
+	android/libs/armeabi-v7a/lib@PKGNAME_BASE@.so
 
-android/libs/armeabi/%: \
+android/libs/armeabi-v7a/%: \
 		tmp/@TCROOT@@PREFIX@lib/lib@PKGNAME_BASE@.so
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $^ $@

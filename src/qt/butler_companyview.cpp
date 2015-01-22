@@ -84,10 +84,10 @@ void CompanyView::applyLayout()
 void CompanyView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Company::TaxId, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Company::TaxId, QHeaderView::ResizeToContents);
 
 	applyLayout();

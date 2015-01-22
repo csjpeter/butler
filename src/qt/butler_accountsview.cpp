@@ -83,10 +83,10 @@ void AccountsView::applyLayout()
 void AccountsView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Account::SwiftCode, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Account::SwiftCode, QHeaderView::ResizeToContents);
 
 	applyLayout();

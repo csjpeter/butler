@@ -18,7 +18,7 @@
 static QString _dateTimeFormat;
 static QString rootDir;
 
-csjp::ObjectTree config;
+csjp::Json config;
 
 namespace Config {
 
@@ -38,11 +38,8 @@ void save()
 
 	config.set("defaultDb", C_STR(Config::defaultDbName));
 
-	/* JSON */
-	csjp::Json json;
-	json <<= config;
 	csjp::File file(C_STR(configFileName));
-	file.overWrite(json.data);
+	file.overWrite(config.toString());
 }
 
 void load()
@@ -54,13 +51,9 @@ void load()
 	if(l.size())
 		locale = QLocale(l);
 
-	/* JSON */
-	csjp::Json json;
 	csjp::File file(C_STR(configFileName));
-	if(file.exists()){
-		json.data = file.readAll();
-		config <<= json;
-	}
+	if(file.exists())
+		config <<= file.readAll();
 
 	Config::defaultDbName <<= config.get("defaultDb", csjp::String(C_STR(Config::defaultDbName)));
 }
@@ -126,11 +119,17 @@ const QString css(const char * fileName)
 
 void initRootPath(const char * args0)
 {
+	LOG("args0: %s", args0);
+
+	QString current = QDir::currentPath();
+	LOG("Current path: %s", C_STR(current));
+	int rootDepth = current.count("/");
+
 	QString prefix(PREFIX);
-	int rootDepth = prefix.count("/") + 1; /* +1 for bin */
+	LOG("Compile time prefix: %s", C_STR(prefix));
+	//int rootDepth = prefix.count("/") + 1; /* +1 for bin */
 
 	QString root(QDir::fromNativeSeparators(args0));
-	LOG("args0: %s", C_STR(root));
 
 	int pos = root.lastIndexOf("/");
 	root.chop(root.size() - pos - 1);

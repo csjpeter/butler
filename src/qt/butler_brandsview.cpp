@@ -82,10 +82,10 @@ void BrandsView::applyLayout()
 void BrandsView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Brand::Company, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Brand::Company, QHeaderView::ResizeToContents);
 
 	applyLayout();

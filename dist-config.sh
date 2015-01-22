@@ -7,8 +7,8 @@ source /etc/lsb-release
 BUILD_DIST=${DISTRIB_CODENAME}
 HOST_DIST=${DISTRIB_CODENAME}
 TARGET_DIST=${DISTRIB_CODENAME}
-CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
-CURRENT_YEAR=$(LANG=en date +"%Y")
+CURRENT_DATE=$(LC_ALL=en_US.UTF-8 date +"%a, %d %b %Y %H:%M:%S %z")
+CURRENT_YEAR=$(LC_ALL=en_US.UTF-8 date +"%Y")
 VERSION_PACKAGING=${VERSION}
 PACKAGING="debian"
 

@@ -65,6 +65,12 @@ void Application::pixelPerMM()
 
 	double xpxPerMM = dpix/25.4 * 1.07; /* correction based on experience */
 	double ypxPerMM = dpiy/25.4 * 1.07; /* correction based on experience */
+
+	dpix = qApp->desktop()->physicalDpiX();
+	dpiy = qApp->desktop()->physicalDpiY();
+	xpxPerMM = dpix/25.4 * 1.07; /* correction based on experience */
+	ypxPerMM = dpiy/25.4 * 1.07; /* correction based on experience */
+
 	Config::pxPerMM = (xpxPerMM + ypxPerMM) / 2;
 	LOG("Horiz pixel per mm: %.2f, Vertic pixel per mm: %.2f, Avg pixel per mm: %.2f",
 			xpxPerMM, ypxPerMM, Config::pxPerMM);

@@ -7,6 +7,7 @@
 #define BUTLER_WIDGETS_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QString>
 
 #include <csjp_sorter_reference_container.h>

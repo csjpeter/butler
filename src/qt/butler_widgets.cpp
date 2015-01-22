@@ -19,9 +19,9 @@ TableView::TableView(QWidget * parent) :
 	setSelectionMode(QAbstractItemView::SingleSelection);
 	verticalHeader()->hide();
 	setSortingEnabled(true);
-	horizontalHeader()->setMovable(true);
+	horizontalHeader()->setSectionsMovable(true);
 	horizontalHeader()->setSortIndicatorShown(true);
-	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
 	scroller.stealEventFromFocusedWidgets = true;
 }

@@ -1,4 +1,15 @@
 
+# We dont want to use built in rules. Those are ineffective and we
+# can never know all of them, thus those can be unexpected as well.
+
+.SUFFIXES:
+
+MAKEFLAGS += --no-builtin-rules --no-builtin-variables
+EMPTY=
+COMMA=,
+SPACE=$(EMPTY) $(EMPTY)
+SHELL=bash
+
 $(DIST_DIR)/debian/copyright: enduser-license.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh enduser-license.in > $@.in
@@ -68,9 +79,48 @@ $(DIST_DIR)/android/debug.keystore: android/debug.keystore
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $+ $@
 
-$(DIST_DIR)/android/src/org/kde/necessitas/%: android/src/org/kde/necessitas/%
+$(DIST_DIR)/android/src/org/%: $(QT_HOME)/5.4/android_armv7/src/android/java/src/org/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $+ $@
+
+$(DIST_DIR)/android/libs/Qt%: $(QT_HOME)/5.4/android_armv7/jar/Qt%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libQt%: $(QT_HOME)/5.4/android_armv7/lib/libQt%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libgnustl_shared.so: \
+		$(ANDROID_NDK_HOME)/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/libgnustl_shared.so
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_android_libqtforandroid.so: \
+		$(QT_HOME)/5.4/android_armv7/plugins/platforms/android/libqtforandroid.so
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_generic_%: \
+		$(QT_HOME)/5.4/android_armv7/plugins/generic/%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_%: \
+		$(QT_HOME)/5.4/android_armv7/plugins/imageformats/%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_%: \
+		$(QT_HOME)/5.4/android_armv7/plugins/platforms/%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
+$(DIST_DIR)/android/libs/armeabi-v7a/libqsqlite.so: \
+		$(QT_HOME)/5.4/android_armv7/plugins/sqldrivers/libqsqlite.so
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+
 
 # http://developer.android.com/guide/topics/manifest/manifest-intro.html
 # $(DIST_DIR)/android/build-apk.sh.in
@@ -79,18 +129,45 @@ android: \
 		$(DIST_DIR)/android/res/values/strings.xml \
 		$(DIST_DIR)/android/build.xml \
 		$(DIST_DIR)/android/res/values/libs.xml \
-		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtActivity.java \
-		$(DIST_DIR)/android/src/org/kde/necessitas/origo/QtApplication.java \
+		$(DIST_DIR)/android/src/org/qtproject/qt5/android/bindings/QtActivity.java \
+		$(DIST_DIR)/android/src/org/qtproject/qt5/android/bindings/QtApplication.java \
 		$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
 		$(DIST_DIR)/android/src/org/kde/necessitas/ministro/IMinistro.aidl \
 		$(DIST_DIR)/android/project.properties \
-		$(DIST_DIR)/android/local.properties
+		$(DIST_DIR)/android/local.properties \
+		$(DIST_DIR)/android/libs/QtAndroidAccessibility-bundled.jar \
+		$(DIST_DIR)/android/libs/QtAndroid-bundled.jar \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libqsqlite.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libgnustl_shared.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libQt5Core.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libQt5Gui.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libQt5Widgets.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libQt5Sql.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_android_libqtforandroid.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_generic_libqevdevkeyboardplugin.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_generic_libqevdevmouseplugin.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_generic_libqevdevtabletplugin.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_generic_libqevdevtouchplugin.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqdds.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqgif.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqicns.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqico.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqjp2.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqjpeg.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqmng.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqtga.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqtiff.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_imageformats_libqwbmp.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_libqeglfs.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_libqminimalegl.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_libqminimal.so \
+		$(DIST_DIR)/android/libs/armeabi-v7a/libplugins_platforms_libqoffscreen.so
 	@true
 
 $(DIST_DIR)/android/project.properties:
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	echo "target=android-8" > $@
-#	echo "target=$(ANDROID_SDK_API)" > $@
+	echo "target=$(ANDROID_SDK_API)" > $@
+#	echo "target=android-8" > $@
 
 $(DIST_DIR)/android/local.properties:
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -115,7 +192,7 @@ $(DIST_DIR)/share/css/application.css.in: share/css/$(PACKAGING).css.in
 
 $(DIST_DIR)/Makefile.in: Makefile.in Makefile.$(PACKAGING).in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "all: build\n" > $@
+	@echo "all: build" > $@
 	./generator.$(PACKAGING).sh Makefile.$(PACKAGING).in >> $@
 	./generator.$(PACKAGING).sh Makefile.in >> $@
 

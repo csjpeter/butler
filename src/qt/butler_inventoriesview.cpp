@@ -82,10 +82,10 @@ void InventoriesView::applyLayout()
 void InventoriesView::relayout()
 {
 	if(tableView.horizontalHeader()->width() < width())
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Inventory::Comment, QHeaderView::Stretch);
 	else
-		tableView.horizontalHeader()->setResizeMode(
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Inventory::Comment, QHeaderView::ResizeToContents);
 
 	applyLayout();

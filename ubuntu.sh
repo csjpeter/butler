@@ -41,10 +41,12 @@ function config ()
 		--debug \
 		--relative-path \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
-		--prefix=opt/${PKGNAME_BASE} \
+		--prefix=usr \
 		--appsdir=usr/share/applications \
 		--fpic \
 		--gnu-source || exit $?
+
+		#--prefix=opt/${PKGNAME_BASE}
 
 	exec_in_dir ${DIST} ./configure || exit $?
 }
