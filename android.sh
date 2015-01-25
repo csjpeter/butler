@@ -33,6 +33,9 @@ function config ()
 	TCROOT=opt/${API}-${ARCH}
 	export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
 	export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
+	./arm-linux-androideabi-crosstools-gen.sh ./${DIST}/crosstools
+	export PATH=${PWD}/${DIST}/crosstools:$PATH
+
 	./dist-config.sh \
 		$@ \
 		-- \
