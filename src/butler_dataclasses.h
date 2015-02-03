@@ -68,6 +68,202 @@ public:
 };
 
 
-#include <../tmp/src/butler_dataclasses>
+class DatabaseDescriptor	//# ClassName
+{
+public:
+	QString name;		//# KeyField	// will be the connection name
+	QString driver;		//# Field		// for example QSQLITE
+	QString databaseName;	//# Field	// file name in case of sqlite
+	QString username;	//# Field
+	QString password;	//# Field
+	bool savePassword;	//# Field
+	QString host;		//# Field		// host name or ip
+	unsigned port;		//# Field
+
+	//# include defaults_for_dataclass
+
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Tag			//# ClassName
+{
+public:
+	Text name;		//# KeyField
+	Text description;	//# Field
+	DateTime lastModified;	//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Ware			//# ClassName
+{
+public:
+	Text name;		//# KeyField
+	Text unit;		//# Field
+	TypeNameSet types;	//# Field
+	TagNameSet tags;	//# Field
+	DateTime lastModified;	//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+		//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Company			//# ClassName
+{
+public:
+	Text name;		//# KeyField		// Tesco Global Áruházak ZRt.
+	Text country;		//# Field		// Magyarország
+	Text city;		//# Field	// Budaörs
+	Text postalCode;	//# Field		// 2040
+	Text address;		//# Field		// Kinizsi út 1-3.
+	Text taxId;		//# Field	// 10307078-2-44
+	Text icon;		//# Field	// base64 representation of an image
+	DateTime lastModified;	//# Field	// non editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Brand			//# ClassName
+{
+public:
+	Text name;		//# KeyField
+	Text company;		//# Field
+	DateTime lastModified;	//# Field	// non editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Inventory			//# ClassName
+{
+public:
+	Text name;		//# KeyField
+	Text comment;		//# Field
+	DateTime lastModified;	//# Field	// non editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Item			//# ClassName
+{
+public:
+	DateTime uploadDate;	//# KeyField	// non editable
+	Text name;		//# Field
+	Text unit;		//# Field
+	Text type;		//# Field
+	Text brand;		//# Field
+	double quantity;	//# Field		// amoutn to buy or not
+	double price;		//# Field		// price of gross piece/amount quantity
+	Text currency;		//# Field
+	Text account;		//# Field
+	Text partner;		//# Field
+	Text inventory;		//# Field
+	Text comment;		//# Field
+	DateTime invChangeDate;	//# Field
+	DateTime lastModified;	//# Field	// non editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Partner			//# ClassName
+{
+public:
+	Text name;		//# KeyField		// Kertvárosi tesco
+	Text country;		//# Field		// Magyarország
+	Text city;		//# Field	// Pécs
+	Text postalCode;	//# Field		// 7631
+	Text address;		//# Field		// Kincses út 1.
+	Text company;		//# Field		// Tesco Global Áruházak Zrt.
+	Text storeName;		//# Field		// 41052 számú bolt
+	DateTime lastModified;	//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Account			//# ClassName
+{
+public:
+	Text name;		//# KeyField
+	Text currency;		//# Field
+	Text bankOffice;	//# Field
+	Text iban;		//# Field
+	Text swiftCode;		//# Field
+	DateTime lastModified;	//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Payment			//# ClassName
+{
+public:
+	DateTime uploadDate;	//# KeyField
+	Text account;		//# Field
+	Text partner;		//# Field
+	double amount;		//# Field
+	DateTime subject;	//# Field
+	DateTime payDate;	//# Field
+	DateTime lastModified;	//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
+
+class Query				//# ClassName
+{
+public:
+	enum class StockOptions {
+		AllItemChanges,
+		Gains,
+		Looses
+	};
+
+	enum class TagOptions {
+		MatchAll,
+		MatchAny
+	};
+
+public:
+	Text name;			//# KeyField
+	DateTime startDate;		//# Field
+	DateTime endDate;		//# Field
+	enum StockOptions stockOption;	//# Field
+	enum TagOptions tagOption;	//# Field
+	TagNameSet withTags;		//# Field
+	TagNameSet withoutTags;		//# Field
+	WareNameSet wares;		//# Field
+	PartnerNameSet partners;	//# Field
+	DateTime lastModified;		//# Field	// non-editable
+
+	//# include defaults_for_dataclass
+};
+
+//# include non-member_defaults_for_dataclass
+//# include set_class_for_dataclass
 
 #endif

@@ -31,7 +31,6 @@ OBJCOPY=@OBJCOPY@
 MOC=@MOC@
 RANLIB=@RANLIB@
 PKGCONFIG=@PKGCONFIG@
-DATACLASS_GENERATOR=@DATACLASS_GENERATOR@
 
 #
 # some tool
@@ -59,12 +58,12 @@ tmp/src/datamodel/%.opp: src/datamodel/%.cpp
 	$(COMPILE) -o $@ $<
 
 tmp/src/sql/%.opp: src/sql/%.cpp \
-		tmp/src/butler_dataclasses
+		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
 tmp/src/qt/%.opp: src/qt/%.cpp \
-		tmp/src/butler_dataclasses
+		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
 
@@ -343,11 +342,6 @@ FORCE:
 #
 #	build rules
 #
-
-tmp/src/butler_dataclasses: \
-		src/butler_dataclasses.json
-	test -d $(dir $@) || mkdir -p $(dir $@)
-	$(DATACLASS_GENERATOR) -f $^ > $@
 
 $(STATIC_LIBSQL): \
 		$(SQL_OBJECTS)

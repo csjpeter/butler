@@ -200,6 +200,10 @@ $(DIST_DIR)/%.in: %.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh $*.in > $@
 
+$(DIST_DIR)/src/butler_dataclasses.h: src/butler_dataclasses.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	./code-generator.py -t ./tpl/ < $< > $@
+
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp -pd $< $@
@@ -219,7 +223,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/butler_macros.h \
 	$(DIST_DIR)/src/butler_conversions.h \
-	$(DIST_DIR)/src/butler_dataclasses.json \
 	$(DIST_DIR)/src/butler_dataclasses.h \
 	\
 	$(DIST_DIR)/src/config.h.in \
