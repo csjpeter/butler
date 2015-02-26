@@ -13,9 +13,9 @@
 #include <csjp_exception.h>
 
 #include <butler_datetime.h>
+// #include <butler_sql_connection.h>
 
 
-typedef csjp::OwnerContainer<Text> TagNameSet;
 
 class TypeNameSet : public csjp::SorterOwnerContainer<Text>
 {
@@ -51,10 +51,11 @@ public:
 		bool ascending;
 };
 
+typedef csjp::OwnerContainer<Text> TagNameSet;
 typedef csjp::OwnerContainer<Text> WareNameSet;
-typedef csjp::OwnerContainer<Text> CompanyNameSet;
 typedef csjp::OwnerContainer<Text> PartnerNameSet;
-typedef csjp::OwnerContainer<Text> AccountNameSet;
+//typedef csjp::OwnerContainer<Text> CompanyNameSet;
+//typedef csjp::OwnerContainer<Text> AccountNameSet;
 
 class QueryStat{
 public:
@@ -112,7 +113,7 @@ public:
 	//# include defaults_for_dataclass
 };
 
-		//# include non-member_defaults_for_dataclass
+//# include non-member_defaults_for_dataclass
 //# include set_class_for_dataclass
 
 class Company			//# ClassName

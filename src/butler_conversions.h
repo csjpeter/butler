@@ -18,6 +18,11 @@ inline csjp::String & operator<<= (csjp::String & str, const QString & qstr)
 	str = C_STR(qstr); return str;
 }
 
+inline csjp::String & operator<<= (csjp::String & str, unsigned u)
+{
+	str.cutAt(0); str << u; return str;
+}
+
 inline QString & operator<<= (QString & qstr, const csjp::String & str)
 {
 	qstr = str.c_str(); return qstr;

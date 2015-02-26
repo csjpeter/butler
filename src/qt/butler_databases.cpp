@@ -255,19 +255,19 @@ void loadDatabaseConfigs()
 {
 	descriptorSet.clear();
 	csjp::Json & tree = config["database-connections"];
-	unsigned s = tree.objects.size();
+	unsigned s = tree.properties.size();
 	for(unsigned i = 0; i < s; i++){
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
-		csjp::Json & dbt = tree.objects.queryAt(i);
-		desc->name <<= dbt.name;
-		desc->driver <<= dbt.properties["driver"];
-		desc->databaseName <<= dbt.properties["databaseName"];
-		desc->username <<= dbt.properties["username"];
-		desc->password <<= dbt.properties["password"];
+		csjp::Json & dbt = tree.properties.queryAt(i);
+		desc->name <<= dbt.key;
+		desc->driver <<= dbt["driver"];
+		desc->databaseName <<= dbt["databaseName"];
+		desc->username <<= dbt["username"];
+		desc->password <<= dbt["password"];
 		if(!desc->password.isEmpty())
 			desc->savePassword = true;
-		desc->host <<= dbt.properties["host"];
-		desc->port <<= dbt.properties["port"];
+		desc->host <<= dbt["host"];
+		desc->port <<= dbt["port"];
 		descriptorSet.add(desc);
 	}
 
@@ -303,15 +303,15 @@ void saveDatabaseConfigs()
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
 		csjp::String name(C_STR(desc.name));
-		auto & props = tree[name].properties;
-		props["driver"] <<= desc.driver; // for example "QSQLITE"
-		props["databaseName"] <<= desc.databaseName; //file name in case of sqlite
-		props["username"] <<= desc.username;
+		auto & db = tree[name];
+		db["driver"] <<= desc.driver; // for example "QSQLITE"
+		db["databaseName"] <<= desc.databaseName; //file name in case of sqlite
+		db["username"] <<= desc.username;
 		/* DO NOT SAVE THE VALUE OF desc.savePassword */
 		if(desc.savePassword)
-			props["password"] <<= desc.password;
-		props["host"] <<= desc.host; // domain name or ip
-		props["port"] = desc.port;
+			db["password"] <<= desc.password;
+		db["host"] <<= desc.host; // domain name or ip
+		db["port"] <<= desc.port;
 	}
 	csjp::Json & origTree = config["database-connections"];
 	origTree = move_cast(tree);

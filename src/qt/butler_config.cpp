@@ -36,7 +36,7 @@ void save()
 
 	settings.setValue(prefix + "/locale", locale.bcp47Name());
 
-	config.set("defaultDb", C_STR(Config::defaultDbName));
+	config["defaultDb"] <<= Config::defaultDbName;
 
 	csjp::File file(C_STR(configFileName));
 	file.overWrite(config.toString());
@@ -55,7 +55,8 @@ void load()
 	if(file.exists())
 		config <<= file.readAll();
 
-	Config::defaultDbName <<= config.get("defaultDb", csjp::String(C_STR(Config::defaultDbName)));
+	if(config.properties.has("defaultDb"))
+		Config::defaultDbName <<= config["defaultDb"];
 }
 
 const QString & dateTimeFormat()
@@ -120,26 +121,44 @@ const QString css(const char * fileName)
 void initRootPath(const char * args0)
 {
 	LOG("args0: %s", args0);
+	csjp::String cmd(C_STR(QDir::fromNativeSeparators(args0)));
 
-	QString current = QDir::currentPath();
-	LOG("Current path: %s", C_STR(current));
-	int rootDepth = current.count("/");
+	csjp::String prefix(PREFIX);
+	LOG("Compile time prefix: %s", prefix.str);
 
-	QString prefix(PREFIX);
-	LOG("Compile time prefix: %s", C_STR(prefix));
-	//int rootDepth = prefix.count("/") + 1; /* +1 for bin */
+	csjp::String current(C_STR(QDir::currentPath()));
+	LOG("Current path: %s", current.str);
 
-	QString root(QDir::fromNativeSeparators(args0));
+	csjp::String path;
+	if(cmd.startsWith("/"))
+		path << cmd;
+	else if(!cmd.count("/"))
+		path << "/" << prefix << "bin/" << cmd;
+	else
+		path << current << "/" << cmd;
+	path <<= QDir::cleanPath(QString(path.str));
+	csjp::unint pos;
+	path.findLastOf(pos, "/");
+	path.chopBack(path.length - pos);
+	LOG("Computed binary path: %s", path.str);
 
-	int pos = root.lastIndexOf("/");
-	root.chop(root.size() - pos - 1);
+	csjp::String root(path);
+	root.findLastOf(pos, "/");
+	root.chopBack(root.length - pos);
+	root.findLastOf(pos, "/");
+	root.chopBack(root.length - pos);
+	root << "/";
+
+	rootDir = root.str;
+/*
+	int rootDepth = path.count("/");
 
 	for(int i = 0; i < rootDepth; i++)
-		root.append("../");
-
-	rootDir = QDir::cleanPath(root) + "/";
-
-	LOG("root: %s", C_STR(rootDir));
+		rootDir.append("../");
+	rootDir.append(path.str);
+	rootDir.append("/");
+*/
+	LOG("rootDir: %s", C_STR(rootDir));
 	LOG("QDir::homePath(): %s", C_STR(QDir::homePath()));
 }
 
