@@ -10,6 +10,15 @@ COMMA=,
 SPACE=$(EMPTY) $(EMPTY)
 SHELL=bash
 
+tools/generator:
+	g++ $(shell PKG_CONFIG_PATH=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
+		pkg-config --cflags --libs libcsjp0.3) \
+		-std=c++11 \
+		tools/generator.cpp \
+		$(shell PKG_CONFIG_PATH=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
+			pkg-config --libs libcsjp0.3) \
+		-o tools/generator
+
 $(DIST_DIR)/debian/copyright: enduser-license.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh enduser-license.in > $@.in
@@ -200,9 +209,12 @@ $(DIST_DIR)/%.in: %.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh $*.in > $@
 
-$(DIST_DIR)/src/butler_dataclasses.h: src/butler_dataclasses.h
+$(DIST_DIR)/src/butler_dataclasses.h: \
+		tools/generator \
+		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	./code-generator.py -t ./tpl/ < $< > $@
+	tools/generator -t ./tpl/ < src/butler_dataclasses.h > $@
+	./code-generator.py -t ./tpl/ < src/butler_dataclasses.h > $@
 
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)
