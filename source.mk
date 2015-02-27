@@ -213,8 +213,9 @@ $(DIST_DIR)/src/butler_dataclasses.h: \
 		tools/generator \
 		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	#tools/generator -t ./tpl/ < src/butler_dataclasses.h > $@
-	./code-generator.py -t ./tpl/ < src/butler_dataclasses.h > $@
+	tools/generator -t ./tpl/ < src/butler_dataclasses.h > $@
+
+#./code-generator.py -t ./tpl/ < src/butler_dataclasses.h > $@
 
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)

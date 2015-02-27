@@ -68,6 +68,29 @@ public:
 	double queryTime; /** How much time the query took. */
 };
 
+/*@BeginDecl@
+	Class DatabaseDescriptor
+	Begin {
+		QString name;	key		// will be the connection name
+		QString driver;			// for example QSQLITE
+		QString databaseName;	// file name in case of sqlite
+		QString username;
+		QString password;
+		bool savePassword;
+		QString host;			// host name or ip
+		unsigned port;
+		}
+@EndDecl@
+
+class DatabaseDescriptor
+{
+	@include@ defaults_for_dataclass
+};
+
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
+
+*/
 
 class DatabaseDescriptor	//# ClassName
 {
@@ -87,6 +110,30 @@ public:
 
 //# include non-member_defaults_for_dataclass
 //# include set_class_for_dataclass
+
+/*@BeginDecl@
+	Class Tag
+	Fields {
+		Text name; key			; TEXT
+		Text description;		; TEXT NOT NULL DEFAULT ''
+		// non-editable
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@
+
+class Tag
+{
+	@include@ defaults_for_dataclass
+};
+
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
+
+*/
 
 class Tag			//# ClassName
 {

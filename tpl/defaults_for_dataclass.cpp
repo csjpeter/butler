@@ -1,3 +1,8 @@
+public:
+
+@ForEachFieldBegin@
+		@FieldType@ @FieldName@;	// @FieldComment@
+@ForEachFieldEnd@
 
 	enum Fields {
 @ForEachFieldBegin@
