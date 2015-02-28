@@ -10,7 +10,8 @@ COMMA=,
 SPACE=$(EMPTY) $(EMPTY)
 SHELL=bash
 
-tools/generator:
+tools/generator: \
+		tools/generator.cpp
 	g++ $(shell PKG_CONFIG_PATH=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		pkg-config --cflags --libs libcsjp0.3) \
 		-std=c++11 \
