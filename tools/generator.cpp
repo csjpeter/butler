@@ -39,15 +39,21 @@ bool operator<(const FieldDesc & a, const FieldDesc & b)
 
 class Generator
 {
-	enum State {
-		Default,
+	enum InputState {
+		Start,
 		Declaration,
 		FieldList,
 		ConstraintList,
+		Include,
+		NumOfStates
+	};
+	enum TemplateState {
+		Start,
 		NumOfStates
 	};
 public:
-	enum State state;
+	enum InputState inputState;
+	enum TemplateState templateState;
 	StringChunk tplDir;
 
 	StringChunk typeName;
@@ -56,12 +62,11 @@ public:
 	Array<FieldDesc> nonKeyFields;
 	Array<String> constraints;
 
-	String keyList; // ???
-
 	String code;
 
 Generator(const StringChunk & tplDir) :
-	state(State::Default),
+	inputState(InputState::Start),
+	templateState(TemplateState::Start),
 	tplDir(tplDir)
 {
 }
@@ -131,20 +136,20 @@ void readDeclaration(StringChunk & line)
 {
 	unint pos;
 	switch(state){
-		case State::Declaration :
+		case InputState::Declaration :
 			{
 			auto words = line.split(" \t");
 			if(words[0] == "Class"){
 				typeName = words[1];
 				// cleanup field and constraint info
 			} else if(words[0] == "Fields" && words[1] == "{"){
-				state = State::FieldList;
+				state = InputState::FieldList;
 			} else if(words[0] == "Constraints" && words[1] == "{"){
-				state = State::ConstraintList;
+				state = InputState::ConstraintList;
 			}
 			}
 			break;
-		case State::FieldList :
+		case InputState::FieldList :
 			{
 			StringChunk comment;
 			if(line.findFirst(pos, "//")){
@@ -153,7 +158,7 @@ void readDeclaration(StringChunk & line)
 			}
 			auto words = line.split(";");
 			if(words.length == 1 && words[0] == "}"){
-				state = State::Declaration;
+				state = InputState::Declaration;
 				break;
 			}
 			
@@ -185,11 +190,11 @@ void readDeclaration(StringChunk & line)
 				nonKeyFields.add(name, type, sql, comment);
 			}
 			break;
-		case State::ConstraintList :
+		case InputState::ConstraintList :
 			{
 			auto words = line.split(";");
 			if(words.length == 1 && words[0] == "}"){
-				state = State::Declaration;
+				state = InputState::Declaration;
 				break;
 			}
 			
@@ -202,55 +207,51 @@ void readDeclaration(StringChunk & line)
 	}
 }
 
-void processInputLine(StringChunk & line)
+void inputLine(StringChunk & line)
 {
 	unint pos;
-	while(line.length){
-		switch(state){
-			case State::Declaration :
-				if(line.findFirst(pos, "@EndDecl@")){
-					StringChunk decl(line.data, pos);
-					readDeclaration(decl);
-					line.chopFront(pos + strlen("@EndDecl@"));
-					state = State::Default;
-				} else
-					readDeclaration(line);
+	switch(state){
+		case InputState::Declaration :
+			if(line.findFirst(pos, "@EndDecl@")){
+				line.chopFront(pos + strlen("@EndDecl@"));
 				code << line;
-				break;
-			default :
-				if(line.findFirst(pos, "@")){
-					code.append(line.data, pos);
-					line.chopFront(pos);
-					if(line.chopFront("@BeginDecl@")){
-						code.append("@BeginDecl@");
-						state = State::Declaration;
-					} else if(line.chopFront("@include@")){
-						auto files = line.split(" ");
-						for(unsigned i = 0; i < files.length; i++){
-							String tplFileName(tplDir);
-							tplFileName << files[i] << ".cpp";
-							File tplFile(tplFileName);
-							String tpl = tplFile.readAll();
-							tpl.replace("\r", "");
-							auto lines = tpl.split("\n");
-							unsigned j;
-							try{
-								for(j = 0; j < lines.length; j++){
-									lines[j].trimBack("\t ");
-									processTemplateLine(lines[j]);
-								}
-							} catch (Exception & e) {
-								e.note("Excpetion happened while processing file %s line %u.", tplFileName.str, j);
-								EXCEPTION(e);
-								break;
+				line.clear();
+				state = InputState::Start;
+			} else
+				readDeclaration(line);
+			code << line;
+			break;
+		default :
+			if(line.findFirst(pos, "@")){
+				code << line;
+				line.chopFront(pos);
+				if(line.chopFront("@BeginDecl@")){
+					code.append("@BeginDecl@");
+					state = InputState::Declaration;
+				} else if(line.chopFront("@include@")){
+					auto files = line.split(" ");
+					for(unsigned i = 0; i < files.length; i++){
+						String tplFileName(tplDir);
+						tplFileName << files[i] << ".cpp";
+						File tplFile(tplFileName);
+						String tpl = tplFile.readAll();
+						tpl.replace("\r", "");
+						auto lines = tpl.split("\n");
+						unsigned j;
+						try{
+							for(j = 0; j < lines.length; j++){
+								lines[j].trimBack("\t ");
+								processTemplateLine(lines[j]);
 							}
+						} catch (Exception & e) {
+							e.note("Excpetion happened while processing file %s line %u.", tplFileName.str, j);
+							EXCEPTION(e);
+							break;
 						}
 					}
-				} else {
-					code << line;
-					line.clear();
 				}
-		}
+			} else
+				code << line;
 	}
 	code << "\n";
 }
@@ -327,7 +328,7 @@ int main(int argc, char *args[])
 	try{
 		for(i = 0; i < lines.length; i++){
 			lines[i].trimBack("\t ");
-			generator.processInputLine(lines[i]);
+			generator.inputLine(lines[i]);
 		}
 	} catch (Exception & e) {
 		e.note("Excpetion happened while processing file %s line %u.", inputFileName.data, i);
