@@ -47,7 +47,7 @@ class Generator
 	};
 public:
 	enum State state;
-	String tplDir;
+	StringChunk tplDir;
 
 	String typeName;
 	Array<FieldDesc> fields;
@@ -100,45 +100,37 @@ void include_foreachField(StringChunk & tpl, const Json & field)
 		if(field["name"].length)
 			code << "`" << field["name"] << "` ";
 		code << field["sqlDecl"];
-	} else if(tpl.chopFront("@FieldDefault@")){
-		code << field["default"];
 	} else if(tpl.chopFront("@FieldSqlDecl@")){
 		code << field["default"];
-	} else if(tpl.chopFront("@CreateParam@")) {
-		code << field["name"];
-		if(field["default"] !== null)
-			code << " = ".field->default;
 	} else
 		include_CommonMarkerValues(tpl);
 	}
 }
 
-/*@BeginDecl@
-	Class Tag
-	Fields {
-		Text name; key			; TEXT
-		Text description;		; TEXT NOT NULL DEFAULT ''
-		// non-editable
-		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
-		}
-	Constraints {
-		PRIMARY KEY (name)
-		}
-@EndDecl@
-
-class Tag
+void processTemplateLine(StringChunk & tpl)
 {
-public:
-	@Declarations@
-
-	@include@ defaults_for_dataclass
-};
-
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
-
-*/
+	unsigned pos;
+        if(tpl.chopFront("@ForEachFieldBegin@")){
+		tpl.trimFront("\n\r");
+                code.trimBack("\t");
+                $sectionPos = tpl.find(pos, "@ForEachFieldEnd@");
+                $section = rtrim(substr($tpl, $pos, $sectionPos-$pos), "\t");
+                $pos = $sectionPos + 17;
+                include_skip_newlines($tpl, $pos);
+                $sectionLast = strstr($section, "@ForEachFieldLast@");
+                if($sectionLast !== false){
+                        $sectionLast = ltrim(substr($sectionLast, 18), "\n\r");
+                        $section = rtrim(strstr($section, "@ForEachFieldLast@", true), "\t");
+                }
+                $last = count($classFields) - 1;
+                for($i=0; $i<=$last; $i++)
+                        if($last == $i && $sectionLast !== false)
+                                include_foreachField($sectionLast, $classFields[$i]);
+                        else
+                                include_foreachField($section, $classFields[$i]);
+	} else
+		include_CommonMarkerValues($tpl, $pos);
+}
 
 void readDeclaration(StringChunk & line)
 {
@@ -230,6 +222,25 @@ void processInputLine(const StringChunk & line)
 						state = State::Declaration;
 					} else if(line.chopFront("@include@")){
 						auto files = line.split(" ");
+						for(unsigned i = 0; i < files.length; i++){
+							String tplFileName(tplDir);
+							tplFileName << files[i] << ".cpp";
+							File tplFile(tplFileName);
+							tpl = tplFile.readAll();
+							tpl.replace("\r", "");
+							auto lines = tpl.split("\n");
+							unsigned j;
+							try{
+								for(j = 0; j < lines.length; j++){
+									lines[j].trimBack("\t ");
+									processTemplateLine(lines[j]);
+								}
+							} catch (Exception & e) {
+								e.note("Excpetion happened while processing file %s line %u.", tplFileName.str, j);
+								EXCEPTION(e);
+								break;
+							}
+						}
 					}
 				} else {
 					code << line;
@@ -246,8 +257,8 @@ void processInputLine(const StringChunk & line)
 
 int main(int argc, char *args[])
 {
-	String tplDir;
-	String inputFileName;
+	StringChunk tplDir;
+	StringChunk inputFileName;
 
 #ifdef DEBUG
 	csjp::verboseMode = true;
