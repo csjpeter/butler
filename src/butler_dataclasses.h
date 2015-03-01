@@ -68,7 +68,8 @@ public:
 	double queryTime; /** How much time the query took. */
 };
 
-/*@BeginDecl@
+/*
+@BeginDecl@
 	Class DatabaseDescriptor
 	Begin {
 		QString name;	key		// will be the connection name
@@ -111,7 +112,8 @@ public:
 //# include non-member_defaults_for_dataclass
 //# include set_class_for_dataclass
 
-/*@BeginDecl@
+/*
+@BeginDecl@
 	Class Tag
 	Fields {
 		Text name; key			; TEXT

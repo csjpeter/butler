@@ -39,19 +39,19 @@ bool operator<(const FieldDesc & a, const FieldDesc & b)
 
 class Declaration
 {
-	void (const StringChunk &) state;
+	void (Declaration::*state)(const StringChunk &);
 public:
 	StringChunk typeName;
 	Array<FieldDesc> fields;
 	Array<FieldDesc> keyFields;
 	Array<FieldDesc> nonKeyFields;
-	Array<String> constraints;
+	Array<StringChunk> constraints;
 
 	Declaration() { clear(); }
 
 	void clear()
 	{
-		state = parseDeclaration;
+		state = &Declaration::parseDeclaration;
 		typeName.clear();
 		fields.clear();
 		keyFields.clear();
@@ -61,21 +61,23 @@ public:
 
 	void parseFieldList(const StringChunk & line)
 	{
+		unint pos;
 		StringChunk comment;
+		StringChunk decl(line);
 		if(line.findFirst(pos, "//")){
 			comment.assign(line.data + pos, line.length - pos);
-			line.cutAt(pos);
+			decl.assign(line.data, pos);
 		}
-		auto words = line.split(";");
+		auto words = decl.split(";");
 		if(words.length == 1 && words[0] == "}"){
-			state = parseDeclaration;
-			break;
+			state = &Declaration::parseDeclaration;
+			return;
 		}
 
 		StringChunk type;
 		StringChunk name;
 		if(0 < words.length){
-			words[0].trim(" \t");
+			words[0].trimBack(" \t");
 			if(words[0].findLastOf(pos, " \t")){
 				type.assign(words[0].data, pos);
 				words[0].chopFront(pos + 1);
@@ -93,23 +95,23 @@ public:
 		if(2 < words.length)
 			sql = words[2];
 
-		fields.add(name, type, sql, comment);
+		FieldDesc field(name, type, sql, comment);
+		fields.add(field);
 		if(key)
-			keyFields.add(name, type, sql, comment);
+			keyFields.add(field);
 		else
-			nonKeyFields.add(name, type, sql, comment);
+			nonKeyFields.add(field);
 	}
 
 	void parseConstraintList(const StringChunk & line)
 	{
 		auto words = line.split(";");
 		if(words.length == 1 && words[0] == "}"){
-			state = parseDeclaration;
-			break;
+			state = &Declaration::parseDeclaration;
+			return;
 		}
 
-		line.trim("\n ");
-		constraints.add(line);
+		constraints.add(StringChunk(line));
 	}
 
 	void parseDeclaration(const StringChunk & line)
@@ -119,99 +121,106 @@ public:
 			typeName = words[1];
 			// cleanup field and constraint info
 		} else if(words[0] == "Fields" && words[1] == "{"){
-			state = parseFieldList;
+			state = &Declaration::parseFieldList;
 		} else if(words[0] == "Constraints" && words[1] == "{"){
-			state = parseConstraintList;
+			state = &Declaration::parseConstraintList;
 		}
 	}
 
 	void parse(const StringChunk & line)
 	{
-		state(line);
+		(this->*state)(line);
 	}
 };
 
-class Generator
+class TemplateParser
 {
-	public:
-		void include_CommonMarkerValues(StringChunk & tpl)
-		{
+	String & code;
+	const Declaration & declaration;
+public:
+	TemplateParser(String & code, const Declaration & declaration) :
+		code(code), declaration(declaration)
+	{
+	}
+
+	void include_CommonMarkerValues(StringChunk & tpl)
+	{
+		if(tpl.chopFront("@Type@")) {
+			tpl.trimFront("\n\r");
+			//code.trimBack("\t");
+			code << declaration.typeName;
+		} else {
+			code << tpl[0];
+			tpl.chopFront(1);
+		}
+	}
+
+	void include_foreachField(StringChunk & tpl, const Array<FieldDesc> & fields)
+	{
+		unsigned pos = 0;
+		for(unsigned i = 0; i < fields.length; i++){
+			if(*tpl.data != '@'){
+				code << *tpl.data;
+				tpl.chopFront(1);
+			}
 			if(tpl.chopFront("@Type@")) {
 				tpl.trimFront("\n\r");
 				//code.trimBack("\t");
-				code << typeName;
-			} else {
-				code << tpl[0];
-				tpl.chopFront(1);
-			}
-		}
-
-		void include_foreachField(StringChunk & tpl, const Array<FieldDesc> & fields)
-		{
-			unsigned pos = 0;
-			for(unsigned i = 0; i < fields.length; i++){
-				if(*tpl.data != '@'){
-					code << *tpl.data;
-					tpl.chopFront(1);
-				}
-				if(tpl.chopFront("@Type@")) {
-					tpl.trimFront("\n\r");
-					//code.trimBack("\t");
-					code << typeName;
-				} else if(tpl.chopFront("@FieldName@")){
-					code << fields[i].name;
-				} else if(tpl.chopFront("@SqlDecl@")){
-					if(fields[i].name.length)
-						code << "`" << fields[i].name << "` ";
-					code << fields[i].sqlDecl;
-				} else
-					include_CommonMarkerValues(tpl);
-			}
-		}
-
-		void processTemplateLine(StringChunk & tpl)
-		{
-			unint pos;
-			if(tpl.chopFront("@ForEachFieldBegin@")){
-				tpl.trimFront("\n\r");
-				code.trimBack("\t");
-				/*$sectionPos = tpl.find(pos, "@ForEachFieldEnd@");
-				  $section = rtrim(substr($tpl, $pos, $sectionPos-$pos), "\t");
-				  $pos = $sectionPos + 17;
-				  include_skip_newlines($tpl, $pos);
-				  $sectionLast = strstr($section, "@ForEachFieldLast@");
-				  if($sectionLast !== false){
-				  $sectionLast = ltrim(substr($sectionLast, 18), "\n\r");
-				  $section = rtrim(strstr($section, "@ForEachFieldLast@", true), "\t");
-				  }*/
-				/*                unsigned last = count(classFields) - 1;
-						  for(int i = 0; i <= last; i++)
-						  if(last == i && sectionLast !== false)
-						  include_foreachField(sectionLast, classFields[i]);
-						  else
-						  include_foreachField(section, classFields[i]);
-						  */
+				code << declaration.typeName;
+			} else if(tpl.chopFront("@FieldName@")){
+				code << fields[i].name;
+			} else if(tpl.chopFront("@SqlDecl@")){
+				if(fields[i].name.length)
+					code << "`" << fields[i].name << "` ";
+				code << fields[i].sqlDecl;
 			} else
 				include_CommonMarkerValues(tpl);
 		}
+	}
 
-		void parse(const StringChunk & tpl)
-		{
-		}
+	void processTemplateLine(StringChunk & tpl)
+	{
+		unint pos;
+		if(tpl.chopFront("@ForEachFieldBegin@")){
+			tpl.trimFront("\n\r");
+			code.trimBack("\t");
+			/*$sectionPos = tpl.find(pos, "@ForEachFieldEnd@");
+			  $section = rtrim(substr($tpl, $pos, $sectionPos-$pos), "\t");
+			  $pos = $sectionPos + 17;
+			  include_skip_newlines($tpl, $pos);
+			  $sectionLast = strstr($section, "@ForEachFieldLast@");
+			  if($sectionLast !== false){
+			  $sectionLast = ltrim(substr($sectionLast, 18), "\n\r");
+			  $section = rtrim(strstr($section, "@ForEachFieldLast@", true), "\t");
+			  }*/
+			/*                unsigned last = count(classFields) - 1;
+					  for(int i = 0; i <= last; i++)
+					  if(last == i && sectionLast !== false)
+					  include_foreachField(sectionLast, classFields[i]);
+					  else
+					  include_foreachField(section, classFields[i]);
+					  */
+		} else
+			include_CommonMarkerValues(tpl);
+	}
+
+	void parse(const StringChunk & tpl)
+	{
+	}
 };
 
 class InputCode
 {
-	void (const StringChunk &) state;
+	void (InputCode::*state)(const StringChunk &);
 
-	StringChunk tplDir;
+	const StringChunk & tplDir;
 	Declaration declaration;
-
+public:
 	String code;
 
 public:
 	InputCode(const StringChunk & tplDir) :
-		state(parseCode),
+		state(&InputCode::parseCode),
 		tplDir(tplDir)
 	{
 	}
@@ -219,13 +228,13 @@ public:
 	void parseCode(const StringChunk & line)
 	{
 		unint pos;
-		if(!line.findFirst("@")){
+		if(!line.findFirst(pos, "@")){
 			code << line << "\n";
 			return;
 		}
-		if(line.findFirst("@BeginDecl@")){
+		if(line.findFirst(pos, "@BeginDecl@")){
 			declaration.clear();
-			state = parseDeclaration;
+			state = &InputCode::parseDeclaration;
 		} else if(line.findFirst(pos, "@include@")){
 			pos += 10;
 			StringChunk includeList(line.data + pos, line.length - pos);
@@ -236,8 +245,9 @@ public:
 
 	void parseDeclaration(const StringChunk & line)
 	{
+		unint pos;
 		if(line.findFirst(pos, "@EndDecl@")){
-			state = parseCode;
+			state = &InputCode::parseCode;
 		} else
 			declaration.parse(line);
 	}
@@ -250,15 +260,15 @@ public:
 			tplFileName << files[i] << ".cpp";
 			File tplFile(tplFileName);
 			String tpl = tplFile.readAll();
-			StringChunk chunk(tpl);
-			TemplateParser tplParser;
+			StringChunk chunk(tpl.str, tpl.length);
+			TemplateParser tplParser(code, declaration);
 			tplParser.parse(chunk);
 		}
 	}
 
 	void parse(const StringChunk & line)
 	{
-		state();
+		(this->*state)(line);
 	}
 };
 
@@ -290,7 +300,6 @@ int main(int argc, char *args[])
 				!strcmp(args[argi], "-l"))){
 			csjp::setLogDir(args[argi+1]);
 			argi += 2;
-			printf("argi 1: %d\n", argi);
 			continue;
 		}
 		if(1 <= argc - argi && (
@@ -298,7 +307,6 @@ int main(int argc, char *args[])
 				!strcmp(args[argi], "-v"))){
 			csjp::verboseMode = true;
 			argi++;
-			printf("argi 2: %d\n", argi);
 			continue;
 		}
 		if(1 <= argc - argi && (
@@ -306,7 +314,6 @@ int main(int argc, char *args[])
 				!strcmp(args[argi], "-t"))){
 			tplDir = args[argi+1];
 			argi += 2;
-			printf("argi 3: %d\n", argi);
 			continue;
 		}
 		if(1 <= argc - argi && (
@@ -314,7 +321,6 @@ int main(int argc, char *args[])
 				!strcmp(args[argi], "-i"))){
 			inputFileName = args[argi+1];
 			argi += 2;
-			printf("argi 4: %d\n", argi);
 			continue;
 		}
 
