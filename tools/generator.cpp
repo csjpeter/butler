@@ -95,12 +95,11 @@ public:
 		if(2 < words.length)
 			sql = words[2];
 
-		FieldDesc field(name, type, sql, comment);
-		fields.add(field);
+		fields.add(name, type, sql, comment);
 		if(key)
-			keyFields.add(field);
+			keyFields.add(name, type, sql, comment);
 		else
-			nonKeyFields.add(field);
+			nonKeyFields.add(name, type, sql, comment);
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -111,7 +110,7 @@ public:
 			return;
 		}
 
-		constraints.add(StringChunk(line));
+		constraints.add(line);
 	}
 
 	void parseDeclaration(const StringChunk & line)
