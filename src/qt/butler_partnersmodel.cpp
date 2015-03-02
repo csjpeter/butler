@@ -261,7 +261,7 @@ void PartnersModel::query()
 
 void PartnersModel::sort(int column, bool ascending)
 {
-	if(partners.ascending == ascending && partners.ordering == column)
+	if(partners.ascending == ascending && partners.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

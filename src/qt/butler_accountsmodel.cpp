@@ -239,7 +239,7 @@ void AccountsModel::query()
 
 void AccountsModel::sort(int column, bool ascending)
 {
-	if(accounts.ascending == ascending && accounts.ordering == column)
+	if(accounts.ascending == ascending && accounts.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

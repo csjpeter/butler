@@ -214,7 +214,7 @@ void InventoriesModel::query()
 
 void InventoriesModel::sort(int column, bool ascending)
 {
-	if(inventories.ascending == ascending && inventories.ordering == column)
+	if(inventories.ascending == ascending && inventories.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

@@ -1,4 +1,4 @@
-/** 
+/**
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2013 Csaszar, Peter
  */
@@ -8,6 +8,7 @@
 
 #include <QString>
 
+#include <csjp_array.h>
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 #include <csjp_exception.h>
@@ -68,10 +69,9 @@ public:
 	double queryTime; /** How much time the query took. */
 };
 
-/*
-@BeginDecl@
+/*@BeginDecl@
 	Class DatabaseDescriptor
-	Begin {
+	Fields {
 		QString name;	key		// will be the connection name
 		QString driver;			// for example QSQLITE
 		QString databaseName;	// file name in case of sqlite
@@ -81,7 +81,7 @@ public:
 		QString host;			// host name or ip
 		unsigned port;
 		}
-@EndDecl@
+@EndDecl@*/
 
 class DatabaseDescriptor
 {
@@ -91,41 +91,18 @@ class DatabaseDescriptor
 @include@ non-member_defaults_for_dataclass
 @include@ set_class_for_dataclass
 
-*/
-
-class DatabaseDescriptor	//# ClassName
-{
-public:
-	QString name;		//# KeyField	// will be the connection name
-	QString driver;		//# Field		// for example QSQLITE
-	QString databaseName;	//# Field	// file name in case of sqlite
-	QString username;	//# Field
-	QString password;	//# Field
-	bool savePassword;	//# Field
-	QString host;		//# Field		// host name or ip
-	unsigned port;		//# Field
-
-	//# include defaults_for_dataclass
-
-};
-
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
-
-/*
-@BeginDecl@
+/*@BeginDecl@
 	Class Tag
 	Fields {
 		Text name; key			; TEXT
 		Text description;		; TEXT NOT NULL DEFAULT ''
-		// non-editable
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
 		}
-@EndDecl@
+@EndDecl@*/
 
 class Tag
 {
@@ -135,156 +112,220 @@ class Tag
 @include@ non-member_defaults_for_dataclass
 @include@ set_class_for_dataclass
 
-*/
+/*@BeginDecl@
+	Class Ware
+	Fields {
+		Text name; key			; TEXT
+		Text unit;				; TEXT NOT NULL DEFAULT ''
+		TypeNameSet types;
+		TagNameSet tags;
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
 
-class Tag			//# ClassName
+class Ware
 {
-public:
-	Text name;		//# KeyField
-	Text description;	//# Field
-	DateTime lastModified;	//# Field	// non-editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Ware			//# ClassName
+/*@BeginDecl@
+	Class Company
+	Fields {
+		Text name; key			; TEXT									// Tesco Global Áruházak
+		Text country;			; TEXT NOT NULL DEFAULT ''				// Magyarország
+		Text city;														// Budaörs
+		Text postalCode;												// 2040
+		Text address;													// Kinizsi út 1-3.
+		Text taxId;														// 10307078-2-44
+		Text icon;														// base64 repr of an image
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+class Company
 {
-public:
-	Text name;		//# KeyField
-	Text unit;		//# Field
-	TypeNameSet types;	//# Field
-	TagNameSet tags;	//# Field
-	DateTime lastModified;	//# Field	// non-editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Company			//# ClassName
+/*@BeginDecl@
+	Class Brand
+	Fields {
+		Text name; key			; TEXT
+		Text company;			; TEXT NOT NULL DEFAULT ''
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+class Brand
 {
-public:
-	Text name;		//# KeyField		// Tesco Global Áruházak ZRt.
-	Text country;		//# Field		// Magyarország
-	Text city;		//# Field	// Budaörs
-	Text postalCode;	//# Field		// 2040
-	Text address;		//# Field		// Kinizsi út 1-3.
-	Text taxId;		//# Field	// 10307078-2-44
-	Text icon;		//# Field	// base64 representation of an image
-	DateTime lastModified;	//# Field	// non editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Brand			//# ClassName
+/*@BeginDecl@
+	Class Inventory
+	Fields {
+		Text name; key			; TEXT
+		Text comment;			; TEXT NOT NULL DEFAULT ''
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+class Inventory
 {
-public:
-	Text name;		//# KeyField
-	Text company;		//# Field
-	DateTime lastModified;	//# Field	// non editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Inventory			//# ClassName
+/*@BeginDecl@
+	Class Item
+	Fields {
+		DateTime uploadDate; key	// non editable
+		Text name;
+		Text unit;
+		Text type;
+		Text brand;
+		double quantity;			// amoutn to buy or not
+		double price;				// price of gross piece/amount quantity
+		Text currency;
+		Text account;
+		Text partner;
+		Text inventory;
+		Text comment;
+		DateTime invChangeDate;
+		DateTime lastModified;		// non editable
+		}
+	Constraints {
+		PRIMARY KEY (uploadDate)
+		}
+@EndDecl@*/
+
+class Item
 {
-public:
-	Text name;		//# KeyField
-	Text comment;		//# Field
-	DateTime lastModified;	//# Field	// non editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Item			//# ClassName
+/*@BeginDecl@
+	Class Partner
+	Fields {
+		Text name; key				// Kertvárosi tesco
+		Text country;				// Magyarország
+		Text city;			// Pécs
+		Text postalCode;			// 7631
+		Text address;				// Kincses út 1.
+		Text company;				// Tesco Global Áruházak Zrt.
+		Text storeName;				// 41052 számú bolt
+		DateTime lastModified;		// non-editable
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+class Partner
 {
-public:
-	DateTime uploadDate;	//# KeyField	// non editable
-	Text name;		//# Field
-	Text unit;		//# Field
-	Text type;		//# Field
-	Text brand;		//# Field
-	double quantity;	//# Field		// amoutn to buy or not
-	double price;		//# Field		// price of gross piece/amount quantity
-	Text currency;		//# Field
-	Text account;		//# Field
-	Text partner;		//# Field
-	Text inventory;		//# Field
-	Text comment;		//# Field
-	DateTime invChangeDate;	//# Field
-	DateTime lastModified;	//# Field	// non editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Partner			//# ClassName
+/*@BeginDecl@
+	Class Account
+	Fields {
+		Text name; key
+		Text currency;
+		Text bankOffice;
+		Text iban;
+		Text swiftCode;
+		DateTime lastModified;
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+class Account
 {
-public:
-	Text name;		//# KeyField		// Kertvárosi tesco
-	Text country;		//# Field		// Magyarország
-	Text city;		//# Field	// Pécs
-	Text postalCode;	//# Field		// 7631
-	Text address;		//# Field		// Kincses út 1.
-	Text company;		//# Field		// Tesco Global Áruházak Zrt.
-	Text storeName;		//# Field		// 41052 számú bolt
-	DateTime lastModified;	//# Field	// non-editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Account			//# ClassName
+/*@BeginDecl@
+	Class Payment
+	Fields {
+		DateTime uploadDate; key
+		Text account;
+		Text partner;
+		double amount;
+		DateTime subject;
+		DateTime payDate;
+		DateTime lastModified;
+		}
+	Constraints {
+		PRIMARY KEY (uploadDate)
+		}
+@EndDecl@*/
+
+class Payment
 {
-public:
-	Text name;		//# KeyField
-	Text currency;		//# Field
-	Text bankOffice;	//# Field
-	Text iban;		//# Field
-	Text swiftCode;		//# Field
-	DateTime lastModified;	//# Field	// non-editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
-class Payment			//# ClassName
-{
-public:
-	DateTime uploadDate;	//# KeyField
-	Text account;		//# Field
-	Text partner;		//# Field
-	double amount;		//# Field
-	DateTime subject;	//# Field
-	DateTime payDate;	//# Field
-	DateTime lastModified;	//# Field	// non-editable
+/*@BeginDecl@
+	Class Query
+	Fields {
+		Text name; key
+		DateTime startDate;
+		DateTime endDate;
+		enum StockOptions stockOption;
+		enum TagOptions tagOption;
+		TagNameSet withTags;
+		TagNameSet withoutTags;
+		WareNameSet wares;
+		PartnerNameSet partners;
+		DateTime lastModified;
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
 
-	//# include defaults_for_dataclass
-};
-
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
-
-class Query				//# ClassName
+class Query
 {
 public:
 	enum class StockOptions {
@@ -298,22 +339,10 @@ public:
 		MatchAny
 	};
 
-public:
-	Text name;			//# KeyField
-	DateTime startDate;		//# Field
-	DateTime endDate;		//# Field
-	enum StockOptions stockOption;	//# Field
-	enum TagOptions tagOption;	//# Field
-	TagNameSet withTags;		//# Field
-	TagNameSet withoutTags;		//# Field
-	WareNameSet wares;		//# Field
-	PartnerNameSet partners;	//# Field
-	DateTime lastModified;		//# Field	// non-editable
-
-	//# include defaults_for_dataclass
+	@include@ defaults_for_dataclass
 };
 
-//# include non-member_defaults_for_dataclass
-//# include set_class_for_dataclass
+@include@ non-member_defaults_for_dataclass
+@include@ set_class_for_dataclass
 
 #endif

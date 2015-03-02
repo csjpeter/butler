@@ -1,21 +1,26 @@
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 {
 public:
-	@Type@::Fields ordering;
+	csjp::Array<@Type@::Fields> ordering;
 	bool ascending;
 
 	virtual int compare(const @Type@ & a, const @Type@ & b) const
 	{
 		bool ret;
 
-		switch(ordering) {
+		switch(ordering[0]) {
 @ForEachFieldBegin@
 			case @Type@::@FieldEnumName@ :
 				ret = a.@FieldName@ < b.@FieldName@;
 				break;
 @ForEachFieldEnd@
 			default:
-				ret = a.@KeyName@ < b.@KeyName@;
+				ret =
+@ForEachKeyFieldBegin@
+					a.@FieldName@ < b.@FieldName@ &&
+@ForEachKeyFieldLast@
+					a.@FieldName@ < b.@FieldName@;
+@ForEachKeyFieldEnd@
 				break;
 		}
 
@@ -28,11 +33,21 @@ public:
 public:
 	@Type@Set() :
 		csjp::SorterOwnerContainer<@Type@>(),
-		ordering(@Type@::@KeyEnumName@),
-		ascending(true){}
+		ascending(true)
+	{
+@ForEachFieldBegin@
+		ordering.setCapacity(ordering.capacity+1);
+		ordering.add(@Type@::@FieldEnumName@);
+@ForEachFieldEnd@
+	}
 	@Type@Set(const @Type@Set & ts) :
 		csjp::SorterOwnerContainer<@Type@>(ts),
-		ordering(@Type@::@KeyEnumName@),
-		ascending(true){}
+		ascending(true)
+	{
+@ForEachFieldBegin@
+		ordering.setCapacity(ordering.capacity+1);
+		ordering.add(@Type@::@FieldEnumName@);
+@ForEachFieldEnd@
+	}
 	~@Type@Set() {}
 };

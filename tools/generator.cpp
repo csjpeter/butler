@@ -13,6 +13,11 @@ using namespace csjp;
 class FieldDesc
 {
 public:
+	FieldDesc(const StringChunk & constraint) :
+		constraint(constraint)
+	{
+	}
+
 	FieldDesc(const StringChunk & name, const StringChunk & type,
 			const StringChunk & sqlDecl, const StringChunk & comment) :
 		name(name),
@@ -30,6 +35,7 @@ public:
 	String enumName;
 	String sqlDecl;
 	String comment;
+	String constraint;
 };
 
 bool operator<(const FieldDesc & a, const FieldDesc & b)
@@ -45,7 +51,7 @@ public:
 	Array<FieldDesc> fields;
 	Array<FieldDesc> keyFields;
 	Array<FieldDesc> nonKeyFields;
-	Array<StringChunk> constraints;
+	Array<FieldDesc> constraints;
 
 	Declaration() { clear(); }
 
@@ -65,10 +71,14 @@ public:
 		StringChunk comment;
 		StringChunk decl(line);
 		if(line.findFirst(pos, "//")){
-			comment.assign(line.data + pos, line.length - pos);
-			decl.assign(line.data, pos);
+			if(0 < pos && (line[pos-1] == '\t' || line[pos-1] == ' '))
+				pos -= 1;
+			comment.assign(line.str + pos, line.length - pos);
+			decl.assign(line.str, pos);
 		}
 		auto words = decl.split(";");
+		for(unint i = 0; i < words.length; i++)
+			words[i].trimFront(" \t");
 		if(words.length == 1 && words[0] == "}"){
 			state = &Declaration::parseDeclaration;
 			return;
@@ -79,7 +89,7 @@ public:
 		if(0 < words.length){
 			words[0].trimBack(" \t");
 			if(words[0].findLastOf(pos, " \t")){
-				type.assign(words[0].data, pos);
+				type.assign(words[0].str, pos);
 				words[0].chopFront(pos + 1);
 				name.assign(words[0]);
 			}
@@ -87,6 +97,7 @@ public:
 
 		bool key = false;
 		if(1 < words.length){
+			words[1].trim(" \t");
 			auto modifiers = words[1].split(",");
 			key = modifiers.has("key");
 		}
@@ -95,11 +106,15 @@ public:
 		if(2 < words.length)
 			sql = words[2];
 
+		fields.setCapacity(fields.capacity+1);
 		fields.add(name, type, sql, comment);
-		if(key)
+		if(key){
+			keyFields.setCapacity(keyFields.capacity+1);
 			keyFields.add(name, type, sql, comment);
-		else
+		} else {
+			nonKeyFields.setCapacity(nonKeyFields.capacity+1);
 			nonKeyFields.add(name, type, sql, comment);
+		}
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -110,6 +125,7 @@ public:
 			return;
 		}
 
+		constraints.setCapacity(constraints.capacity+1);
 		constraints.add(line);
 	}
 
@@ -136,75 +152,129 @@ class TemplateParser
 {
 	String & code;
 	const Declaration & declaration;
+	StringChunk tpl;
+	unint tplLineNo;
+	unint tplLastLineStartPos;
+	const char * const until;
 public:
-	TemplateParser(String & code, const Declaration & declaration) :
-		code(code), declaration(declaration)
+	TemplateParser(String & code, const String & tpl, const Declaration & declaration) :
+		code(code), declaration(declaration), tpl(tpl.str, tpl.length),
+		tplLineNo(1), tplLastLineStartPos(0), until(tpl.str + tpl.length)
 	{
 	}
 
-	void include_CommonMarkerValues(StringChunk & tpl)
+	void parseCommonMarker(StringChunk & tpl)
 	{
 		if(tpl.chopFront("@Type@")) {
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
 			code << declaration.typeName;
-		} else {
+		} else if(tpl.length) {
 			code << tpl[0];
 			tpl.chopFront(1);
 		}
 	}
 
-	void include_foreachField(StringChunk & tpl, const Array<FieldDesc> & fields)
+	void parseForEach(const char * what, const Array<FieldDesc> & fields)
 	{
-		unsigned pos = 0;
-		for(unsigned i = 0; i < fields.length; i++){
-			if(*tpl.data != '@'){
-				code << *tpl.data;
-				tpl.chopFront(1);
+		String lastTag, endTag;
+		lastTag << "@ForEach" << what << "Last@";
+		endTag << "@ForEach" << what << "End@";
+
+		unint pos;
+		if(fields.length == 1 && tpl.findFirst(pos, lastTag.str))
+			tpl.chopFront(pos + lastTag.length);
+
+		tpl.trimFront("\n\r");
+		code.trimBack("\t");
+
+		StringChunk block(tpl.str, tpl.length);
+		unint tplLineNoBegin = tplLineNo;
+		unint tplLastLineStartPosBegin = tplLastLineStartPos;
+
+		for(unint i = 0; i < fields.length && block.length;){
+			const char * iter = block.str;
+			while(iter < until && *iter != '@'){
+				if(iter[0] == '\n'){
+					tplLineNo++;
+					tplLastLineStartPos = iter - block.str;
+				}
+				iter++;
 			}
-			if(tpl.chopFront("@Type@")) {
-				tpl.trimFront("\n\r");
-				//code.trimBack("\t");
-				code << declaration.typeName;
-			} else if(tpl.chopFront("@FieldName@")){
+			code.append(block.str, iter - block.str);
+			block.chopFront(iter - block.str);
+
+			if(block.chopFront(lastTag.str)){
+				if(i == fields.length - 2){
+					tpl.chopFront(block.str - tpl.str);
+					tpl.trimFront("\n\r");
+					block = tpl;
+					i++;
+				} else {
+					block = tpl;
+					tplLineNo = tplLineNoBegin;
+					tplLastLineStartPos = tplLastLineStartPosBegin;
+					i++;
+				}
+			} else if(block.chopFront(endTag.str)){
+				if(i == fields.length - 1){
+					tpl.chopFront(block.str - tpl.str);
+					tpl.trimFront("\n\r");
+					block.clear();
+				} else {
+					block = tpl;
+					tplLineNo = tplLineNoBegin;
+					tplLastLineStartPos = tplLastLineStartPosBegin;
+					i++;
+				}
+			} else if(block.chopFront("@FieldType@")) {
+				code << fields[i].type;
+			} else if(block.chopFront("@FieldName@")){
 				code << fields[i].name;
-			} else if(tpl.chopFront("@SqlDecl@")){
-				if(fields[i].name.length)
-					code << "`" << fields[i].name << "` ";
-				code << fields[i].sqlDecl;
-			} else
-				include_CommonMarkerValues(tpl);
+			} else if(block.chopFront("@FieldEnumName@")){
+				code << fields[i].enumName;
+			} else if(block.chopFront("@FieldSqlDecl@")){
+				code << "`" << fields[i].name << "` " << fields[i].sqlDecl;
+			} else if(block.chopFront("@FieldComment@")){
+				code << fields[i].comment;
+			} else {
+				parseCommonMarker(block);
+			}
 		}
 	}
 
-	void processTemplateLine(StringChunk & tpl)
+	void parse()
 	{
-		unint pos;
-		if(tpl.chopFront("@ForEachFieldBegin@")){
-			tpl.trimFront("\n\r");
-			code.trimBack("\t");
-			/*$sectionPos = tpl.find(pos, "@ForEachFieldEnd@");
-			  $section = rtrim(substr($tpl, $pos, $sectionPos-$pos), "\t");
-			  $pos = $sectionPos + 17;
-			  include_skip_newlines($tpl, $pos);
-			  $sectionLast = strstr($section, "@ForEachFieldLast@");
-			  if($sectionLast !== false){
-			  $sectionLast = ltrim(substr($sectionLast, 18), "\n\r");
-			  $section = rtrim(strstr($section, "@ForEachFieldLast@", true), "\t");
-			  }*/
-			/*                unsigned last = count(classFields) - 1;
-					  for(int i = 0; i <= last; i++)
-					  if(last == i && sectionLast !== false)
-					  include_foreachField(sectionLast, classFields[i]);
-					  else
-					  include_foreachField(section, classFields[i]);
-					  */
-		} else
-			include_CommonMarkerValues(tpl);
-	}
+		while(tpl.length){
+			const char * iter = tpl.str;
+			while(iter < until && *iter != '@'){
+				if(iter[0] == '\n'){
+					tplLineNo++;
+					tplLastLineStartPos = iter - tpl.str;
+				}
+				iter++;
+			}
+			code.append(tpl.str, iter - tpl.str);
+			tpl.chopFront(iter - tpl.str);
 
-	void parse(const StringChunk & tpl)
-	{
+			if(tpl.chopFront("@ForEachFieldBegin@"))
+				parseForEach("Field", declaration.fields);
+			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
+				parseForEach("KeyField", declaration.keyFields);
+			else if(tpl.chopFront("@ForEachNonKeyFieldBegin@"))
+				parseForEach("NonKeyField", declaration.nonKeyFields);
+			else if(tpl.chopFront("@ForEachConstraintBegin@"))
+				parseForEach("Constraint", declaration.constraints);
+			else if(tpl.chopFront("@IfSingleKeyBegin@")){
+				unint pos;
+				if(declaration.keyFields.length != 1)
+					if(tpl.findFirst(pos, "@IfSingleKeyEnd@"))
+						tpl.chopFront(pos);
+			} else if(tpl.chopFront("@IfSingleKeyEnd@"))
+				;
+			else
+				parseCommonMarker(tpl);
+		}
 	}
 };
 
@@ -236,7 +306,7 @@ public:
 			state = &InputCode::parseDeclaration;
 		} else if(line.findFirst(pos, "@include@")){
 			pos += 10;
-			StringChunk includeList(line.data + pos, line.length - pos);
+			StringChunk includeList(line.str + pos, line.length - pos);
 			parseInclude(includeList);
 		} else
 			code << line << "\n";
@@ -245,9 +315,9 @@ public:
 	void parseDeclaration(const StringChunk & line)
 	{
 		unint pos;
-		if(line.findFirst(pos, "@EndDecl@")){
+		if(line.findFirst(pos, "@EndDecl@"))
 			state = &InputCode::parseCode;
-		} else
+		else
 			declaration.parse(line);
 	}
 
@@ -259,9 +329,8 @@ public:
 			tplFileName << files[i] << ".cpp";
 			File tplFile(tplFileName);
 			String tpl = tplFile.readAll();
-			StringChunk chunk(tpl.str, tpl.length);
-			TemplateParser tplParser(code, declaration);
-			tplParser.parse(chunk);
+			TemplateParser tplParser(code, tpl, declaration);
+			tplParser.parse();
 		}
 	}
 
@@ -275,6 +344,7 @@ public:
 
 int main(int argc, char *args[])
 {
+	set_segmentation_fault_signal_handler();
 	StringChunk tplDir;
 	StringChunk inputFileName;
 
@@ -332,7 +402,7 @@ int main(int argc, char *args[])
 	File inputFile(inputFileName);
 	String input = inputFile.readAll();
 	input.replace("\r", "");
-	auto lines = input.split("\n");
+	auto lines = input.split("\n", false);
 	unsigned i;
 	try{
 		for(i = 0; i < lines.length; i++){
@@ -340,7 +410,7 @@ int main(int argc, char *args[])
 			generator.parse(lines[i]);
 		}
 	} catch (Exception & e) {
-		e.note("Excpetion happened while processing file %s line %u.", inputFileName.data, i);
+		e.note("Excpetion happened while processing file %s line %u.", inputFileName.str, i);
 		EXCEPTION(e);
 	}
 	puts(generator.code.str);

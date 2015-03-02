@@ -117,6 +117,7 @@ case "${CMD}" in
 		shift
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make -j1 $@ || exit $?
+	;;
 	(*)
 		config ${DISTRIB_CODENAME} || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make -j${JOBS} $@ || exit $?

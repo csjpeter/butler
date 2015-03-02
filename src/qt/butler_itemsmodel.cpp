@@ -432,7 +432,7 @@ void ItemsModel::itemChangeListener(const ItemDb & db, const Item & modified)
 
 void ItemsModel::sort(int column, bool ascending)
 {
-	if(items.ascending == ascending && items.ordering == column)
+	if(items.ascending == ascending && items.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

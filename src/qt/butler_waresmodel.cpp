@@ -294,7 +294,7 @@ void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
 
 void WaresModel::sort(int column, bool ascending)
 {
-	if(wares.ascending == ascending && wares.ordering == column)
+	if(wares.ascending == ascending && wares.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

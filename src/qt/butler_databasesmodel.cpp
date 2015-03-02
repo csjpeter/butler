@@ -250,7 +250,7 @@ bool DatabasesModel::has(const QString & str) const
 
 void DatabasesModel::sort(int column, bool ascending)
 {
-	if(descriptorSet.ascending == ascending && descriptorSet.ordering == column)
+	if(descriptorSet.ascending == ascending && descriptorSet.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

@@ -215,7 +215,7 @@ void TagsModel::query()
 
 void TagsModel::sort(int column, bool ascending)
 {
-	if(tags.ascending == ascending && tags.ordering == column)
+	if(tags.ascending == ascending && tags.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

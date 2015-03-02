@@ -214,7 +214,7 @@ void BrandsModel::query()
 
 void BrandsModel::sort(int column, bool ascending)
 {
-	if(brands.ascending == ascending && brands.ordering == column)
+	if(brands.ascending == ascending && brands.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

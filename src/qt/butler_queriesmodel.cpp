@@ -281,7 +281,7 @@ void QueriesModel::stringToTags(const QString & value, TagNameSet & tags)
 
 void QueriesModel::sort(int column, bool ascending)
 {
-	if(queries.ascending == ascending && queries.ordering == column)
+	if(queries.ascending == ascending && queries.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);

@@ -1,7 +1,7 @@
 public:
 
 @ForEachFieldBegin@
-		@FieldType@ @FieldName@;	// @FieldComment@
+	@FieldType@ @FieldName@;@FieldComment@
 @ForEachFieldEnd@
 
 	enum Fields {
@@ -14,8 +14,17 @@ public:
 public:
 	@Type@() {}
 
-	explicit @Type@(const @KeyType@ & @KeyName@) :
-		@KeyName@(@KeyName@)
+	explicit @Type@(
+@ForEachKeyFieldBegin@
+			const @FieldType@ & @FieldName@,
+@ForEachKeyFieldLast@
+			const @FieldType@ & @FieldName@ ) :
+@ForEachKeyFieldEnd@
+@ForEachKeyFieldBegin@
+		@FieldName@(@FieldName@),
+@ForEachKeyFieldLast@
+		@FieldName@(@FieldName@)
+@ForEachKeyFieldEnd@
 	{}
 
 	explicit @Type@(const @Type@ & orig) :
@@ -59,28 +68,58 @@ public:
 @ForEachFieldLast@
 				@FieldName@ != other.@FieldName@
 @ForEachFieldEnd@
-				)
-				return false;
+			)
+			return false;
 		return true;
 	}
 
 	bool isLess(const @Type@ & other) const
 	{
-		return @KeyName@ < other.@KeyName@;
+		return
+@ForEachKeyFieldBegin@
+			@FieldName@ < other.@FieldName@ &&
+@ForEachKeyFieldLast@
+			@FieldName@ < other.@FieldName@;
+@ForEachKeyFieldEnd@
 	}
 
 	bool isMore(const @Type@ & other) const
 	{
-		return other.@KeyName@ < @KeyName@;
+		return
+@ForEachKeyFieldBegin@
+			other.@FieldName@ < @FieldName@ &&
+@ForEachKeyFieldLast@
+			other.@FieldName@ < @FieldName@;
+@ForEachKeyFieldEnd@
 	}
 
-	bool isLess(const @KeyType@ & otherKey) const
+	bool isLess(
+@ForEachKeyFieldBegin@
+			const @FieldType@ & other@FieldName@,
+@ForEachKeyFieldLast@
+			const @FieldType@ & other@FieldName@) const
+@ForEachKeyFieldEnd@
 	{
-		return @KeyName@ < otherKey;
+		return
+@ForEachKeyFieldBegin@
+			@FieldName@ < other@FieldName@ &&
+@ForEachKeyFieldLast@
+			@FieldName@ < other@FieldName@;
+@ForEachKeyFieldEnd@
 	}
 
-	bool isMore(const @KeyType@ & otherKey) const
+	bool isMore(
+@ForEachKeyFieldBegin@
+			const @FieldType@ & other@FieldName@,
+@ForEachKeyFieldLast@
+			const @FieldType@ & other@FieldName@) const
+@ForEachKeyFieldEnd@
 	{
-		return otherKey < @KeyName@;
+		return
+@ForEachKeyFieldBegin@
+			other@FieldName@ < @FieldName@ &&
+@ForEachKeyFieldLast@
+			other@FieldName@ < @FieldName@;
+@ForEachKeyFieldEnd@
 	}
 

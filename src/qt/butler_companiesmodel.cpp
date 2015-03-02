@@ -251,7 +251,7 @@ void CompaniesModel::query()
 
 void CompaniesModel::sort(int column, bool ascending)
 {
-	if(companies.ascending == ascending && companies.ordering == column)
+	if(companies.ascending == ascending && companies.ordering[0] == column)
 		return;
 
 		ModelResetGuard g(this);
