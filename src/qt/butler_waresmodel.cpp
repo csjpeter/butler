@@ -299,6 +299,6 @@ void WaresModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	wares.ascending = ascending;
-	wares.ordering = static_cast<Ware::Fields>(column);
+	wares.ordering.moveToFront(static_cast<Ware::Fields>(column));
 	wares.sort();
 }

@@ -256,6 +256,6 @@ void CompaniesModel::sort(int column, bool ascending)
 
 		ModelResetGuard g(this);
 		companies.ascending = ascending;
-		companies.ordering = static_cast<Company::Fields>(column);
+		companies.ordering.moveToFront(static_cast<Company::Fields>(column));
 		companies.sort();
 }

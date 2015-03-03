@@ -244,6 +244,6 @@ void AccountsModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	accounts.ascending = ascending;
-	accounts.ordering = static_cast<Account::Fields>(column);
+    accounts.ordering.moveToFront(static_cast<Account::Fields>(column));
 	accounts.sort();
 }

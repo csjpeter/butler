@@ -255,6 +255,6 @@ void DatabasesModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	descriptorSet.ascending = ascending;
-	descriptorSet.ordering = static_cast<DatabaseDescriptor::Fields>(column);
+	descriptorSet.ordering.moveToFront(static_cast<DatabaseDescriptor::Fields>(column));
 	descriptorSet.sort();
 }

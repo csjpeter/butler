@@ -266,6 +266,6 @@ void PartnersModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	partners.ascending = ascending;
-	partners.ordering = static_cast<Partner::Fields>(column);
+	partners.ordering.moveToFront(static_cast<Partner::Fields>(column));
 	partners.sort();
 }

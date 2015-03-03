@@ -219,6 +219,6 @@ void BrandsModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	brands.ascending = ascending;
-	brands.ordering = static_cast<Brand::Fields>(column);
+    brands.ordering.moveToFront(static_cast<Brand::Fields>(column));
 	brands.sort();
 }

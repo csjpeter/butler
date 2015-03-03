@@ -437,7 +437,7 @@ void ItemsModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	items.ascending = ascending;
-	items.ordering = static_cast<Item::Fields>(column);
+	items.ordering.moveToFront(static_cast<Item::Fields>(column));
 	items.sort();
 }
 

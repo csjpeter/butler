@@ -220,6 +220,6 @@ void TagsModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	tags.ascending = ascending;
-	tags.ordering = static_cast<Tag::Fields>(column);
+	tags.ordering.moveToFront(static_cast<Tag::Fields>(column));
 	tags.sort();
 }

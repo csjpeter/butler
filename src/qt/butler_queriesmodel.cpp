@@ -286,6 +286,6 @@ void QueriesModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	queries.ascending = ascending;
-	queries.ordering = static_cast<Query::Fields>(column);
+	queries.ordering.moveToFront(static_cast<Query::Fields>(column));
 	queries.sort();
 }

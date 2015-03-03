@@ -1,7 +1,7 @@
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 {
 public:
-	csjp::Array<@Type@::Fields> ordering;
+	csjp::PodArray<@Type@::Fields> ordering;
 	bool ascending;
 
 	virtual int compare(const @Type@ & a, const @Type@ & b) const
@@ -36,7 +36,6 @@ public:
 		ascending(true)
 	{
 @ForEachFieldBegin@
-		ordering.setCapacity(ordering.capacity+1);
 		ordering.add(@Type@::@FieldEnumName@);
 @ForEachFieldEnd@
 	}
@@ -45,7 +44,6 @@ public:
 		ascending(true)
 	{
 @ForEachFieldBegin@
-		ordering.setCapacity(ordering.capacity+1);
 		ordering.add(@Type@::@FieldEnumName@);
 @ForEachFieldEnd@
 	}

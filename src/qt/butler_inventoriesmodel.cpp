@@ -219,6 +219,6 @@ void InventoriesModel::sort(int column, bool ascending)
 
 	ModelResetGuard g(this);
 	inventories.ascending = ascending;
-	inventories.ordering = static_cast<Inventory::Fields>(column);
+    inventories.ordering.moveToFront(static_cast<Inventory::Fields>(column));
 	inventories.sort();
 }
