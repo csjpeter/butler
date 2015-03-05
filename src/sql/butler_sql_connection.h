@@ -7,13 +7,39 @@
 #define BUTLER_SQL_CONNECTION_H
 
 #include <csjp_string.h>
+#include <csjp_pod_array.h>
 #include <csjp_owner_container.h>
+#include <csjp_sorter_owner_container.h>
+#include <csjp_exception.h>
 
+#include <butler_datetime.h>
 #include <butler_text.h>
 
 #include <QVariant>
 
-#include <butler_dataclasses.h>
+/*@BeginDecl@
+	Class DatabaseDescriptor
+	Fields {
+		QString name;	key		// will be the connection name
+		QString driver;			// for example QSQLITE
+		QString databaseName;	// file name in case of sqlite
+		QString username;
+		QString password;
+		bool savePassword;
+		QString host;			// host name or ip
+		unsigned port;
+		}
+@EndDecl@*/
+
+class DatabaseDescriptor
+{
+	@include@ dataclass_members.h
+};
+
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
 
 DECL_EXCEPTION(csjp::Exception, DbError);
 DECL_EXCEPTION(DbError, DbIncompatibleTableError);

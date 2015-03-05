@@ -5,7 +5,7 @@
 
 #ifndef BUTLER_TAG_DB_H
 #define BUTLER_TAG_DB_H
-
+#if 0
 #include <butler_sql_connection.h>
 
 class TagDb
@@ -25,5 +25,5 @@ public:
 private:
 	SqlConnection & sql;
 };
-
+#endif
 #endif

@@ -8,14 +8,9 @@
 
 #include <QString>
 
-#include <csjp_pod_array.h>
 #include <csjp_array.h>
-#include <csjp_owner_container.h>
-#include <csjp_sorter_owner_container.h>
-#include <csjp_exception.h>
 
-#include <butler_datetime.h>
-// #include <butler_sql_connection.h>
+#include <butler_sql_connection.h>
 
 
 
@@ -71,28 +66,6 @@ public:
 };
 
 /*@BeginDecl@
-	Class DatabaseDescriptor
-	Fields {
-		QString name;	key		// will be the connection name
-		QString driver;			// for example QSQLITE
-		QString databaseName;	// file name in case of sqlite
-		QString username;
-		QString password;
-		bool savePassword;
-		QString host;			// host name or ip
-		unsigned port;
-		}
-@EndDecl@*/
-
-class DatabaseDescriptor
-{
-	@include@ defaults_for_dataclass
-};
-
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
-
-/*@BeginDecl@
 	Class Tag
 	Fields {
 		Text name; key			; TEXT
@@ -107,11 +80,12 @@ class DatabaseDescriptor
 
 class Tag
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+@include@ dbclass.h
 
 /*@BeginDecl@
 	Class Ware
@@ -130,11 +104,11 @@ class Tag
 
 class Ware
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Company
@@ -156,11 +130,11 @@ class Ware
 
 class Company
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Brand
@@ -177,11 +151,11 @@ class Company
 
 class Brand
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Inventory
@@ -198,11 +172,11 @@ class Brand
 
 class Inventory
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Item
@@ -229,11 +203,11 @@ class Inventory
 
 class Item
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Partner
@@ -254,11 +228,11 @@ class Item
 
 class Partner
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Account
@@ -277,11 +251,11 @@ class Partner
 
 class Account
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Payment
@@ -301,11 +275,11 @@ class Account
 
 class Payment
 {
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 /*@BeginDecl@
 	Class Query
@@ -340,10 +314,10 @@ public:
 		MatchAny
 	};
 
-	@include@ defaults_for_dataclass
+	@include@ dataclass_members.h
 };
 
-@include@ non-member_defaults_for_dataclass
-@include@ set_class_for_dataclass
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
 
 #endif

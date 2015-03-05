@@ -210,13 +210,11 @@ $(DIST_DIR)/%.in: %.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh $*.in > $@
 
-$(DIST_DIR)/src/butler_dataclasses.h: \
+$(DIST_DIR)/src/%.h: \
 		tools/generator \
-		src/butler_dataclasses.h
+		src/%.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	tools/generator -t ./tpl/ -i src/butler_dataclasses.h > $@
-
-#./code-generator.py -t ./tpl/ < src/butler_dataclasses.h > $@
+	tools/generator -t ./tpl/ -i src/$*.h > $@
 
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -238,6 +236,7 @@ source: \
 	$(DIST_DIR)/src/butler_macros.h \
 	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/butler_dataclasses.h \
+	$(DIST_DIR)/src/butler_dataclasses.cpp \
 	\
 	$(DIST_DIR)/src/config.h.in \
 	$(DIST_DIR)/src/qt/butler_config.h \

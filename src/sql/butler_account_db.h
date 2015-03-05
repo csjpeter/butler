@@ -7,6 +7,7 @@
 #define BUTLER_ACCOUNT_DB_H
 
 #include <butler_sql_connection.h>
+#include <butler_dataclasses.h>
 
 class AccountDb
 {

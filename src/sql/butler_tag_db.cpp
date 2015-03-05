@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include "butler_tag_db.h"
 
 TagDb::TagDb(SqlConnection & sql) :
@@ -112,3 +112,5 @@ void TagDb::query(TagSet & tags)
 
 	tr.commit();
 }
+#endif
+
