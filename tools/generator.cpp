@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <csjp_logger.h>
 #include <csjp_file.h>
+#include <csjp_owner_container.h>
 
 using namespace csjp;
 
@@ -145,6 +146,32 @@ public:
 	void parse(const StringChunk & line)
 	{
 		(this->*state)(line);
+	}
+
+	static void parseAllDeclaration(OwnerContainer<Declaration> & declarations,
+			const StringChunk & data)
+	{
+		auto lines = data.split("\n", false);
+		unsigned i;
+		unint pos;
+		bool declPhase = false;
+		try{
+			Object<Declaration> decl;
+			for(i = 0; i < lines.length; i++){
+				lines[i].trimBack("\t ");
+				if(line.findFirst(pos, "@BeginDecl@")) {
+					decl.ptr = new Declaration();
+					declPhase = true;
+				} else if(line.findFirst(pos, "@EndDecl@"))
+					declarations.add(decl);
+					declPhase = false;
+				else if(declPhase)
+					decl->parse(line);
+			}
+		} catch (Exception & e) {
+			e.note("Excpetion happened while processing declaration file line %u.", i);
+			EXCEPTION(e);
+		}
 	}
 };
 
@@ -346,7 +373,7 @@ int main(int argc, char *args[])
 {
 	set_segmentation_fault_signal_handler();
 	StringChunk tplDir;
-	StringChunk inputFileName;
+	StringChunk declFileName;
 
 #ifdef DEBUG
 	csjp::verboseMode = true;
@@ -386,9 +413,9 @@ int main(int argc, char *args[])
 			continue;
 		}
 		if(1 <= argc - argi && (
-				!strcmp(args[argi], "--inputfilename") ||
-				!strcmp(args[argi], "-i"))){
-			inputFileName = args[argi+1];
+				!strcmp(args[argi], "--declarations") ||
+				!strcmp(args[argi], "-d"))){
+			declFileName = args[argi+1];
 			argi += 2;
 			continue;
 		}
@@ -398,19 +425,30 @@ int main(int argc, char *args[])
 		return 1;
 	}
 
+	OwnerContainer<Declaration> declarations;
+	Declaration declaration;
+
 	InputCode generator(tplDir);
-	File inputFile(inputFileName);
-	String input = inputFile.readAll();
-	input.replace("\r", "");
-	auto lines = input.split("\n", false);
+	File declFile(declFileName);
+	String declBuf = declFile.readAll();
+	declBuf.replace("\r", "");
+	Declaration::parseAllDeclaration(declarations, declBuff);
+
 	unsigned i;
+	SorterOwnerContainer<String> lines;
 	try{
-		for(i = 0; i < lines.length; i++){
-			lines[i].trimBack("\t ");
+		char *l = 0;
+		ssize_t read = 0;
+		while ((read = getline(&l, 0, stdin)) != -1) {
+			Object<String> line(new String());
+			line->adopt(l);
+			line->trim("\n\r");
+			line->trimBack("\t ");
+			lines.add(line);
 			generator.parse(lines[i]);
 		}
 	} catch (Exception & e) {
-		e.note("Excpetion happened while processing file %s line %u.", inputFileName.str, i);
+		e.note("Excpetion happened while processing stdin line %u.", i);
 		EXCEPTION(e);
 	}
 	puts(generator.code.str);
