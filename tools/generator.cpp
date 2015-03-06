@@ -3,6 +3,8 @@
  * Copyright (C) 2015 Csaszar, Peter
  */
 
+#include <cxxabi.h>
+
 #include <string.h>
 #include <stdio.h>
 #include <csjp_logger.h>
@@ -332,7 +334,7 @@ public:
 	String code;
 
 public:
-	InputCode(const StringChunk & tplDiri, const OwnerContainer<Declaration> & declarations) :
+	InputCode(const StringChunk & tplDir, const OwnerContainer<Declaration> & declarations) :
 		state(&InputCode::parseCode),
 		tplDir(tplDir),
 		declarations(declarations),
@@ -368,7 +370,7 @@ public:
 		auto files = includeList.split(" ");
 		for(unsigned i = 0; i < files.length; i++){
 			String tplFileName(tplDir);
-			tplFileName << files[i] << ".cpp";
+			tplFileName << files[i];
 			File tplFile(tplFileName);
 			String tpl = tplFile.readAll();
 			TemplateParser tplParser(code, tpl, declarations[declIdx]);
@@ -443,29 +445,33 @@ int main(int argc, char *args[])
 	OwnerContainer<Declaration> declarations;
 	Declaration declaration;
 
-	InputCode generator(tplDir, declarations);
+	InputCode inputCode(tplDir, declarations);
 	File declFile(declFileName);
 	String declBuf = declFile.readAll();
 	declBuf.replace("\r", "");
 	Declaration::parseAllDeclaration(declarations, declBuf);
 
-	unsigned i;
+	unsigned l;
 	SorterOwnerContainer<String> lines;
 	try{
-		char *l = 0;
+		char * line = 0;
 		ssize_t read = 0;
-		while ((read = getline(&l, 0, stdin)) != -1) {
-			Object<String> line(new String());
-			line->adopt(l);
-			line->trim("\n\r");
-			line->trimBack("\t ");
-			lines.add(line);
-			StringChunk lineChunk(lines[i].str, lines[i].length);
-			generator.parse(lineChunk);
+		size_t len = 0;
+		while ((read = getline(&line, &len, stdin)) != -1) {
+			l++;
+			LOG("read: %zd", read);
+			Object<String> lineStr(new String());
+			lineStr->adopt(line, len);
+			lineStr->trim("\n\r");
+			lineStr->trimBack("\t ");
+			lines.add(lineStr);
+			StringChunk lineChunk(lines.last().str, lines.last().length);
+			inputCode.parse(lineChunk);
 		}
 	} catch (Exception & e) {
-		e.note("Excpetion happened while processing stdin line %u.", i);
+		e.note("Excpetion happened while processing stdin line %u.", 3);
 		EXCEPTION(e);
+		return -1;
 	}
-	puts(generator.code.str);
+	puts(inputCode.code.str);
 }

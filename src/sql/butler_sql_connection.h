@@ -17,19 +17,7 @@
 
 #include <QVariant>
 
-/*@BeginDecl@
-	Class DatabaseDescriptor
-	Fields {
-		QString name;	key		// will be the connection name
-		QString driver;			// for example QSQLITE
-		QString databaseName;	// file name in case of sqlite
-		QString username;
-		QString password;
-		bool savePassword;
-		QString host;			// host name or ip
-		unsigned port;
-		}
-@EndDecl@*/
+@declare@ DatabaseDescriptor
 
 class DatabaseDescriptor
 {

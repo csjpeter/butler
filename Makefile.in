@@ -84,6 +84,11 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	@touch $@
 	$(TARGETFINISHED)
 
+tmp/src/%.opp: src/%.cpp \
+		src/butler_dataclasses.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
+
 @TCROOT@@PREFIX@lib/% : \
 		tmp/@TCROOT@@PREFIX@lib/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -123,6 +128,7 @@ TEST_BINARIES=\
 
 SQL_OBJECTS+= \
 	tmp/src/sql/butler_sql_connection.opp \
+	tmp/src/butler_dataclasses.opp \
 	tmp/src/sql/butler_tag_db.opp \
 	tmp/src/sql/butler_ware_db.opp \
 	tmp/src/sql/butler_company_db.opp \

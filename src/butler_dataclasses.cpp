@@ -3,5 +3,8 @@
  * Copyright (C) 2015 Csaszar, Peter
  */
 
+#include <butler_dataclasses.h>
+
+@declare@ Tag
 @include@ dbclass.cpp
 

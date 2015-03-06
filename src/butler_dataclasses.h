@@ -65,6 +65,8 @@ public:
 	double queryTime; /** How much time the query took. */
 };
 
+@declare@ Tag
+
 class Tag
 {
 	@include@ dataclass_members.h
@@ -74,6 +76,8 @@ class Tag
 @include@ dataclass_set.h
 @include@ dbclass.h
 
+@declare@ Ware
+
 class Ware
 {
 	@include@ dataclass_members.h
@@ -81,6 +85,8 @@ class Ware
 
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+
+@declare@ Company
 
 class Company
 {
@@ -90,6 +96,8 @@ class Company
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
+@declare@ Brand
+
 class Brand
 {
 	@include@ dataclass_members.h
@@ -97,6 +105,8 @@ class Brand
 
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+
+@declare@ Inventory
 
 class Inventory
 {
@@ -106,6 +116,8 @@ class Inventory
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
+@declare@ Item
+
 class Item
 {
 	@include@ dataclass_members.h
@@ -113,6 +125,8 @@ class Item
 
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+
+@declare@ Partner
 
 class Partner
 {
@@ -122,6 +136,8 @@ class Partner
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
+@declare@ Account
+
 class Account
 {
 	@include@ dataclass_members.h
@@ -130,6 +146,8 @@ class Account
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
+@declare@ Payment
+
 class Payment
 {
 	@include@ dataclass_members.h
@@ -137,6 +155,8 @@ class Payment
 
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+
+@declare@ Query
 
 class Query
 {
