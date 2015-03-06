@@ -214,7 +214,13 @@ $(DIST_DIR)/src/%.h: \
 		tools/generator \
 		src/%.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	tools/generator -t ./tpl/ -i src/$*.h > $@
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.h > $@
+
+$(DIST_DIR)/src/%.cpp: \
+		tools/generator \
+		src/%.cpp
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.cpp > $@
 
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)

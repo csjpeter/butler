@@ -8,6 +8,7 @@
 #include <csjp_logger.h>
 #include <csjp_file.h>
 #include <csjp_owner_container.h>
+#include <csjp_sorter_owner_container.h>
 
 using namespace csjp;
 
@@ -149,7 +150,7 @@ public:
 	}
 
 	static void parseAllDeclaration(OwnerContainer<Declaration> & declarations,
-			const StringChunk & data)
+			const String & data)
 	{
 		auto lines = data.split("\n", false);
 		unsigned i;
@@ -159,14 +160,14 @@ public:
 			Object<Declaration> decl;
 			for(i = 0; i < lines.length; i++){
 				lines[i].trimBack("\t ");
-				if(line.findFirst(pos, "@BeginDecl@")) {
+				if(lines[i].findFirst(pos, "@BeginDecl@")) {
 					decl.ptr = new Declaration();
 					declPhase = true;
-				} else if(line.findFirst(pos, "@EndDecl@"))
+				} else if(lines[i].findFirst(pos, "@EndDecl@")){
 					declarations.add(decl);
 					declPhase = false;
-				else if(declPhase)
-					decl->parse(line);
+				} else if(declPhase)
+					decl->parse(lines[i]);
 			}
 		} catch (Exception & e) {
 			e.note("Excpetion happened while processing declaration file line %u.", i);
@@ -174,6 +175,21 @@ public:
 		}
 	}
 };
+
+inline bool operator<(const Declaration & a, const Declaration & b)
+{
+	return a.typeName < b.typeName;
+}
+
+inline bool operator<(const char * a, const Declaration & b)
+{
+	return a < b.typeName;
+}
+
+inline bool operator<(const Declaration & a, const char * b)
+{
+	return a.typeName < b;
+}
 
 class TemplateParser
 {
@@ -310,14 +326,17 @@ class InputCode
 	void (InputCode::*state)(const StringChunk &);
 
 	const StringChunk & tplDir;
-	Declaration declaration;
+	const OwnerContainer<Declaration> & declarations;
+	unint declIdx;
 public:
 	String code;
 
 public:
-	InputCode(const StringChunk & tplDir) :
+	InputCode(const StringChunk & tplDiri, const OwnerContainer<Declaration> & declarations) :
 		state(&InputCode::parseCode),
-		tplDir(tplDir)
+		tplDir(tplDir),
+		declarations(declarations),
+		declIdx(0)
 	{
 	}
 
@@ -328,35 +347,31 @@ public:
 			code << line << "\n";
 			return;
 		}
-		if(line.findFirst(pos, "@BeginDecl@")){
-			declaration.clear();
-			state = &InputCode::parseDeclaration;
-		} else if(line.findFirst(pos, "@include@")){
-			pos += 10;
-			StringChunk includeList(line.str + pos, line.length - pos);
-			parseInclude(includeList);
-		} else
+		if(line.findFirst(pos, "@declare@"))
+			parseDeclaration(line, pos + 10);
+		else if(line.findFirst(pos, "@include@"))
+			parseInclude(line, pos + 10);
+		else
 			code << line << "\n";
 	}
 
-	void parseDeclaration(const StringChunk & line)
+	void parseDeclaration(const StringChunk & line, unint pos)
 	{
-		unint pos;
-		if(line.findFirst(pos, "@EndDecl@"))
-			state = &InputCode::parseCode;
-		else
-			declaration.parse(line);
+		StringChunk declaredClass(line.str + pos, line.length - pos);
+		declaredClass.trim(" \t\n\r");
+		declIdx = declarations.index(declaredClass.str);
 	}
 
-	void parseInclude(const StringChunk & includeList)
+	void parseInclude(const StringChunk & line, unint pos)
 	{
+		StringChunk includeList(line.str + pos, line.length - pos);
 		auto files = includeList.split(" ");
 		for(unsigned i = 0; i < files.length; i++){
 			String tplFileName(tplDir);
 			tplFileName << files[i] << ".cpp";
 			File tplFile(tplFileName);
 			String tpl = tplFile.readAll();
-			TemplateParser tplParser(code, tpl, declaration);
+			TemplateParser tplParser(code, tpl, declarations[declIdx]);
 			tplParser.parse();
 		}
 	}
@@ -428,11 +443,11 @@ int main(int argc, char *args[])
 	OwnerContainer<Declaration> declarations;
 	Declaration declaration;
 
-	InputCode generator(tplDir);
+	InputCode generator(tplDir, declarations);
 	File declFile(declFileName);
 	String declBuf = declFile.readAll();
 	declBuf.replace("\r", "");
-	Declaration::parseAllDeclaration(declarations, declBuff);
+	Declaration::parseAllDeclaration(declarations, declBuf);
 
 	unsigned i;
 	SorterOwnerContainer<String> lines;
@@ -445,7 +460,8 @@ int main(int argc, char *args[])
 			line->trim("\n\r");
 			line->trimBack("\t ");
 			lines.add(line);
-			generator.parse(lines[i]);
+			StringChunk lineChunk(lines[i].str, lines[i].length);
+			generator.parse(lineChunk);
 		}
 	} catch (Exception & e) {
 		e.note("Excpetion happened while processing stdin line %u.", i);
