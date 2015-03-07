@@ -85,6 +85,14 @@ private:
 
 class SqlQueryPrivate;
 
+class SqlVariant
+{
+public:
+	explicit SqlVariant(const QVariant & v) : var(v) {}
+
+	QVariant var;
+};
+
 class SqlQuery
 {
 public:
@@ -108,16 +116,49 @@ public:
 	Text text(int index);
 	double real(int index);
 	int number(int index);
+	SqlVariant sqlValue(int index);
+	QVariant value(int index);
 	void finish();
 
 private:
 	QString queryString();
 	void bindValue(int pos, const QVariant & v);
-	QVariant value(int index);
 
 private:
 	SqlConnection & sql;
 	SqlQueryPrivate * priv;
 };
+
+inline Text & operator<<= (Text & qstr, const SqlVariant & v)
+{
+	qstr = v.var.toString(); return qstr;
+}
+
+inline DateTime & operator<<= (DateTime & time, const SqlVariant & v)
+{
+	time = v.var.toDateTime();
+	time.setTimeSpec(Qt::UTC);
+	return time;
+}
+
+inline int & operator<<= (int & i, const SqlVariant & v)
+{
+	i = v.var.toInt(); return i;
+}
+
+inline double & operator<<= (double & d, const SqlVariant & v)
+{
+	d = v.var.toDouble(); return d;
+}
+
+inline bool & operator<<= (bool & b, const SqlVariant & v)
+{
+	QChar c = v.var.toChar();
+	if(c == 'I')
+		b = true;
+	else
+		b = false;
+	return b;
+}
 
 #endif

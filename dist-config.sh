@@ -112,5 +112,8 @@ EOF
 
 dist-generator
 
+echo "Copying changed files..."
 make -f source.mk DIST_DIR=${DIST_DIR} PKGNAME=${PKGNAME} PACKAGING=${PACKAGING} source || exit $?
 make -f source.mk DIST_DIR=${DIST_DIR} PKGNAME=${PKGNAME} PACKAGING=${PACKAGING} ${PACKAGING} || exit $?
+echo "Copying changed done"
+

@@ -210,17 +210,43 @@ $(DIST_DIR)/%.in: %.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh $*.in > $@
 
-$(DIST_DIR)/src/%.h: \
-		tools/generator \
-		src/%.h
+$(DIST_DIR)/src/sql/butler_sql_connection.h: \
+		tpl/dataclass_members.h \
+		tpl/dataclass_nonmembers.h \
+		tpl/dataclass_set.h \
+		src/sql/butler_sql_connection.h \
+		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.h > $@
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/sql/butler_sql_connection.h > $@
 
-$(DIST_DIR)/src/%.cpp: \
-		tools/generator \
-		src/%.cpp
+$(DIST_DIR)/src/butler_dataclasses.h: \
+		tpl/dbclass.h \
+		tpl/dataclass_members.h \
+		tpl/dataclass_nonmembers.h \
+		tpl/dataclass_set.h \
+		src/butler_dataclasses.h \
+		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.cpp > $@
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dataclasses.h > $@
+
+$(DIST_DIR)/src/butler_dataclasses.cpp: \
+		tpl/dbclass.cpp \
+		src/butler_dataclasses.cpp \
+		tools/generator
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dataclasses.cpp > $@
+
+#$(DIST_DIR)/src/%.h: \
+#		src/%.h \
+#		tools/generator
+#	@test -d $(dir $@) || mkdir -p $(dir $@)
+#	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.h > $@
+
+#$(DIST_DIR)/src/%.cpp: \
+#		src/%.cpp \
+#		tools/generator
+#	@test -d $(dir $@) || mkdir -p $(dir $@)
+#	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/$*.cpp > $@
 
 $(DIST_DIR)/%: %
 	@test -d $(dir $@) || mkdir -p $(dir $@)

@@ -430,6 +430,18 @@ unsigned SqlQuery::colIndex(const QString &name)
 	return ret;
 }
 
+SqlVariant SqlQuery::sqlValue(int index)
+{
+	ENSURE(priv->qQuery, csjp::LogicError);
+
+	DBG("%s : [%s]",
+			C_STR(priv->qQuery->record().fieldName(index)),
+			C_STR(priv->qQuery->value(index).toString())
+			);
+
+	return SqlVariant(priv->qQuery->value(index));
+}
+
 QVariant SqlQuery::value(int index)
 {
 	ENSURE(priv->qQuery, csjp::LogicError);

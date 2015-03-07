@@ -124,13 +124,19 @@ public:
 	void parseConstraintList(const StringChunk & line)
 	{
 		auto words = line.split(";");
-		if(words.length == 1 && words[0] == "}"){
-			state = &Declaration::parseDeclaration;
-			return;
+		if(words.length == 1){
+			words[0].trim("\n\r \t");
+			if(words[0] == "}"){
+				state = &Declaration::parseDeclaration;
+				return;
+			}
 		}
 
+		StringChunk l(line);
+		l.trim("\n\r \t");
+
 		constraints.setCapacity(constraints.capacity+1);
-		constraints.add(line);
+		constraints.add(l);
 	}
 
 	void parseDeclaration(const StringChunk & line)
@@ -214,6 +220,9 @@ public:
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
 			code << declaration.typeName;
+		} else if(tpl.chopFront("@NumOfFields@")){
+			tpl.trimFront("\n\r");
+			code << declaration.fields.length;
 		} else if(tpl.length) {
 			code << tpl[0];
 			tpl.chopFront(1);
@@ -226,9 +235,15 @@ public:
 		lastTag << "@ForEach" << what << "Last@";
 		endTag << "@ForEach" << what << "End@";
 
-		unint pos;
-		if(fields.length == 1 && tpl.findFirst(pos, lastTag.str))
-			tpl.chopFront(pos + lastTag.length);
+		unint pos = 0;
+		if(fields.length == 1){
+			unint pos_e = 0;
+			if(!tpl.findFirst(pos_e, endTag.str))
+				throw ParseError("Missing ForEach End tag.");
+			if(tpl.findFirst(pos, lastTag.str))
+				if(pos < pos_e)
+					tpl.chopFront(pos + lastTag.length);
+		}
 
 		tpl.trimFront("\n\r");
 		code.trimBack("\t");
@@ -274,12 +289,16 @@ public:
 				}
 			} else if(block.chopFront("@FieldType@")) {
 				code << fields[i].type;
+			} else if(block.chopFront("@FieldIdx@")){
+				code << i;
 			} else if(block.chopFront("@FieldName@")){
 				code << fields[i].name;
 			} else if(block.chopFront("@FieldEnumName@")){
 				code << fields[i].enumName;
 			} else if(block.chopFront("@FieldSqlDecl@")){
 				code << "`" << fields[i].name << "` " << fields[i].sqlDecl;
+			} else if(block.chopFront("@Constraint@")){
+				code << fields[i].constraint;
 			} else if(block.chopFront("@FieldComment@")){
 				code << fields[i].comment;
 			} else {

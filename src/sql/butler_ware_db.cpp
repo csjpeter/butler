@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 //#define DEBUG
 #include <csjp_logger.h>
 #undef DEBUG
@@ -242,3 +242,4 @@ void WareDb::query(WareSet & wares)
 
 	tr.commit();
 }
+#endif

@@ -241,3 +241,4 @@ for f in $(find . -name \*\.in); do
 	! echo $F | grep -q "\.sh$" || { chmod u+x $F || exit $? ; }
 done
 echo "Configure done"
+

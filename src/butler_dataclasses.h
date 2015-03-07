@@ -85,6 +85,7 @@ class Ware
 
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+@include@ dbclass.h
 
 @declare@ Company
 
