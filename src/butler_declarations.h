@@ -38,13 +38,40 @@
 	Fields {
 		Text name; key			; TEXT
 		Text unit;				; TEXT NOT NULL DEFAULT ''
-		TypeNameSet types;
-		TagNameSet tags;
+		Text icon;				; TEXT
+		//WareTypeSet types; list(WareType) ; WHERE WareType.ware = Ware.name
+		//WareTagSet tags; list(WareTag) ; WHERE WareTag.ware = Ware.name
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class WareTag
+	Fields {
+		Text ware; key			; TEXT NOT NULL
+		Text tag; key			; TEXT NOT NULL
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (ware, tag)
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class WareType
+	Fields {
+		Text ware; key			; TEXT NOT NULL
+		Text name; key			; TEXT NOT NULL
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (ware, name)
 		}
 @EndDecl@*/
 

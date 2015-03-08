@@ -74,15 +74,22 @@ public:
 		unint pos;
 		StringChunk comment;
 		StringChunk decl(line);
+		// cut of the comment
 		if(line.findFirst(pos, "//")){
 			if(0 < pos && (line[pos-1] == '\t' || line[pos-1] == ' '))
 				pos -= 1;
 			comment.assign(line.str + pos, line.length - pos);
 			decl.assign(line.str, pos);
 		}
+
 		auto words = decl.split(";");
-		for(unint i = 0; i < words.length; i++)
-			words[i].trimFront(" \t");
+		for(auto& word : words) word.trim("\n\t");
+
+		if(!words.length) // skip empty lines
+			return;
+		if(words[0] == "") // skip empty lines
+			return;
+
 		if(words.length == 1 && words[0] == "}"){
 			state = &Declaration::parseDeclaration;
 			return;
@@ -161,21 +168,22 @@ public:
 			const String & data)
 	{
 		auto lines = data.split("\n", false);
-		unsigned i;
+		unsigned i = 0;
 		unint pos;
 		bool declPhase = false;
 		try{
 			Object<Declaration> decl;
-			for(i = 0; i < lines.length; i++){
-				lines[i].trimBack("\t ");
-				if(lines[i].findFirst(pos, "@BeginDecl@")) {
+			for(auto & line : lines){
+				i++;
+				line.trimBack("\t ");
+				if(line.findFirst(pos, "@BeginDecl@")) {
 					decl.ptr = new Declaration();
 					declPhase = true;
-				} else if(lines[i].findFirst(pos, "@EndDecl@")){
+				} else if(line.findFirst(pos, "@EndDecl@")){
 					declarations.add(decl);
 					declPhase = false;
 				} else if(declPhase)
-					decl->parse(lines[i]);
+					decl->parse(line);
 			}
 		} catch (Exception & e) {
 			e.note("Excpetion happened while processing declaration file line %u.", i);
@@ -387,9 +395,9 @@ public:
 	{
 		StringChunk includeList(line.str + pos, line.length - pos);
 		auto files = includeList.split(" ");
-		for(unsigned i = 0; i < files.length; i++){
+		for(auto& file : files){
 			String tplFileName(tplDir);
-			tplFileName << files[i];
+			tplFileName << file;
 			File tplFile(tplFileName);
 			String tpl = tplFile.readAll();
 			TemplateParser tplParser(code, tpl, declarations[declIdx]);
