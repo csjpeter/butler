@@ -230,9 +230,9 @@ void EditItemView::mapFromGui()
 	item.invChangeDate = invChangeDateTime.edit.dateTime();
 
 	ware.name = item.name;
-	ware.tags = tagsWidget.selectedTags();
-	if(typeEditor.text().size() && !ware.types.has(item.type))
-		ware.types.add(new Text(typeEditor.text()));
+	//ware.tags = tagsWidget.selectedTags();
+	//if(typeEditor.text().size() && !ware.types.has(item.type))
+	//	ware.types.add(new Text(typeEditor.text()));
 }
 
 void EditItemView::changeEvent(QEvent * event)
@@ -384,8 +384,8 @@ void EditItemView::updateToolButtonStates()
 			);
 
 	/* tag states might have changed for ware */
-	if(tagsWidget.selectedTags() != ware.tags)
-		modified = true;
+	//if(tagsWidget.selectedTags() != ware.tags)
+	//	modified = true;
 
 	bool mandatoriesGiven = wareEditor.editor.text().size();
 
@@ -518,7 +518,7 @@ void EditItemView::saveSlot()
 void EditItemView::resetSlot()
 {
 	mapToGui();
-	tagsWidget.setTags(ware.tags);
+	//tagsWidget.setTags(ware.tags);
 }
 
 void EditItemView::quantityValueChangedSlot(double q)
@@ -615,11 +615,11 @@ void EditItemView::wareNameEditFinishedSlot()
 		ware = wm.ware(i);
 
 	quantityEditor.setSuffix(ware.unit);
-	tagsWidget.setTags(ware.tags);
+	//tagsWidget.setTags(ware.tags);
 
-	QString cats = WaresModel::typesToString(ware.types);
+	//QString cats = WaresModel::typesToString(ware.types);
 	typeEditor.box.addItem(lastCat);
-	typeEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
+	//typeEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 

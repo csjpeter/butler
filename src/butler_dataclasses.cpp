@@ -7,6 +7,13 @@
 
 @declare@ Tag
 @include@ dbclass.cpp
+
 @declare@ Ware
+@include@ dbclass.cpp
+
+@declare@ WareType
+@include@ dbclass.cpp
+
+@declare@ WareTag
 @include@ dbclass.cpp
 

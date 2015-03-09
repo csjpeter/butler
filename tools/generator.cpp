@@ -23,12 +23,15 @@ public:
 	}
 
 	FieldDesc(const StringChunk & name, const StringChunk & type,
-			const StringChunk & sqlDecl, const StringChunk & comment) :
+			const StringChunk & sqlDecl, const StringChunk & comment,
+			bool key, bool set) :
 		name(name),
 		type(type),
 		enumName(name),
 		sqlDecl(sqlDecl),
-		comment(comment)
+		comment(comment),
+		key(key),
+		set(set)
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
@@ -40,6 +43,8 @@ public:
 	String sqlDecl;
 	String comment;
 	String constraint;
+	bool key;
+	bool set;
 };
 
 bool operator<(const FieldDesc & a, const FieldDesc & b)
@@ -83,7 +88,7 @@ public:
 		}
 
 		auto words = decl.split(";");
-		for(auto& word : words) word.trim("\n\t");
+		for(auto& word : words) word.trim(" \t");
 
 		if(!words.length) // skip empty lines
 			return;
@@ -98,7 +103,6 @@ public:
 		StringChunk type;
 		StringChunk name;
 		if(0 < words.length){
-			words[0].trimBack(" \t");
 			if(words[0].findLastOf(pos, " \t")){
 				type.assign(words[0].str, pos);
 				words[0].chopFront(pos + 1);
@@ -107,10 +111,12 @@ public:
 		}
 
 		bool key = false;
+		bool set = false;
 		if(1 < words.length){
-			words[1].trim(" \t");
 			auto modifiers = words[1].split(",");
+			for(auto& mod : modifiers) mod.trim(" \t");
 			key = modifiers.has("key");
+			set = modifiers.has("set");
 		}
 
 		StringChunk sql;
@@ -118,13 +124,13 @@ public:
 			sql = words[2];
 
 		fields.setCapacity(fields.capacity+1);
-		fields.add(name, type, sql, comment);
+		fields.add(name, type, sql, comment, key, set);
 		if(key){
 			keyFields.setCapacity(keyFields.capacity+1);
-			keyFields.add(name, type, sql, comment);
+			keyFields.add(name, type, sql, comment, key, set);
 		} else {
 			nonKeyFields.setCapacity(nonKeyFields.capacity+1);
-			nonKeyFields.add(name, type, sql, comment);
+			nonKeyFields.add(name, type, sql, comment, key, set);
 		}
 	}
 
@@ -260,7 +266,40 @@ public:
 		unint tplLineNoBegin = tplLineNo;
 		unint tplLastLineStartPosBegin = tplLastLineStartPos;
 
-		for(unint i = 0; i < fields.length && block.length;){
+		unsigned lastIdx = 0;
+		unsigned endIdx = 0;
+		unsigned i = 0;
+		while(i < fields.length){
+			const auto& field = fields[i];
+			if((what == "KeyField" && !field.key)
+					|| (what == "NonKeyField" && field.key)
+					|| (what == "Constraint" && field.name.length)){
+				i++;
+				continue;
+			}
+			lastIdx = endIdx;
+			endIdx = i;
+			i++;
+			LOG("Field name: %.*s", (int)field.name.length, field.name.str);
+		}
+		LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+
+		i = 0;
+		unsigned idx = 0;
+		while(i < fields.length && block.length){
+			const auto& field = fields[i];
+
+			LOG("-Field name: %.*s", (int)field.name.length, field.name.str);
+			LOG("-i: %d, lastIdx: %u, endIdx: %u", i, lastIdx, endIdx);
+
+			if((what == "KeyField" && !field.key)
+					|| (what == "NonKeyField" && field.key)
+					|| (what == "Constraint" && field.name.length)){
+				i++;
+				continue;
+			}
+
+			// until a '@' character just append anything to the code
 			const char * iter = block.str;
 			while(iter < until && *iter != '@'){
 				if(iter[0] == '\n'){
@@ -273,42 +312,49 @@ public:
 			block.chopFront(iter - block.str);
 
 			if(block.chopFront(lastTag.str)){
-				if(i == fields.length - 2){
+				if(i == lastIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
 					block = tpl;
 					i++;
+					idx++;
+					LOG("lastIdx");
 				} else {
 					block = tpl;
 					tplLineNo = tplLineNoBegin;
 					tplLastLineStartPos = tplLastLineStartPosBegin;
 					i++;
+					idx++;
+					LOG("last next");
 				}
 			} else if(block.chopFront(endTag.str)){
-				if(i == fields.length - 1){
+				if(i == endIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
 					block.clear();
+					LOG("endIdx");
 				} else {
 					block = tpl;
 					tplLineNo = tplLineNoBegin;
 					tplLastLineStartPos = tplLastLineStartPosBegin;
 					i++;
+					idx++;
+					LOG("end next");
 				}
 			} else if(block.chopFront("@FieldType@")) {
-				code << fields[i].type;
+				code << field.type;
 			} else if(block.chopFront("@FieldIdx@")){
-				code << i;
+				code << idx;
 			} else if(block.chopFront("@FieldName@")){
-				code << fields[i].name;
+				code << field.name;
 			} else if(block.chopFront("@FieldEnumName@")){
-				code << fields[i].enumName;
+				code << field.enumName;
 			} else if(block.chopFront("@FieldSqlDecl@")){
-				code << "`" << fields[i].name << "` " << fields[i].sqlDecl;
+				code << "`" << field.name << "` " << field.sqlDecl;
 			} else if(block.chopFront("@Constraint@")){
-				code << fields[i].constraint;
+				code << field.constraint;
 			} else if(block.chopFront("@FieldComment@")){
-				code << fields[i].comment;
+				code << field.comment;
 			} else {
 				parseCommonMarker(block);
 			}
@@ -332,11 +378,11 @@ public:
 			if(tpl.chopFront("@ForEachFieldBegin@"))
 				parseForEach("Field", declaration.fields);
 			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
-				parseForEach("KeyField", declaration.keyFields);
+				parseForEach("KeyField", declaration.fields);
 			else if(tpl.chopFront("@ForEachNonKeyFieldBegin@"))
-				parseForEach("NonKeyField", declaration.nonKeyFields);
+				parseForEach("NonKeyField", declaration.fields);
 			else if(tpl.chopFront("@ForEachConstraintBegin@"))
-				parseForEach("Constraint", declaration.constraints);
+				parseForEach("Constraint", declaration.fields);
 			else if(tpl.chopFront("@IfSingleKeyBegin@")){
 				unint pos;
 				if(declaration.keyFields.length != 1)
@@ -486,7 +532,6 @@ int main(int argc, char *args[])
 		size_t len = 0;
 		while ((read = getline(&line, &len, stdin)) != -1) {
 			l++;
-			LOG("read: %zd", read);
 			Object<String> lineStr(new String());
 			lineStr->adopt(line, len);
 			lineStr->trim("\n\r");

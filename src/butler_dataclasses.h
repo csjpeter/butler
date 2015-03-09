@@ -87,6 +87,28 @@ class Ware
 @include@ dataclass_set.h
 @include@ dbclass.h
 
+@declare@ WareType
+
+class WareType
+{
+	@include@ dataclass_members.h
+};
+
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+@include@ dbclass.h
+
+@declare@ WareTag
+
+class WareTag
+{
+	@include@ dataclass_members.h
+};
+
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+@include@ dbclass.h
+
 @declare@ Company
 
 class Company

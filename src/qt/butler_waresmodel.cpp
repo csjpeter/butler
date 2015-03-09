@@ -13,8 +13,8 @@
 
 SCC TidWareFieldName = QT_TRANSLATE_NOOP("WaresModel", "Name");
 SCC TidWareFieldUnit = QT_TRANSLATE_NOOP("WaresModel", "Unit");
-SCC TidWareFieldTypes = QT_TRANSLATE_NOOP("WaresModel", "Types");
-SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
+//SCC TidWareFieldTypes = QT_TRANSLATE_NOOP("WaresModel", "Types");
+//SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
 
 WaresModel::WaresModel(WareDb & db) :
 	db(db)
@@ -57,17 +57,33 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 
 	switch(index.column()){
 		case Ware::Name :
-			return QVariant(wares.queryAt(index.row()).name);
+			{
+				QString data;
+				data <<= wares.queryAt(index.row()).name;
+				return data;
+			}
 			break;
 		case Ware::Unit :
-			return QVariant(wares.queryAt(index.row()).unit);
+			{
+				QString data;
+				data <<= wares.queryAt(index.row()).unit;
+				return data;
+			}
 			break;
-		case Ware::Types :
-			return QVariant(typesToString(wares.queryAt(index.row()).types));
+/*		case Ware::Types :
+			{
+				QString data;
+				data <<= wares.queryAt(index.row()).types;
+				return data;
+			}
 			break;
 		case Ware::Tags :
-			return QVariant(tagsToString(wares.queryAt(index.row()).tags));
-			break;
+			{
+				QString data;
+				data <<= wares.queryAt(index.row()).tags;
+				return data;
+			}
+			break;*/
 		default :
 			return QVariant();
 	}
@@ -91,12 +107,12 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Ware::Unit :
 			return QVariant(tr(TidWareFieldUnit));
 			break;
-		case Ware::Types :
+/*		case Ware::Types :
 			return QVariant(tr(TidWareFieldTypes));
 			break;
 		case Ware::Tags :
 			return QVariant(tr(TidWareFieldTags));
-			break;
+			break;*/
 		default :
 			return QVariant();
 	}
@@ -132,14 +148,14 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 			modified.unit <<= value;
 			update(row, modified);
 			break;
-		case Ware::Types :
+/*		case Ware::Types :
 			stringToTypes(value.toString(), modified.types);
 			update(row, modified);
 			break;
 		case Ware::Tags :
 			stringToTags(value.toString(), modified.tags);
 			update(row, modified);
-			break;
+			break;*/
 		default :
 			return false;
 	}

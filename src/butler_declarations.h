@@ -39,8 +39,8 @@
 		Text name; key			; TEXT
 		Text unit;				; TEXT NOT NULL DEFAULT ''
 		Text icon;				; TEXT
-		//WareTypeSet types; list(WareType) ; WHERE WareType.ware = Ware.name
-		//WareTagSet tags; list(WareTag) ; WHERE WareTag.ware = Ware.name
+		//WareTypeSet types; set	; WHERE WareType.ware = 'name'
+		//WareTagSet tags; set	; WHERE WareTag.ware = 'name'
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
