@@ -24,7 +24,7 @@
 	Class Tag
 	Fields {
 		Text name; key			; TEXT
-		Text description;		; TEXT NOT NULL DEFAULT ''
+		Text description;		; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -37,10 +37,10 @@
 	Class Ware
 	Fields {
 		Text name; key			; TEXT
-		Text unit;				; TEXT NOT NULL DEFAULT ''
+		Text unit;				; TEXT
 		Text icon;				; TEXT
-		//WareTypeSet types; set	; WHERE WareType.ware = 'name'
-		//WareTagSet tags; set	; WHERE WareTag.ware = 'name'
+		WareTypeSet types; set	; WHERE WareType.ware = 'name'
+		WareTagSet tags; set	; WHERE WareTag.ware = 'name'
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -52,8 +52,8 @@
 /*@BeginDecl@
 	Class WareTag
 	Fields {
-		Text ware; key			; TEXT NOT NULL
-		Text tag; key			; TEXT NOT NULL
+		Text ware; key			; TEXT
+		Text tag; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -65,8 +65,8 @@
 /*@BeginDecl@
 	Class WareType
 	Fields {
-		Text ware; key			; TEXT NOT NULL
-		Text name; key			; TEXT NOT NULL
+		Text ware; key			; TEXT
+		Text name; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -78,13 +78,13 @@
 /*@BeginDecl@
 	Class Company
 	Fields {
-		Text name; key			; TEXT									// Tesco Global Áruházak
-		Text country;			; TEXT NOT NULL DEFAULT ''				// Magyarország
-		Text city;														// Budaörs
-		Text postalCode;												// 2040
-		Text address;													// Kinizsi út 1-3.
-		Text taxId;														// 10307078-2-44
-		Text icon;														// base64 repr of an image
+		Text name; key			; TEXT					// Tesco Global Áruházak
+		Text country;			; TEXT					// Magyarország
+		Text city;				; TEXT					// Budaörs
+		Text postalCode;		; TEXT					// 2040
+		Text address;			; TEXT					// Kinizsi út 1-3.
+		Text taxId;				; TEXT					// 10307078-2-44
+		Text icon;				; TEXT					// base64 repr of an image
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -97,7 +97,7 @@
 	Class Brand
 	Fields {
 		Text name; key			; TEXT
-		Text company;			; TEXT NOT NULL DEFAULT ''
+		Text company;			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -110,7 +110,7 @@
 	Class Inventory
 	Fields {
 		Text name; key			; TEXT
-		Text comment;			; TEXT NOT NULL DEFAULT ''
+		Text comment;			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -120,39 +120,17 @@
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class Item
-	Fields {
-		DateTime uploadDate; key	// non editable
-		Text name;
-		Text unit;
-		Text type;
-		Text brand;
-		double quantity;			// amoutn to buy or not
-		double price;				// price of gross piece/amount quantity
-		Text currency;
-		Text account;
-		Text partner;
-		Text inventory;
-		Text comment;
-		DateTime invChangeDate;
-		DateTime lastModified;		// non editable
-		}
-	Constraints {
-		PRIMARY KEY (uploadDate)
-		}
-@EndDecl@*/
-
-/*@BeginDecl@
 	Class Partner
 	Fields {
-		Text name; key				// Kertvárosi tesco
-		Text country;				// Magyarország
-		Text city;			// Pécs
-		Text postalCode;			// 7631
-		Text address;				// Kincses út 1.
-		Text company;				// Tesco Global Áruházak Zrt.
-		Text storeName;				// 41052 számú bolt
-		DateTime lastModified;		// non-editable
+		Text name; key			; TEXT	// Kertvárosi tesco
+		Text country;			; TEXT	// Magyarország
+		Text city;				; TEXT	// Pécs
+		Text postalCode;		; TEXT	// 7631
+		Text address;			; TEXT	// Kincses út 1.
+		Text company;			; TEXT	// Tesco Global Áruházak Zrt.
+		Text storeName;			; TEXT	// 41052 számú bolt
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -162,12 +140,13 @@
 /*@BeginDecl@
 	Class Account
 	Fields {
-		Text name; key
-		Text currency;
-		Text bankOffice;
-		Text iban;
-		Text swiftCode;
-		DateTime lastModified;
+		Text name; key			; TEXT
+		Text currency;			; TEXT
+		Text bankOffice;		; TEXT
+		Text iban;				; TEXT
+		Text swiftCode;			; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -177,13 +156,38 @@
 /*@BeginDecl@
 	Class Payment
 	Fields {
-		DateTime uploadDate; key
-		Text account;
-		Text partner;
-		double amount;
-		DateTime subject;
-		DateTime payDate;
-		DateTime lastModified;
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text account;				; TEXT
+		Text partner;				; TEXT
+		double amount;				; DECIMAL(15,3) NOT NULL
+		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (uploadDate)
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class Item
+	Fields {
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text name;					; TEXT
+		Text unit;					; TEXT
+		Text type;					; TEXT
+		Text brand;					; TEXT
+		double quantity;			; DECIMAL(15,3) NOT NULL // amoutn to buy or not
+		double price;				; DECIMAL(15,2) NOT NULL // price of gross piece/amount quantity
+		Text currency;				; TEXT
+		Text account;				; TEXT
+		Text partner;				; TEXT
+		Text inventory;				; TEXT
+		Text comment;				; TEXT
+		DateTime invChangeDate;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (uploadDate)
@@ -193,16 +197,17 @@
 /*@BeginDecl@
 	Class Query
 	Fields {
-		Text name; key
-		DateTime startDate;
-		DateTime endDate;
-		enum StockOptions stockOption;
-		enum TagOptions tagOption;
-		TagNameSet withTags;
-		TagNameSet withoutTags;
-		WareNameSet wares;
-		PartnerNameSet partners;
-		DateTime lastModified;
+		Text name; key						; TEXT
+		DateTime startDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime endDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		enum StockOptions stockOption;		; INTEGER NOT NULL
+		enum TagOptions tagOption;			; INTEGER NOT NULL
+		TagNameSet withTags; set			;
+		TagNameSet withoutTags; set			;
+		WareNameSet wares; set				;
+		PartnerNameSet partners; set		;
+		DateTime lastModified;				; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;						; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)

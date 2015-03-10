@@ -6,11 +6,11 @@
 
 	if(!tables.has("@Type@s"))
 		sql.exec(	"CREATE TABLE @Type@s ("
-@ForEachFieldBegin@
+@ForEachTableFieldBegin@
 				"@FieldSqlDecl@, "
-@ForEachFieldLast@
+@ForEachTableFieldLast@
 				"@FieldSqlDecl@"
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 @ForEachConstraintBegin@
 				", @Constraint@"
 @ForEachConstraintEnd@
@@ -19,11 +19,11 @@
 
 	cols = sql.columns("@Type@s");
 	if(
-@ForEachFieldBegin@
+@ForEachTableFieldBegin@
 		!cols.has("@FieldName@") ||
-@ForEachFieldLast@
+@ForEachTableFieldLast@
 		!cols.has("@FieldName@")
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 	  )
 		throw DbIncompatibleTableError(
 			"Incompatible table @Type@s in the openend database.");
@@ -38,10 +38,10 @@ void @Type@Db::insert(const @Type@ & obj)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO @Type@s (@ForEachFieldBegin@@FieldName@, @ForEachFieldLast@@FieldName@@ForEachFieldEnd@ ) VALUES (@ForEachFieldBegin@?, @ForEachFieldLast@?@ForEachFieldEnd@)");
-@ForEachFieldBegin@
+	sqlQuery.prepare("INSERT INTO @Type@s (@ForEachTableFieldBegin@@FieldName@, @ForEachTableFieldLast@@FieldName@@ForEachTableFieldEnd@ ) VALUES (@ForEachTableFieldBegin@?, @ForEachTableFieldLast@?@ForEachTableFieldEnd@)");
+@ForEachTableFieldBegin@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 	sqlQuery.exec();
 
 	tr.commit();
@@ -52,10 +52,10 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("UPDATE @Type@s SET @ForEachFieldBegin@@FieldName@ = ?, @ForEachFieldLast@@FieldName@ = ?@ForEachFieldEnd@ WHERE @ForEachKeyFieldBegin@@FieldName@ = ? AND @ForEachKeyFieldLast@@FieldName@ = ?@ForEachKeyFieldEnd@");
-@ForEachFieldBegin@
+	sqlQuery.prepare("UPDATE @Type@s SET @ForEachTableFieldBegin@@FieldName@ = ?, @ForEachTableFieldLast@@FieldName@ = ?@ForEachTableFieldEnd@ WHERE @ForEachKeyFieldBegin@@FieldName@ = ? AND @ForEachKeyFieldLast@@FieldName@ = ?@ForEachKeyFieldEnd@");
+@ForEachTableFieldBegin@
 	sqlQuery.bindValue(@FieldIdx@, modified.@FieldName@);
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 @ForEachKeyFieldBegin@
 	sqlQuery.bindValue(@NumOfFields@+@FieldIdx@, orig.@FieldName@);
 @ForEachKeyFieldEnd@
@@ -83,22 +83,22 @@ void @Type@Db::query(@Type@Set & list)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("SELECT @ForEachFieldBegin@@FieldName@, @ForEachFieldLast@@FieldName@@ForEachFieldEnd@ FROM @Type@s");
+	sqlQuery.prepare("SELECT @ForEachTableFieldBegin@@FieldName@, @ForEachTableFieldLast@@FieldName@@ForEachTableFieldEnd@ FROM @Type@s");
 	sqlQuery.exec();
 
 	list.clear();
 
-@ForEachFieldBegin@
+@ForEachTableFieldBegin@
 	int @FieldName@No = sqlQuery.colIndex("@FieldName@");
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 
 	DBG("----- Reading all @Type@s from db:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		@Type@ *record = new @Type@();
-@ForEachFieldBegin@
+@ForEachTableFieldBegin@
 	record->@FieldName@ <<= sqlQuery.sqlValue(@FieldName@No);
-@ForEachFieldEnd@
+@ForEachTableFieldEnd@
 		list.add(record);
 	}
 	DBG("-----");

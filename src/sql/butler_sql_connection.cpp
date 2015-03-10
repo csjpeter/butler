@@ -398,6 +398,23 @@ void SqlQuery::bindValue(int pos, const double d)
 	bindValue(pos, QVariant(d));
 }
 
+void SqlQuery::bindValue(int pos, const int i)
+{
+	bindValue(pos, QVariant(i));
+}
+
+void SqlQuery::bindValue(int pos, const enum Query::StockOptions e)
+{
+	int i = (int)e;
+	bindValue(pos, i);
+}
+
+void SqlQuery::bindValue(int pos, const enum Query::TagOptions e)
+{
+	int i = (int)e;
+	bindValue(pos, i);
+}
+
 void SqlQuery::exec()
 {
 	ENSURE(priv->qQuery, csjp::LogicError);

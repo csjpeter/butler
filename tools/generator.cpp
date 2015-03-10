@@ -18,7 +18,9 @@ class FieldDesc
 {
 public:
 	FieldDesc(const StringChunk & constraint) :
-		constraint(constraint)
+		constraint(constraint),
+		key(false),
+		set(false)
 	{
 	}
 
@@ -244,6 +246,8 @@ public:
 			if((what == "Field" && !field.name.length)
 					|| (what == "KeyField" && !field.key)
 					|| (what == "NonKeyField" && field.key)
+					|| (what == "TableField" && !field.name.length)
+					|| (what == "TableField" && field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
 				continue;
@@ -253,7 +257,7 @@ public:
 			i++;
 			//LOG("Field name: %.*s", (int)field.name.length, field.name.str);
 		}
-		LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+		//LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
 
 		unint pos = 0;
 		if(endIdx == 0){
@@ -280,6 +284,8 @@ public:
 			if((what == "Field" && !field.name.length)
 					|| (what == "KeyField" && !field.key)
 					|| (what == "NonKeyField" && field.key)
+					|| (what == "TableField" && !field.name.length)
+					|| (what == "TableField" && field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
 				continue;
@@ -366,6 +372,8 @@ public:
 
 			if(tpl.chopFront("@ForEachFieldBegin@"))
 				parseForEach("Field", declaration.fields);
+			else if(tpl.chopFront("@ForEachTableFieldBegin@"))
+				parseForEach("TableField", declaration.fields);
 			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
 				parseForEach("KeyField", declaration.fields);
 			else if(tpl.chopFront("@ForEachNonKeyFieldBegin@"))
@@ -375,16 +383,9 @@ public:
 			else if(tpl.chopFront("@IfSingleKeyBegin@")){
 				unint pos;
 				unsigned c = 0;
-				for(auto& field : declaration.fields){
-					if(field.key){
+				for(auto& field : declaration.fields)
+					if(field.key)
 						c++;
-					LOG("%.*s key: %su", declaration.typeName.length,
-						declaration.typeName.str,
-						field.name.length, field.name.str);
-					}
-				}
-				LOG("%.*s keys: %u", declaration.typeName.length,
-						declaration.typeName.str, c);
 				if(c != 1)
 					if(tpl.findFirst(pos, "@IfSingleKeyEnd@"))
 						tpl.chopFront(pos);

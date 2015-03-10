@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 //#define DEBUG
 #include <csjp_logger.h>
 #undef DEBUG
@@ -106,3 +107,4 @@ void InventoryDb::query(InventorySet & inventories)
 
 	tr.commit();
 }
+#endif

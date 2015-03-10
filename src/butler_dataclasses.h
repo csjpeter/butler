@@ -8,9 +8,13 @@
 
 #include <QString>
 
+#include <csjp_pod_array.h>
 #include <csjp_array.h>
+#include <csjp_owner_container.h>
+#include <csjp_sorter_owner_container.h>
 
-#include <butler_sql_connection.h>
+#include <butler_datetime.h>
+#include <butler_text.h>
 
 
 
@@ -65,125 +69,107 @@ public:
 	double queryTime; /** How much time the query took. */
 };
 
-@declare@ Tag
 
+@declare@ Tag
 class Tag
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
-@include@ dbclass.h
 
-@declare@ Ware
-
-class Ware
-{
-	@include@ dataclass_members.h
-};
-
-//inline bool operator<(const Text & lhs, const Ware & rhs){ return lhs < rhs.name; }
-//inline bool operator<(const Ware & lhs, const Text & rhs){ return lhs.name < rhs; }
-
-@include@ dataclass_nonmembers.h
-@include@ dataclass_set.h
-@include@ dbclass.h
 
 @declare@ WareType
-
 class WareType
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
-@include@ dbclass.h
+
 
 @declare@ WareTag
-
 class WareTag
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
-@include@ dbclass.h
+
+
+@declare@ Ware
+class Ware
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
 
 @declare@ Company
-
 class Company
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Brand
 
+@declare@ Brand
 class Brand
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Inventory
 
+@declare@ Inventory
 class Inventory
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Item
-
-class Item
-{
-	@include@ dataclass_members.h
-};
-
-@include@ dataclass_nonmembers.h
-@include@ dataclass_set.h
 
 @declare@ Partner
-
 class Partner
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Account
 
+@declare@ Account
 class Account
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Payment
 
+@declare@ Payment
 class Payment
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
-@declare@ Query
 
+@declare@ Item
+class Item
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
+@declare@ Query
 class Query
 {
 public:
@@ -200,8 +186,8 @@ public:
 
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+
 
 #endif

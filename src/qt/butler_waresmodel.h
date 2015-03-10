@@ -10,8 +10,7 @@
 
 #include <butler_abstract_table_model.h>
 
-#include <butler_ware_db.h>
-#include <butler_dataclasses.h>
+#include <butler_dbclasses.h>
 
 #include <butler_config.h>
 

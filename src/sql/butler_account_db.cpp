@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 #include "butler_account_db.h"
 
 AccountDb::AccountDb(SqlConnection & sql) :
@@ -122,3 +123,4 @@ void AccountDb::query(AccountSet & ss)
 
 	tr.commit();
 }
+#endif

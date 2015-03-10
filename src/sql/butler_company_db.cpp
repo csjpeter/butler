@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 #include "butler_company_db.h"
 
 CompanyDb::CompanyDb(SqlConnection & sql) :
@@ -131,3 +132,4 @@ void CompanyDb::query(CompanySet & ss)
 
 	tr.commit();
 }
+#endif

@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 #include "butler_payment_db.h"
 
 #include <math.h>
@@ -419,3 +420,4 @@ void PaymentDb::query(const Query & q, QueryStat & stat, PaymentSet & payments)
 /*
 select * from (select Payments.upload_date as id, Payments.name as ware, Payments.type as type, payments_bought.purchased as bought, payments_bought.price as price from Payments left join payments_bought on Payments.upload_date = payments_bought.upload_date left join WareTags on Payments.name = WareTags.name where '2012-02-01T00:00:00' < payments_bought.purchased and payments_bought.purchased < '2012-03-01T00:00:00' and WareTags.tag = 'élelmiszer' group by Payments.upload_date);
 */
+#endif

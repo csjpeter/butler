@@ -4,6 +4,12 @@ public:
 	csjp::PodArray<@Type@::Fields> ordering;
 	bool ascending;
 
+	const @Type@Set & operator=(@Type@Set && temp)
+	{
+		csjp::SorterOwnerContainer<@Type@>::operator=(move_cast(temp));
+		return *this;
+	}
+
 	virtual int compare(const @Type@ & a, const @Type@ & b) const
 	{
 		bool ret;
@@ -49,3 +55,4 @@ public:
 	}
 	~@Type@Set() {}
 };
+

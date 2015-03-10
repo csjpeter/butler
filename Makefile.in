@@ -58,12 +58,14 @@ tmp/src/datamodel/%.opp: src/datamodel/%.cpp
 	$(COMPILE) -o $@ $<
 
 tmp/src/sql/%.opp: src/sql/%.cpp \
-		src/butler_dataclasses.h
+		src/butler_dataclasses.h \
+		src/butler_dbclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
 tmp/src/qt/%.opp: src/qt/%.cpp \
-		src/butler_dataclasses.h
+		src/butler_dataclasses.h \
+		src/butler_dbclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
 
@@ -85,7 +87,8 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	$(TARGETFINISHED)
 
 tmp/src/%.opp: src/%.cpp \
-		src/butler_dataclasses.h
+		src/butler_dataclasses.h \
+		src/butler_dbclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
@@ -129,6 +132,7 @@ TEST_BINARIES=\
 SQL_OBJECTS+= \
 	tmp/src/sql/butler_sql_connection.opp \
 	tmp/src/butler_dataclasses.opp \
+	tmp/src/butler_dbclasses.opp \
 	tmp/src/sql/butler_tag_db.opp \
 	tmp/src/sql/butler_ware_db.opp \
 	tmp/src/sql/butler_company_db.opp \

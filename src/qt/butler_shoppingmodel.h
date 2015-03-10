@@ -12,6 +12,8 @@
 
 #include "butler_itemsmodel.h"
 
+#include <butler_dbclasses.h>
+
 class Item;
 
 class ShoppingModel : public ItemsModel

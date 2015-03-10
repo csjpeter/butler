@@ -5,6 +5,7 @@
 
 #ifndef BUTLER_COMPANIES_DB_H
 #define BUTLER_COMPANIES_DB_H
+#if 0
 
 #include <butler_sql_connection.h>
 #include <butler_dataclasses.h>
@@ -27,4 +28,5 @@ private:
 	SqlConnection & sql;
 };
 
+#endif
 #endif

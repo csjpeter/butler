@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 //#define DEBUG
 #include <csjp_logger.h>
 #undef DEBUG
@@ -108,3 +109,4 @@ void BrandDb::query(BrandSet & brands)
 
 	tr.commit();
 }
+#endif

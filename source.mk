@@ -236,6 +236,20 @@ $(DIST_DIR)/src/butler_dataclasses.cpp: \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dataclasses.cpp > $@
 
+$(DIST_DIR)/src/butler_dbclasses.h: \
+		tpl/dbclass.h \
+		src/butler_dbclasses.h \
+		tools/generator
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dbclasses.h > $@
+
+$(DIST_DIR)/src/butler_dbclasses.cpp: \
+		tpl/dbclass.cpp \
+		src/butler_dbclasses.cpp \
+		tools/generator
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dbclasses.cpp > $@
+
 #$(DIST_DIR)/src/%.h: \
 #		src/%.h \
 #		tools/generator
@@ -269,6 +283,8 @@ source: \
 	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/butler_dataclasses.h \
 	$(DIST_DIR)/src/butler_dataclasses.cpp \
+	$(DIST_DIR)/src/butler_dbclasses.h \
+	$(DIST_DIR)/src/butler_dbclasses.cpp \
 	\
 	$(DIST_DIR)/src/config.h.in \
 	$(DIST_DIR)/src/qt/butler_config.h \

@@ -3,6 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#if 0
 #include "butler_partner_db.h"
 
 PartnerDb::PartnerDb(SqlConnection & sql) :
@@ -137,3 +138,4 @@ void PartnerDb::query(PartnerSet & ss)
 
 	tr.commit();
 }
+#endif
