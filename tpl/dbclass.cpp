@@ -57,7 +57,7 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	sqlQuery.bindValue(@FieldIdx@, modified.@FieldName@);
 @ForEachTableFieldEnd@
 @ForEachKeyFieldBegin@
-	sqlQuery.bindValue(@NumOfFields@+@FieldIdx@, orig.@FieldName@);
+	sqlQuery.bindValue(@NumOfTableFields@+@FieldIdx@, orig.@FieldName@);
 @ForEachKeyFieldEnd@
 	sqlQuery.exec();
 

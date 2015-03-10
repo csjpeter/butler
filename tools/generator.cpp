@@ -223,9 +223,6 @@ public:
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
 			code << declaration.typeName;
-		} else if(tpl.chopFront("@NumOfFields@")){
-			tpl.trimFront("\n\r");
-			code << declaration.fields.length;
 		} else if(tpl.length) {
 			code << tpl[0];
 			tpl.chopFront(1);
@@ -241,6 +238,7 @@ public:
 		unsigned lastIdx = 0;
 		unsigned endIdx = 0;
 		unsigned i = 0;
+		unsigned numOfFields = 0;
 		while(i < fields.length){
 			const auto& field = fields[i];
 			if((what == "Field" && !field.name.length)
@@ -255,9 +253,20 @@ public:
 			lastIdx = endIdx;
 			endIdx = i;
 			i++;
+			numOfFields++;
 			//LOG("Field name: %.*s", (int)field.name.length, field.name.str);
 		}
 		//LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+
+		i = 0;
+		unsigned numOfTableFields = 0;
+		while(i < fields.length){
+			const auto& field = fields[i];
+			i++;
+			if(!field.name.length || field.set)
+				continue;
+			numOfTableFields++;
+		}
 
 		unint pos = 0;
 		if(endIdx == 0){
@@ -336,6 +345,10 @@ public:
 					idx++;
 					//LOG("end next");
 				}
+			} else if(block.chopFront("@NumOfFields@")){
+				code << numOfFields;
+			} else if(block.chopFront("@NumOfTableFields@")){
+				code << numOfTableFields;
 			} else if(block.chopFront("@FieldType@")) {
 				code << field.type;
 			} else if(block.chopFront("@FieldIdx@")){
