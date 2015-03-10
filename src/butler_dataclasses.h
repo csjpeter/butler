@@ -83,6 +83,9 @@ class Ware
 	@include@ dataclass_members.h
 };
 
+//inline bool operator<(const Text & lhs, const Ware & rhs){ return lhs < rhs.name; }
+//inline bool operator<(const Ware & lhs, const Text & rhs){ return lhs.name < rhs; }
+
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 @include@ dbclass.h

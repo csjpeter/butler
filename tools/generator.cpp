@@ -58,9 +58,6 @@ class Declaration
 public:
 	StringChunk typeName;
 	Array<FieldDesc> fields;
-	Array<FieldDesc> keyFields;
-	Array<FieldDesc> nonKeyFields;
-	Array<FieldDesc> constraints;
 
 	Declaration() { clear(); }
 
@@ -69,9 +66,6 @@ public:
 		state = &Declaration::parseDeclaration;
 		typeName.clear();
 		fields.clear();
-		keyFields.clear();
-		nonKeyFields.clear();
-		constraints.clear();
 	}
 
 	void parseFieldList(const StringChunk & line)
@@ -125,13 +119,6 @@ public:
 
 		fields.setCapacity(fields.capacity+1);
 		fields.add(name, type, sql, comment, key, set);
-		if(key){
-			keyFields.setCapacity(keyFields.capacity+1);
-			keyFields.add(name, type, sql, comment, key, set);
-		} else {
-			nonKeyFields.setCapacity(nonKeyFields.capacity+1);
-			nonKeyFields.add(name, type, sql, comment, key, set);
-		}
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -148,8 +135,8 @@ public:
 		StringChunk l(line);
 		l.trim("\n\r \t");
 
-		constraints.setCapacity(constraints.capacity+1);
-		constraints.add(l);
+		fields.setCapacity(fields.capacity+1);
+		fields.add(l);
 	}
 
 	void parseDeclaration(const StringChunk & line)
@@ -249,8 +236,27 @@ public:
 		lastTag << "@ForEach" << what << "Last@";
 		endTag << "@ForEach" << what << "End@";
 
+		unsigned lastIdx = 0;
+		unsigned endIdx = 0;
+		unsigned i = 0;
+		while(i < fields.length){
+			const auto& field = fields[i];
+			if((what == "Field" && !field.name.length)
+					|| (what == "KeyField" && !field.key)
+					|| (what == "NonKeyField" && field.key)
+					|| (what == "Constraint" && field.name.length)){
+				i++;
+				continue;
+			}
+			lastIdx = endIdx;
+			endIdx = i;
+			i++;
+			//LOG("Field name: %.*s", (int)field.name.length, field.name.str);
+		}
+		LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+
 		unint pos = 0;
-		if(fields.length == 1){
+		if(endIdx == 0){
 			unint pos_e = 0;
 			if(!tpl.findFirst(pos_e, endTag.str))
 				throw ParseError("Missing ForEach End tag.");
@@ -266,38 +272,21 @@ public:
 		unint tplLineNoBegin = tplLineNo;
 		unint tplLastLineStartPosBegin = tplLastLineStartPos;
 
-		unsigned lastIdx = 0;
-		unsigned endIdx = 0;
-		unsigned i = 0;
-		while(i < fields.length){
-			const auto& field = fields[i];
-			if((what == "KeyField" && !field.key)
-					|| (what == "NonKeyField" && field.key)
-					|| (what == "Constraint" && field.name.length)){
-				i++;
-				continue;
-			}
-			lastIdx = endIdx;
-			endIdx = i;
-			i++;
-			LOG("Field name: %.*s", (int)field.name.length, field.name.str);
-		}
-		LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
-
 		i = 0;
 		unsigned idx = 0;
 		while(i < fields.length && block.length){
 			const auto& field = fields[i];
 
-			LOG("-Field name: %.*s", (int)field.name.length, field.name.str);
-			LOG("-i: %d, lastIdx: %u, endIdx: %u", i, lastIdx, endIdx);
-
-			if((what == "KeyField" && !field.key)
+			if((what == "Field" && !field.name.length)
+					|| (what == "KeyField" && !field.key)
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
 				continue;
 			}
+
+			//LOG("-Field name: %.*s", (int)field.name.length, field.name.str);
+			//LOG("-i: %d, lastIdx: %u, endIdx: %u", i, lastIdx, endIdx);
 
 			// until a '@' character just append anything to the code
 			const char * iter = block.str;
@@ -318,28 +307,28 @@ public:
 					block = tpl;
 					i++;
 					idx++;
-					LOG("lastIdx");
+					//LOG("lastIdx");
 				} else {
 					block = tpl;
 					tplLineNo = tplLineNoBegin;
 					tplLastLineStartPos = tplLastLineStartPosBegin;
 					i++;
 					idx++;
-					LOG("last next");
+					//LOG("last next");
 				}
 			} else if(block.chopFront(endTag.str)){
 				if(i == endIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
 					block.clear();
-					LOG("endIdx");
+					//LOG("endIdx");
 				} else {
 					block = tpl;
 					tplLineNo = tplLineNoBegin;
 					tplLastLineStartPos = tplLastLineStartPosBegin;
 					i++;
 					idx++;
-					LOG("end next");
+					//LOG("end next");
 				}
 			} else if(block.chopFront("@FieldType@")) {
 				code << field.type;
@@ -385,7 +374,18 @@ public:
 				parseForEach("Constraint", declaration.fields);
 			else if(tpl.chopFront("@IfSingleKeyBegin@")){
 				unint pos;
-				if(declaration.keyFields.length != 1)
+				unsigned c = 0;
+				for(auto& field : declaration.fields){
+					if(field.key){
+						c++;
+					LOG("%.*s key: %su", declaration.typeName.length,
+						declaration.typeName.str,
+						field.name.length, field.name.str);
+					}
+				}
+				LOG("%.*s keys: %u", declaration.typeName.length,
+						declaration.typeName.str, c);
+				if(c != 1)
 					if(tpl.findFirst(pos, "@IfSingleKeyEnd@"))
 						tpl.chopFront(pos);
 			} else if(tpl.chopFront("@IfSingleKeyEnd@"))
