@@ -39,8 +39,8 @@
 		Text name; key			; TEXT
 		Text unit;				; TEXT
 		Text icon;				; TEXT
-		WareTypeSet types; set	; WHERE WareType.ware = 'name'
-		WareTagSet tags; set	; WHERE WareTag.ware = 'name'
+		WareTypeSet types; set	; WHERE WareType.ware = ?
+		WareTagSet tags; set	; WHERE WareTag.ware = ?
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -59,6 +59,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (ware, tag)
+		FOREIGN KEY ware REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY tag REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 

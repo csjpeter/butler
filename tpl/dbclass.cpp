@@ -1,5 +1,8 @@
-@Type@Db::@Type@Db(SqlConnection & sql) :
-	sql(sql)
+@Type@Db::@Type@Db(SqlConnection & sql) : sql(sql) {}
+
+@Type@Db::~@Type@Db() {}
+
+void @Type@Db::tableInit(SqlConnection & sql)
 {
 	SqlColumns cols;
 	const SqlTableNames & tables = sql.tables();
@@ -29,20 +32,23 @@
 			"Incompatible table @Type@s in the openend database.");
 }
 
-@Type@Db::~@Type@Db()
-{
-}
-
 void @Type@Db::insert(const @Type@ & obj)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO @Type@s (@ForEachTableFieldBegin@@FieldName@, @ForEachTableFieldLast@@FieldName@@ForEachTableFieldEnd@ ) VALUES (@ForEachTableFieldBegin@?, @ForEachTableFieldLast@?@ForEachTableFieldEnd@)");
+	sqlQuery.prepare("INSERT INTO @Type@s (@TableFieldList@) VALUES ("
+			"@ForEachTableFieldBegin@?, @ForEachTableFieldLast@?@ForEachTableFieldEnd@)");
 @ForEachTableFieldBegin@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
 @ForEachTableFieldEnd@
 	sqlQuery.exec();
+
+@ForEachSetFieldBegin@
+	@FieldSetSubType@Db db@FieldSetSubType@(sql);
+	for(auto& item : obj.@FieldName@)
+		db@FieldSetSubType@.insert(item);
+@ForEachSetFieldEnd@
 
 	tr.commit();
 }
@@ -60,6 +66,20 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	sqlQuery.bindValue(@NumOfTableFields@+@FieldIdx@, orig.@FieldName@);
 @ForEachKeyFieldEnd@
 	sqlQuery.exec();
+
+@ForEachSetFieldBegin@
+	@FieldSetSubType@Db db@FieldSetSubType@(sql);
+	for(auto& item : modified.@FieldName@){
+		if(orig.@FieldName@.has(item))
+			continue;
+		db@FieldSetSubType@.insert(item);
+	}
+	for(auto& item : orig.@FieldName@){
+		if(modified.@FieldName@.has(item))
+			continue;
+		db@FieldSetSubType@.del(item);
+	}
+@ForEachSetFieldEnd@
 
 	tr.commit();
 }
@@ -83,7 +103,7 @@ void @Type@Db::query(@Type@Set & list)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("SELECT @ForEachTableFieldBegin@@FieldName@, @ForEachTableFieldLast@@FieldName@@ForEachTableFieldEnd@ FROM @Type@s");
+	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@");
 	sqlQuery.exec();
 
 	list.clear();
@@ -104,4 +124,11 @@ void @Type@Db::query(@Type@Set & list)
 	DBG("-----");
 
 	tr.commit();
+
+/*
+@ForEachSetFieldBegin@
+	@FieldSetSubType@Db db@FieldSetSubType@(sql);
+	db@FieldSetSubType@.query(record->@FieldName@, @FieldSqlDecl@);
+@ForEachSetFieldEnd@
+*/
 }

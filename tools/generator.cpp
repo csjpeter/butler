@@ -37,10 +37,15 @@ public:
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
+		if(set){
+			setSubType.assign(type);
+			setSubType.chopBack(3);
+		}
 	}
 
 	String name;
 	String type;
+	String setSubType;
 	String enumName;
 	String sqlDecl;
 	String comment;
@@ -223,6 +228,17 @@ public:
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
 			code << declaration.typeName;
+		} else if(tpl.chopFront("@TableFieldList@")) {
+			tpl.trimFront("\n\r");
+			String fieldList;
+			for(auto& field : declaration.fields){
+				if(field.set || !field.name.length)
+					continue;
+				if(fieldList.length)
+					fieldList << ", ";
+				fieldList << field.name;
+			}
+			code << fieldList;
 		} else if(tpl.length) {
 			code << tpl[0];
 			tpl.chopFront(1);
@@ -246,6 +262,7 @@ public:
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
+					|| (what == "SetField" && !field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
 				continue;
@@ -257,6 +274,13 @@ public:
 			//LOG("Field name: %.*s", (int)field.name.length, field.name.str);
 		}
 		//LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+
+		if(!numOfFields){
+			unint pos;
+			if(tpl.findFirst(pos, endTag.str, endTag.length))
+				tpl.chopFront(pos + endTag.length);
+			return;
+		}
 
 		i = 0;
 		unsigned numOfTableFields = 0;
@@ -295,6 +319,7 @@ public:
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
+					|| (what == "SetField" && !field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
 				continue;
@@ -351,6 +376,8 @@ public:
 				code << numOfTableFields;
 			} else if(block.chopFront("@FieldType@")) {
 				code << field.type;
+			} else if(block.chopFront("@FieldSetSubType@")) {
+				code << field.setSubType;
 			} else if(block.chopFront("@FieldIdx@")){
 				code << idx;
 			} else if(block.chopFront("@FieldName@")){
@@ -387,6 +414,8 @@ public:
 				parseForEach("Field", declaration.fields);
 			else if(tpl.chopFront("@ForEachTableFieldBegin@"))
 				parseForEach("TableField", declaration.fields);
+			else if(tpl.chopFront("@ForEachSetFieldBegin@"))
+				parseForEach("SetField", declaration.fields);
 			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
 				parseForEach("KeyField", declaration.fields);
 			else if(tpl.chopFront("@ForEachNonKeyFieldBegin@"))

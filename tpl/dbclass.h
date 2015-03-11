@@ -1,8 +1,8 @@
-class @Type@Db
-{
 public:
 	@Type@Db(SqlConnection & sql);
 	virtual ~@Type@Db();
+	static void tableInit(SqlConnection & sql);
+
 private:
 	@Type@Db();
 
@@ -14,4 +14,3 @@ public:
 
 private:
 	SqlConnection & sql;
-};
