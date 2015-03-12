@@ -15,16 +15,16 @@ public:
 		bool ret;
 
 		switch(ordering[0]) {
-@ForEach{Field@
+@For{Field@
 			case @Type@::@FieldEnumName@ :
 				ret = a.@FieldName@ < b.@FieldName@;
 				break;
 @}@
 			default:
 				ret =
-@ForEach{KeyField@
+@For{KeyField@
 					a.@FieldName@ < b.@FieldName@ &&
-@ForLastKeyField@
+@Last@
 					a.@FieldName@ < b.@FieldName@;
 @}@
 				break;
@@ -41,7 +41,7 @@ public:
 		csjp::SorterOwnerContainer<@Type@>(),
 		ascending(true)
 	{
-@ForEach{Field@
+@For{Field@
 		ordering.add(@Type@::@FieldEnumName@);
 @}@
 	}
@@ -49,7 +49,7 @@ public:
 		csjp::SorterOwnerContainer<@Type@>(ts),
 		ascending(true)
 	{
-@ForEach{Field@
+@For{Field@
 		ordering.add(@Type@::@FieldEnumName@);
 @}@
 	}

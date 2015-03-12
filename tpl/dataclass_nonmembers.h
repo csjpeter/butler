@@ -15,7 +15,7 @@ inline bool operator<(const @Type@ & a, const @Type@ & b)
 
 @IfSingleKey{@
 inline bool operator<(
-@ForEach{KeyField@
+@For{KeyField@
 		const @FieldType@ & a,
 @}@
 		const @Type@ & b)
@@ -25,7 +25,7 @@ inline bool operator<(
 
 inline bool operator<(
 		const @Type@ & a, 
-@ForEach{KeyField@
+@For{KeyField@
 		const @FieldType@ & b)
 @}@
 {

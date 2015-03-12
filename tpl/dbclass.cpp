@@ -10,9 +10,9 @@ void @Type@Db::tableInit(SqlConnection & sql)
 	if(tables.has("@Type@s")){
 		cols = sql.columns("@Type@s");
 		if(
-@ForEach{TableField@
+@For{TableField@
 				!cols.has("@FieldName@") ||
-@ForLastTableField@
+@Last@
 				!cols.has("@FieldName@"))
 @}@
 			throw DbIncompatibleTableError(
@@ -21,12 +21,12 @@ void @Type@Db::tableInit(SqlConnection & sql)
 	}
 
 	sql.exec("CREATE TABLE @Type@s ("
-@ForEach{TableField@
+@For{TableField@
 		"@FieldSqlDecl@, "
-@ForLastTableField@
+@Last@
 		"@FieldSqlDecl@"
 @}@
-@ForEach{Constraint@
+@For{Constraint@
 		", @Constraint@"
 @}@
 		")");
@@ -39,13 +39,13 @@ void @Type@Db::insert(const @Type@ & obj)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO @Type@s (@TableFieldList@) VALUES ("
-			"@ForEach{TableField@?, @ForLastTableField@?@}@)");
-@ForEach{TableField@
+			"@For{TableField@?, @Last@?@}@)");
+@For{TableField@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
 @}@
 	sqlQuery.exec();
 
-@ForEach{SetField@
+@For{SetField@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
 	for(auto& item : obj.@FieldName@)
 		db@FieldSetSubType@.insert(item);
@@ -59,16 +59,16 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("UPDATE @Type@s SET @ForEach{TableField@@FieldName@ = ?, @ForLastTableField@@FieldName@ = ?@}@ WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@}@");
-@ForEach{TableField@
+	sqlQuery.prepare("UPDATE @Type@s SET @For{TableField@@FieldName@ = ?, @Last@@FieldName@ = ?@}@ WHERE @For{KeyField@@FieldName@ = ? AND @Last@@FieldName@ = ?@}@");
+@For{TableField@
 	sqlQuery.bindValue(@FieldIdx@, modified.@FieldName@);
 @}@
-@ForEach{KeyField@
+@For{KeyField@
 	sqlQuery.bindValue(@NumOfTableFields@+@FieldIdx@, orig.@FieldName@);
 @}@
 	sqlQuery.exec();
 
-@ForEach{SetField@
+@For{SetField@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
 	for(auto& item : modified.@FieldName@){
 		if(orig.@FieldName@.has(item))
@@ -90,8 +90,8 @@ void @Type@Db::del(const @Type@ & obj)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM @Type@s WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@}@");
-@ForEach{KeyField@
+	sqlQuery.prepare("DELETE FROM @Type@s WHERE @For{KeyField@@FieldName@ = ? AND @Last@@FieldName@ = ?@}@");
+@For{KeyField@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
 @}@
 	sqlQuery.exec();
@@ -99,24 +99,24 @@ void @Type@Db::del(const @Type@ & obj)
 	tr.commit();
 }
 
-void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@FieldName@@}@)
+void @Type@Db::query(@Type@Set & list@For{LinkField@, const @FieldType@ & _@FieldName@@}@)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@"
 @IfHasLinkField{@
-			" WHERE @ForEach{LinkField@@FieldName@ = ?, @ForLastLinkField@@FieldName@ = ?@}@"
+			" WHERE @For{LinkField@@FieldName@ = ?, @Last@@FieldName@ = ?@}@"
 @IfHasLinkField}@
 			);
-@ForEach{LinkField@
+@For{LinkField@
 	sqlQuery.bindValue(@FieldIdx@, _@FieldName@);
 @}@
 	sqlQuery.exec();
 
 	list.clear();
 
-@ForEach{TableField@
+@For{TableField@
 	int @FieldName@No = sqlQuery.colIndex("@FieldName@");
 @}@
 
@@ -124,7 +124,7 @@ void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		@Type@ *record = new @Type@();
-@ForEach{TableField@
+@For{TableField@
 	record->@FieldName@ <<= sqlQuery.sqlValue(@FieldName@No);
 @}@
 		list.add(record);
@@ -133,9 +133,9 @@ void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@
 
 	tr.commit();
 
-@ForEach{SetField@
+@For{SetField@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
 	for(auto& item : list)
-		db@FieldSetSubType@.query(item.@FieldName@@ForEach{KeyField@, item.@FieldName@@}@);
+		db@FieldSetSubType@.query(item.@FieldName@@For{KeyField@, item.@FieldName@@}@);
 @}@
 }

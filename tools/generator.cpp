@@ -268,19 +268,19 @@ public:
 		const Array<FieldDesc> & fields = declaration.fields;
 		const char * what = 0;
 
-		if(tpl.chopFront("@ForEach{Field@"))
+		if(tpl.chopFront("@For{Field@"))
 			what = "Field";
-		else if(tpl.chopFront("@ForEach{TableField@"))
+		else if(tpl.chopFront("@For{TableField@"))
 			what = "TableField";
-		else if(tpl.chopFront("@ForEach{LinkField@"))
+		else if(tpl.chopFront("@For{LinkField@"))
 			what = "LinkField";
-		else if(tpl.chopFront("@ForEach{SetField@"))
+		else if(tpl.chopFront("@For{SetField@"))
 			what = "SetField";
-		else if(tpl.chopFront("@ForEach{KeyField@"))
+		else if(tpl.chopFront("@For{KeyField@"))
 			what = "KeyField";
-		else if(tpl.chopFront("@ForEach{NonKeyField@"))
+		else if(tpl.chopFront("@For{NonKeyField@"))
 			what = "NonKeyField";
-		else if(tpl.chopFront("@ForEach{Constraint@"))
+		else if(tpl.chopFront("@For{Constraint@"))
 			what = "Constraint";
 		else
 			return false;
@@ -288,9 +288,7 @@ public:
 		//LOG("what: %s", what);
 
 		String lastTag, endTag;
-		//lastTag << "@ForLast" << what << "@";
-		//endTag << "@ForEach" << what << "}@";
-		lastTag << "@ForLast" << what << "@";
+		lastTag << "@Last@";
 		endTag << "@}@";
 
 		unsigned lastIdx = 0;
@@ -325,7 +323,7 @@ public:
 			while(true){
 				posBegin = tpl.length + 2;
 				posEnd = tpl.length + 1;
-				tpl.findFirst(posBegin, "@ForEach{");
+				tpl.findFirst(posBegin, "@For{");
 				tpl.findFirst(posEnd, endTag.str);
 				if(posBegin < posEnd){
 					tpl.chopFront(posBegin);
@@ -360,7 +358,7 @@ public:
 				posBegin = tpl.length + 2;
 				posLast = tpl.length + 1;
 				posEnd = tpl.length;
-				tpl.findFirst(posBegin, "@ForEach{");
+				tpl.findFirst(posBegin, "@For{");
 				tpl.findFirst(posLast, lastTag.str);
 				tpl.findFirst(posEnd, endTag.str);
 				if(posBegin < posLast && posBegin < posEnd){
@@ -415,7 +413,7 @@ public:
 			code.append(block.str, iter - block.str);
 			block.chopFront(iter - block.str);
 
-			if(block.startsWith("@ForEach{")){
+			if(block.startsWith("@For{")){
 				//LOG("into it ...");
 				if(parseForEach(block)){
 					//LOG("out from it ...");
