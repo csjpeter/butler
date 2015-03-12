@@ -2,12 +2,12 @@ public:
 
 @ForEach{Field@
 	@FieldType@ @FieldName@;@FieldComment@
-@ForEachField}@
+@}@
 
 	enum Fields {
 @ForEach{Field@
 		@FieldEnumName@,
-@ForEachField}@
+@}@
 		NumOfFields
 	};
 
@@ -19,12 +19,12 @@ public:
 			const @FieldType@ & @FieldName@,
 @ForLastKeyField@
 			const @FieldType@ & @FieldName@ ) :
-@ForEachKeyField}@
+@}@
 @ForEach{KeyField@
 		@FieldName@(@FieldName@),
 @ForLastKeyField@
 		@FieldName@(@FieldName@)
-@ForEachKeyField}@
+@}@
 	{}
 
 	explicit @Type@(const @Type@ & orig) :
@@ -32,7 +32,7 @@ public:
 		@FieldName@(orig.@FieldName@),
 @ForLastField@
 		@FieldName@(orig.@FieldName@)
-@ForEachField}@
+@}@
 	{}
 
 	@Type@(@Type@ && temp) :
@@ -40,7 +40,7 @@ public:
 		@FieldName@(csjp::move_cast(temp.@FieldName@)),
 @ForLastField@
 		@FieldName@(csjp::move_cast(temp.@FieldName@))
-@ForEachField}@
+@}@
 	{}
 
 	~@Type@() {}
@@ -49,7 +49,7 @@ public:
 	{
 @ForEach{Field@
 		@FieldName@ = csjp::move_cast(temp.@FieldName@);
-@ForEachField}@
+@}@
 		return *this;
 	}
 
@@ -67,7 +67,7 @@ public:
 				@FieldName@ != other.@FieldName@ ||
 @ForLastField@
 				@FieldName@ != other.@FieldName@
-@ForEachField}@
+@}@
 			)
 			return false;
 		return true;
@@ -80,7 +80,7 @@ public:
 			@FieldName@ < other.@FieldName@ &&
 @ForLastKeyField@
 			@FieldName@ < other.@FieldName@;
-@ForEachKeyField}@
+@}@
 	}
 
 	bool isMore(const @Type@ & other) const
@@ -90,7 +90,7 @@ public:
 			other.@FieldName@ < @FieldName@ &&
 @ForLastKeyField@
 			other.@FieldName@ < @FieldName@;
-@ForEachKeyField}@
+@}@
 	}
 
 	bool isLess(
@@ -98,14 +98,14 @@ public:
 			const @FieldType@ & other@FieldName@,
 @ForLastKeyField@
 			const @FieldType@ & other@FieldName@) const
-@ForEachKeyField}@
+@}@
 	{
 		return
 @ForEach{KeyField@
 			@FieldName@ < other@FieldName@ &&
 @ForLastKeyField@
 			@FieldName@ < other@FieldName@;
-@ForEachKeyField}@
+@}@
 	}
 
 	bool isMore(
@@ -113,13 +113,13 @@ public:
 			const @FieldType@ & other@FieldName@,
 @ForLastKeyField@
 			const @FieldType@ & other@FieldName@) const
-@ForEachKeyField}@
+@}@
 	{
 		return
 @ForEach{KeyField@
 			other@FieldName@ < @FieldName@ &&
 @ForLastKeyField@
 			other@FieldName@ < @FieldName@;
-@ForEachKeyField}@
+@}@
 	}
 

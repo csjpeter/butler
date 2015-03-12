@@ -14,7 +14,7 @@ void @Type@Db::tableInit(SqlConnection & sql)
 				!cols.has("@FieldName@") ||
 @ForLastTableField@
 				!cols.has("@FieldName@"))
-@ForEachTableField}@
+@}@
 			throw DbIncompatibleTableError(
 				"Incompatible table @Type@s in the openend database.");
 		return;
@@ -25,10 +25,10 @@ void @Type@Db::tableInit(SqlConnection & sql)
 		"@FieldSqlDecl@, "
 @ForLastTableField@
 		"@FieldSqlDecl@"
-@ForEachTableField}@
+@}@
 @ForEach{Constraint@
 		", @Constraint@"
-@ForEachConstraint}@
+@}@
 		")");
 
 }
@@ -39,17 +39,17 @@ void @Type@Db::insert(const @Type@ & obj)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO @Type@s (@TableFieldList@) VALUES ("
-			"@ForEach{TableField@?, @ForLastTableField@?@ForEachTableField}@)");
+			"@ForEach{TableField@?, @ForLastTableField@?@}@)");
 @ForEach{TableField@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
-@ForEachTableField}@
+@}@
 	sqlQuery.exec();
 
 @ForEach{SetField@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
 	for(auto& item : obj.@FieldName@)
 		db@FieldSetSubType@.insert(item);
-@ForEachSetField}@
+@}@
 
 	tr.commit();
 }
@@ -59,13 +59,13 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("UPDATE @Type@s SET @ForEach{TableField@@FieldName@ = ?, @ForLastTableField@@FieldName@ = ?@ForEachTableField}@ WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@ForEachKeyField}@");
+	sqlQuery.prepare("UPDATE @Type@s SET @ForEach{TableField@@FieldName@ = ?, @ForLastTableField@@FieldName@ = ?@}@ WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@}@");
 @ForEach{TableField@
 	sqlQuery.bindValue(@FieldIdx@, modified.@FieldName@);
-@ForEachTableField}@
+@}@
 @ForEach{KeyField@
 	sqlQuery.bindValue(@NumOfTableFields@+@FieldIdx@, orig.@FieldName@);
-@ForEachKeyField}@
+@}@
 	sqlQuery.exec();
 
 @ForEach{SetField@
@@ -80,7 +80,7 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 			continue;
 		db@FieldSetSubType@.del(item);
 	}
-@ForEachSetField}@
+@}@
 
 	tr.commit();
 }
@@ -90,35 +90,35 @@ void @Type@Db::del(const @Type@ & obj)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM @Type@s WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@ForEachKeyField}@");
+	sqlQuery.prepare("DELETE FROM @Type@s WHERE @ForEach{KeyField@@FieldName@ = ? AND @ForLastKeyField@@FieldName@ = ?@}@");
 @ForEach{KeyField@
 	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
-@ForEachKeyField}@
+@}@
 	sqlQuery.exec();
 
 	tr.commit();
 }
 
-void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@FieldName@@ForEachLinkField}@)
+void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@FieldName@@}@)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@"
 @IfHasLinkField{@
-			" WHERE @ForEach{LinkField@@FieldName@ = ?, @ForLastLinkField@@FieldName@ = ?@ForEachLinkField}@"
+			" WHERE @ForEach{LinkField@@FieldName@ = ?, @ForLastLinkField@@FieldName@ = ?@}@"
 @IfHasLinkField}@
 			);
 @ForEach{LinkField@
 	sqlQuery.bindValue(@FieldIdx@, _@FieldName@);
-@ForEachLinkField}@
+@}@
 	sqlQuery.exec();
 
 	list.clear();
 
 @ForEach{TableField@
 	int @FieldName@No = sqlQuery.colIndex("@FieldName@");
-@ForEachTableField}@
+@}@
 
 	DBG("----- Reading all @Type@s from db:");
 	while (sqlQuery.next()) {
@@ -126,7 +126,7 @@ void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@
 		@Type@ *record = new @Type@();
 @ForEach{TableField@
 	record->@FieldName@ <<= sqlQuery.sqlValue(@FieldName@No);
-@ForEachTableField}@
+@}@
 		list.add(record);
 	}
 	DBG("-----");
@@ -136,6 +136,6 @@ void @Type@Db::query(@Type@Set & list@ForEach{LinkField@, const @FieldType@ & _@
 @ForEach{SetField@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
 	for(auto& item : list)
-		db@FieldSetSubType@.query(item.@FieldName@@ForEach{KeyField@, item.@FieldName@@ForEachKeyField}@);
-@ForEachSetField}@
+		db@FieldSetSubType@.query(item.@FieldName@@ForEach{KeyField@, item.@FieldName@@}@);
+@}@
 }

@@ -19,14 +19,14 @@ public:
 			case @Type@::@FieldEnumName@ :
 				ret = a.@FieldName@ < b.@FieldName@;
 				break;
-@ForEachField}@
+@}@
 			default:
 				ret =
 @ForEach{KeyField@
 					a.@FieldName@ < b.@FieldName@ &&
 @ForLastKeyField@
 					a.@FieldName@ < b.@FieldName@;
-@ForEachKeyField}@
+@}@
 				break;
 		}
 
@@ -43,7 +43,7 @@ public:
 	{
 @ForEach{Field@
 		ordering.add(@Type@::@FieldEnumName@);
-@ForEachField}@
+@}@
 	}
 	@Type@Set(const @Type@Set & ts) :
 		csjp::SorterOwnerContainer<@Type@>(ts),
@@ -51,7 +51,7 @@ public:
 	{
 @ForEach{Field@
 		ordering.add(@Type@::@FieldEnumName@);
-@ForEachField}@
+@}@
 	}
 	~@Type@Set() {}
 };

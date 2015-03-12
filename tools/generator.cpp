@@ -285,11 +285,13 @@ public:
 		else
 			return false;
 		tpl.trimFront("\n\r");
-		LOG("what: %s", what);
+		//LOG("what: %s", what);
 
 		String lastTag, endTag;
+		//lastTag << "@ForLast" << what << "@";
+		//endTag << "@ForEach" << what << "}@";
 		lastTag << "@ForLast" << what << "@";
-		endTag << "@ForEach" << what << "}@";
+		endTag << "@}@";
 
 		unsigned lastIdx = 0;
 		unsigned endIdx = 0;
@@ -327,9 +329,9 @@ public:
 				tpl.findFirst(posEnd, endTag.str);
 				if(posBegin < posEnd){
 					tpl.chopFront(posBegin);
-					LOG("into it 0");
+					//LOG("into it 0");
 					parseForEach(tpl, true);
-					LOG("out from it 0");
+					//LOG("out from it 0");
 					continue;
 				}
 				if(posEnd != tpl.length + 1)
@@ -363,9 +365,9 @@ public:
 				tpl.findFirst(posEnd, endTag.str);
 				if(posBegin < posLast && posBegin < posEnd){
 					tpl.chopFront(posBegin);
-					LOG("into it 1");
+					//LOG("into it 1");
 					parseForEach(tpl);
-					LOG("out from it 1");
+					//LOG("out from it 1");
 					continue;
 				}
 				if(posLast < posEnd)
@@ -414,9 +416,9 @@ public:
 			block.chopFront(iter - block.str);
 
 			if(block.startsWith("@ForEach{")){
-				LOG("into it ...");
+				//LOG("into it ...");
 				if(parseForEach(block)){
-					LOG("out from it ...");
+					//LOG("out from it ...");
 					continue;
 				}
 			} else if(block.chopFront(lastTag.str)){
