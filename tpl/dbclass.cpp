@@ -98,12 +98,13 @@ void @Type@Db::del(const @Type@ & obj)
 	tr.commit();
 }
 
-void @Type@Db::query(@Type@Set & list)
+void @Type@Db::query(@Type@Set & list@ForEachLinkFieldBegin@, const @FieldType@ & @FieldName@@ForEachLinkFieldEnd@)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@");
+	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@"
+			" WHERE @ForEachLinkFieldBegin@@FieldName@ = ?, @ForEachLinkFieldEnd@);
 	sqlQuery.exec();
 
 	list.clear();
@@ -125,10 +126,10 @@ void @Type@Db::query(@Type@Set & list)
 
 	tr.commit();
 
-/*
+
 @ForEachSetFieldBegin@
 	@FieldSetSubType@Db db@FieldSetSubType@(sql);
-	db@FieldSetSubType@.query(record->@FieldName@, @FieldSqlDecl@);
+	db@FieldSetSubType@.query(record->@FieldName@, @KeyFieldList@);
 @ForEachSetFieldEnd@
-*/
+
 }

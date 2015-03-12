@@ -21,7 +21,7 @@ class WareTypeDb
 {
 @include@ dbclass.h
 
-/*	void query(@Type@Set & list, const String & wareName){
+	void query(@Type@Set & list, const String & wareName){
 		SqlQuery sqlQuery(sql);
 		SqlTransaction tr(sql);
 
@@ -31,7 +31,7 @@ class WareTypeDb
 		@include@ dbclass_querybase.cpp
 
 		tr.commit();
-	}*/
+	}
 };
 
 @declare@ WareTag

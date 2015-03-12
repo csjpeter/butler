@@ -52,7 +52,7 @@
 /*@BeginDecl@
 	Class WareTag
 	Fields {
-		Text ware; key			; TEXT
+		Text ware; key,link		; TEXT
 		Text tag; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
@@ -67,7 +67,7 @@
 /*@BeginDecl@
 	Class WareType
 	Fields {
-		Text ware; key			; TEXT
+		Text ware; key,link		; TEXT
 		Text name; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'

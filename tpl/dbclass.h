@@ -10,7 +10,7 @@ public:
 	void insert(const @Type@ &);
 	void update(const @Type@ & orig, const @Type@ & modified);
 	void del(const @Type@ &);
-	void query(@Type@Set &);
+	void query(@Type@Set &@ForEachLinkFieldBegin@, const @FieldType@ & @FieldName@@ForEachLinkFieldEnd@);
 
 private:
 	SqlConnection & sql;

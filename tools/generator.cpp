@@ -20,20 +20,22 @@ public:
 	FieldDesc(const StringChunk & constraint) :
 		constraint(constraint),
 		key(false),
-		set(false)
+		set(false),
+		link(false)
 	{
 	}
 
 	FieldDesc(const StringChunk & name, const StringChunk & type,
 			const StringChunk & sqlDecl, const StringChunk & comment,
-			bool key, bool set) :
+			bool key, bool set, bool link) :
 		name(name),
 		type(type),
 		enumName(name),
 		sqlDecl(sqlDecl),
 		comment(comment),
 		key(key),
-		set(set)
+		set(set),
+		link(link)
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
@@ -52,6 +54,7 @@ public:
 	String constraint;
 	bool key;
 	bool set;
+	bool link;
 };
 
 bool operator<(const FieldDesc & a, const FieldDesc & b)
@@ -113,11 +116,13 @@ public:
 
 		bool key = false;
 		bool set = false;
+		bool link = false;
 		if(1 < words.length){
 			auto modifiers = words[1].split(",");
 			for(auto& mod : modifiers) mod.trim(" \t");
 			key = modifiers.has("key");
 			set = modifiers.has("set");
+			link = modifiers.has("link");
 		}
 
 		StringChunk sql;
@@ -125,7 +130,7 @@ public:
 			sql = words[2];
 
 		fields.setCapacity(fields.capacity+1);
-		fields.add(name, type, sql, comment, key, set);
+		fields.add(name, type, sql, comment, key, set, link);
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -239,6 +244,17 @@ public:
 				fieldList << field.name;
 			}
 			code << fieldList;
+		} else if(tpl.chopFront("@KeyFieldList@")) {
+			tpl.trimFront("\n\r");
+			String fieldList;
+			for(auto& field : declaration.fields){
+				if(!field.key || !field.name.length)
+					continue;
+				if(fieldList.length)
+					fieldList << ", ";
+				fieldList << field.name;
+			}
+			code << fieldList;
 		} else if(tpl.length) {
 			code << tpl[0];
 			tpl.chopFront(1);
@@ -259,6 +275,7 @@ public:
 			const auto& field = fields[i];
 			if((what == "Field" && !field.name.length)
 					|| (what == "KeyField" && !field.key)
+					|| (what == "LinkField" && !field.link)
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
@@ -316,6 +333,7 @@ public:
 
 			if((what == "Field" && !field.name.length)
 					|| (what == "KeyField" && !field.key)
+					|| (what == "LinkField" && !field.link)
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
@@ -414,6 +432,8 @@ public:
 				parseForEach("Field", declaration.fields);
 			else if(tpl.chopFront("@ForEachTableFieldBegin@"))
 				parseForEach("TableField", declaration.fields);
+			else if(tpl.chopFront("@ForEachLinkFieldBegin@"))
+				parseForEach("LinkField", declaration.fields);
 			else if(tpl.chopFront("@ForEachSetFieldBegin@"))
 				parseForEach("SetField", declaration.fields);
 			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
