@@ -20,18 +20,6 @@ class TagDb
 class WareTypeDb
 {
 @include@ dbclass.h
-
-	void query(@Type@Set & list, const String & wareName){
-		SqlQuery sqlQuery(sql);
-		SqlTransaction tr(sql);
-
-		sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@ WHERE ware = ?");
-		sqlQuery.bindValue(0, wareName);
-
-		@include@ dbclass_querybase.cpp
-
-		tr.commit();
-	}
 };
 
 @declare@ WareTag

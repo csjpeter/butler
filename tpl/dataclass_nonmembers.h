@@ -13,11 +13,11 @@ inline bool operator<(const @Type@ & a, const @Type@ & b)
 	return a.isLess(b);
 }
 
-@IfSingleKeyBegin@
+@IfSingleKey{@
 inline bool operator<(
-@ForEachKeyFieldBegin@
+@ForEach{KeyField@
 		const @FieldType@ & a,
-@ForEachKeyFieldEnd@
+@ForEachKeyField}@
 		const @Type@ & b)
 {
 	return b.isMore(a);
@@ -25,10 +25,10 @@ inline bool operator<(
 
 inline bool operator<(
 		const @Type@ & a, 
-@ForEachKeyFieldBegin@
+@ForEach{KeyField@
 		const @FieldType@ & b)
-@ForEachKeyFieldEnd@
+@ForEachKeyField}@
 {
 	return a.isLess(b);
 }
-@IfSingleKeyEnd@
+@IfSingleKey}@

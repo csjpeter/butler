@@ -2,17 +2,17 @@
 
 	list.clear();
 
-@ForEachTableFieldBegin@
+@ForEachTableField@
 	int @FieldName@No = sqlQuery.colIndex("@FieldName@");
-@ForEachTableFieldEnd@
+@ForEachTableField}@
 
 	DBG("----- Reading all @Type@s from db:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		@Type@ *record = new @Type@();
-@ForEachTableFieldBegin@
+@ForEachTableField@
 	record->@FieldName@ <<= sqlQuery.sqlValue(@FieldName@No);
-@ForEachTableFieldEnd@
+@ForEachTableField}@
 		list.add(record);
 	}
 	DBG("-----");

@@ -256,16 +256,40 @@ public:
 			}
 			code << fieldList;
 		} else if(tpl.length) {
+			if(tpl[0] == '@')
+				LOG("Fail");
 			code << tpl[0];
 			tpl.chopFront(1);
 		}
 	}
 
-	void parseForEach(const char * what, const Array<FieldDesc> & fields)
+	bool parseForEach(StringChunk & tpl, bool skipMode = false)
 	{
+		const Array<FieldDesc> & fields = declaration.fields;
+		const char * what = 0;
+
+		if(tpl.chopFront("@ForEach{Field@"))
+			what = "Field";
+		else if(tpl.chopFront("@ForEach{TableField@"))
+			what = "TableField";
+		else if(tpl.chopFront("@ForEach{LinkField@"))
+			what = "LinkField";
+		else if(tpl.chopFront("@ForEach{SetField@"))
+			what = "SetField";
+		else if(tpl.chopFront("@ForEach{KeyField@"))
+			what = "KeyField";
+		else if(tpl.chopFront("@ForEach{NonKeyField@"))
+			what = "NonKeyField";
+		else if(tpl.chopFront("@ForEach{Constraint@"))
+			what = "Constraint";
+		else
+			return false;
+		tpl.trimFront("\n\r");
+		LOG("what: %s", what);
+
 		String lastTag, endTag;
-		lastTag << "@ForEach" << what << "Last@";
-		endTag << "@ForEach" << what << "End@";
+		lastTag << "@ForLast" << what << "@";
+		endTag << "@ForEach" << what << "}@";
 
 		unsigned lastIdx = 0;
 		unsigned endIdx = 0;
@@ -292,11 +316,27 @@ public:
 		}
 		//LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
 
-		if(!numOfFields){
-			unint pos;
-			if(tpl.findFirst(pos, endTag.str, endTag.length))
-				tpl.chopFront(pos + endTag.length);
-			return;
+		// no fields to iterate on or in skip mode
+		if(!numOfFields || skipMode){
+			unint posBegin;
+			unint posEnd;
+			while(true){
+				posBegin = tpl.length + 2;
+				posEnd = tpl.length + 1;
+				tpl.findFirst(posBegin, "@ForEach{");
+				tpl.findFirst(posEnd, endTag.str);
+				if(posBegin < posEnd){
+					tpl.chopFront(posBegin);
+					LOG("into it 0");
+					parseForEach(tpl, true);
+					LOG("out from it 0");
+					continue;
+				}
+				if(posEnd != tpl.length + 1)
+					tpl.chopFront(posEnd + endTag.length);
+				break;
+			}
+			return true;
 		}
 
 		i = 0;
@@ -309,14 +349,29 @@ public:
 			numOfTableFields++;
 		}
 
-		unint pos = 0;
+		// only one field to iterate on
 		if(endIdx == 0){
-			unint pos_e = 0;
-			if(!tpl.findFirst(pos_e, endTag.str))
-				throw ParseError("Missing ForEach End tag.");
-			if(tpl.findFirst(pos, lastTag.str))
-				if(pos < pos_e)
-					tpl.chopFront(pos + lastTag.length);
+			unint posBegin;
+			unint posLast;
+			unint posEnd;
+			while(true) {
+				posBegin = tpl.length + 2;
+				posLast = tpl.length + 1;
+				posEnd = tpl.length;
+				tpl.findFirst(posBegin, "@ForEach{");
+				tpl.findFirst(posLast, lastTag.str);
+				tpl.findFirst(posEnd, endTag.str);
+				if(posBegin < posLast && posBegin < posEnd){
+					tpl.chopFront(posBegin);
+					LOG("into it 1");
+					parseForEach(tpl);
+					LOG("out from it 1");
+					continue;
+				}
+				if(posLast < posEnd)
+					tpl.chopFront(posLast + lastTag.length);
+				break;
+			}
 		}
 
 		tpl.trimFront("\n\r");
@@ -358,7 +413,13 @@ public:
 			code.append(block.str, iter - block.str);
 			block.chopFront(iter - block.str);
 
-			if(block.chopFront(lastTag.str)){
+			if(block.startsWith("@ForEach{")){
+				LOG("into it ...");
+				if(parseForEach(block)){
+					LOG("out from it ...");
+					continue;
+				}
+			} else if(block.chopFront(lastTag.str)){
 				if(i == lastIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
@@ -412,6 +473,7 @@ public:
 				parseCommonMarker(block);
 			}
 		}
+		return true;
 	}
 
 	void parse()
@@ -428,32 +490,33 @@ public:
 			code.append(tpl.str, iter - tpl.str);
 			tpl.chopFront(iter - tpl.str);
 
-			if(tpl.chopFront("@ForEachFieldBegin@"))
-				parseForEach("Field", declaration.fields);
-			else if(tpl.chopFront("@ForEachTableFieldBegin@"))
-				parseForEach("TableField", declaration.fields);
-			else if(tpl.chopFront("@ForEachLinkFieldBegin@"))
-				parseForEach("LinkField", declaration.fields);
-			else if(tpl.chopFront("@ForEachSetFieldBegin@"))
-				parseForEach("SetField", declaration.fields);
-			else if(tpl.chopFront("@ForEachKeyFieldBegin@"))
-				parseForEach("KeyField", declaration.fields);
-			else if(tpl.chopFront("@ForEachNonKeyFieldBegin@"))
-				parseForEach("NonKeyField", declaration.fields);
-			else if(tpl.chopFront("@ForEachConstraintBegin@"))
-				parseForEach("Constraint", declaration.fields);
-			else if(tpl.chopFront("@IfSingleKeyBegin@")){
+			if(parseForEach(tpl)) {
+				;
+			} else if(tpl.chopFront("@IfSingleKey{@")){
 				unint pos;
 				unsigned c = 0;
 				for(auto& field : declaration.fields)
 					if(field.key)
 						c++;
 				if(c != 1)
-					if(tpl.findFirst(pos, "@IfSingleKeyEnd@"))
+					if(tpl.findFirst(pos, "@IfSingleKey}@"))
 						tpl.chopFront(pos);
-			} else if(tpl.chopFront("@IfSingleKeyEnd@"))
-				;
-			else
+				tpl.trimFront("\n\r");
+			} else if(tpl.chopFront("@IfSingleKey}@")){
+				tpl.trimFront("\n\r");
+			} else if(tpl.chopFront("@IfHasLinkField{@")){
+				unint pos;
+				unsigned c = 0;
+				for(auto& field : declaration.fields)
+					if(field.link)
+						c++;
+				if(c == 0)
+					if(tpl.findFirst(pos, "@IfHasLinkField}@"))
+						tpl.chopFront(pos);
+				tpl.trimFront("\n\r");
+			} else if(tpl.chopFront("@IfHasLinkField}@")){
+				tpl.trimFront("\n\r");
+			} else
 				parseCommonMarker(tpl);
 		}
 	}
