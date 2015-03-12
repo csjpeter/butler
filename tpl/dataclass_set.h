@@ -16,16 +16,16 @@ public:
 
 		switch(ordering[0]) {
 @For{Field@
-			case @Type@::@FieldEnumName@ :
-				ret = a.@FieldName@ < b.@FieldName@;
+			case @Type@::@.EnumName@ :
+				ret = a.@.Name@ < b.@.Name@;
 				break;
 @}@
 			default:
 				ret =
 @For{KeyField@
-					a.@FieldName@ < b.@FieldName@ &&
-@Last@
-					a.@FieldName@ < b.@FieldName@;
+					a.@.Name@ < b.@.Name@ &&
+@-@
+					a.@.Name@ < b.@.Name@;
 @}@
 				break;
 		}
@@ -42,7 +42,7 @@ public:
 		ascending(true)
 	{
 @For{Field@
-		ordering.add(@Type@::@FieldEnumName@);
+		ordering.add(@Type@::@.EnumName@);
 @}@
 	}
 	@Type@Set(const @Type@Set & ts) :
@@ -50,7 +50,7 @@ public:
 		ascending(true)
 	{
 @For{Field@
-		ordering.add(@Type@::@FieldEnumName@);
+		ordering.add(@Type@::@.EnumName@);
 @}@
 	}
 	~@Type@Set() {}

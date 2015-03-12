@@ -11,9 +11,9 @@ void @Type@Db::tableInit(SqlConnection & sql)
 		cols = sql.columns("@Type@s");
 		if(
 @For{TableField@
-				!cols.has("@FieldName@") ||
-@Last@
-				!cols.has("@FieldName@"))
+				!cols.has("@.Name@") ||
+@-@
+				!cols.has("@.Name@"))
 @}@
 			throw DbIncompatibleTableError(
 				"Incompatible table @Type@s in the openend database.");
@@ -22,9 +22,9 @@ void @Type@Db::tableInit(SqlConnection & sql)
 
 	sql.exec("CREATE TABLE @Type@s ("
 @For{TableField@
-		"@FieldSqlDecl@, "
-@Last@
-		"@FieldSqlDecl@"
+		"@.SqlDecl@, "
+@-@
+		"@.SqlDecl@"
 @}@
 @For{Constraint@
 		", @Constraint@"
@@ -39,16 +39,16 @@ void @Type@Db::insert(const @Type@ & obj)
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("INSERT INTO @Type@s (@TableFieldList@) VALUES ("
-			"@For{TableField@?, @Last@?@}@)");
+			"@For{TableField@?, @-@?@}@)");
 @For{TableField@
-	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
+	sqlQuery.bindValue(@.Idx@, obj.@.Name@);
 @}@
 	sqlQuery.exec();
 
 @For{SetField@
-	@FieldSetSubType@Db db@FieldSetSubType@(sql);
-	for(auto& item : obj.@FieldName@)
-		db@FieldSetSubType@.insert(item);
+	@.SetSubType@Db db@.SetSubType@(sql);
+	for(auto& item : obj.@.Name@)
+		db@.SetSubType@.insert(item);
 @}@
 
 	tr.commit();
@@ -59,26 +59,27 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("UPDATE @Type@s SET @For{TableField@@FieldName@ = ?, @Last@@FieldName@ = ?@}@ WHERE @For{KeyField@@FieldName@ = ? AND @Last@@FieldName@ = ?@}@");
+	sqlQuery.prepare("UPDATE @Type@s SET @For{TableField@@.Name@ = ?, @-@@.Name@ = ?@}@ "
+			"WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@");
 @For{TableField@
-	sqlQuery.bindValue(@FieldIdx@, modified.@FieldName@);
+	sqlQuery.bindValue(@.Idx@, modified.@.Name@);
 @}@
 @For{KeyField@
-	sqlQuery.bindValue(@NumOfTableFields@+@FieldIdx@, orig.@FieldName@);
+	sqlQuery.bindValue(@NumOfTableFields@+@.Idx@, orig.@.Name@);
 @}@
 	sqlQuery.exec();
 
 @For{SetField@
-	@FieldSetSubType@Db db@FieldSetSubType@(sql);
-	for(auto& item : modified.@FieldName@){
-		if(orig.@FieldName@.has(item))
+	@.SetSubType@Db db@.SetSubType@(sql);
+	for(auto& item : modified.@.Name@){
+		if(orig.@.Name@.has(item))
 			continue;
-		db@FieldSetSubType@.insert(item);
+		db@.SetSubType@.insert(item);
 	}
-	for(auto& item : orig.@FieldName@){
-		if(modified.@FieldName@.has(item))
+	for(auto& item : orig.@.Name@){
+		if(modified.@.Name@.has(item))
 			continue;
-		db@FieldSetSubType@.del(item);
+		db@.SetSubType@.del(item);
 	}
 @}@
 
@@ -90,34 +91,34 @@ void @Type@Db::del(const @Type@ & obj)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM @Type@s WHERE @For{KeyField@@FieldName@ = ? AND @Last@@FieldName@ = ?@}@");
+	sqlQuery.prepare("DELETE FROM @Type@s WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@");
 @For{KeyField@
-	sqlQuery.bindValue(@FieldIdx@, obj.@FieldName@);
+	sqlQuery.bindValue(@.Idx@, obj.@.Name@);
 @}@
 	sqlQuery.exec();
 
 	tr.commit();
 }
 
-void @Type@Db::query(@Type@Set & list@For{LinkField@, const @FieldType@ & _@FieldName@@}@)
+void @Type@Db::query(@Type@Set & list@For{LinkField@, const @.Type@ & _@.Name@@}@)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
 	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@"
 @IfHasLinkField{@
-			" WHERE @For{LinkField@@FieldName@ = ?, @Last@@FieldName@ = ?@}@"
+			" WHERE @For{LinkField@@.Name@ = ?, @-@@.Name@ = ?@}@"
 @IfHasLinkField}@
 			);
 @For{LinkField@
-	sqlQuery.bindValue(@FieldIdx@, _@FieldName@);
+	sqlQuery.bindValue(@.Idx@, _@.Name@);
 @}@
 	sqlQuery.exec();
 
 	list.clear();
 
 @For{TableField@
-	int @FieldName@No = sqlQuery.colIndex("@FieldName@");
+	int @.Name@No = sqlQuery.colIndex("@.Name@");
 @}@
 
 	DBG("----- Reading all @Type@s from db:");
@@ -125,7 +126,7 @@ void @Type@Db::query(@Type@Set & list@For{LinkField@, const @FieldType@ & _@Fiel
 		DBG("Next row");
 		@Type@ *record = new @Type@();
 @For{TableField@
-	record->@FieldName@ <<= sqlQuery.sqlValue(@FieldName@No);
+	record->@.Name@ <<= sqlQuery.sqlValue(@.Name@No);
 @}@
 		list.add(record);
 	}
@@ -134,8 +135,8 @@ void @Type@Db::query(@Type@Set & list@For{LinkField@, const @FieldType@ & _@Fiel
 	tr.commit();
 
 @For{SetField@
-	@FieldSetSubType@Db db@FieldSetSubType@(sql);
+	@.SetSubType@Db db@.SetSubType@(sql);
 	for(auto& item : list)
-		db@FieldSetSubType@.query(item.@FieldName@@For{KeyField@, item.@FieldName@@}@);
+		db@.SetSubType@.query(item.@.Name@@For{KeyField@, item.@.Name@@}@);
 @}@
 }

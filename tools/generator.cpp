@@ -287,9 +287,8 @@ public:
 		tpl.trimFront("\n\r");
 		//LOG("what: %s", what);
 
-		String lastTag, endTag;
-		lastTag << "@Last@";
-		endTag << "@}@";
+		StringChunk lastTag("@-@");
+		StringChunk endTag("@}@");
 
 		unsigned lastIdx = 0;
 		unsigned endIdx = 0;
@@ -324,7 +323,7 @@ public:
 				posBegin = tpl.length + 2;
 				posEnd = tpl.length + 1;
 				tpl.findFirst(posBegin, "@For{");
-				tpl.findFirst(posEnd, endTag.str);
+				tpl.findFirst(posEnd, endTag);
 				if(posBegin < posEnd){
 					tpl.chopFront(posBegin);
 					//LOG("into it 0");
@@ -359,8 +358,8 @@ public:
 				posLast = tpl.length + 1;
 				posEnd = tpl.length;
 				tpl.findFirst(posBegin, "@For{");
-				tpl.findFirst(posLast, lastTag.str);
-				tpl.findFirst(posEnd, endTag.str);
+				tpl.findFirst(posLast, lastTag);
+				tpl.findFirst(posEnd, endTag);
 				if(posBegin < posLast && posBegin < posEnd){
 					tpl.chopFront(posBegin);
 					//LOG("into it 1");
@@ -419,7 +418,7 @@ public:
 					//LOG("out from it ...");
 					continue;
 				}
-			} else if(block.chopFront(lastTag.str)){
+			} else if(block.chopFront(lastTag)){
 				if(i == lastIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
@@ -435,7 +434,7 @@ public:
 					idx++;
 					//LOG("last next");
 				}
-			} else if(block.chopFront(endTag.str)){
+			} else if(block.chopFront(endTag)){
 				if(i == endIdx){
 					tpl.chopFront(block.str - tpl.str);
 					tpl.trimFront("\n\r");
@@ -453,21 +452,21 @@ public:
 				code << numOfFields;
 			} else if(block.chopFront("@NumOfTableFields@")){
 				code << numOfTableFields;
-			} else if(block.chopFront("@FieldType@")) {
+			} else if(block.chopFront("@.Type@")) {
 				code << field.type;
-			} else if(block.chopFront("@FieldSetSubType@")) {
+			} else if(block.chopFront("@.SetSubType@")) {
 				code << field.setSubType;
-			} else if(block.chopFront("@FieldIdx@")){
+			} else if(block.chopFront("@.Idx@")){
 				code << idx;
-			} else if(block.chopFront("@FieldName@")){
+			} else if(block.chopFront("@.Name@")){
 				code << field.name;
-			} else if(block.chopFront("@FieldEnumName@")){
+			} else if(block.chopFront("@.EnumName@")){
 				code << field.enumName;
-			} else if(block.chopFront("@FieldSqlDecl@")){
+			} else if(block.chopFront("@.SqlDecl@")){
 				code << "`" << field.name << "` " << field.sqlDecl;
 			} else if(block.chopFront("@Constraint@")){
 				code << field.constraint;
-			} else if(block.chopFront("@FieldComment@")){
+			} else if(block.chopFront("@.Comment@")){
 				code << field.comment;
 			} else {
 				parseCommonMarker(block);

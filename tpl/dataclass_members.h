@@ -1,12 +1,12 @@
 public:
 
 @For{Field@
-	@FieldType@ @FieldName@;@FieldComment@
+	@.Type@ @.Name@;@.Comment@
 @}@
 
 	enum Fields {
 @For{Field@
-		@FieldEnumName@,
+		@.EnumName@,
 @}@
 		NumOfFields
 	};
@@ -14,27 +14,27 @@ public:
 public:
 	@Type@() {}
 
-	explicit @Type@(@For{KeyField@const @FieldType@ & @FieldName@, @Last@const @FieldType@ & @FieldName@@}@) :
+	explicit @Type@(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) :
 @For{KeyField@
-		@FieldName@(@FieldName@),
-@Last@
-		@FieldName@(@FieldName@)
+		@.Name@(@.Name@),
+@-@
+		@.Name@(@.Name@)
 @}@
 	{}
 
 	explicit @Type@(const @Type@ & orig) :
 @For{Field@
-		@FieldName@(orig.@FieldName@),
-@Last@
-		@FieldName@(orig.@FieldName@)
+		@.Name@(orig.@.Name@),
+@-@
+		@.Name@(orig.@.Name@)
 @}@
 	{}
 
 	@Type@(@Type@ && temp) :
 @For{Field@
-		@FieldName@(csjp::move_cast(temp.@FieldName@)),
-@Last@
-		@FieldName@(csjp::move_cast(temp.@FieldName@))
+		@.Name@(csjp::move_cast(temp.@.Name@)),
+@-@
+		@.Name@(csjp::move_cast(temp.@.Name@))
 @}@
 	{}
 
@@ -43,7 +43,7 @@ public:
 	@Type@& operator=(@Type@ && temp)
 	{
 @For{Field@
-		@FieldName@ = csjp::move_cast(temp.@FieldName@);
+		@.Name@ = csjp::move_cast(temp.@.Name@);
 @}@
 		return *this;
 	}
@@ -59,9 +59,9 @@ public:
 	{
 		if(
 @For{Field@
-				@FieldName@ != other.@FieldName@ ||
-@Last@
-				@FieldName@ != other.@FieldName@
+				@.Name@ != other.@.Name@ ||
+@-@
+				@.Name@ != other.@.Name@
 @}@
 			)
 			return false;
@@ -70,51 +70,21 @@ public:
 
 	bool isLess(const @Type@ & other) const
 	{
-		return
-@For{KeyField@
-			@FieldName@ < other.@FieldName@ &&
-@Last@
-			@FieldName@ < other.@FieldName@;
-@}@
+		return @For{KeyField@@.Name@ < other.@.Name@ && @-@@.Name@ < other.@.Name@;@}@
 	}
 
 	bool isMore(const @Type@ & other) const
 	{
-		return
-@For{KeyField@
-			other.@FieldName@ < @FieldName@ &&
-@Last@
-			other.@FieldName@ < @FieldName@;
-@}@
+		return @For{KeyField@other.@.Name@ < @.Name@ &&@-@other.@.Name@ < @.Name@;@}@
 	}
 
-	bool isLess(
-@For{KeyField@
-			const @FieldType@ & other@FieldName@,
-@Last@
-			const @FieldType@ & other@FieldName@) const
-@}@
+	bool isLess(@For{KeyField@const @.Type@ & other@.Name@,@-@const @.Type@ & other@.Name@@}@) const
 	{
-		return
-@For{KeyField@
-			@FieldName@ < other@FieldName@ &&
-@Last@
-			@FieldName@ < other@FieldName@;
-@}@
+		return @For{KeyField@@.Name@ < other@.Name@ &&@-@@.Name@ < other@.Name@;@}@
 	}
 
-	bool isMore(
-@For{KeyField@
-			const @FieldType@ & other@FieldName@,
-@Last@
-			const @FieldType@ & other@FieldName@) const
-@}@
+	bool isMore(@For{KeyField@const @.Type@ & other@.Name@,@-@const @.Type@ & other@.Name@@}@) const
 	{
-		return
-@For{KeyField@
-			other@FieldName@ < @FieldName@ &&
-@Last@
-			other@FieldName@ < @FieldName@;
-@}@
+		return @For{KeyField@other@.Name@ < @.Name@ &&@-@other@.Name@ < @.Name@;@}@
 	}
 
