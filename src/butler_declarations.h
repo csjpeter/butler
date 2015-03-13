@@ -39,8 +39,8 @@
 		Text name; key			; TEXT
 		Text unit;				; TEXT
 		Text icon;				; TEXT
-		WareTypeSet types; set	; WHERE WareType.ware = ?
-		WareTagSet tags; set	; WHERE WareTag.ware = ?
+		WareTypeSet types; set	;
+		WareTagSet tags; set	;
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -204,15 +204,75 @@
 		DateTime endDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		enum StockOptions stockOption;		; INTEGER NOT NULL
 		enum TagOptions tagOption;			; INTEGER NOT NULL
-		TagNameSet withTags; set			;
-		TagNameSet withoutTags; set			;
-		WareNameSet wares; set				;
-		PartnerNameSet partners; set		;
+		QueryWithTagSet withTags; set		;
+		QueryWithoutTagSet withoutTags; set	;
+		QueryWareSet wares; set				;
+		QueryPartnerSet partners; set		;
 		DateTime lastModified;				; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;						; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class QueryWithTag
+	Fields {
+		Text query; key,link	; TEXT
+		Text tag; key			; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (query, tag)
+		FOREIGN KEY query REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY tag REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class QueryWithoutTag
+	Fields {
+		Text query; key,link	; TEXT
+		Text tag; key			; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (query, tag)
+		FOREIGN KEY query REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY tag REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class QueryWare
+	Fields {
+		Text query; key,link	; TEXT
+		Text ware; key			; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (query, ware)
+		FOREIGN KEY query REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY ware REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class QueryPartner
+	Fields {
+		Text query; key,link	; TEXT
+		Text partner; key		; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (query, partner)
+		FOREIGN KEY query REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY partner REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 

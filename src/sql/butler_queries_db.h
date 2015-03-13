@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #ifndef BUTLER_QUERY_DB_H
 #define BUTLER_QUERY_DB_H
 
@@ -26,4 +26,5 @@ public:
 private:
 	SqlConnection & sql;
 };
+#endif
 #endif

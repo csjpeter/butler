@@ -72,6 +72,34 @@ class PaymentDb
 
 @declare@ Item
 
+@declare@ QueryWithTag
+class QueryWithTagDb
+{
+@include@ dbclass.h
+};
+
+@declare@ QueryWithoutTag
+class QueryWithoutTagDb
+{
+@include@ dbclass.h
+};
+
+@declare@ QueryWare
+class QueryWareDb
+{
+@include@ dbclass.h
+};
+
+@declare@ QueryPartner
+class QueryPartnerDb
+{
+@include@ dbclass.h
+};
+
 @declare@ Query
+class QueryDb
+{
+@include@ dbclass.h
+};
 
 #endif

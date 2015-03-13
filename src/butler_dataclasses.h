@@ -169,6 +169,42 @@ class Item
 @include@ dataclass_set.h
 
 
+@declare@ QueryWithTag
+class QueryWithTag
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
+@declare@ QueryWithoutTag
+class QueryWithoutTag
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
+@declare@ QueryWare
+class QueryWare
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
+@declare@ QueryPartner
+class QueryPartner
+{
+	@include@ dataclass_members.h
+};
+@include@ dataclass_nonmembers.h
+@include@ dataclass_set.h
+
+
 @declare@ Query
 class Query
 {

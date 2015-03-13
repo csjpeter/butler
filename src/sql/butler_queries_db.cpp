@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include "butler_queries_db.h"
 
 QueryDb::QueryDb(SqlConnection & sql) :
@@ -314,3 +314,5 @@ void QueryDb::query(QuerySet & queries)
 	tr.commit();
 
 }
+#endif
+

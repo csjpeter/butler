@@ -559,6 +559,9 @@ public:
 	{
 		StringChunk declaredClass(line.str + pos, line.length - pos);
 		declaredClass.trim(" \t\n\r");
+		if(!declarations.has(declaredClass.str))
+			throw ParseError("Unknown class %.*s",
+					(int)declaredClass.length, declaredClass.str);
 		declIdx = declarations.index(declaredClass.str);
 	}
 

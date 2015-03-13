@@ -37,5 +37,18 @@
 
 @declare@ Item
 
+@declare@ QueryWithTag
+@include@ dbclass.cpp
+
+@declare@ QueryWithoutTag
+@include@ dbclass.cpp
+
+@declare@ QueryWare
+@include@ dbclass.cpp
+
+@declare@ QueryPartner
+@include@ dbclass.cpp
+
 @declare@ Query
+@include@ dbclass.cpp
 
