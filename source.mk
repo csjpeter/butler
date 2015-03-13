@@ -304,26 +304,6 @@ source: \
 	\
 	$(DIST_DIR)/src/sql/butler_sql_connection.h \
 	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
-	$(DIST_DIR)/src/sql/butler_tag_db.h \
-	$(DIST_DIR)/src/sql/butler_tag_db.cpp \
-	$(DIST_DIR)/src/sql/butler_ware_db.h \
-	$(DIST_DIR)/src/sql/butler_ware_db.cpp \
-	$(DIST_DIR)/src/sql/butler_company_db.h \
-	$(DIST_DIR)/src/sql/butler_company_db.cpp \
-	$(DIST_DIR)/src/sql/butler_brand_db.h \
-	$(DIST_DIR)/src/sql/butler_brand_db.cpp \
-	$(DIST_DIR)/src/sql/butler_inventory_db.h \
-	$(DIST_DIR)/src/sql/butler_inventory_db.cpp \
-	$(DIST_DIR)/src/sql/butler_item_db.h \
-	$(DIST_DIR)/src/sql/butler_item_db.cpp \
-	$(DIST_DIR)/src/sql/butler_partner_db.h \
-	$(DIST_DIR)/src/sql/butler_partner_db.cpp \
-	$(DIST_DIR)/src/sql/butler_account_db.h \
-	$(DIST_DIR)/src/sql/butler_account_db.cpp \
-	$(DIST_DIR)/src/sql/butler_payment_db.h \
-	$(DIST_DIR)/src/sql/butler_payment_db.cpp \
-	$(DIST_DIR)/src/sql/butler_queries_db.h \
-	$(DIST_DIR)/src/sql/butler_queries_db.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \

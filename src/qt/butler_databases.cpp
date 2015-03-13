@@ -13,15 +13,6 @@
 
 #include <butler_sql_connection.h>
 
-#include <butler_tag_db.h>
-#include <butler_ware_db.h>
-#include <butler_brand_db.h>
-#include <butler_inventory_db.h>
-#include <butler_company_db.h>
-#include <butler_partner_db.h>
-#include <butler_item_db.h>
-#include <butler_queries_db.h>
-
 #include <QDir>
 
 DatabaseDescriptorSet descriptorSet;

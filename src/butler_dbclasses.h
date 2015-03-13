@@ -7,8 +7,6 @@
 #define BUTLER_DBCLASSES_H
 
 #include <butler_sql_connection.h>
-#include <butler_item_db.h>
-#include <butler_queries_db.h>
 
 @declare@ Tag
 class TagDb
@@ -71,6 +69,12 @@ class PaymentDb
 };
 
 @declare@ Item
+class ItemDb
+{
+@include@ dbclass.h
+public:
+	void query(const Query &, QueryStat &, ItemSet &);
+};
 
 @declare@ QueryWithTag
 class QueryWithTagDb
