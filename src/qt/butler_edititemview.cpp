@@ -615,11 +615,14 @@ void EditItemView::wareNameEditFinishedSlot()
 		ware = wm.ware(i);
 
 	quantityEditor.setSuffix(ware.unit);
-	//tagsWidget.setTags(ware.tags);
+	StringSet set;
+	set <<= ware.tags;
+	tagsWidget.setTags(set);
 
-	//QString cats = WaresModel::typesToString(ware.types);
+	QStringList cats;
+	cats <<= ware.types;
 	typeEditor.box.addItem(lastCat);
-	//typeEditor.box.addItems(cats.split(", ", QString::SkipEmptyParts));
+	typeEditor.box.addItems(cats);
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 

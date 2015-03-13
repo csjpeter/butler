@@ -189,12 +189,13 @@ void EditWareView::relayout()
 
 void EditWareView::updateToolButtonStates()
 {
-	TypeNameSet types;
-	WaresModel::stringToTypes(typesEditor.editor.text(), types);
+	//StringSet types;
+	//types <<= typesEditor.editor.text();
 	bool modified = !(
 			ware.name == nameEditor.editor.text() &&
-			ware.unit == unitEditor.editor.text()// &&
-			//ware.types == types &&
+			ware.unit == unitEditor.editor.text() &&
+			ware.types == typesEditor.editor.text()
+			//ware.types == types //&&
 			//ware.tags == tagsWidget.selectedTags()
 			);
 

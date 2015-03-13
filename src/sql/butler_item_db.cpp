@@ -149,7 +149,7 @@ void ItemDb::del(const Item & i)
 
 	tr.commit();
 }
-
+#if 0
 void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 {
 	SqlQuery sqlQuery(sql);
@@ -226,7 +226,7 @@ void ItemDb::query(const TagNameSet & tags, ItemSet & items)
 
 	tr.commit();
 }
-
+#endif
 void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 {
 	SqlQuery sqlQuery(sql);
@@ -286,7 +286,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 			if(0 < i)
 				tcmd += " OR";
 			tcmd += " tag = '";
-			tcmd += q.withTags.queryAt(i).replace("'", "''");
+			tcmd += q.withTags.queryAt(i).tag.replace("'", "''");
 			tcmd += "'";
 		}
 		tcmd.append(")");
@@ -303,7 +303,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 			if(0 < i)
 				wcmd += " OR";
 			wcmd += " Items.name = '";
-			wcmd += q.wares.queryAt(i).replace("'", "''");
+			wcmd += q.wares.queryAt(i).ware.replace("'", "''");
 			wcmd += "'";
 		}
 		wcmd.append(")");
@@ -320,7 +320,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 			if(0 < i)
 				scmd += " OR";
 			scmd += " Partners.name = '";
-			scmd += q.partners.queryAt(i).replace("'", "''");
+			scmd += q.partners.queryAt(i).partner.replace("'", "''");
 			scmd += "'";
 		}
 		scmd.append(")");
@@ -338,7 +338,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 			if(0 < i)
 				tcmd += " OR";
 			tcmd += " tag = '";
-			tcmd += q.withoutTags.queryAt(i).replace("'", "''");
+			tcmd += q.withoutTags.queryAt(i).tag.replace("'", "''");
 			tcmd += "'";
 		}
 		tcmd += " GROUP BY name)";

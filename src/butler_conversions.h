@@ -9,6 +9,7 @@
 #include <csjp_string.h>
 #include <butler_text.h>
 #include <butler_datetime.h>
+#include <butler_dataclasses.h>
 
 #include <QString>
 #include <QVariant>

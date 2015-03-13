@@ -6,8 +6,6 @@
 #ifndef BUTLER_DATACLASSES_H
 #define BUTLER_DATACLASSES_H
 
-#include <QString>
-
 #include <csjp_pod_array.h>
 #include <csjp_array.h>
 #include <csjp_owner_container.h>
@@ -17,46 +15,7 @@
 #include <butler_text.h>
 
 
-
-class TypeNameSet : public csjp::SorterOwnerContainer<Text>
-{
-public:
-		TypeNameSet() : csjp::SorterOwnerContainer<Text>(), ascending(true){}
-		TypeNameSet(const TypeNameSet & cns) :
-				csjp::SorterOwnerContainer<Text>(cns),
-				ascending(cns.ascending)
-		{}
-		TypeNameSet(TypeNameSet && temp) :
-				csjp::SorterOwnerContainer<Text>(csjp::move_cast(temp)),
-				ascending(temp.ascending)
-		{
-				temp.ascending = true;
-		}
-		~TypeNameSet() {}
-
-		const TypeNameSet & operator=(TypeNameSet && temp)
-		{
-				csjp::SorterOwnerContainer<Text>::operator=(csjp::move_cast(temp));
-				ascending = temp.ascending;
-				temp.ascending = true;
-				return *this;
-		}
-
-		int compare(const Text & a, const Text & b) const
-		{
-				bool ret = a < b;
-				if(!ascending)
-						ret = !ret;
-				return ret ? -1 : 1;
-		}
-		bool ascending;
-};
-
-typedef csjp::OwnerContainer<Text> TagNameSet;
-typedef csjp::OwnerContainer<Text> WareNameSet;
-typedef csjp::OwnerContainer<Text> PartnerNameSet;
-//typedef csjp::OwnerContainer<Text> CompanyNameSet;
-//typedef csjp::OwnerContainer<Text> AccountNameSet;
+typedef csjp::OwnerContainer<Text> StringSet;
 
 class QueryStat{
 public:
@@ -85,7 +44,31 @@ class WareType
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
+inline bool operator<(const Text & a, const WareType & b) { return b.type.isMore(a); }
+inline bool operator<(const WareType & a, const Text & b) { return a.type.isLess(b); }
 @include@ dataclass_set.h
+
+inline bool operator==(const WareTypeSet & a, const QString & b)
+{
+	QStringList sl;
+	sl = b.split(",", QString::SkipEmptyParts);
+	unsigned s = sl.size();
+	if(s != a.size())
+		return false;
+	unsigned i;
+	for(i=0; i<s; i++)
+		if(!a.has(Text(sl.at(i).trimmed())))
+			return false;
+	return true;
+}
+/* non-transactional */
+inline QStringList & operator<<= (QStringList & list, const WareTypeSet & wareTypes)
+{
+	list.clear();
+	for(auto & wareType : wareTypes)
+		list.append(wareType.type);
+	return list;
+}
 
 
 @declare@ WareTag
@@ -94,13 +77,59 @@ class WareTag
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
+inline bool operator<(const Text & a, const WareTag & b) { return b.tag.isMore(a); }
+inline bool operator<(const WareTag & a, const Text & b) { return a.tag.isLess(b); }
 @include@ dataclass_set.h
+
+/* non-transactional */
+inline StringSet & operator<<= (StringSet & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.add(new Text(wareTag.tag));
+	return list;
+}
+
+/* non-transactional */
+inline QStringList & operator<<= (QStringList & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.append(wareTag.tag);
+	return list;
+}
 
 
 @declare@ Ware
 class Ware
 {
 	@include@ dataclass_members.h
+
+	/* non-transactional */
+	void setAsTypes(const QStringList & strings)
+	{
+		for(auto & type : types)
+			if(!strings.contains(type.type))
+				type.deleted = true;
+		for(auto & string : strings){
+			Text type(string);
+			if(!types.has(type))
+				types.add(new WareType(name, type));
+		}
+	}
+
+	/* non-transactional */
+	void setAsTags(const QStringList & strings)
+	{
+		for(auto & tag : tags)
+			if(!strings.contains(tag.tag))
+				tag.deleted = true;
+		for(auto & string : strings){
+			Text tag(string);
+			if(!tags.has(tag))
+				tags.add(new WareTag(name, tag));
+		}
+	}
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -175,8 +204,31 @@ class QueryWithTag
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
+inline bool operator<(const Text & a, const QueryWithTag & b) { return b.tag.isMore(a); }
+inline bool operator<(const QueryWithTag & a, const Text & b) { return a.tag.isLess(b); }
 @include@ dataclass_set.h
-
+/* non-transactional */
+inline StringSet & operator<<= (StringSet & list, const QueryWithTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+inline bool operator==(const QueryWithTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+inline bool operator!=(const QueryWithTagSet & a, const StringSet & b)
+{
+	return !(a == b);
+}
 
 @declare@ QueryWithoutTag
 class QueryWithoutTag
@@ -184,7 +236,31 @@ class QueryWithoutTag
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
+inline bool operator<(const Text & a, const QueryWithoutTag & b) { return b.tag.isMore(a); }
+inline bool operator<(const QueryWithoutTag & a, const Text & b) { return a.tag.isLess(b); }
 @include@ dataclass_set.h
+/* non-transactional */
+inline StringSet & operator<<= (StringSet & list, const QueryWithoutTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+inline bool operator==(const QueryWithoutTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+inline bool operator!=(const QueryWithoutTagSet & a, const StringSet & b)
+{
+	return !(a == b);
+}
 
 
 @declare@ QueryWare
@@ -221,6 +297,31 @@ public:
 	};
 
 	@include@ dataclass_members.h
+
+	/* non-transactional */
+	void setAsWithTags(const StringSet & names)
+	{
+		for(auto & tag : withTags)
+			if(!names.has(tag.tag))
+				tag.deleted = true;
+		for(auto & name : names){
+			Text tag(name);
+			if(!withTags.has(tag))
+				withTags.add(new QueryWithTag(name, tag));
+		}
+	}
+	/* non-transactional */
+	void setAsWithoutTags(const StringSet & names)
+	{
+		for(auto & tag : withoutTags)
+			if(!names.has(tag.tag))
+				tag.deleted = true;
+		for(auto & name : names){
+			Text tag(name);
+			if(!withoutTags.has(tag))
+				withoutTags.add(new QueryWithoutTag(name, tag));
+		}
+	}
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h

@@ -331,8 +331,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
-	$(DIST_DIR)/src/qt/butler_tagfilterview.h \
-	$(DIST_DIR)/src/qt/butler_tagfilterview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagwidget.h \
 	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
 	\

@@ -32,8 +32,6 @@ public:
 	virtual void update(int row, Item & modified);
 	virtual bool queryFilter(const Item & modified);
 
-public:
-	TagNameSet queryTagNames;
 };
 
 #endif

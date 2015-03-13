@@ -53,10 +53,6 @@ public:
 	void query();
 	const QuerySet & querySet() const { return queries; }
 
-	static QString typesToString(const TypeNameSet & cat) NO_FCLOG;
-	static QString tagsToString(const TagNameSet & tags) NO_FCLOG;
-	static void stringToTypes(const QString & value, TypeNameSet & modified);
-	static void stringToTags(const QString & value, TagNameSet & modified);
 	void sort(int column, bool ascending);
 
 protected:

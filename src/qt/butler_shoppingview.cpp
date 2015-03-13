@@ -11,7 +11,6 @@
 #include "butler_newitemview.h"
 #include "butler_buyitemview.h"
 #include "butler_queryoptionsview.h"
-#include "butler_tagfilterview.h"
 #include "butler_partnersmodel.h"
 #include "butler_config.h"
 
@@ -20,8 +19,7 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 	dbname(dbname),
 	model(shoppingModel(dbname)),
 	newItemView(NULL),
-	buyItemView(NULL),
-	tagFilterView(NULL)
+	buyItemView(NULL)
 {
 	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
 	setWindowTitle(titlePrefix + tr("Shopping list"));
@@ -43,10 +41,6 @@ ShoppingView::ShoppingView(const QString & dbname, QWidget * parent) :
 
 	button = new QPushButton(QIcon(Path::icon("buy.png")), tr("&Bought"));
 	connect(button, SIGNAL(clicked()), this, SLOT(buyItem()));
-	cLayout->addWidget(button);
-
-	button = new QPushButton(QIcon(Path::icon("tag.png")), tr("&Filter"));
-	connect(button, SIGNAL(clicked()), this, SLOT(filterItems()));
 	cLayout->addWidget(button);
 
 	/* partner selector */
@@ -97,7 +91,6 @@ ShoppingView::~ShoppingView()
 {
 	delete newItemView;
 	delete buyItemView;
-	delete tagFilterView;
 }
 
 void ShoppingView::showEvent(QShowEvent *event)
@@ -228,15 +221,6 @@ void ShoppingView::finishedBuyItem(int price)
 	Q_UNUSED(price);
 
 	buyItemView->disconnect(this, SLOT(finishedBuyItem(int)));
-}
-
-void ShoppingView::filterItems()
-{
-	if(!tagFilterView)
-		tagFilterView = new TagFilterView(dbname, model.queryTagNames);
-
-	connect(tagFilterView, SIGNAL(accepted()), this, SLOT(filterAcceptedSlot()));
-	tagFilterView->activate();
 }
 
 void ShoppingView::filterAcceptedSlot()

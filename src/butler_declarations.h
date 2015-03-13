@@ -68,12 +68,12 @@
 	Class WareType
 	Fields {
 		Text ware; key,link		; TEXT
-		Text name; key			; TEXT
+		Text type; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
-		PRIMARY KEY (ware, name)
+		PRIMARY KEY (ware, type)
 		}
 @EndDecl@*/
 

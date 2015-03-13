@@ -29,7 +29,6 @@ Qt::ItemFlags ShoppingModel::flags(const QModelIndex & index) const
 void ShoppingModel::query()
 {
 	ModelResetGuard g(this);
-	db.query(queryTagNames, items);
 }
 
 void ShoppingModel::buy(unsigned itemRow, Item & modified)

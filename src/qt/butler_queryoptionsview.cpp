@@ -156,7 +156,7 @@ void QueryOptionsView::mapToGui()
 
 	if(query.wares.size()){
 		WaresModel & wm = waresModel(dbname);
-		int row = wm.index(query.wares.queryAt(0));
+		int row = wm.index(query.wares.queryAt(0).ware);
 		if(0 <= row){
 			wareFilter.box.blockSignals(true);
 			wareFilter.box.setChecked(true);
@@ -168,7 +168,7 @@ void QueryOptionsView::mapToGui()
 
 	if(query.partners.size()){
 		PartnersModel & sm = partnersModel(dbname);
-		int row = sm.index(query.partners.queryAt(0));
+		int row = sm.index(query.partners.queryAt(0).partner);
 		if(0 <= row){
 			partnerFilter.box.blockSignals(true);
 			partnerFilter.box.setChecked(true);
@@ -201,7 +201,9 @@ void QueryOptionsView::mapToGui()
 		tagOptAllMatch.setChecked(true);
 	else if(query.tagOption == Query::TagOptions::MatchAny)
 		tagOptAnyMatch.setChecked(true);
-	tagsWidget.setTags(query.withTags);
+	StringSet set;
+	set <<= query.withTags;
+	tagsWidget.setTags(set);
 
 	if(query.withoutTags.size()){
 		withoutTagFilter.box.blockSignals(true);
@@ -212,7 +214,8 @@ void QueryOptionsView::mapToGui()
 		withoutTagFilter.box.setChecked(false);
 		withoutTagFilter.box.blockSignals(false);
 	}
-	withoutTagsWidget.setTags(query.withoutTags);
+	set <<= query.withoutTags;
+	withoutTagsWidget.setTags(set);
 
 	updateToolButtonStates();
 }
@@ -228,7 +231,7 @@ void QueryOptionsView::mapFromGui()
 		int i = wareSelector.box.currentIndex();
 		WaresModel & wm = waresModel(dbname);
 		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new Text(wm.ware(i).name.trimmed()));
+			query.wares.add(new QueryWare(query.name, wm.ware(i).name.trimmed()));
 	}
 	
 	query.partners.clear();
@@ -236,7 +239,7 @@ void QueryOptionsView::mapFromGui()
 		int i = partnerSelector.box.currentIndex();
 		PartnersModel & sm = partnersModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.partners.add(new Text(sm.partner(i).name.trimmed()));
+			query.partners.add(new QueryPartner(query.name, sm.partner(i).name.trimmed()));
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
@@ -251,14 +254,14 @@ void QueryOptionsView::mapFromGui()
 			query.tagOption = Query::TagOptions::MatchAll;
 		else if(tagOptions.group.checkedButton() == &tagOptAnyMatch)
 			query.tagOption = Query::TagOptions::MatchAny;
-		query.withTags = tagsWidget.selectedTags();
+		query.setAsWithTags(tagsWidget.selectedTags());
 	} else {
 		query.tagOption = Query::TagOptions::MatchAny;
 		query.withTags.clear();
 	}
 
 	if(withoutTagFilter.box.isChecked()){
-		query.withoutTags = withoutTagsWidget.selectedTags();
+		query.setAsWithoutTags(withoutTagsWidget.selectedTags());
 	} else {
 		query.withoutTags.clear();
 	}
@@ -545,11 +548,11 @@ void QueryOptionsView::updateToolButtonStates()
 			);
 	if(!modified)
 		if(query.wares.size() && (wareFilter.box.checkState()==Qt::Checked))
-			if(query.wares.queryAt(0) != wareSelector.box.currentText())
+			if(query.wares.queryAt(0).ware != wareSelector.box.currentText())
 				modified = true;
 	if(!modified)
 		if(query.partners.size() && (partnerFilter.box.checkState()==Qt::Checked))
-			if(query.partners.queryAt(0) != partnerSelector.box.currentText())
+			if(query.partners.queryAt(0).partner != partnerSelector.box.currentText())
 				modified = true;
 	if(!modified)
 		if(query.withTags.size() && (withTagFilter.box.checkState()==Qt::Checked))

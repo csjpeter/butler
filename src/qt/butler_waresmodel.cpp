@@ -250,64 +250,6 @@ void WaresModel::query()
 	db.query(wares);
 }
 
-QString WaresModel::typesToString(const TypeNameSet & cat)
-{
-	QString result("");
-
-	int s = cat.size();
-	if(s == 0)
-		return result;
-
-	result = cat.queryAt(0);
-	int i;
-	for(i=1; i<s; i++){
-		result += ", ";
-		result += cat.queryAt(i);
-	}
-	
-	return result;
-}
-
-QString WaresModel::tagsToString(const TagNameSet & tags)
-{
-	QString result("");
-
-	int s = tags.size();
-	if(s == 0)
-		return result;
-
-	result = tags.queryAt(0);
-	int i;
-	for(i=1; i<s; i++){
-		result += ", ";
-		result += tags.queryAt(i);
-	}
-	
-	return result;
-}
-
-void WaresModel::stringToTypes(const QString & value, TypeNameSet & cat)
-{
-	cat.clear();
-	QStringList sl;
-	sl = value.split(", ", QString::SkipEmptyParts);
-	int s = sl.size();
-	int i;
-	for(i=0; i<s; i++)
-		cat.add(new Text(sl.at(i).trimmed()));
-}
-
-void WaresModel::stringToTags(const QString & value, TagNameSet & tags)
-{
-	tags.clear();
-	QStringList sl;
-	sl = value.split(", ", QString::SkipEmptyParts);
-	int s = sl.size();
-	int i;
-	for(i=0; i<s; i++)
-		tags.add(new Text(sl.at(i).trimmed()));
-}
-
 void WaresModel::sort(int column, bool ascending)
 {
 	if(wares.ascending == ascending && wares.ordering[0] == column)

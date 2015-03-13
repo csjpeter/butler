@@ -19,7 +19,7 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	WareTypesModel(TypeNameSet &);
+	WareTypesModel(StringSet &);
 	virtual ~WareTypesModel();
 
 	virtual QModelIndex index(
@@ -44,7 +44,7 @@ public:
 	virtual bool insertRows(int row, int count, const QModelIndex & parent=QModelIndex());
 
 public slots:
-	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
+	//virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
 	int index(const QString & name) const NO_FCLOG;
@@ -52,10 +52,10 @@ public:
 	void del(int row);
 	void addNew(const QString & cat);
 
-	void sort(int column, bool ascending);
+	//void sort(int column, bool ascending);
 
 protected:
-	TypeNameSet & types;
+	StringSet & types;
 };
 
 #endif

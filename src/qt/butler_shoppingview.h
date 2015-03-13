@@ -42,7 +42,6 @@ private slots:
 	void delItem();
 	void buyItem();
 	void finishedBuyItem(int price);
-	void filterItems();
 	void filterAcceptedSlot();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 
@@ -58,7 +57,6 @@ private:
 
 	NewItemView *newItemView;
 	BuyItemView *buyItemView;
-	TagFilterView *tagFilterView;
 };
 
 #endif

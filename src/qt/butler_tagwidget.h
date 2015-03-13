@@ -25,8 +25,8 @@ public:
 	TagWidget(const QString & dbname, QWidget * parent = 0);
 
 public:
-	void setTags(const TagNameSet & tags);
-	TagNameSet selectedTags();
+	void setTags(const StringSet & tags);
+	StringSet selectedTags();
 	void selectAll();
 	void deselectAll();
 	virtual QSize sizeHint() const;

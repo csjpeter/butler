@@ -21,7 +21,7 @@ public:
 	void insert(const Item &);
 	void update(const Item & orig, const Item & modified);
 	void del(const Item &);
-	void query(const TagNameSet &, ItemSet &);
+//	void query(const TagNameSet &, ItemSet &);
 	void query(const Query &, QueryStat &, ItemSet &);
 
 private:

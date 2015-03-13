@@ -9,7 +9,7 @@
 
 SCC TidTypeFieldName = QT_TRANSLATE_NOOP("WareTypesModel", "Brand/Type");
 
-WareTypesModel::WareTypesModel(TypeNameSet & cat) :
+WareTypesModel::WareTypesModel(StringSet & cat) :
 	types(cat)
 {
 }
@@ -146,12 +146,12 @@ bool WareTypesModel::insertRows(
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
-
+/*
 void WareTypesModel::sort(int column, Qt::SortOrder order)
 {
 	sort(column, order == Qt::AscendingOrder);
 }
-
+*/
 int WareTypesModel::index(const QString & name) const
 {
 	if(types.has(name))
@@ -176,7 +176,7 @@ void WareTypesModel::addNew(const QString & cat)
 	ModelInsertGuard g(this, QModelIndex(), types.size(), types.size());
 	types.add(new Text(cat));
 }
-
+/*
 void WareTypesModel::sort(int column, bool ascending)
 {
 	if(types.ascending == ascending || column != 0)
@@ -186,3 +186,4 @@ void WareTypesModel::sort(int column, bool ascending)
 	types.ascending = ascending;
 	types.sort();
 }
+*/

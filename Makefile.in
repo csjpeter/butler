@@ -166,12 +166,10 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/butler_tagsmodel.opp \
 	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_edittagview.opp \
-	tmp/src/qt/butler_tagfilterview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
 	tmp/src/qt/moc/butler_tagsmodel.opp \
 	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
-	tmp/src/qt/moc/butler_tagfilterview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \
 	\
 	tmp/src/qt/butler_waresmodel.opp \
