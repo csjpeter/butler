@@ -19,7 +19,6 @@
 #include "butler_inventoriesview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
-#include "butler_shoppingview.h"
 #include "butler_edititemview.h"
 #include "butler_customview.h"
 
@@ -80,7 +79,7 @@ MainView::MainView(QWidget *parent) :
 			TidInfoButton, TidContext, QKeySequence(Qt::Key_F11)),
 	quitButton(QIcon(Path::icon("delete.png")),
 			TidQuitButton, TidContext, QKeySequence(Qt::Key_F12)),
-	shoppingView(NULL),
+	//shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
 	companyView(NULL),
@@ -121,7 +120,7 @@ MainView::MainView(QWidget *parent) :
 MainView::~MainView()
 {
 //	delete todoView;
-	delete shoppingView;
+	//delete shoppingView;
 	delete newItemView;
 	delete customView;
 	delete accountsView;
@@ -274,8 +273,8 @@ void MainView::activateSavedActiveWindow()
 			prefix + "/activeWindow", false).toString();
 	if(activeWindowName == "mainView")
 		activeWindow = this;
-	else if(activeWindowName == "shoppingView")
-		activeWindow = shoppingView;
+	//else if(activeWindowName == "shoppingView")
+	//	activeWindow = shoppingView;
 	else if(activeWindowName == "newItemView")
 		activeWindow = newItemView;
 	else if(activeWindowName == "customView")
@@ -309,7 +308,7 @@ void MainView::saveState()
 	QSettings settings;
 
 //	SAVE_VIEW_STATE(todoView);
-	SAVE_VIEW_STATE(shoppingView);
+	//SAVE_VIEW_STATE(shoppingView);
 	SAVE_VIEW_STATE(newItemView);
 	SAVE_VIEW_STATE(customView);
 	SAVE_VIEW_STATE(partnersView);
@@ -326,8 +325,8 @@ void MainView::saveState()
 	const char * activeWindowName = 0;
 	if(activeWindow == this)
 		activeWindowName = "mainView";
-	else if(activeWindow == shoppingView)
-		activeWindowName = "shoppingView";
+	//else if(activeWindow == shoppingView)
+	//	activeWindowName = "shoppingView";
 	else if(activeWindow == newItemView)
 		activeWindowName = "newItemView";
 	else if(activeWindow == customView)

@@ -367,15 +367,6 @@ source: \
 	$(DIST_DIR)/src/qt/butler_itemsmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_edititemview.h \
 	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
-	$(DIST_DIR)/src/qt/butler_buyitemview.h \
-	$(DIST_DIR)/src/qt/butler_buyitemview.cpp \
-	$(DIST_DIR)/src/qt/butler_newitemview.h \
-	$(DIST_DIR)/src/qt/butler_newitemview.cpp \
-	\
-	$(DIST_DIR)/src/qt/butler_shoppingmodel.h \
-	$(DIST_DIR)/src/qt/butler_shoppingmodel.cpp \
-	$(DIST_DIR)/src/qt/butler_shoppingview.h \
-	$(DIST_DIR)/src/qt/butler_shoppingview.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_customview.h \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \

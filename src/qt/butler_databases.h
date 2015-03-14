@@ -18,7 +18,6 @@
 #include <butler_accountsmodel.h>
 #include <butler_partnersmodel.h>
 #include <butler_queriesmodel.h>
-#include <butler_shoppingmodel.h>
 #include <butler_itemsmodel.h>
 
 void loadDatabaseConfigs();

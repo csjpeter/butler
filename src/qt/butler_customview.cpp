@@ -8,7 +8,6 @@
 #include <config.h>
 
 #include "butler_customview.h"
-#include "butler_shoppingview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_edititemview.h"
 #include "butler_editwareview.h"

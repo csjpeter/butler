@@ -39,7 +39,7 @@ private:
 	AccountsModel * accountsModel;
 	PartnersModel * partnersModel;
 	QueriesModel * queriesModel;
-	ShoppingModel * shoppingModel;
+	//ShoppingModel * shoppingModel;
 
 public:
 	Database(const QString & dbname) :
@@ -61,15 +61,15 @@ public:
 		inventoriesModel(0),
 		accountsModel(0),
 		partnersModel(0),
-		queriesModel(0),
-		shoppingModel(0)
+		queriesModel(0)
+		//shoppingModel(0)
 	{
 	}
 
 	explicit Database(const Database &) = delete;
 	~Database()
 	{
-		delete shoppingModel;
+		//delete shoppingModel;
 		delete queriesModel;
 		delete partnersModel;
 		delete accountsModel;
