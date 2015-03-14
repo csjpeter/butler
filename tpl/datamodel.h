@@ -3,12 +3,13 @@ private:
 	MY_Q_OBJECT;
 
 public:
-	TagsModel(TagDb & db);
-	virtual ~TagsModel();
+	@Type@Model(@Type@Db & db) : db(db), dataSet(set) { query(); }
+	virtual ~@Type@Model() {}
 
 	virtual QModelIndex index(
 			int row, int column,
-			const QModelIndex & parent = QModelIndex()) const NO_FCLOG;
+			const QModelIndex & parent = QModelIndex()) const NO_FCLOG
+			{ return QAbstractTableModel::index(row, column, parent); }
 	virtual Qt::ItemFlags flags(
 			const QModelIndex & index) const NO_FCLOG;
 	virtual QVariant data(
@@ -31,13 +32,14 @@ public slots:
 
 public:
 	int index(const Text & name) const NO_FCLOG;
-	const TagSet& tagSet() const { return tags; }
-	const Tag& tag(int row) NO_FCLOG;
+	const @Type@& data(int row) NO_FCLOG;
 	void del(int row);
-	void addNew(Tag & tag);
-	void update(int row, Tag & modified);
+	void addNew(@Type@ &);
+	void update(int row, @Type@ & modified);
 	void query();
 
 private:
-	TagDb & db;
-	TagSet tags;
+	@Type@Db & db;
+	@Type@Set set;
+public:
+	const @Type@ & dataSet;

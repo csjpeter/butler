@@ -250,6 +250,20 @@ $(DIST_DIR)/src/butler_dbclasses.cpp: \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dbclasses.cpp > $@
 
+$(DIST_DIR)/src/qt/butler_datamodel.h: \
+		tpl/datamodel.h \
+		src/qt/butler_datamodel.h \
+		tools/generator
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/qt/butler_datamodel.h > $@
+
+$(DIST_DIR)/src/qt/butler_datamodel.cpp: \
+		tpl/datamodel.cpp \
+		src/qt/butler_datamodel.cpp \
+		tools/generator
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/qt/butler_datamodel.cpp > $@
+
 #$(DIST_DIR)/src/%.h: \
 #		src/%.h \
 #		tools/generator
@@ -286,6 +300,9 @@ source: \
 	$(DIST_DIR)/src/butler_dataclasses.cpp \
 	$(DIST_DIR)/src/butler_dbclasses.h \
 	$(DIST_DIR)/src/butler_dbclasses.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_datamodel.h \
+	$(DIST_DIR)/src/qt/butler_datamodel.cpp \
 	\
 	$(DIST_DIR)/src/config.h.in \
 	$(DIST_DIR)/src/qt/butler_config.h \

@@ -45,17 +45,9 @@ LINK_STATIC=ar cqs $@ $^
 
 TESTDIR=tmp/@PKGNAME@/test/
 
-tmp/src/datamodel/test/%.opp: src/datamodel/test/%.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
-
 tmp/src/test/%.opp: src/test/%.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
-
-tmp/src/datamodel/%.opp: src/datamodel/%.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) -o $@ $<
 
 tmp/src/%.opp: src/%.cpp \
 		src/butler_dataclasses.h \
@@ -85,12 +77,6 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	$(MOC) -o $@ $<
 	@touch $@
 	$(TARGETFINISHED)
-
-tmp/src/%.opp: src/%.cpp \
-		src/butler_dataclasses.h \
-		src/butler_dbclasses.h
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
 @TCROOT@@PREFIX@lib/% : \
 		tmp/@TCROOT@@PREFIX@lib/%
@@ -134,11 +120,13 @@ SQL_OBJECTS+= \
 	tmp/src/butler_dataclasses.opp \
 	tmp/src/butler_dbclasses.opp
 
-SQL_INCLUDES=-Isrc/sql
+SQL_INCLUDES=
 
 STATIC_LIBSQL=tmp/@TCROOT@@PREFIX@lib/@PRJNAME@@VERSION_API@-sql.a
 
 BUTLERQT_OBJECTS+= \
+	\
+	tmp/src/qt/butler_datamodel.opp \
 	\
 	tmp/src/qt/butler_config.opp \
 	tmp/src/qt/moc/butler_config.opp \
@@ -358,11 +346,6 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 		$(BUTLERQT_OBJECTS) \
 		$(STATIC_LIBSQL)
 	test -d $(dir $@) || mkdir -p $(dir $@)
-	$(LINK)
-
-@TCROOT@tmp/bin/test-@PKGNAME_BASE@-datamodel-% : \
-		tmp/src/datamodel/test/%.opp \
-	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)
 
 @TCROOT@tmp/bin/test-@PKGNAME_BASE@-sql-% : \

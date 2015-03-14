@@ -1,31 +1,12 @@
-TagsModel::TagsModel(TagDb & db) :
-	db(db)
+Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 {
-	query();
-}
-
-TagsModel::~TagsModel()
-{
-}
-
-QModelIndex TagsModel::index(int row, int column, const QModelIndex & parent) const
-{
-	return QAbstractTableModel::index(row, column, parent);
-}
-
-Qt::ItemFlags TagsModel::flags(const QModelIndex & index) const
-{
-	if(index.row() < (int)tags.size() && 
-			index.column() < Tag::NumOfFields){
-		if(index.column() != 8)
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
-		else
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-	} else
+	if(index.row() < (int)set.size() && index.column() < @Type@::NumOfFields - 2)
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+	else
 		return Qt::NoItemFlags;
 }
 
-QVariant TagsModel::data(const QModelIndex & index, int role) const 
+QVariant @Type@Model::data(const QModelIndex & index, int role) const 
 {
 	if(!index.isValid())
 		return QVariant();
@@ -36,16 +17,15 @@ QVariant TagsModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
 		return QVariant();
 
-	if((int)tags.size() <= index.row())
+	if((int)set.size() <= index.row())
 		return QVariant();
 
 	switch(index.column()){
-		case Tag::Name :
-			return tags.queryAt(index.row()).name;
+@For{Field@
+		case @Type@::@.EnumName@ :
+			return set.queryAt(index.row()).@.Name@;
 			break;
-		case Tag::Description :
-			return tags.queryAt(index.row()).description;
-			break;
+@}@
 		default :
 			return QVariant();
 	}
@@ -53,7 +33,7 @@ QVariant TagsModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
-QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant @Type@Model::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
 	if(role != Qt::DisplayRole)
@@ -63,12 +43,11 @@ QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int rol
 		return QVariant("---");
 
 	switch(section){
-		case Tag::Name :
-			return QVariant(tr(TidTagFieldName));
+@For{Field@
+		case @Type@::@.EnumName@ :
+			return QVariant(tr(Tid@Type@Field@.Name@));
 			break;
-		case Tag::Description :
-			return QVariant(tr(TidTagFieldDescription));
-			break;
+@}@
 		default :
 			return QVariant();
 	}
@@ -76,7 +55,7 @@ QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int rol
 	return QVariant();
 }
 
-bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if(!index.isValid())
 		return false;
@@ -87,16 +66,15 @@ bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int r
 	if(role != Qt::EditRole)
 		return false;
 
-	if((int)tags.size() <= index.row())
+	if((int)set.size() <= index.row())
 		return false;
 
 	switch(index.column()){
-		case Tag::Name :
-			tags.queryAt(index.row()).name <<= value;
+@For{Field@
+		case @Type@::@.EnumName@ :
+			set.queryAt(index.row()).@.Name@ <<= value;
 			break;
-		case Tag::Description :
-			tags.queryAt(index.row()).description <<= value;
-			break;
+@}@
 		default :
 			return false;
 	}
@@ -105,7 +83,7 @@ bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int r
 	return true;
 }
 
-bool TagsModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
+bool @Type@Model::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
 {
 	(void)section;
 	(void)orientation;
@@ -116,85 +94,85 @@ bool TagsModel::setHeaderData(int section, Qt::Orientation orientation, const QV
 	return false;
 }
 
-int TagsModel::rowCount(const QModelIndex & parent) const
+int @Type@Model::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return tags.size();
+	return set.size();
 }
 
-int TagsModel::columnCount(const QModelIndex & parent) const
+int @Type@Model::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return Tag::NumOfFields;
+	return @Type@::NumOfFields;
 }
 
-bool TagsModel::removeRows(
+bool @Type@Model::removeRows(
 		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
-bool TagsModel::insertRows(
+bool @Type@Model::insertRows(
 		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
-void TagsModel::sort(int column, Qt::SortOrder order)
+void @Type@Model::sort(int column, Qt::SortOrder order)
 {
 	bool ascending = (order == Qt::AscendingOrder);
-	if(tags.ascending == ascending && tags.ordering[0] == column)
+	if(set.ascending == ascending && set.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);
-	tags.ascending = ascending;
-	tags.ordering.moveToFront(static_cast<Tag::Fields>(column));
-	tags.sort();
+	set.ascending = ascending;
+	set.ordering.moveToFront(static_cast<@Type@::Fields>(column));
+	set.sort();
 }
 
-int TagsModel::index(const Text & name) const
+int @Type@Model::index(const Text & name) const
 {
-	if(tags.has(name))
-		return tags.index(name);
+	if(set.has(name))
+		return set.index(name);
 	else
 		return -1;
 }
 
-const Tag& TagsModel::tag(int row)
+const @Type@& @Type@Model::data(int row)
 {
-	return tags.queryAt(row);
+	return set.queryAt(row);
 }
 
-void TagsModel::del(int row)
+void @Type@Model::del(int row)
 {
-	Tag & tag = tags.queryAt(row);
-	db.del(tag);
+	@Type@ & obj = set.queryAt(row);
+	db.del(obj);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	tags.removeAt(row);
+	set.removeAt(row);
 }
 
-void TagsModel::addNew(Tag & tag)
+void @Type@Model::addNew(@Type@ & obj)
 {
-	db.insert(tag);
-	ModelInsertGuard g(this, QModelIndex(), tags.size(), tags.size());
-	tags.add(new Tag(tag));
+	db.insert(obj);
+	ModelInsertGuard g(this, QModelIndex(), set.size(), set.size());
+	set.add(new @Type@(obj));
 }
 
-void TagsModel::update(int row, Tag & modified)
+void @Type@Model::update(int row, @Type@ & modified)
 {
-	Tag & orig = tags.queryAt(row);
+	@Type@ & orig = set.queryAt(row);
 	db.update(orig, modified);
 	orig = modified;
-	dataChanged(index(row, 0), index(row, Tag::NumOfFields-1));
+	dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
 }
 
-void TagsModel::query()
+void @Type@Model::query()
 {
 	ModelResetGuard g(this);
-	db.query(tags);
+	db.query(set);
 }
 

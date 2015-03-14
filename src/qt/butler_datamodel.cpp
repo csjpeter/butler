@@ -10,3 +10,6 @@
 SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
 SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
 
+@declare@ Tag
+@include@ datamodel.cpp
+

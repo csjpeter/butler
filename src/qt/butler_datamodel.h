@@ -1,6 +1,6 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2015 Csaszar, Peter
  */
 
 #ifndef BUTLER_DATAMODEL_H
@@ -13,6 +13,7 @@
 @declare@ Tag
 class TagModel : public AbstractTableModel
 {
+@include@ datamodel.h
 };
 
 #endif

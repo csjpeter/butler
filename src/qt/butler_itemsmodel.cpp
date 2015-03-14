@@ -39,7 +39,8 @@ ItemsModel::ItemsModel(ItemDb & db, const WaresModel & wmodel) :
 
 ItemsModel::~ItemsModel()
 {
-	/* Since ItemsModel instances are held in a static storage class container somewhere,
+	/* FIXME
+	 * Since ItemsModel instances are held in a static storage class container somewhere,
 	 * it might happen on destruction time, that itemOperationListener (which is also a
 	 * static storage class object) got destroyed before some Itemsmodel instances. */
 	if(itemOperationListeners.has(*this))
@@ -60,8 +61,8 @@ Qt::ItemFlags ItemsModel::flags(const QModelIndex & index) const
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 		else
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-	} else if(index.row() < (int)items.size() &&
-			index.column() < Item::NumOfFields + 0){
+	} else
+	if(index.row() < (int)items.size() && index.column() < Item::NumOfFields + 0){
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else
 		return Qt::NoItemFlags;
