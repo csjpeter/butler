@@ -6,7 +6,7 @@
 #ifndef BUTLER_DBCLASSES_H
 #define BUTLER_DBCLASSES_H
 
-#include <butler_sql_connection.h>
+#include <butler_dataclasses.h>
 
 @declare@ Tag
 class TagDb

@@ -49,7 +49,7 @@ tmp/src/datamodel/test/%.opp: src/datamodel/test/%.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
 
-tmp/src/sql/test/%.opp: src/sql/test/%.cpp
+tmp/src/test/%.opp: src/test/%.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
 
@@ -57,7 +57,7 @@ tmp/src/datamodel/%.opp: src/datamodel/%.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) -o $@ $<
 
-tmp/src/sql/%.opp: src/sql/%.cpp \
+tmp/src/%.opp: src/%.cpp \
 		src/butler_dataclasses.h \
 		src/butler_dbclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -130,7 +130,7 @@ TEST_BINARIES=\
 #
 
 SQL_OBJECTS+= \
-	tmp/src/sql/butler_sql_connection.opp \
+	tmp/src/butler_sql_connection.opp \
 	tmp/src/butler_dataclasses.opp \
 	tmp/src/butler_dbclasses.opp
 
@@ -366,7 +366,7 @@ tmp/@TCROOT@@PREFIX@bin/@PKGNAME_BASE@@EXEC_POSTFIX@: \
 	$(LINK)
 
 @TCROOT@tmp/bin/test-@PKGNAME_BASE@-sql-% : \
-		tmp/src/sql/test/%.opp \
+		tmp/src/test/%.opp \
 		$(STATIC_LIBSQL) \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(LINK)

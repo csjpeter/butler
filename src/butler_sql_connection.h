@@ -14,7 +14,7 @@
 
 #include <butler_datetime.h>
 #include <butler_text.h>
-#include <butler_dataclasses.h>
+#include <butler_types.h>
 
 #include <QVariant>
 
@@ -111,8 +111,8 @@ public:
 	void bindValue(int pos, const DateTime & time);
 	void bindValue(int pos, const double d);
 	void bindValue(int pos, const int i);
-	void bindValue(int pos, const enum Query::StockOptions e);
-	void bindValue(int pos, const enum Query::TagOptions e);
+	void bindValue(int pos, const enum QueryStockOptions e);
+	void bindValue(int pos, const enum QueryTagOptions e);
 	void exec();
 	bool next();
 	unsigned colIndex(const QString & name);
@@ -165,14 +165,14 @@ inline bool & operator<<= (bool & b, const SqlVariant & v)
 	return b;
 }
 
-inline enum Query::StockOptions & operator<<= (enum Query::StockOptions & e, const SqlVariant & v)
+inline enum QueryStockOptions & operator<<= (enum QueryStockOptions & e, const SqlVariant & v)
 {
-	e = (enum Query::StockOptions)v.var.toInt(); return e;
+	e = (enum QueryStockOptions)v.var.toInt(); return e;
 }
 
-inline enum Query::TagOptions & operator<<= (enum Query::TagOptions & e, const SqlVariant & v)
+inline enum QueryTagOptions & operator<<= (enum QueryTagOptions & e, const SqlVariant & v)
 {
-	e = (enum Query::TagOptions)v.var.toInt(); return e;
+	e = (enum QueryTagOptions)v.var.toInt(); return e;
 }
 
 #endif

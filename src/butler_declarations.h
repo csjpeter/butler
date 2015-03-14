@@ -202,8 +202,8 @@
 		Text name; key						; TEXT
 		DateTime startDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime endDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		enum StockOptions stockOption;		; INTEGER NOT NULL
-		enum TagOptions tagOption;			; INTEGER NOT NULL
+		enum QueryStockOptions stockOption;		; INTEGER NOT NULL
+		enum QueryTagOptions tagOption;			; INTEGER NOT NULL
 		QueryWithTagSet withTags; set		;
 		QueryWithoutTagSet withoutTags; set	;
 		QueryWareSet wares; set				;

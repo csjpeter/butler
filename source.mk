@@ -210,14 +210,14 @@ $(DIST_DIR)/%.in: %.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh $*.in > $@
 
-$(DIST_DIR)/src/sql/butler_sql_connection.h: \
+$(DIST_DIR)/src/butler_sql_connection.h: \
 		tpl/dataclass_members.h \
 		tpl/dataclass_nonmembers.h \
 		tpl/dataclass_set.h \
-		src/sql/butler_sql_connection.h \
+		src/butler_sql_connection.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/sql/butler_sql_connection.h > $@
+	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_sql_connection.h > $@
 
 $(DIST_DIR)/src/butler_dataclasses.h: \
 		tpl/dbclass.h \
@@ -280,6 +280,7 @@ source: \
 	$(DIST_DIR)/src/butler_datetime.h \
 	$(DIST_DIR)/src/qt/butler_abstract_table_model.h \
 	$(DIST_DIR)/src/butler_macros.h \
+	$(DIST_DIR)/src/butler_types.h \
 	$(DIST_DIR)/src/butler_conversions.h \
 	$(DIST_DIR)/src/butler_dataclasses.h \
 	$(DIST_DIR)/src/butler_dataclasses.cpp \
@@ -302,8 +303,8 @@ source: \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.cpp \
 	$(DIST_DIR)/src/qt/butler_kineticscroller.h \
 	\
-	$(DIST_DIR)/src/sql/butler_sql_connection.h \
-	$(DIST_DIR)/src/sql/butler_sql_connection.cpp \
+	$(DIST_DIR)/src/butler_sql_connection.h \
+	$(DIST_DIR)/src/butler_sql_connection.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_tagsmodel.h \
 	$(DIST_DIR)/src/qt/butler_tagsmodel.cpp \

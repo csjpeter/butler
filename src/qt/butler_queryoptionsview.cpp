@@ -181,11 +181,11 @@ void QueryOptionsView::mapToGui()
 		partnerFilter.box.blockSignals(false);
 	}
 
-	if(query.stockOption == Query::StockOptions::AllItemChanges)
+	if(query.stockOption == QueryStockOptions::AllItemChanges)
 		stockOptAll.setChecked(true);
-	else if(query.stockOption == Query::StockOptions::Gains)
+	else if(query.stockOption == QueryStockOptions::Gains)
 		stockOptOnStock.setChecked(true);
-	else if(query.stockOption == Query::StockOptions::Looses)
+	else if(query.stockOption == QueryStockOptions::Looses)
 		stockOptUsedUp.setChecked(true);
 
 	if(query.withTags.size()){
@@ -197,9 +197,9 @@ void QueryOptionsView::mapToGui()
 		withTagFilter.box.setChecked(false);
 		withTagFilter.box.blockSignals(false);
 	}
-	if(query.tagOption == Query::TagOptions::MatchAll)
+	if(query.tagOption == QueryTagOptions::MatchAll)
 		tagOptAllMatch.setChecked(true);
-	else if(query.tagOption == Query::TagOptions::MatchAny)
+	else if(query.tagOption == QueryTagOptions::MatchAny)
 		tagOptAnyMatch.setChecked(true);
 	tagsWidget.setTags(query.withTags);
 
@@ -240,20 +240,20 @@ void QueryOptionsView::mapFromGui()
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
-		query.stockOption = Query::StockOptions::AllItemChanges;
+		query.stockOption = QueryStockOptions::AllItemChanges;
 	else if(stockOptions.group.checkedButton() == &stockOptOnStock)
-		query.stockOption = Query::StockOptions::Gains;
+		query.stockOption = QueryStockOptions::Gains;
 	else if(stockOptions.group.checkedButton() == &stockOptUsedUp)
-		query.stockOption = Query::StockOptions::Looses;
+		query.stockOption = QueryStockOptions::Looses;
 
 	if(withTagFilter.box.isChecked()){
 		if(tagOptions.group.checkedButton() == &tagOptAllMatch)
-			query.tagOption = Query::TagOptions::MatchAll;
+			query.tagOption = QueryTagOptions::MatchAll;
 		else if(tagOptions.group.checkedButton() == &tagOptAnyMatch)
-			query.tagOption = Query::TagOptions::MatchAny;
+			query.tagOption = QueryTagOptions::MatchAny;
 		query.setAsWithTags(tagsWidget.selectedTags());
 	} else {
-		query.tagOption = Query::TagOptions::MatchAny;
+		query.tagOption = QueryTagOptions::MatchAny;
 		query.withTags.clear();
 	}
 
@@ -562,15 +562,15 @@ void QueryOptionsView::updateToolButtonStates()
 
 	if(!modified){
 		switch(query.stockOption) {
-			case Query::StockOptions::AllItemChanges :
+			case QueryStockOptions::AllItemChanges :
 				if(stockOptions.group.checkedButton() != &stockOptAll)
 					modified = true;
 				break;
-			case Query::StockOptions::Gains :
+			case QueryStockOptions::Gains :
 				if(stockOptions.group.checkedButton() != &stockOptOnStock)
 					modified = true;
 				break;
-			case Query::StockOptions::Looses :
+			case QueryStockOptions::Looses :
 				if(stockOptions.group.checkedButton() != &stockOptUsedUp)
 					modified = true;
 				break;
@@ -583,11 +583,11 @@ void QueryOptionsView::updateToolButtonStates()
 	if(!modified){
 		if(withoutTagFilter.box.checkState()==Qt::Checked){
 			switch(query.tagOption) {
-				case (Query::TagOptions::MatchAll) :
+				case (QueryTagOptions::MatchAll) :
 					if(tagOptions.group.checkedButton() != &tagOptAllMatch)
 					modified = true;
 					break;
-				case Query::TagOptions::MatchAny :
+				case QueryTagOptions::MatchAny :
 					if(tagOptions.group.checkedButton() != &tagOptAnyMatch)
 						modified = true;
 					break;
@@ -595,7 +595,7 @@ void QueryOptionsView::updateToolButtonStates()
 					modified = true;
 					break;
 			}
-		} else if(query.tagOption != Query::TagOptions::MatchAny)
+		} else if(query.tagOption != QueryTagOptions::MatchAny)
 			modified = true;
 	}
 

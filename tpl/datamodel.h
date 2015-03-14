@@ -1,19 +1,3 @@
-/** 
- * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
- */
-
-#ifndef BUTLER_TAGSMODEL_H
-#define BUTLER_TAGSMODEL_H
-
-#include <butler_abstract_table_model.h>
-
-#include <butler_dbclasses.h>
-
-#include <butler_config.h>
-
-class TagsModel : public AbstractTableModel
-{
 private:
 	Q_OBJECT
 	MY_Q_OBJECT;
@@ -57,6 +41,3 @@ public:
 private:
 	TagDb & db;
 	TagSet tags;
-};
-
-#endif

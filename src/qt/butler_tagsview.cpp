@@ -231,7 +231,7 @@ void TagsView::refresh()
 
 void TagsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void TagsView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

@@ -34,7 +34,7 @@ ItemsModel::ItemsModel(ItemDb & db, const WaresModel & wmodel) :
 {
 	itemOperationListeners.add(*this);
 	opts.endDate = DateTime::now();
-	opts.tagOption = Query::TagOptions::MatchAny;
+	opts.tagOption = QueryTagOptions::MatchAny;
 }
 
 ItemsModel::~ItemsModel()

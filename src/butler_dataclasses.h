@@ -14,6 +14,8 @@
 #include <butler_datetime.h>
 #include <butler_text.h>
 
+#include <butler_sql_connection.h>
+
 
 typedef csjp::OwnerContainer<Text> StringSet;
 
@@ -339,18 +341,6 @@ class QueryPartner
 @declare@ Query
 class Query
 {
-public:
-	enum class StockOptions {
-		AllItemChanges,
-		Gains,
-		Looses
-	};
-
-	enum class TagOptions {
-		MatchAll,
-		MatchAny
-	};
-
 	@include@ dataclass_members.h
 
 	/* non-transactional */

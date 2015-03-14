@@ -69,11 +69,11 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	
 	QString filter;
 
-	if(q.stockOption == Query::StockOptions::Gains){
+	if(q.stockOption == QueryStockOptions::Gains){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " 0 < quantity";
-	} else if(q.stockOption == Query::StockOptions::Looses){
+	} else if(q.stockOption == QueryStockOptions::Looses){
 		if(!filter.isEmpty())
 			filter += " AND";
 		filter += " quantity < 0";
@@ -167,7 +167,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	
 	cmd += " GROUP BY items.upload_date";
 
-	if(q.tagOption == Query::TagOptions::MatchAll){
+	if(q.tagOption == QueryTagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";
 		cmd += QString::number(q.withTags.size());
 	}

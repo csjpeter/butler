@@ -1,15 +1,3 @@
-/** 
- * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
- */
-
-#include <QtGui>
-
-#include "butler_tagsmodel.h"
-
-SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
-SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
-
 TagsModel::TagsModel(TagDb & db) :
 	db(db)
 {
