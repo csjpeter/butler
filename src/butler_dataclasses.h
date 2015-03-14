@@ -69,6 +69,17 @@ inline QStringList & operator<<= (QStringList & list, const WareTypeSet & wareTy
 		list.append(wareType.type);
 	return list;
 }
+/* non-transactional */
+inline QString & operator<<= (QString & str, const WareTypeSet & wareTypes)
+{
+	str.clear();
+	for(auto & wareType : wareTypes){
+		if(str.length())
+			str.append(", ");
+		str.append(wareType.type);
+	}
+	return str;
+}
 
 
 @declare@ WareTag
@@ -98,12 +109,43 @@ inline QStringList & operator<<= (QStringList & list, const WareTagSet & wareTag
 		list.append(wareTag.tag);
 	return list;
 }
+inline bool operator==(const WareTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+inline bool operator!=(const WareTagSet & a, const StringSet & b)
+{
+	return !(a == b);
+}
 
 
 @declare@ Ware
 class Ware
 {
 	@include@ dataclass_members.h
+
+	/* non-transactional */
+	void setAsTypes(const QString & str)
+	{
+		QStringList sl;
+		sl = str.split(",", QString::SkipEmptyParts);
+		for(auto & s :sl)
+			s = s.trimmed();
+		for(auto & type : types)
+			if(!sl.contains(type.type))
+				type.deleted = true;
+		for(auto & s : sl){
+			Text type(s);
+			if(!types.has(type))
+				types.add(new WareType(name, type));
+		}
+	}
 
 	/* non-transactional */
 	void setAsTypes(const QStringList & strings)
@@ -125,6 +167,19 @@ class Ware
 			if(!strings.contains(tag.tag))
 				tag.deleted = true;
 		for(auto & string : strings){
+			Text tag(string);
+			if(!tags.has(tag))
+				tags.add(new WareTag(name, tag));
+		}
+	}
+
+	/* non-transactional */
+	void setAsTags(const StringSet & stringSet)
+	{
+		for(auto & tag : tags)
+			if(!stringSet.has(tag.tag))
+				tag.deleted = true;
+		for(auto & string : stringSet){
 			Text tag(string);
 			if(!tags.has(tag))
 				tags.add(new WareTag(name, tag));

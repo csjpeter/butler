@@ -105,8 +105,10 @@ void EditWareView::mapToGui()
 
 	nameEditor.editor.setText(ware.name);
 	unitEditor.editor.setText(ware.unit);
-	//typesEditor.editor.setText(WaresModel::typesToString(ware.types));
-	//tagsWidget.setTags(ware.tags);
+	QString str;
+	str <<= ware.types;
+	typesEditor.editor.setText(str);
+	tagsWidget.setTags(ware.tags);
 
 	updateToolButtonStates();
 }
@@ -115,8 +117,8 @@ void EditWareView::mapFromGui()
 {
 	ware.name = nameEditor.editor.text();
 	ware.unit = unitEditor.editor.text();
-	//WaresModel::stringToTypes(typesEditor.editor.text(), ware.types);
-	//ware.tags = tagsWidget.selectedTags();
+	ware.setAsTypes(typesEditor.editor.text());
+	ware.setAsTags(tagsWidget.selectedTags());
 }
 
 void EditWareView::changeEvent(QEvent * event)
@@ -189,14 +191,11 @@ void EditWareView::relayout()
 
 void EditWareView::updateToolButtonStates()
 {
-	//StringSet types;
-	//types <<= typesEditor.editor.text();
 	bool modified = !(
 			ware.name == nameEditor.editor.text() &&
 			ware.unit == unitEditor.editor.text() &&
-			ware.types == typesEditor.editor.text()
-			//ware.types == types //&&
-			//ware.tags == tagsWidget.selectedTags()
+			ware.types == typesEditor.editor.text() &&
+			ware.tags == tagsWidget.selectedTags()
 			);
 
 	bool mandatoriesGiven = nameEditor.editor.text().size();

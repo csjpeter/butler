@@ -201,9 +201,7 @@ void QueryOptionsView::mapToGui()
 		tagOptAllMatch.setChecked(true);
 	else if(query.tagOption == Query::TagOptions::MatchAny)
 		tagOptAnyMatch.setChecked(true);
-	StringSet set;
-	set <<= query.withTags;
-	tagsWidget.setTags(set);
+	tagsWidget.setTags(query.withTags);
 
 	if(query.withoutTags.size()){
 		withoutTagFilter.box.blockSignals(true);
@@ -214,8 +212,7 @@ void QueryOptionsView::mapToGui()
 		withoutTagFilter.box.setChecked(false);
 		withoutTagFilter.box.blockSignals(false);
 	}
-	set <<= query.withoutTags;
-	withoutTagsWidget.setTags(set);
+	withoutTagsWidget.setTags(query.withoutTags);
 
 	updateToolButtonStates();
 }

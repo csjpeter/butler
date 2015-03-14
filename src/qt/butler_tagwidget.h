@@ -25,7 +25,9 @@ public:
 	TagWidget(const QString & dbname, QWidget * parent = 0);
 
 public:
-	void setTags(const StringSet & tags);
+	void setTags(const QueryWithTagSet & tags);
+	void setTags(const QueryWithoutTagSet & tags);
+	void setTags(const WareTagSet & tags);
 	StringSet selectedTags();
 	void selectAll();
 	void deselectAll();
@@ -38,6 +40,7 @@ signals:
 	void selectionChanged();
 
 private:
+	void setTags(const StringSet & tags);
 	virtual void showEvent(QShowEvent *event);
 	virtual void resizeEvent(QResizeEvent *event);
 

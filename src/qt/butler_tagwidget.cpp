@@ -169,6 +169,27 @@ void TagWidget::resizeEvent(QResizeEvent *event)
 	relayout();
 }
 
+void TagWidget::setTags(const WareTagSet & tags)
+{
+	StringSet ss;
+	ss <<= tags;
+	setTags(ss);
+}
+
+void TagWidget::setTags(const QueryWithTagSet & tags)
+{
+	StringSet ss;
+	ss <<= tags;
+	setTags(ss);
+}
+
+void TagWidget::setTags(const QueryWithoutTagSet & tags)
+{
+	StringSet ss;
+	ss <<= tags;
+	setTags(ss);
+}
+
 void TagWidget::setTags(const StringSet & tags)
 {
 	populate();
