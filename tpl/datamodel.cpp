@@ -1,6 +1,6 @@
 Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 {
-	if(index.row() < (int)set.size() && index.column() < @Type@::NumOfFields - 2)
+	if(index.row() < (int)dataSet.size() && index.column() < @Type@::NumOfFields - 2)
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	else
 		return Qt::NoItemFlags;
@@ -17,13 +17,13 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
 		return QVariant();
 
-	if((int)set.size() <= index.row())
+	if((int)dataSet.size() <= index.row())
 		return QVariant();
 
 	switch(index.column()){
 @For{Field@
 		case @Type@::@.EnumName@ :
-			return set.queryAt(index.row()).@.Name@;
+			return dataSet.queryAt(index.row()).@.Name@;
 			break;
 @}@
 		default :
@@ -45,7 +45,7 @@ QVariant @Type@Model::headerData(int section, Qt::Orientation orientation, int r
 	switch(section){
 @For{Field@
 		case @Type@::@.EnumName@ :
-			return QVariant(tr(Tid@Type@Field@.Name@));
+			return QVariant(tr(Tid@Type@Field@.EnumName@));
 			break;
 @}@
 		default :
@@ -66,13 +66,13 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 	if(role != Qt::EditRole)
 		return false;
 
-	if((int)set.size() <= index.row())
+	if((int)dataSet.size() <= index.row())
 		return false;
 
 	switch(index.column()){
 @For{Field@
 		case @Type@::@.EnumName@ :
-			set.queryAt(index.row()).@.Name@ <<= value;
+			dataSet.queryAt(index.row()).@.Name@ <<= value;
 			break;
 @}@
 		default :
@@ -98,7 +98,7 @@ int @Type@Model::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return set.size();
+	return dataSet.size();
 }
 
 int @Type@Model::columnCount(const QModelIndex & parent) const
@@ -125,46 +125,46 @@ bool @Type@Model::insertRows(
 void @Type@Model::sort(int column, Qt::SortOrder order)
 {
 	bool ascending = (order == Qt::AscendingOrder);
-	if(set.ascending == ascending && set.ordering[0] == column)
+	if(dataSet.ascending == ascending && dataSet.ordering[0] == column)
 		return;
 
 	ModelResetGuard g(this);
-	set.ascending = ascending;
-	set.ordering.moveToFront(static_cast<@Type@::Fields>(column));
-	set.sort();
+	dataSet.ascending = ascending;
+	dataSet.ordering.moveToFront(static_cast<@Type@::Fields>(column));
+	dataSet.sort();
 }
 
 int @Type@Model::index(const Text & name) const
 {
-	if(set.has(name))
-		return set.index(name);
+	if(dataSet.has(name))
+		return dataSet.index(name);
 	else
 		return -1;
 }
 
 const @Type@& @Type@Model::data(int row)
 {
-	return set.queryAt(row);
+	return dataSet.queryAt(row);
 }
 
 void @Type@Model::del(int row)
 {
-	@Type@ & obj = set.queryAt(row);
+	@Type@ & obj = dataSet.queryAt(row);
 	db.del(obj);
 	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	set.removeAt(row);
+	dataSet.removeAt(row);
 }
 
 void @Type@Model::addNew(@Type@ & obj)
 {
 	db.insert(obj);
-	ModelInsertGuard g(this, QModelIndex(), set.size(), set.size());
-	set.add(new @Type@(obj));
+	ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+	dataSet.add(new @Type@(obj));
 }
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
-	@Type@ & orig = set.queryAt(row);
+	@Type@ & orig = dataSet.queryAt(row);
 	db.update(orig, modified);
 	orig = modified;
 	dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
@@ -173,6 +173,6 @@ void @Type@Model::update(int row, @Type@ & modified)
 void @Type@Model::query()
 {
 	ModelResetGuard g(this);
-	db.query(set);
+	db.query(dataSet);
 }
 

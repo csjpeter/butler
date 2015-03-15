@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #ifndef BUTLER_TAGSMODEL_H
 #define BUTLER_TAGSMODEL_H
 
@@ -12,15 +12,15 @@
 
 #include <butler_config.h>
 
-class TagsModel : public AbstractTableModel
+class TagModel : public AbstractTableModel
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT;
 
 public:
-	TagsModel(TagDb & db);
-	virtual ~TagsModel();
+	TagModel(TagDb & db);
+	virtual ~TagModel();
 
 	virtual QModelIndex index(
 			int row, int column,
@@ -59,4 +59,5 @@ private:
 	TagSet tags;
 };
 
+#endif
 #endif

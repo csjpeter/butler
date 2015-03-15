@@ -21,7 +21,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("TagsView", "Refresh tag list");
 TagsView::TagsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(tagsModel(dbname)),
+	model(tagModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -148,7 +148,7 @@ void TagsView::loadState()
 	Text name;
 	name <<= settings.value(prefix + "/currentitem", "");
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.tagSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editTagView", false).toBool())
@@ -163,7 +163,7 @@ void TagsView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.tag(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -204,7 +204,7 @@ void TagsView::delTag()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Tag & tag = model.tag(row);
+	const Tag & tag = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a tag"),
@@ -219,11 +219,11 @@ void TagsView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.tag(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.tagSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());

@@ -29,7 +29,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditTagView", "Tag is updated.");
 EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(tagsModel(dbname)),
+	model(tagModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -92,7 +92,7 @@ void EditTagView::saveState()
 void EditTagView::mapToGui()
 {
 	if(cursor.isValid())
-		tag = Tag(model.tag(cursor.row()));
+		tag = Tag(model.data(cursor.row()));
 
 	nameEditor.editor.setText(tag.name);
 	descEditor.editor.setText(tag.description);
@@ -219,7 +219,7 @@ void EditTagView::saveSlot()
 	mapFromGui();
 
 	if(cursor.isValid()){
-		if(model.tag(cursor.row()) != tag)
+		if(model.data(cursor.row()) != tag)
 			model.update(cursor.row(), tag);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

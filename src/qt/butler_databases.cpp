@@ -31,7 +31,7 @@ private:
 	PartnerDb * partnerDb;
 	QueryDb * queryDb;
 	ItemDb * itemDb;
-	TagsModel * tagsModel;
+	TagModel * tagsModel;
 	WaresModel * waresModel;
 	CompaniesModel * companyModel;
 	BrandsModel * brandsModel;
@@ -120,12 +120,12 @@ public:
 		return csjp::Object<ItemsModel>(new ItemsModel(*itemDb, wares()));
 	}
 
-	TagsModel & tags()
+	TagModel & tags()
 	{
 		if(!tagDb)
 			tagDb = new TagDb(sqlConn());
 		if(!tagsModel)
-			tagsModel = new TagsModel(*tagDb);
+			tagsModel = new TagModel(*tagDb);
 		return *tagsModel;
 	}
 
@@ -323,7 +323,7 @@ Database & loadDatabase(const QString & name)
 	return databases.query(name);
 }
 
-TagsModel & tagsModel(const QString & dbname)
+TagModel & tagModel(const QString & dbname)
 {
 	return loadDatabase(dbname).tags();
 }

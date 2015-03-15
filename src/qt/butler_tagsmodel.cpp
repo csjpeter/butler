@@ -2,30 +2,30 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include <QtGui>
 
 #include "butler_tagsmodel.h"
 
-SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
-SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
+SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagModel", "Name");
+SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagModel", "Description");
 
-TagsModel::TagsModel(TagDb & db) :
+TagModel::TagModel(TagDb & db) :
 	db(db)
 {
 	query();
 }
 
-TagsModel::~TagsModel()
+TagModel::~TagModel()
 {
 }
 
-QModelIndex TagsModel::index(int row, int column, const QModelIndex & parent) const
+QModelIndex TagModel::index(int row, int column, const QModelIndex & parent) const
 {
 	return QAbstractTableModel::index(row, column, parent);
 }
 
-Qt::ItemFlags TagsModel::flags(const QModelIndex & index) const
+Qt::ItemFlags TagModel::flags(const QModelIndex & index) const
 {
 	if(index.row() < (int)tags.size() && 
 			index.column() < Tag::NumOfFields){
@@ -37,7 +37,7 @@ Qt::ItemFlags TagsModel::flags(const QModelIndex & index) const
 		return Qt::NoItemFlags;
 }
 
-QVariant TagsModel::data(const QModelIndex & index, int role) const 
+QVariant TagModel::data(const QModelIndex & index, int role) const 
 {
 	if(!index.isValid())
 		return QVariant();
@@ -65,7 +65,7 @@ QVariant TagsModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
-QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TagModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
 	if(role != Qt::DisplayRole)
@@ -88,7 +88,7 @@ QVariant TagsModel::headerData(int section, Qt::Orientation orientation, int rol
 	return QVariant();
 }
 
-bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool TagModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if(!index.isValid())
 		return false;
@@ -117,7 +117,7 @@ bool TagsModel::setData(const QModelIndex & index, const QVariant & value, int r
 	return true;
 }
 
-bool TagsModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
+bool TagModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role)
 {
 	(void)section;
 	(void)orientation;
@@ -128,35 +128,35 @@ bool TagsModel::setHeaderData(int section, Qt::Orientation orientation, const QV
 	return false;
 }
 
-int TagsModel::rowCount(const QModelIndex & parent) const
+int TagModel::rowCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
 	return tags.size();
 }
 
-int TagsModel::columnCount(const QModelIndex & parent) const
+int TagModel::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
 	return Tag::NumOfFields;
 }
 
-bool TagsModel::removeRows(
+bool TagModel::removeRows(
 		int row, int count, const QModelIndex & parent)
 {
 	ModelRemoveGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
-bool TagsModel::insertRows(
+bool TagModel::insertRows(
 		int row, int count, const QModelIndex & parent)
 {
 	ModelInsertGuard g(this, parent, row, row + count - 1);
 	return true;
 }
 
-void TagsModel::sort(int column, Qt::SortOrder order)
+void TagModel::sort(int column, Qt::SortOrder order)
 {
 	bool ascending = (order == Qt::AscendingOrder);
 	if(tags.ascending == ascending && tags.ordering[0] == column)
@@ -168,7 +168,7 @@ void TagsModel::sort(int column, Qt::SortOrder order)
 	tags.sort();
 }
 
-int TagsModel::index(const Text & name) const
+int TagModel::index(const Text & name) const
 {
 	if(tags.has(name))
 		return tags.index(name);
@@ -176,12 +176,12 @@ int TagsModel::index(const Text & name) const
 		return -1;
 }
 
-const Tag& TagsModel::tag(int row)
+const Tag& TagModel::tag(int row)
 {
 	return tags.queryAt(row);
 }
 
-void TagsModel::del(int row)
+void TagModel::del(int row)
 {
 	Tag & tag = tags.queryAt(row);
 	db.del(tag);
@@ -189,14 +189,14 @@ void TagsModel::del(int row)
 	tags.removeAt(row);
 }
 
-void TagsModel::addNew(Tag & tag)
+void TagModel::addNew(Tag & tag)
 {
 	db.insert(tag);
 	ModelInsertGuard g(this, QModelIndex(), tags.size(), tags.size());
 	tags.add(new Tag(tag));
 }
 
-void TagsModel::update(int row, Tag & modified)
+void TagModel::update(int row, Tag & modified)
 {
 	Tag & orig = tags.queryAt(row);
 	db.update(orig, modified);
@@ -204,9 +204,9 @@ void TagsModel::update(int row, Tag & modified)
 	dataChanged(index(row, 0), index(row, Tag::NumOfFields-1));
 }
 
-void TagsModel::query()
+void TagModel::query()
 {
 	ModelResetGuard g(this);
 	db.query(tags);
 }
-
+#endif

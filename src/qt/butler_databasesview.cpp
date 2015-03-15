@@ -230,7 +230,7 @@ void DatabasesView::useDbDesc()
 	try {
 		QString dbname(model.query(row).name);
 
-		tagsModel(dbname);
+		tagModel(dbname);
 		waresModel(dbname);
 		inventoriesModel(dbname);
 		companiesModel(dbname);

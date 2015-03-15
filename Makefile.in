@@ -45,26 +45,6 @@ LINK_STATIC=ar cqs $@ $^
 
 TESTDIR=tmp/@PKGNAME@/test/
 
-tmp/src/test/%.opp: src/test/%.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
-
-tmp/src/%.opp: src/%.cpp \
-		src/butler_dataclasses.h \
-		src/butler_dbclasses.h
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
-
-tmp/src/qt/%.opp: src/qt/%.cpp \
-		src/butler_dataclasses.h \
-		src/butler_dbclasses.h
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
-
-@TCROOT@@PREFIX@include/@PKGNAME@/%.h: src/%.h
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp -pd $< $@
-
 tmp/src/qt/moc/%.opp: tmp/src/qt/moc/%.cpp
 	$(TARGETINFO)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -77,6 +57,26 @@ tmp/src/qt/moc/%.cpp: src/qt/%.h
 	$(MOC) -o $@ $<
 	@touch $@
 	$(TARGETFINISHED)
+
+tmp/src/test/%.opp: src/test/%.cpp
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
+
+tmp/src/qt/%.opp: src/qt/%.cpp \
+		src/butler_dataclasses.h \
+		src/butler_dbclasses.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
+
+tmp/src/%.opp: src/%.cpp \
+		src/butler_dataclasses.h \
+		src/butler_dbclasses.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
+
+@TCROOT@@PREFIX@include/@PKGNAME@/%.h: src/%.h
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp -pd $< $@
 
 @TCROOT@@PREFIX@lib/% : \
 		tmp/@TCROOT@@PREFIX@lib/%

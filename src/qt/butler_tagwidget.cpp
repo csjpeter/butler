@@ -15,7 +15,7 @@
 TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
 	QWidget(parent),
 	dbname(dbname),
-	tagSet(tagsModel(dbname).tagSet()),
+	tagSet(tagModel(dbname).set),
 	columns(1),
 	maxTagCheckboxWidth(1)
 {

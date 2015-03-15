@@ -9,6 +9,8 @@
 #include <csjp_exception.h>
 #include <csjp_object.h>
 
+#include <butler_datamodel.h>
+
 #include <butler_tagsmodel.h>
 #include <butler_brandsmodel.h>
 #include <butler_waresmodel.h>
@@ -23,7 +25,7 @@
 void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
-TagsModel & tagsModel(const QString & dbname);
+TagModel & tagModel(const QString & dbname);
 WaresModel & waresModel(const QString & dbname);
 CompaniesModel & companiesModel(const QString & dbname);
 BrandsModel & brandsModel(const QString & dbname);

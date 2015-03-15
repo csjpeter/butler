@@ -46,7 +46,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	TagsModel & model;
+	TagModel & model;
 	QModelIndex cursor;
 	Tag tag;
 

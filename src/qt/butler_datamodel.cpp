@@ -5,10 +5,12 @@
 
 #include <QtGui>
 
-#include "butler_datamodel.h"
+#include <butler_datamodel.h>
 
-SCC TidTagFieldName		= QT_TRANSLATE_NOOP("TagsModel", "Name");
-SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagsModel", "Description");
+SCC TidTagFieldName			= QT_TRANSLATE_NOOP("TagModel", "Name");
+SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagModel", "Description");
+SCC TidTagFieldLastModified	= QT_TRANSLATE_NOOP("TagModel", "Last modification date");
+SCC TidTagFieldDeleted		= QT_TRANSLATE_NOOP("TagModel", "Is deleted");
 
 @declare@ Tag
 @include@ datamodel.cpp
