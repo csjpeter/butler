@@ -21,13 +21,14 @@ public:
 		constraint(constraint),
 		key(false),
 		set(false),
-		link(false)
+		link(false),
+		derived(false)
 	{
 	}
 
 	FieldDesc(const StringChunk & name, const StringChunk & type,
 			const StringChunk & sqlDecl, const StringChunk & comment,
-			bool key, bool set, bool link) :
+			bool key, bool set, bool link, bool derived) :
 		name(name),
 		type(type),
 		enumName(name),
@@ -35,7 +36,8 @@ public:
 		comment(comment),
 		key(key),
 		set(set),
-		link(link)
+		link(link),
+		derived(derived)
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
@@ -55,6 +57,7 @@ public:
 	bool key;
 	bool set;
 	bool link;
+	bool derived;
 };
 
 bool operator<(const FieldDesc & a, const FieldDesc & b)
@@ -117,12 +120,14 @@ public:
 		bool key = false;
 		bool set = false;
 		bool link = false;
+		bool derived = false;
 		if(1 < words.length){
 			auto modifiers = words[1].split(",");
 			for(auto& mod : modifiers) mod.trim(" \t");
 			key = modifiers.has("key");
 			set = modifiers.has("set");
 			link = modifiers.has("link");
+			derived = modifiers.has("derived");
 		}
 
 		StringChunk sql;
@@ -130,7 +135,7 @@ public:
 			sql = words[2];
 
 		fields.setCapacity(fields.capacity+1);
-		fields.add(name, type, sql, comment, key, set, link);
+		fields.add(name, type, sql, comment, key, set, link, derived);
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -270,6 +275,8 @@ public:
 
 		if(tpl.chopFront("@For{Field@"))
 			what = "Field";
+		else if(tpl.chopFront("@For{DerivedField@"))
+			what = "DerivedField";
 		else if(tpl.chopFront("@For{TableField@"))
 			what = "TableField";
 		else if(tpl.chopFront("@For{LinkField@"))
@@ -297,11 +304,14 @@ public:
 		while(i < fields.length){
 			const auto& field = fields[i];
 			if((what == "Field" && !field.name.length)
+					|| (what == "Field" && field.derived)
+					|| (what == "DerivedField" && !field.derived)
 					|| (what == "KeyField" && !field.key)
 					|| (what == "LinkField" && !field.link)
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
+					|| (what == "TableField" && field.derived)
 					|| (what == "SetField" && !field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;
@@ -386,11 +396,14 @@ public:
 			const auto& field = fields[i];
 
 			if((what == "Field" && !field.name.length)
+					|| (what == "Field" && field.derived)
+					|| (what == "DerivedField" && !field.derived)
 					|| (what == "KeyField" && !field.key)
 					|| (what == "LinkField" && !field.link)
 					|| (what == "NonKeyField" && field.key)
 					|| (what == "TableField" && !field.name.length)
 					|| (what == "TableField" && field.set)
+					|| (what == "TableField" && field.derived)
 					|| (what == "SetField" && !field.set)
 					|| (what == "Constraint" && field.name.length)){
 				i++;

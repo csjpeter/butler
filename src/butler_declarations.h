@@ -190,6 +190,8 @@
 		DateTime invChangeDate;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		double unitPrice; derived	; DECIMAL(15,3) NOT NULL
+		double quantityWithUnit; derived	; TEXT
 		}
 	Constraints {
 		PRIMARY KEY (uploadDate)

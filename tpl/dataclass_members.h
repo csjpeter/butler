@@ -9,6 +9,10 @@ public:
 		@.EnumName@,
 @}@
 		NumOfFields
+@For{DerivedField@
+		, @.EnumName@ = NumOfFields + @.Idx@
+@}@
+		, NumOfAllFields
 	};
 
 public:

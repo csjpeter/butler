@@ -1,6 +1,10 @@
+csjp::ReferenceContainer<@Type@Model> @Type@Model::operationListeners;
+
 Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 {
 	if(index.row() < (int)dataSet.size() && index.column() < @Type@::NumOfFields - 2)
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+	else if(index.row() < (int)dataSet.size() && index.column() < @Type@::NumOfAllFields)
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	else
 		return Qt::NoItemFlags;
@@ -26,6 +30,11 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 			return dataSet.queryAt(index.row()).@.Name@;
 			break;
 @}@
+@For{DerivedField@
+		case @Type@::@.EnumName@ :
+			return QVariant();
+			break;
+@}@
 		default :
 			return QVariant();
 	}
@@ -44,6 +53,11 @@ QVariant @Type@Model::headerData(int section, Qt::Orientation orientation, int r
 
 	switch(section){
 @For{Field@
+		case @Type@::@.EnumName@ :
+			return QVariant(tr(Tid@Type@Field@.EnumName@));
+			break;
+@}@
+@For{DerivedField@
 		case @Type@::@.EnumName@ :
 			return QVariant(tr(Tid@Type@Field@.EnumName@));
 			break;
@@ -73,6 +87,11 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 @For{Field@
 		case @Type@::@.EnumName@ :
 			dataSet.queryAt(index.row()).@.Name@ <<= value;
+			break;
+@}@
+@For{DerivedField@
+		case @Type@::@.EnumName@ :
+			//dataSet.queryAt(index.row()).@.Name@ <<= value;
 			break;
 @}@
 		default :
@@ -105,7 +124,7 @@ int @Type@Model::columnCount(const QModelIndex & parent) const
 {
 	(void)parent;
 
-	return @Type@::NumOfFields;
+	return @Type@::NumOfAllFields;
 }
 
 bool @Type@Model::removeRows(
@@ -151,28 +170,79 @@ void @Type@Model::del(int row)
 {
 	@Type@ & obj = dataSet.queryAt(row);
 	db.del(obj);
-	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	dataSet.removeAt(row);
+	objRemoved(db, obj);
 }
 
 void @Type@Model::addNew(@Type@ & obj)
 {
 	db.insert(obj);
-	ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
-	dataSet.add(new @Type@(obj));
+	objChange(db, obj);
 }
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
 	@Type@ & orig = dataSet.queryAt(row);
 	db.update(orig, modified);
-	orig = modified;
-	dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+	objChange(db, modified);
 }
 
 void @Type@Model::query()
 {
 	ModelResetGuard g(this);
 	db.query(dataSet);
+}
+
+void @Type@Model::objRemoved(const @Type@Db & db, const @Type@ & r)
+{
+	for(auto & i : operationListeners)
+		i.objRemovedListener(db, r);
+}
+
+void @Type@Model::objRemovedListener(const @Type@Db & db, const @Type@ & r)
+{
+	if(& db != &(this->db))
+		return;
+
+	if(!dataSet.has(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@))
+		return;
+
+	int row = dataSet.index(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@);
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	dataSet.removeAt(row);
+}
+
+void @Type@Model::objChange(const @Type@Db & db, const @Type@ & modified)
+{
+	for(auto & i : operationListeners)
+		i.objChangeListener(db, modified);
+}
+
+bool @Type@Model::queryFilter(const @Type@ & modified)
+{
+	(void)(modified);
+	return true;
+}
+
+void @Type@Model::objChangeListener(const @Type@Db & db, const @Type@ & modified)
+{
+	if(& db != &(this->db))
+		return;
+
+	bool want = queryFilter(modified);
+	if(dataSet.has(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@)){
+		int row = dataSet.index(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@);
+		if(want){
+			dataSet.queryAt(row) = modified;
+			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+		} else {
+			ModelRemoveGuard g(this, QModelIndex(), row, row);
+			dataSet.removeAt(row);
+		}
+	} else {
+		if(want){
+			ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+			dataSet.add(new @Type@(modified));
+		}
+	}
 }
 

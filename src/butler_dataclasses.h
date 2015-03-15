@@ -102,7 +102,6 @@ inline StringSet & operator<<= (StringSet & list, const WareTagSet & wareTags)
 		list.add(new Text(wareTag.tag));
 	return list;
 }
-
 /* non-transactional */
 inline QStringList & operator<<= (QStringList & list, const WareTagSet & wareTags)
 {
@@ -110,6 +109,17 @@ inline QStringList & operator<<= (QStringList & list, const WareTagSet & wareTag
 	for(auto & wareTag : wareTags)
 		list.append(wareTag.tag);
 	return list;
+}
+/* non-transactional */
+inline QString & operator<<= (QString & str, const WareTagSet & wareTags)
+{
+	str.clear();
+	for(auto & wareTag : wareTags){
+		if(str.length())
+			str.append(", ");
+		str.append(wareTag.tag);
+	}
+	return str;
 }
 inline bool operator==(const WareTagSet & a, const StringSet & b)
 {
@@ -159,6 +169,23 @@ class Ware
 			Text type(string);
 			if(!types.has(type))
 				types.add(new WareType(name, type));
+		}
+	}
+
+	/* non-transactional */
+	void setAsTags(const QString & str)
+	{
+		QStringList sl;
+		sl = str.split(",", QString::SkipEmptyParts);
+		for(auto & s :sl)
+			s = s.trimmed();
+		for(auto & tag : tags)
+			if(!sl.contains(tag.tag))
+				tag.deleted = true;
+		for(auto & s : sl){
+			Text tag(s);
+			if(!tags.has(tag))
+				tags.add(new WareTag(name, tag));
 		}
 	}
 

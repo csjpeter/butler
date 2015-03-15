@@ -13,8 +13,8 @@
 
 SCC TidWareFieldName = QT_TRANSLATE_NOOP("WaresModel", "Name");
 SCC TidWareFieldUnit = QT_TRANSLATE_NOOP("WaresModel", "Unit");
-//SCC TidWareFieldTypes = QT_TRANSLATE_NOOP("WaresModel", "Types");
-//SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
+SCC TidWareFieldTypes = QT_TRANSLATE_NOOP("WaresModel", "Types");
+SCC TidWareFieldTags = QT_TRANSLATE_NOOP("WaresModel", "Tags");
 
 WaresModel::WaresModel(WareDb & db) :
 	db(db)
@@ -70,7 +70,7 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 				return data;
 			}
 			break;
-/*		case Ware::Types :
+		case Ware::Types :
 			{
 				QString data;
 				data <<= wares.queryAt(index.row()).types;
@@ -83,7 +83,7 @@ QVariant WaresModel::data(const QModelIndex & index, int role) const
 				data <<= wares.queryAt(index.row()).tags;
 				return data;
 			}
-			break;*/
+			break;
 		default :
 			return QVariant();
 	}
@@ -107,12 +107,12 @@ QVariant WaresModel::headerData(int section, Qt::Orientation orientation, int ro
 		case Ware::Unit :
 			return QVariant(tr(TidWareFieldUnit));
 			break;
-/*		case Ware::Types :
+		case Ware::Types :
 			return QVariant(tr(TidWareFieldTypes));
 			break;
 		case Ware::Tags :
 			return QVariant(tr(TidWareFieldTags));
-			break;*/
+			break;
 		default :
 			return QVariant();
 	}
@@ -148,14 +148,14 @@ bool WaresModel::setData(const QModelIndex & index, const QVariant & value, int 
 			modified.unit <<= value;
 			update(row, modified);
 			break;
-/*		case Ware::Types :
-			stringToTypes(value.toString(), modified.types);
+		case Ware::Types :
+			modified.setAsTypes(value.toString());
 			update(row, modified);
 			break;
 		case Ware::Tags :
-			stringToTags(value.toString(), modified.tags);
+			modified.setAsTags(value.toString());
 			update(row, modified);
-			break;*/
+			break;
 		default :
 			return false;
 	}
