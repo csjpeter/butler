@@ -33,7 +33,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditWareView", "Ware is updated.");
 EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(waresModel(dbname)),
+	model(wareModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -101,7 +101,7 @@ void EditWareView::saveState()
 void EditWareView::mapToGui()
 {
 	if(cursor.isValid())
-		ware = Ware(model.ware(cursor.row()));
+		ware = Ware(model.data(cursor.row()));
 
 	nameEditor.editor.setText(ware.name);
 	unitEditor.editor.setText(ware.unit);
@@ -247,7 +247,7 @@ void EditWareView::saveSlot()
 	mapFromGui();
 
 	if(cursor.isValid()){
-		if(model.ware(cursor.row()) != ware)
+		if(model.data(cursor.row()) != ware)
 			model.update(cursor.row(), ware);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

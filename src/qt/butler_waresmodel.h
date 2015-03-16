@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #ifndef BUTLER_WARESMODEL_H
 #define BUTLER_WARESMODEL_H
 
@@ -63,4 +63,5 @@ protected:
 	WareSet wares;
 };
 
+#endif
 #endif

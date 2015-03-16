@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include <float.h>
 
 #include <QtGui>
@@ -446,3 +446,4 @@ bool operator<(const ItemsModel & a, const ItemsModel & b)
 {
 	return & a < & b;
 }
+#endif

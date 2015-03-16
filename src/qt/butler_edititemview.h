@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent = 0);
+	EditItemView(const QString & dbname, ItemModel & model, QWidget * parent = 0);
 	virtual ~EditItemView();
 
 	static EditItemView * newItemViewFactory(const QString & dbname);
@@ -56,8 +56,8 @@ private slots:
 public:
 	const QString dbname;
 private:
-	ItemsModel & model;
-	ItemsModel * ownModel;
+	ItemModel & model;
+	ItemModel * ownModel;
 	QModelIndex cursor;
 	Item item;
 	Ware ware;

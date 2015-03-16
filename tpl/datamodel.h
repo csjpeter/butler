@@ -3,13 +3,13 @@ private:
 	MY_Q_OBJECT;
 
 private:
-	@Type@Db & db;
+	SqlConnection & sql;
+	@Type@Db db;
 	@Type@Set dataSet;
 public:
 	const @Type@Set & set;
 
 public:
-	@Type@Model(@Type@Db & db) : db(db), set(dataSet) { operationListeners.add(*this); query(); }
 	virtual ~@Type@Model() {
 		/* FIXME
 		 * Since @Type@Model instances are held in a static storage class container somewhere,
@@ -47,17 +47,17 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(const Text & name) const NO_FCLOG;
-	const @Type@& data(int row) NO_FCLOG;
+	int index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const NO_FCLOG;
+	const @Type@& data(int row) const NO_FCLOG;
 	void del(int row);
 	void addNew(@Type@ &);
 	void update(int row, @Type@ & modified);
 	void query();
 
 protected:
+	bool queryFilter(const @Type@ & modified);
 	static void objChange(const @Type@Db & db, const @Type@ & modified);
 	/* return true if 'modified' should be in query list */
-	bool queryFilter(const @Type@ & modified);
 	void objChangeListener(const @Type@Db & db, const @Type@ & modified);
 	static void objRemoved(const @Type@Db & db, const @Type@ & removed);
 	void objRemovedListener(const @Type@Db & db, const @Type@ & removed);
@@ -66,3 +66,4 @@ private:
 	static csjp::ReferenceContainer<@Type@Model> operationListeners;
 
 private:
+

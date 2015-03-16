@@ -187,7 +187,7 @@ void CustomView::loadState()
 
 	DateTime uploadDate(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model->itemSet().has(uploadDate))
+	if(model->set.has(uploadDate))
 		tableView.setCurrentIndex(model->index(model->index(uploadDate), col));
 
 	if(settings.value(prefix + "/editItemView", false).toBool())
@@ -209,7 +209,7 @@ void CustomView::saveState()
 
 	QString uploadDate;
 	if(tableView.currentIndex().isValid()){
-		const Item & item = model->item(tableView.currentIndex().row());
+		const Item & item = model->data(tableView.currentIndex().row());
 		uploadDate = item.uploadDate.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploadDate);
@@ -225,13 +225,13 @@ void CustomView::refreshItems()
 {
 	DateTime uploadDate;
 	if(tableView.currentIndex().isValid()){
-		const Item & item = model->item(tableView.currentIndex().row());
+		const Item & item = model->data(tableView.currentIndex().row());
 		uploadDate = item.uploadDate;
 	}
 
 	model->query();
 
-	if(model->itemSet().has(uploadDate))
+	if(model->set.has(uploadDate))
 		tableView.setCurrentIndex(model->index(model->index(uploadDate), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -261,7 +261,7 @@ void CustomView::delItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item & item = model->item(row);
+	const Item & item = model->data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an item"),
@@ -282,7 +282,7 @@ void CustomView::shoppingItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item & item = model->item(row);
+	const Item & item = model->data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Adding to shopping list"),
@@ -303,11 +303,11 @@ void CustomView::editWare()
 		return;
 	}
 
-	WaresModel & wm = waresModel(dbname);
+	WareModel & wm = wareModel(dbname);
 	if(!editWareView)
 		editWareView = new EditWareView(dbname);
 
-	const Item & item = model->item(tableView.currentIndex().row());
+	const Item & item = model->data(tableView.currentIndex().row());
 
 	editWareView->setCursor(wm.index(wm.index(item.name), 0));
 	editWareView->activate();
@@ -341,7 +341,7 @@ void CustomView::statsItems()
 
 void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model->sort(logicalIndex, order == Qt::AscendingOrder);
+	model->sort(logicalIndex, order);
 }
 
 void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

@@ -53,7 +53,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queriesModel(dbname), Query::Name),
-	wareSelector(&waresModel(dbname), Ware::Name),
+	wareSelector(&wareModel(dbname), Ware::Name),
 	partnerSelector(&partnersModel(dbname), Partner::Name),
 	tagsWidget(dbname),
 	withoutTagsWidget(dbname)
@@ -155,7 +155,7 @@ void QueryOptionsView::mapToGui()
 	endDate.edit.setDateTime(query.endDate);
 
 	if(query.wares.size()){
-		WaresModel & wm = waresModel(dbname);
+		WareModel & wm = wareModel(dbname);
 		int row = wm.index(query.wares.queryAt(0).ware);
 		if(0 <= row){
 			wareFilter.box.blockSignals(true);
@@ -226,9 +226,9 @@ void QueryOptionsView::mapFromGui()
 	query.wares.clear();
 	if(wareFilter.box.isChecked()){
 		int i = wareSelector.box.currentIndex();
-		WaresModel & wm = waresModel(dbname);
+		WareModel & wm = wareModel(dbname);
 		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new QueryWare(query.name, wm.ware(i).name.trimmed()));
+			query.wares.add(new QueryWare(query.name, wm.data(i).name.trimmed()));
 	}
 	
 	query.partners.clear();

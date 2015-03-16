@@ -11,8 +11,6 @@
 
 #include "butler_databases.h"
 
-#include <butler_sql_connection.h>
-
 #include <QDir>
 
 DatabaseDescriptorSet descriptorSet;
@@ -22,17 +20,14 @@ class Database
 private:
 	QString dbname;
 	SqlConnection * sql;
-	TagDb * tagDb;
-	WareDb * wareDb;
 	CompanyDb * companyDb;
 	BrandDb * brandDb;
 	InventoryDb * inventoryDb;
 	AccountDb * accountDb;
 	PartnerDb * partnerDb;
 	QueryDb * queryDb;
-	ItemDb * itemDb;
 	TagModel * tagsModel;
-	WaresModel * waresModel;
+	WareModel * wareModel;
 	CompaniesModel * companyModel;
 	BrandsModel * brandsModel;
 	InventoriesModel * inventoriesModel;
@@ -45,17 +40,14 @@ public:
 	Database(const QString & dbname) :
 		dbname(dbname),
 		sql(0),
-		tagDb(0),
-		wareDb(0),
 		companyDb(0),
 		brandDb(0),
 		inventoryDb(0),
 		accountDb(0),
 		partnerDb(0),
 		queryDb(0),
-		itemDb(0),
 		tagsModel(0),
-		waresModel(0),
+		wareModel(0),
 		companyModel(0),
 		brandsModel(0),
 		inventoriesModel(0),
@@ -76,18 +68,15 @@ public:
 		delete companyModel;
 		delete inventoriesModel;
 		delete brandsModel;
-		delete waresModel;
+		delete wareModel;
 		delete tagsModel;
 
-		delete itemDb;
 		delete queryDb;
 		delete partnerDb;
 		delete accountDb;
 		delete companyDb;
 		delete inventoryDb;
 		delete brandDb;
-		delete wareDb;
-		delete tagDb;
 
 		delete sql;
 	}
@@ -112,30 +101,24 @@ private:
 	}
 
 public:
-	csjp::Object<ItemsModel> items()
+	csjp::Object<ItemModel> items()
 	{
-		if(!itemDb)
-			itemDb = new ItemDb(sqlConn());
 		/* Each item view shall have its own special item model. */
-		return csjp::Object<ItemsModel>(new ItemsModel(*itemDb, wares()));
+		return csjp::Object<ItemModel>(new ItemModel(sqlConn(), wares()));
 	}
 
 	TagModel & tags()
 	{
-		if(!tagDb)
-			tagDb = new TagDb(sqlConn());
 		if(!tagsModel)
-			tagsModel = new TagModel(*tagDb);
+			tagsModel = new TagModel(sqlConn());
 		return *tagsModel;
 	}
 
-	WaresModel & wares()
+	WareModel & wares()
 	{
-		if(!wareDb)
-			wareDb = new WareDb(sqlConn());
-		if(!waresModel)
-			waresModel = new WaresModel(*wareDb);
-		return *waresModel;
+		if(!wareModel)
+			wareModel = new WareModel(sqlConn());
+		return *wareModel;
 	}
 
 	CompaniesModel & company()
@@ -194,8 +177,6 @@ public:
 /*
 	ShoppingModel & shoppingItems()
 	{
-		if(!itemDb)
-			itemDb = new ItemDb(sqlConn());
 		if(!shoppingModel)
 			shoppingModel = new ShoppingModel(*itemDb, wares());
 		return *shoppingModel;
@@ -328,7 +309,7 @@ TagModel & tagModel(const QString & dbname)
 	return loadDatabase(dbname).tags();
 }
 
-WaresModel & waresModel(const QString & dbname)
+WareModel & wareModel(const QString & dbname)
 {
 	return loadDatabase(dbname).wares();
 }
@@ -368,7 +349,7 @@ ShoppingModel & shoppingModel(const QString & dbname)
 	return loadDatabase(dbname).shoppingItems();
 }
 */
-csjp::Object<ItemsModel> itemModel(const QString & dbname)
+csjp::Object<ItemModel> itemModel(const QString & dbname)
 {
 	return loadDatabase(dbname).items();
 }

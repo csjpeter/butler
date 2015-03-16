@@ -50,13 +50,13 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is updated.");
 
 EditItemView * EditItemView::newItemViewFactory(const QString & dbname)
 {
-	csjp::Object<ItemsModel> ownModel = itemModel(dbname);
+	csjp::Object<ItemModel> ownModel = itemModel(dbname);
 	EditItemView * view = new EditItemView(dbname, *ownModel);
 	view->ownModel = ownModel.release();
 	return view;
 }
 
-EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget * parent) :
+EditItemView::EditItemView(const QString & dbname, ItemModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model),
@@ -65,7 +65,7 @@ EditItemView::EditItemView(const QString & dbname, ItemsModel & model, QWidget *
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
-	wareEditor(&waresModel(dbname), Ware::Name),
+	wareEditor(&wareModel(dbname), Ware::Name),
 	brandEditor(&brandsModel(dbname), Brand::Name),
 	accountEditor(&accountsModel(dbname), Account::Name),
 	partnerEditor(&partnersModel(dbname), Partner::Name),
@@ -177,7 +177,7 @@ void EditItemView::saveState()
 void EditItemView::mapToGui()
 {
 	if(cursor.isValid()){
-		item = Item(model.item(cursor.row()));
+		item = Item(model.data(cursor.row()));
 		accountEditor.setText(item.partner);
 		accountNameEditFinishedSlot();
 		partnerEditor.setText(item.partner);
@@ -491,15 +491,15 @@ void EditItemView::saveSlot()
 	}
 
 	/* Add/update ware if neccessary. */
-	WaresModel & wm = waresModel(dbname);
+	WareModel & wm = wareModel(dbname);
 	i = wm.index(ware.name);
 	if(i == -1)
 		wm.addNew(ware);
-	else if(wm.ware(i) != ware)
+	else if(wm.data(i) != ware)
 		wm.update(i, ware);
 
 	if(cursor.isValid()){
-		if(model.item(cursor.row()) != item)
+		if(model.data(cursor.row()) != item)
 			model.update(cursor.row(), item);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));
@@ -607,12 +607,12 @@ void EditItemView::wareNameEditFinishedSlot()
 	QString lastCat = typeEditor.text();
 	typeEditor.box.clear();
 
-	WaresModel & wm = waresModel(dbname);
+	WareModel & wm = wareModel(dbname);
 	int i = wm.index(lastWareName);
 	if(i == -1)
 		ware = Ware();
 	else
-		ware = wm.ware(i);
+		ware = wm.data(i);
 
 	quantityEditor.setSuffix(ware.unit);
 	tagsWidget.setTags(ware.tags);

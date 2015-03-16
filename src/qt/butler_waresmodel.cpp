@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 //#define DEBUG
 #include <csjp_logger.h>
 #undef DEBUG
@@ -260,3 +260,4 @@ void WaresModel::sort(int column, bool ascending)
 	wares.ordering.moveToFront(static_cast<Ware::Fields>(column));
 	wares.sort();
 }
+#endif

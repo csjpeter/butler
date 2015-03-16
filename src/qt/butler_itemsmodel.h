@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #ifndef BUTLER_ITEMSMODEL_H
 #define BUTLER_ITEMSMODEL_H
 
@@ -83,4 +83,5 @@ private:
 
 bool operator<(const ItemsModel & a, const ItemsModel & b);
 
+#endif
 #endif

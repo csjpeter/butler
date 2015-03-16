@@ -26,7 +26,7 @@ void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
 TagModel & tagModel(const QString & dbname);
-WaresModel & waresModel(const QString & dbname);
+WareModel & wareModel(const QString & dbname);
 CompaniesModel & companiesModel(const QString & dbname);
 BrandsModel & brandsModel(const QString & dbname);
 InventoriesModel & inventoriesModel(const QString & dbname);
@@ -34,6 +34,6 @@ AccountsModel & accountsModel(const QString & dbname);
 PartnersModel & partnersModel(const QString & dbname);
 QueriesModel & queriesModel(const QString & dbname);
 //ShoppingModel & shoppingModel(const QString & dbname);
-csjp::Object<ItemsModel> itemModel(const QString & dbname);
+csjp::Object<ItemModel> itemModel(const QString & dbname);
 
 #endif

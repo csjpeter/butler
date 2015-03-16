@@ -54,7 +54,7 @@ private slots:
 public:
 	const QString dbname;
 private:
-	csjp::Object<ItemsModel> model;
+	csjp::Object<ItemModel> model;
 
 	ToolButton editButton;
 	ToolButton delButton;

@@ -22,7 +22,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("WaresView", "Refresh ware/service list
 WaresView::WaresView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(waresModel(dbname)),
+	model(wareModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -148,7 +148,7 @@ void WaresView::loadState()
 
 	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.wareSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editWareView", false).toBool())
@@ -163,7 +163,7 @@ void WaresView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.ware(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -204,7 +204,7 @@ void WaresView::delWare()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Ware & ware = model.ware(row);
+	const Ware & ware = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a ware"),
@@ -219,11 +219,11 @@ void WaresView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.ware(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.wareSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -231,7 +231,7 @@ void WaresView::refresh()
 
 void WaresView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void WaresView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

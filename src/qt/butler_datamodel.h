@@ -16,6 +16,48 @@
 class TagModel : public AbstractTableModel
 {
 @include@ datamodel.h
+@include@ datamodel_spec.h
+};
+
+@declare@ Ware
+class WareModel : public AbstractTableModel
+{
+@include@ datamodel.h
+@include@ datamodel_spec.h
+};
+
+@declare@ Item
+class ItemModel : public AbstractTableModel
+{
+@include@ datamodel.h
+public:
+	ItemModel(SqlConnection & sql, const WareModel & wmodel);
+	const WareModel & wmodel;
+private:
+	QVariant dataUnitPrice(int row) const
+	{
+		Item & item = dataSet.queryAt(row);
+		double unitPrice = 0;
+		//if(isnormal(item.quantity)) /*FIXME*/
+		unitPrice = item.price / item.quantity;
+		return QVariant(unitPrice);
+	}
+	QVariant dataQuantityWithUnit(int row) const
+	{
+		Item & item = dataSet.queryAt(row);
+		int i = wmodel.index(item.name);
+		QString val;
+		val.setNum(item.quantity, 'g', 3);
+		if(i != -1) {
+			const Ware & w = wmodel.data(i);
+			val += " ";
+			val += w.unit;
+		}
+		return QVariant(val);
+	}
+public:
+	Query opts;
+	QueryStat stat;
 };
 
 #endif

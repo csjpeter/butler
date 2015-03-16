@@ -252,6 +252,7 @@ $(DIST_DIR)/src/butler_dbclasses.cpp: \
 
 $(DIST_DIR)/src/qt/butler_datamodel.h: \
 		tpl/datamodel.h \
+		tpl/datamodel_spec.h \
 		src/qt/butler_datamodel.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -259,6 +260,7 @@ $(DIST_DIR)/src/qt/butler_datamodel.h: \
 
 $(DIST_DIR)/src/qt/butler_datamodel.cpp: \
 		tpl/datamodel.cpp \
+		tpl/datamodel_spec.cpp \
 		src/qt/butler_datamodel.cpp \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)

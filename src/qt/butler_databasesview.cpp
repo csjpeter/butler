@@ -231,7 +231,7 @@ void DatabasesView::useDbDesc()
 		QString dbname(model.query(row).name);
 
 		tagModel(dbname);
-		waresModel(dbname);
+		wareModel(dbname);
 		inventoriesModel(dbname);
 		companiesModel(dbname);
 		partnersModel(dbname);
@@ -239,7 +239,7 @@ void DatabasesView::useDbDesc()
 		brandsModel(dbname);
 		queriesModel(dbname);
 		//shoppingModel(dbname);
-		csjp::Object<ItemsModel> tmpModel(itemModel(dbname));
+		csjp::Object<ItemModel> tmpModel(itemModel(dbname));
 
 		Config::defaultDbName = dbname;
 		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));

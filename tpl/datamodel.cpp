@@ -27,7 +27,15 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 	switch(index.column()){
 @For{Field@
 		case @Type@::@.EnumName@ :
+			@IfNotSet{@
 			return dataSet.queryAt(index.row()).@.Name@;
+			@IfNotSet}@@IfIsSet{@
+			{
+				QString s;
+				s <<= dataSet.queryAt(index.row()).@.Name@;
+				return s;
+			}
+			@IfIsSet}@
 			break;
 @}@
 @For{DerivedField@
@@ -92,7 +100,7 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 			@IfNotSet{@
 			modified.@.Name@ <<= value;
 			@IfNotSet}@@IfIsSet{@
-			modified.setAs@.EnumName@s(value.toString());
+			modified.setAs@.EnumName@(value.toString());
 			@IfIsSet}@
 			update(row, modified);
 			break;
@@ -160,15 +168,15 @@ void @Type@Model::sort(int column, Qt::SortOrder order)
 	dataSet.sort();
 }
 
-int @Type@Model::index(const Text & name) const
+int @Type@Model::index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const
 {
-	if(dataSet.has(name))
-		return dataSet.index(name);
+	if(dataSet.has(@For{KeyField@@.Name@, @-@@.Name@@}@))
+		return dataSet.index(@For{KeyField@@.Name@, @-@@.Name@@}@);
 	else
 		return -1;
 }
 
-const @Type@& @Type@Model::data(int row)
+const @Type@& @Type@Model::data(int row) const
 {
 	return dataSet.queryAt(row);
 }
@@ -191,12 +199,6 @@ void @Type@Model::update(int row, @Type@ & modified)
 	@Type@ & orig = dataSet.queryAt(row);
 	db.update(orig, modified);
 	objChange(db, modified);
-}
-
-void @Type@Model::query()
-{
-	ModelResetGuard g(this);
-	db.query(dataSet);
 }
 
 void @Type@Model::objRemoved(const @Type@Db & db, const @Type@ & r)
@@ -222,12 +224,6 @@ void @Type@Model::objChange(const @Type@Db & db, const @Type@ & modified)
 {
 	for(auto & i : operationListeners)
 		i.objChangeListener(db, modified);
-}
-
-bool @Type@Model::queryFilter(const @Type@ & modified)
-{
-	(void)(modified);
-	return true;
 }
 
 void @Type@Model::objChangeListener(const @Type@Db & db, const @Type@ & modified)
