@@ -6,95 +6,85 @@
 #ifndef BUTLER_EDITITEMVIEW_H
 #define BUTLER_EDITITEMVIEW_H
 
-#include <QDialog>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
+#include <butler_tagwidget.h>
+#include <butler_pannview.h>
 
-#include <butler_item.h>
-
-#include "butler_itemsmodel.h"
-#include "butler_tagsmodel.h"
-
-/*forwards*/
-class QAction;
-class QToolButton;
-class QLineEdit;
-class QDoubleSpinBox;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QScrollArea;
-class QStandardItemModel;
-class QListView;
-class QStandardItemModel;
-class QComboBox;
-
-namespace Butler {
-
-class TagWidget;
-
-class EditItemView : public QDialog
+class EditItemView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	EditItemView(QWidget *parent, ItemsModel &);
+	EditItemView(const QString & dbname, ItemModel & model, QWidget * parent = 0);
+	virtual ~EditItemView();
+
+	static EditItemView * newItemViewFactory(const QString & dbname);
 
 	void setCursor(const QModelIndex& index);
-
-private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();
 
+private:
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout(bool test = false);
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
-	void nameEditFinishedSlot();
+	void saveSlot();
+	void resetSlot();
 	void quantityValueChangedSlot(double q);
-	void unitPriceEditingFinishedSlot();
-	void grossPriceValueChangedSlot(double g);
+	void unitPriceValueChangedSlot(double q);
+	void grossPriceValueChangedSlot(double q);
+	void wareNameEditFinishedSlot();
+	void wareNameEditFinishedSlot(int);
+	void accountNameEditFinishedSlot();
+	void accountNameEditFinishedSlot(int);
 
+public:
+	const QString dbname;
 private:
-	ItemsModel &model;
+	ItemModel & model;
+	ItemModel * ownModel;
 	QModelIndex cursor;
-	Item updatedItem;
+	Item item;
+	Ware ware;
 
-	QDateTimeEdit *uploadDateTime;
-	QLineEdit *nameEditor;
-	QComboBox *nameBox;
-	QLineEdit *categoryEditor;
-	QComboBox *categoryBox;
-	QDoubleSpinBox *quantityEditor;
-	QLabel *unitLabel;
-	QTextEdit *commentEditor;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QCheckBox *boughtCheck;
-	QDoubleSpinBox *unitPriceEditor;
-	QDoubleSpinBox *grossPriceEditor;
-	QDateTimeEdit *purchaseDateTime;
-	QComboBox *shopBox;
-	QCheckBox *onStockCheck;
+	ComboSelector wareEditor;
+	ComboSelector typeEditor;
+	ComboSelector brandEditor;
+	QuantityEditor quantityEditor;
+	PriceEditor unitPriceEditor;
+	PriceEditor grossPriceEditor;
+	ComboSelector accountEditor;
+	ComboSelector partnerEditor;
+	ComboSelector inventoryEditor;
+	DateTimeEditor invChangeDateTime;
+	DateTimeEditor uploadDateTime;
+	CommentEditor commentEditor;
+	TagWidget tagsWidget;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
+	QWidget * lastNumEdited;
+	QWidget * lastLastNumEdited;
+	Text lastWareName;
+	Text lastAccountName;
 };
 
-}
-
 #endif
-
-

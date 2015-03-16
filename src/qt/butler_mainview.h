@@ -6,90 +6,97 @@
 #ifndef BUTLER_MAINVIEW_H
 #define BUTLER_MAINVIEW_H
 
-#include <QWidget>
-
-#include <butler_query.h>
+#include <butler_pannview.h>
 
 /*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QStandardItemModel;
-class QSqlTableModel;
-
-namespace Butler {
-
 class ShoppingView;
-class StockView;
+class EditItemView;
 class CustomView;
-class ShopsView;
-class TagsView;
+class CompanyView;
+class PartnersView;
+class AccountsView;
 class WaresView;
+class TagsView;
+class BrandsView;
+class InventoriesView;
+class DatabasesView;
 class QueryOptionsView;
+class InfoView;
 
-class MainView : public QWidget
+class MainView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	static MainView& instance();
-
-protected:
 	MainView(QWidget *parent = 0);
-	~MainView();
+	virtual ~MainView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
-	void loadState();
-	void saveState();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
-	void openShoppingView();
-	void openStockView();
+	void activateSavedActiveWindow();
+	void activeDbChanged();
+	//void openTodoView();
+	//void openShoppingView();
+	void openEditItemView();
 	void openCustomView();
-	void openShopsView();
-	void openTagsView();
+	void openCompanyView();
+	void openPartnersView();
+	void openAccountsView();
 	void openWaresView();
+	void openTagsView();
+	void openBrandsView();
+	void openInventoriesView();
+	void openDatabasesView();
 	void openQueryOptionsView();
-
-	void about();
+	void openInfoView();
 
 private:
-	QToolBar *actionTB;
+	InfoLabel infoLabel;
 
-	QToolButton *shoppingTBtn;
-	QToolButton *stockTBtn;
-	QToolButton *customTBtn;
-	QToolButton *shopsTBtn;
-	QToolButton *tagsTBtn;
-	QToolButton *waresTBtn;
-//	QToolButton *queryOptionsTBtn;
+	ToolButton todoButton;
+	ToolButton shoppingButton;
+	ToolButton newItemButton;
+	ToolButton analiticsButton;
+	ToolButton companyButton;
+	ToolButton partnersButton;
+	ToolButton accountsButton;
+	ToolButton wareButton;
+	ToolButton tagButton;
+	ToolButton brandButton;
+	ToolButton inventoryButton;
+	ToolButton databasesButton;
+	ToolButton infoButton;
+	ToolButton quitButton;
 
-	QAction *shoppingAct;
-	QAction *stockAct;
-	QAction *customAct;
-	QAction *shopsAct;
-	QAction *tagsAct;
-	QAction *waresAct;
-//	QAction *queryOptionsAct;
-
+//	TodoView *todoView;
 	ShoppingView *shoppingView;
-	StockView *stockView;
+	EditItemView *newItemView;
 	CustomView *customView;
-	ShopsView *shopsView;
-	TagsView *tagsView;
+	CompanyView *companyView;
+	PartnersView *partnersView;
+	AccountsView *accountsView;
 	WaresView *waresView;
+	TagsView *tagsView;
+	BrandsView *brandsView;
+	InventoriesView *inventoriesView;
+	DatabasesView *databasesView;
 	QueryOptionsView *queryOptionsView;
+	InfoView *infoView;
 };
 
-}
-
 #endif
-
-

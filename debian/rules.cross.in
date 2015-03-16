@@ -4,51 +4,68 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-binary:
-	dh_testroot -O--parallel
-	dh_prep -O--parallel
-	dh_installdirs -O--parallel
-	dh_auto_install -O--parallel
-	dh_install -O--parallel
-	dh_installdocs -O--parallel
-	dh_installchangelogs -O--parallel
-	dh_installexamples -O--parallel
-	dh_installman -O--parallel
-	dh_installcatalogs -O--parallel
-	dh_installcron -O--parallel
-	dh_installdebconf -O--parallel
-	dh_installemacsen -O--parallel
-	dh_installifupdown -O--parallel
-	dh_installinfo -O--parallel
-	dh_installinit -O--parallel
-	dh_installmenu -O--parallel
-	dh_installmime -O--parallel
-	dh_installmodules -O--parallel
-	dh_installlogcheck -O--parallel
-	dh_installlogrotate -O--parallel
-	dh_installpam -O--parallel
-	dh_installppp -O--parallel
-	dh_installudev -O--parallel
-	dh_installwm -O--parallel
-	dh_installxfonts -O--parallel
-	dh_installgsettings -O--parallel
-	dh_bugfiles -O--parallel
-	dh_ucf -O--parallel
-	dh_lintian -O--parallel
-	dh_gconf -O--parallel
-	dh_icons -O--parallel
-	dh_perl -O--parallel
-	dh_usrlocal -O--parallel
-	dh_link -O--parallel
-	dh_compress -O--parallel
-	dh_fixperms -O--parallel
-	#dh_strip -O--parallel
-	#dh_makeshlibs -O--parallel
-	#dh_shlibdeps -O--parallel
-	dh_installdeb -O--parallel
-	dh_gencontrol -O--parallel
-	dh_md5sums -O--parallel
-	dh_builddeb -O--parallel
+export JOBS=$(shell cat /proc/cpuinfo | grep processor | wc -l)
+JOBS=$(shell expr $(shell cat /proc/cpuinfo | grep processor | wc -l) + 1)
+
+build-indep:
+
+build-arch:
+	dh_testdir
+	CFLAGS="" LDFLAGS="" ./configure
+	make build -j$(JOBS)
+	dh_auto_test
+
+build: build-indep build-arch
+
+binary-indep:
+
+binary-arch:
+	dh_testroot -a -O--parallel
+	dh_prep -a -O--parallel
+	dh_installdirs -a -O--parallel
+	dh_auto_install -a -O--parallel
+	dh_install -a -O--parallel
+	dh_installdocs -a -O--parallel
+	dh_installchangelogs -a -O--parallel
+	dh_installexamples -a -O--parallel
+	dh_installman -a -O--parallel
+	dh_installcatalogs -a -O--parallel
+	dh_installcron -a -O--parallel
+	dh_installdebconf -a -O--parallel
+	dh_installemacsen -a -O--parallel
+	dh_installifupdown -a -O--parallel
+	dh_installinfo -a -O--parallel
+	dh_installinit -a -O--parallel
+	dh_installmenu -a -O--parallel
+	dh_installmime -a -O--parallel
+	dh_installmodules -a -O--parallel
+	dh_installlogcheck -a -O--parallel
+	dh_installlogrotate -a -O--parallel
+	dh_installpam -a -O--parallel
+	dh_installppp -a -O--parallel
+	dh_installudev -a -O--parallel
+	dh_installwm -a -O--parallel
+	dh_installxfonts -a -O--parallel
+	dh_installgsettings -a -O--parallel
+	dh_bugfiles -a -O--parallel
+	dh_ucf -a -O--parallel
+	dh_lintian -a -O--parallel
+	dh_gconf -a -O--parallel
+	dh_icons -a -O--parallel
+	dh_perl -a -O--parallel
+	dh_usrlocal -a -O--parallel
+	dh_link -a -O--parallel
+	dh_compress -a -O--parallel
+	dh_fixperms -a -O--parallel
+	#dh_strip -a -O--parallel
+	#dh_makeshlibs -a -O--parallel
+	#dh_shlibdeps -a -O--parallel
+	dh_installdeb -a -O--parallel
+	dh_gencontrol -a -O--parallel
+	dh_md5sums -a -O--parallel
+	dh_builddeb -a -O--parallel --destdir=./
+
+binary: binary-indep binary-arch
 
 %:
 	dh --parallel $@

@@ -6,46 +6,60 @@
 #ifndef BUTLER_TAGWIDGET_H
 #define BUTLER_TAGWIDGET_H
 
-#include <QWidget>
-#include <QCheckBox>
+#include <QtGui>
 
-#include <butler_tag_set.h>
+#include <csjp_sorter_owner_container.h>
 
-#include <csjp_reference_container.h>
+#include <butler_dataclasses.h>
+#include <butler_widgets.h>
 
-#include "butler_waresmodel.h"
-#include "butler_tagsmodel.h"
-
-class QGridLayout;
-
-namespace Butler {
-
-class TagWidget;
+#include "butler_databases.h"
 
 class TagWidget : public QWidget
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	TagWidget(QWidget *parent, const TagSet &tagSet);
+	TagWidget(const QString & dbname, QWidget * parent = 0);
 
-	void prepareContent();
-	void setTags(const TagNameSet &tags);
-	void getTags(TagNameSet &tags);
+public:
+	void setTags(const QueryWithTagSet & tags);
+	void setTags(const QueryWithoutTagSet & tags);
+	void setTags(const WareTagSet & tags);
+	StringSet selectedTags();
 	void selectAll();
 	void deselectAll();
+	virtual QSize sizeHint() const;
+	virtual int heightForWidth(int w) const;
+
+	Label label;
+
+signals:
+	void selectionChanged();
 
 private:
-	const TagSet &tagSet;
-	csjp::ReferenceContainer<QCheckBox> btnContainer;
-	QGridLayout *gridLayout;
+	void setTags(const StringSet & tags);
+	virtual void showEvent(QShowEvent *event);
+	virtual void resizeEvent(QResizeEvent *event);
+
+private slots:
+	void populate();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void selectionChangedSlot();
+
+private:
+	const QString & dbname;
+	const TagSet & tagSet;
+	csjp::SorterOwnerContainer<QCheckBox> btnContainer;
+
+	int columns;
+	int maxTagCheckboxWidth;
 };
 
-}
-
-bool operator<(const QCheckBox &a, const QCheckBox &b);
+bool operator<(const QCheckBox & a, const QCheckBox & b);
 
 #endif
-
-

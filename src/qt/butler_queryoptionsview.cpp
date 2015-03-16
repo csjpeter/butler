@@ -8,257 +8,611 @@
 #include "butler_config.h"
 #include "butler_queryoptionsview.h"
 #include "butler_tagwidget.h"
-#include "butler_waresmodel.h"
-#include "butler_shopsmodel.h"
 
-namespace Butler {
+SCC TidContext = "QueryOptionsView";
 
-	QueryOptionsView::QueryOptionsView(Query &query, QWidget *parent) :
-		QDialog(parent),
-		query(query)
-	{
-		QGridLayout *gridLayout = new QGridLayout();
-		setLayout(gridLayout);
+SCC TidEditQueryWindowTitle = QT_TRANSLATE_NOOP("QueryOptionsView", "Select and edit query");
 
-		QLabel *label = NULL;
+SCC TidQueryButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Query");
+SCC TidSaveButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Save");
+SCC TidResetButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Reset");
+SCC TidDelButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Delete");
 
-		label = new QLabel(tr("Name :"), this);
-		gridLayout->addWidget(label, 0, 0, 1, 1);
-		nameEditor = new QLineEdit(this);
-		gridLayout->addWidget(nameEditor, 0, 1, 1, 3);
+SCC TidQuerySelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Query name:");
+SCC TidPartnerFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by partner:");
+SCC TidPartnerSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Business partner:");
+SCC TidWareFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by ware:");
+SCC TidWareSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Common ware name:");
 
-		label = new QLabel(tr("Start date :"), this);
-		gridLayout->addWidget(label, 1, 0, 1, 1);
-		startDate = new QDateTimeEdit(this);
-		startDate->setCalendarPopup(true);
-		startDate->setDisplayFormat(Config::instance().dateTimeFormat());
-		gridLayout->addWidget(startDate, 1, 1, 1, 3);
+SCC TidFromDateTimeEditor = QT_TRANSLATE_NOOP("QueryOptionsView", "From:");
+SCC TidTillDateTimeEditor = QT_TRANSLATE_NOOP("QueryOptionsView", "Till:");
 
-		label = new QLabel(tr("End date :"), this);
-		gridLayout->addWidget(label, 2, 0, 1, 1);
-		endDate = new QDateTimeEdit(this);
-		endDate->setCalendarPopup(true);
-		endDate->setDisplayFormat(Config::instance().dateTimeFormat());
-		gridLayout->addWidget(endDate, 2, 1, 1, 3);
+SCC TidWithTagFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by tags to have");
+//SCC TidWithTags = QT_TRANSLATE_NOOP("QueryOptionsView", "With some or all of these tags:");
+SCC TidWithoutTagFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by tags not to have");
+SCC TidWithoutTags = QT_TRANSLATE_NOOP("QueryOptionsView", "Without any of these tags:");
 
-		label = new QLabel(tr("Wares (any) :"), this);
-		gridLayout->addWidget(label, 3, 0, 1, 1);
-		wareFilter = new QCheckBox;
-		wareFilter->setTristate(false);
-		gridLayout->addWidget(wareFilter, 3, 1, 1, 1);
-		wareBox = new QComboBox;
-		wareBox->setModel(&WaresModel::instance());
-		wareBox->setModelColumn(WaresModel::Name);
-		gridLayout->addWidget(wareBox, 3, 2, 1, 2);
+SCC TidStockOptions = QT_TRANSLATE_NOOP("QueryOptionsView", "Stock option:");
+SCC TidStockOptAllRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all items");
+SCC TidStockOptOnStockRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items on stock");
+SCC TidStockOptUsedUpRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items used up");
 
-		label = new QLabel(tr("Shops (any) :"), this);
-		gridLayout->addWidget(label, 4, 0, 1, 1);
-		shopFilter = new QCheckBox;
-		shopFilter->setTristate(false);
-		gridLayout->addWidget(shopFilter, 4, 1, 1, 1);
-		shopBox = new QComboBox;
-		shopBox->setModel(&ShopsModel::instance());
-		shopBox->setModelColumn(Shop::Name);
-		gridLayout->addWidget(shopBox, 4, 2, 1, 2);
+SCC TidTagOptions = QT_TRANSLATE_NOOP("QueryOptionsView", "Tags need to match with");
+SCC TidTagOptAllMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all selected tags");
+SCC TidTagOptAnyMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "any selected tags");
 
-		label = new QLabel(tr("With these tags :"));
-		gridLayout->addWidget(label, 5, 0, 1, 4);
-		tagOptions = new QButtonGroup();
-		tagOptAllMatch = new QRadioButton;
-		tagOptAllMatch->setText(tr("all selected tag need to match"));
-		tagOptions->addButton(tagOptAllMatch);
-		gridLayout->addWidget(tagOptAllMatch, 6, 1, 1, 2);
-		tagOptAnyMatch = new QRadioButton;
-		tagOptAnyMatch->setText(tr("any selected tag enough to match"));
-		tagOptions->addButton(tagOptAnyMatch);
-		gridLayout->addWidget(tagOptAnyMatch, 7, 1, 1, 2);
-		tagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
-		gridLayout->addWidget(tagsSelector, 8, 0, 1, 4);
+SCC TidQuerySavedInfo = QT_TRANSLATE_NOOP("QueryOptionsView", "Query is saved.");
 
-		selectAllButton = new QPushButton;
-		selectAllButton->setAutoDefault(false);
-		connect(selectAllButton, SIGNAL(clicked(bool)),
-				this, SLOT(selectAllClickedSlot(bool)));
-		selectAllButton->setText(tr("Select all tags"));
-		gridLayout->addWidget(selectAllButton, 9, 1, 1, 1);
+QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
+	PannView(parent),
+	dbname(dbname),
+	queryButton(TidQueryButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Enter)),
+	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
+	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
+	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
+	nameEditor(&queryModel(dbname), Query::Name),
+	wareSelector(&wareModel(dbname), Ware::Name),
+	partnerSelector(&partnersModel(dbname), Partner::Name),
+	tagsWidget(dbname),
+	withoutTagsWidget(dbname)
+{
+	setWindowModality(Qt::ApplicationModal);
 
-		selectNoneButton = new QPushButton;
-		selectNoneButton->setAutoDefault(false);
-		connect(selectNoneButton, SIGNAL(clicked(bool)),
-				this, SLOT(selectNoneClickedSlot(bool)));
-		selectNoneButton->setText(tr("Deselect all tags"));
-		gridLayout->addWidget(selectNoneButton, 9, 2, 1, 1);
+	query.endDate = DateTime::now();
 
-		label = new QLabel(tr("Without these tags :"));
-		gridLayout->addWidget(label, 10, 0, 1, 4);
-		withoutTagsSelector = new TagWidget(this, TagsModel::instance().tagSet());
-		gridLayout->addWidget(withoutTagsSelector, 11, 0, 1, 4);
-	
-		label = new QLabel(tr("Stock option :"));
-		gridLayout->addWidget(label, 12, 0, 1, 4);
-		stockOptions = new QButtonGroup();
-		stockOptAll = new QRadioButton;
-		stockOptAll->setText(tr("all bought items"));
-		stockOptions->addButton(stockOptAll);
-		gridLayout->addWidget(stockOptAll, 13, 1, 1, 2);
-		stockOptOnStock = new QRadioButton;
-		stockOptOnStock->setText(tr("items on stock"));
-		stockOptions->addButton(stockOptOnStock);
-		gridLayout->addWidget(stockOptOnStock, 14, 1, 1, 2);
-		stockOptUsedUp = new QRadioButton;
-		stockOptUsedUp->setText(tr("items used up"));
-		stockOptions->addButton(stockOptUsedUp);
-		gridLayout->addWidget(stockOptUsedUp, 15, 1, 1, 2);
+	stockOptions.group.addButton(&stockOptAll);
+	stockOptions.group.addButton(&stockOptOnStock);
+	stockOptions.group.addButton(&stockOptUsedUp);
 
-		okButton = new QPushButton;
-		okButton->setAutoDefault(false);
-		okButton->setDefault(true);
-		connect(okButton, SIGNAL(clicked(bool)), this, SLOT(okClickedSlot(bool)));
-		okButton->setText(tr("Ok"));
-		gridLayout->addWidget(okButton, 16, 3, 1, 1);
+	tagOptions.group.addButton(&tagOptAllMatch);
+	tagOptions.group.addButton(&tagOptAnyMatch);
 
-		/* restore last state */
-		loadState();
-	}
+	toolBar.addToolWidget(queryButton);
+	toolBar.addToolWidget(saveButton);
+	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(resetButton);
 
-	QueryOptionsView::~QueryOptionsView()
-	{
-	}
+	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
+	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveClickedSlot()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delClickedSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetClickedSlot()));
 
-	void QueryOptionsView::showEvent(QShowEvent *event)
-	{
-		TagsModel::instance().query();
-		
-		mapToGui();
+	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
+	connect(&partnerFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
+	connect(&withTagFilter.box, SIGNAL(stateChanged(int)),
+			this, SLOT(layoutContentChangeSlot()));
+	connect(&withoutTagFilter.box, SIGNAL(stateChanged(int)),
+			this, SLOT(layoutContentChangeSlot()));
 
-		QWidget::showEvent(event);
-	}
+	connect(&nameEditor.box, SIGNAL(activated(const QString &)),
+			this, SLOT(querySelectedSlot()));
+	connect(&nameEditor.editor, SIGNAL(editingFinished()), this, SLOT(querySelectedSlot()));
 
-	void QueryOptionsView::closeEvent(QCloseEvent *event)
-	{
-		saveState();
+	connect(&nameEditor.box, SIGNAL(editTextChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&startDate.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&endDate.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&wareSelector.box, SIGNAL(currentIndexChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&partnerSelector.box, SIGNAL(currentIndexChanged(const QString &)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&stockOptAll, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&stockOptOnStock, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&stockOptUsedUp, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+/*	connect(&stockOptions, SIGNAL(buttonClicked(int)),
+			this, SLOT(updateToolButtonStates()));
+	connect(&tagOptions, SIGNAL(buttonClicked(int)),
+			this, SLOT(updateToolButtonStates()));*/
+	connect(&tagOptAllMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&tagOptAnyMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
+	connect(&tagsWidget, SIGNAL(selectionChanged()),
+			this, SLOT(updateToolButtonStates()));
+	connect(&withoutTagsWidget, SIGNAL(selectionChanged()),
+			this, SLOT(updateToolButtonStates()));
 
-		QWidget::closeEvent(event);
-	}
-
-	void QueryOptionsView::loadState()
-	{
-		QSettings settings(this);
-		QPoint pos = settings.value("queryoptionsview/position", QPoint()).toPoint();
-		QSize size = settings.value("queryoptionsview/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		move(pos);
-	}
-
-	void QueryOptionsView::saveState()
-	{
-		QSettings settings(this);
-		settings.setValue("queryoptionsview/position", pos());
-		settings.setValue("queryoptionsview/size", size());
-	}
-
-	void QueryOptionsView::mapToGui()
-	{
-		nameEditor->setText(query.name);
-		startDate->setDateTime(query.startDate);
-		endDate->setDateTime(query.endDate);
-
-
-/* FIXME *///		waresEditor->setText(stringSetToString(query.wares));
-/* FIXME *///		shopsEditor->setText(stringSetToString(query.shops));
-		
-		
-		tagsSelector->setTags(query.withTags);
-		withoutTagsSelector->setTags(query.withoutTags);
-
-		if(query.stockOption == Query::ALL_BOUGHT_ITEM)
-			stockOptAll->setChecked(true);
-		else if(query.stockOption == Query::ITEMS_ON_STOCK)
-			stockOptOnStock->setChecked(true);
-		else if(query.stockOption == Query::ITEMS_USED_UP)
-			stockOptUsedUp->setChecked(true);
-
-		if(query.tagOption == Query::MATCH_ALL_TAGS)
-			tagOptAllMatch->setChecked(true);
-		else if(query.tagOption == Query::MATCH_ANY_TAGS)
-			tagOptAnyMatch->setChecked(true);
-	}
-
-	void QueryOptionsView::mapFromGui()
-	{
-		query.name = nameEditor->text();
-		query.startDate = startDate->dateTime();
-		query.endDate = endDate->dateTime();
-
-		query.wares.clear();
-		if(wareFilter->isChecked()){
-			int i = wareBox->currentIndex();
-			WaresModel &wm = WaresModel::instance();
-			if(0 <= i && i < wm.rowCount())
-				query.wares.add(new QString(wm.ware(i).name.trimmed()));
-		}
-		
-		query.shops.clear();
-		if(shopFilter->isChecked()){
-			int i = shopBox->currentIndex();
-			ShopsModel &sm = ShopsModel::instance();
-			if(0 <= i && i < sm.rowCount())
-				query.shops.add(new QString(sm.shop(i).name.trimmed()));
-		}
-
-		tagsSelector->getTags(query.withTags);
-		withoutTagsSelector->getTags(query.withoutTags);
-
-		if(stockOptions->checkedButton() == stockOptAll)
-			query.stockOption = Query::ALL_BOUGHT_ITEM;
-		else if(stockOptions->checkedButton() == stockOptOnStock)
-			query.stockOption = Query::ITEMS_ON_STOCK;
-		else if(stockOptions->checkedButton() == stockOptUsedUp)
-			query.stockOption = Query::ITEMS_USED_UP;
-
-		if(tagOptions->checkedButton() == tagOptAllMatch)
-			query.tagOption = Query::MATCH_ALL_TAGS;
-		else if(tagOptions->checkedButton() == tagOptAnyMatch)
-			query.tagOption = Query::MATCH_ANY_TAGS;
-	}
-	
-	void QueryOptionsView::okClickedSlot(bool)
-	{
-		mapFromGui();
-
-		accept();
-	}
-/* Might be usefull later when we want to support multiple items in shop or ware set.
-	QString QueryOptionsView::stringSetToString(
-			const csjp::OwnerContainer<QString> &strSet)
-	{
-		QString result("");
-
-		int s = strSet.size();
-		if(s == 0)
-			return result;
-
-		result = strSet.queryAt(0);
-		int i;
-		for(i=1; i<s; i++){
-			result += ", ";
-			result += strSet.queryAt(i);
-		}
-
-		return result;
-	}
-*/
-
-	void QueryOptionsView::selectAllClickedSlot(bool)
-	{
-		tagsSelector->selectAll();
-	}
-
-	void QueryOptionsView::selectNoneClickedSlot(bool)
-	{
-		tagsSelector->deselectAll();
-	}
-
+	setupView();
+	retranslate();
+	loadState();
 }
 
+QueryOptionsView::~QueryOptionsView()
+{
+}
+
+void QueryOptionsView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+	PannView::showEvent(event);
+	relayout();
+}
+
+void QueryOptionsView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void QueryOptionsView::loadState()
+{
+	QString prefix("QueryOptionsView");
+	PannView::loadState(prefix);
+}
+
+void QueryOptionsView::saveState()
+{
+	QString prefix("QueryOptionsView");
+	PannView::saveState(prefix);
+}
+
+void QueryOptionsView::mapToGui()
+{
+	nameEditor.setText(query.name);
+	startDate.edit.setDateTime(query.startDate);
+	endDate.edit.setDateTime(query.endDate);
+
+	if(query.wares.size()){
+		WareModel & wm = wareModel(dbname);
+		int row = wm.index(query.wares.queryAt(0).ware);
+		if(0 <= row){
+			wareFilter.box.blockSignals(true);
+			wareFilter.box.setChecked(true);
+			wareFilter.box.blockSignals(false);
+			wareSelector.box.setCurrentIndex(row);
+		}
+	} else
+		wareFilter.box.setChecked(false);
+
+	if(query.partners.size()){
+		PartnerModel & sm = partnersModel(dbname);
+		int row = sm.index(query.partners.queryAt(0).partner);
+		if(0 <= row){
+			partnerFilter.box.blockSignals(true);
+			partnerFilter.box.setChecked(true);
+			partnerFilter.box.blockSignals(false);
+			partnerSelector.box.setCurrentIndex(row);
+		}
+	} else {
+		partnerFilter.box.blockSignals(true);
+		partnerFilter.box.setChecked(false);
+		partnerFilter.box.blockSignals(false);
+	}
+
+	if(query.stockOption == QueryStockOptions::AllItemChanges)
+		stockOptAll.setChecked(true);
+	else if(query.stockOption == QueryStockOptions::Gains)
+		stockOptOnStock.setChecked(true);
+	else if(query.stockOption == QueryStockOptions::Looses)
+		stockOptUsedUp.setChecked(true);
+
+	if(query.withTags.size()){
+		withTagFilter.box.blockSignals(true);
+		withTagFilter.box.setChecked(true);
+		withTagFilter.box.blockSignals(false);
+	} else {
+		withTagFilter.box.blockSignals(true);
+		withTagFilter.box.setChecked(false);
+		withTagFilter.box.blockSignals(false);
+	}
+	if(query.tagOption == QueryTagOptions::MatchAll)
+		tagOptAllMatch.setChecked(true);
+	else if(query.tagOption == QueryTagOptions::MatchAny)
+		tagOptAnyMatch.setChecked(true);
+	tagsWidget.setTags(query.withTags);
+
+	if(query.withoutTags.size()){
+		withoutTagFilter.box.blockSignals(true);
+		withoutTagFilter.box.setChecked(true);
+		withoutTagFilter.box.blockSignals(false);
+	} else {
+		withoutTagFilter.box.blockSignals(true);
+		withoutTagFilter.box.setChecked(false);
+		withoutTagFilter.box.blockSignals(false);
+	}
+	withoutTagsWidget.setTags(query.withoutTags);
+
+	updateToolButtonStates();
+}
+
+void QueryOptionsView::mapFromGui()
+{
+	query.name = nameEditor.text();
+	query.startDate = startDate.edit.dateTime();
+	query.endDate = endDate.edit.dateTime();
+
+	query.wares.clear();
+	if(wareFilter.box.isChecked()){
+		int i = wareSelector.box.currentIndex();
+		WareModel & wm = wareModel(dbname);
+		if(0 <= i && i < wm.rowCount())
+			query.wares.add(new QueryWare(query.name, wm.data(i).name.trimmed()));
+	}
+	
+	query.partners.clear();
+	if(partnerFilter.box.isChecked()){
+		int i = partnerSelector.box.currentIndex();
+		PartnerModel & sm = partnersModel(dbname);
+		if(0 <= i && i < sm.rowCount())
+			query.partners.add(new QueryPartner(query.name, sm.data(i).name.trimmed()));
+	}
+
+	if(stockOptions.group.checkedButton() == &stockOptAll)
+		query.stockOption = QueryStockOptions::AllItemChanges;
+	else if(stockOptions.group.checkedButton() == &stockOptOnStock)
+		query.stockOption = QueryStockOptions::Gains;
+	else if(stockOptions.group.checkedButton() == &stockOptUsedUp)
+		query.stockOption = QueryStockOptions::Looses;
+
+	if(withTagFilter.box.isChecked()){
+		if(tagOptions.group.checkedButton() == &tagOptAllMatch)
+			query.tagOption = QueryTagOptions::MatchAll;
+		else if(tagOptions.group.checkedButton() == &tagOptAnyMatch)
+			query.tagOption = QueryTagOptions::MatchAny;
+		query.setAsWithTags(tagsWidget.selectedTags());
+	} else {
+		query.tagOption = QueryTagOptions::MatchAny;
+		query.withTags.clear();
+	}
+
+	if(withoutTagFilter.box.isChecked()){
+		query.setAsWithoutTags(withoutTagsWidget.selectedTags());
+	} else {
+		query.withoutTags.clear();
+	}
+}
+
+void QueryOptionsView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void QueryOptionsView::resizeEvent(QResizeEvent *event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	updateGeometry();
+	relayout();
+}
+
+void QueryOptionsView::retranslate()
+{
+	setWindowTitle(tr(TidEditQueryWindowTitle));
+
+	nameEditor.label.setText(tr(TidQuerySelector));
+
+	startDate.label.setText(tr(TidFromDateTimeEditor));
+	endDate.label.setText(tr(TidTillDateTimeEditor));
+
+	wareSelector.label.setText(tr(TidWareSelector));
+
+	partnerFilter.label.setText(tr(TidPartnerFilter));
+	partnerSelector.label.setText(tr(TidPartnerSelector));
+
+	withTagFilter.label.setText(tr(TidWithTagFilter));
+	tagsWidget.label.setText("");//tr(TidWithTags));
+
+	withoutTagFilter.label.setText(tr(TidWithoutTagFilter));
+	withoutTagsWidget.label.setText(tr(TidWithoutTags));
+
+	stockOptions.label.setText(tr(TidStockOptions));
+	stockOptAll.setText(tr(TidStockOptAllRadioButton));
+	stockOptOnStock.setText(tr(TidStockOptOnStockRadioButton));
+	stockOptUsedUp.setText(tr(TidStockOptUsedUpRadioButton));
+
+	tagOptions.label.setText(tr(TidTagOptions));
+	tagOptAllMatch.setText(tr(TidTagOptAllMatchRadioButton));
+	tagOptAnyMatch.setText(tr(TidTagOptAnyMatchRadioButton));
+
+	relayout();
+}
+
+void QueryOptionsView::applyLayout(LayoutState state, bool test)
+{
+	delete layout();
+
+	HLayout * filterLayout = 0;
+	if(state == LayoutState::Wide){
+		filterLayout = new HLayout;
+		filterLayout->addWidget(&wareFilter);
+		filterLayout->addStretch(0);
+		filterLayout->addWidget(&partnerFilter);
+		filterLayout->addStretch(0);
+		filterLayout->addWidget(&withTagFilter);
+		filterLayout->addStretch(0);
+		filterLayout->addWidget(&withoutTagFilter);
+		filterLayout->addStretch(0);
+	}
+
+	HLayout * filter1Layout = 0;
+	if(state == LayoutState::Medium){
+		filter1Layout = new HLayout;
+		filter1Layout->addWidget(&wareFilter);
+		filter1Layout->addStretch(0);
+		filter1Layout->addWidget(&partnerFilter);
+		filter1Layout->addStretch(0);
+	}
+
+	HLayout * filter2Layout = 0;
+	if(state == LayoutState::Medium){
+		filter2Layout = new HLayout;
+		filter2Layout->addWidget(&withTagFilter);
+		filter2Layout->addStretch(0);
+		filter2Layout->addWidget(&withoutTagFilter);
+		filter2Layout->addStretch(0);
+	}
+
+	HLayout * dateLayout = 0;
+	if(state == LayoutState::Wide){
+		dateLayout = new HLayout;
+		dateLayout->addWidget(&startDate, 4);
+		dateLayout->addStretch(1);
+		dateLayout->addWidget(&endDate, 4);
+	}
+
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&nameEditor);
+	if(state == LayoutState::Wide){
+		mainLayout->addStretch(0);
+		mainLayout->addLayout(dateLayout);
+	} else {
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&startDate);
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&endDate);
+	}
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&stockOptions);
+	if(state == LayoutState::Wide){
+		mainLayout->addStretch(0);
+		mainLayout->addLayout(filterLayout);
+	}
+	if(state == LayoutState::Medium){
+		mainLayout->addStretch(0);
+		mainLayout->addLayout(filter1Layout);
+	}
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&wareFilter);
+	}
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&wareSelector);
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&partnerFilter);
+	}
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&partnerSelector);
+	if(state == LayoutState::Medium){
+		mainLayout->addStretch(0);
+		mainLayout->addLayout(filter2Layout);
+	}
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&withTagFilter);
+	}
+	mainLayout->addStretch(0);
+	mainLayout->addWidget(&tagOptions);
+	if(!test){
+		mainLayout->addWidget(&tagsWidget);
+		mainLayout->addStretch(0);
+	}
+	if(state == LayoutState::Narrow){
+		mainLayout->addStretch(0);
+		mainLayout->addWidget(&withoutTagFilter);
+	}
+	if(!test){
+		mainLayout->addWidget(&withoutTagsWidget);
+		mainLayout->addStretch(0);
+	}
+
+	setLayout(mainLayout);
+	updateGeometry();
+}
+
+void QueryOptionsView::relayout()
+{
+	LayoutState newState = LayoutState::Wide;
+	nameEditor.wideLayout();
+	startDate.wideLayout();
+	endDate.wideLayout();
+	wareSelector.wideLayout();
+	partnerSelector.wideLayout();
+	stockOptions.wideLayout();
+	tagOptions.wideLayout();
+	wareFilter.label.setText(tr(TidWareFilter));
+	applyLayout(newState, true);
+
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Medium;
+		nameEditor.wideLayout();
+		startDate.wideLayout();
+		endDate.wideLayout();
+		wareSelector.wideLayout();
+		partnerSelector.wideLayout();
+		stockOptions.mediumLayout();
+		tagOptions.mediumLayout();
+		wareFilter.label.setText(trShort(TidWareFilter));
+		applyLayout(newState, true);
+	}
+	if(width() < sizeHint().width()){
+		newState = LayoutState::Narrow;
+		nameEditor.narrowLayout();
+		startDate.narrowLayout();
+		endDate.narrowLayout();
+		wareSelector.narrowLayout();
+		partnerSelector.narrowLayout();
+		stockOptions.narrowLayout();
+		tagOptions.narrowLayout();
+		wareFilter.label.setText(trShort(TidWareFilter));
+		applyLayout(newState, true);
+	}
+
+	applyLayout(newState);
+	updateToolButtonStates();
+}
+
+void QueryOptionsView::saveClickedSlot()
+{
+	mapFromGui();
+
+	QueryModel & qm = queryModel(dbname);
+	if(qm.set.has(query.name)) {
+		if(qm.set.query(query.name) != query)
+			qm.update(qm.index(query.name), query);
+	} else
+		qm.addNew(query);
+	toolBar.setInfo(tr(TidQuerySavedInfo));
+	updateToolButtonStates();
+}
+
+void QueryOptionsView::delClickedSlot()
+{
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Deleting a query"),
+			tr("Shall we delete this query: ") + query.name,
+			QMessageBox::Yes | QMessageBox::No,
+			0, Qt::Dialog));
+	if(msg->exec() == QMessageBox::Yes){
+		QueryModel & qm = queryModel(dbname);
+		if(qm.set.has(query.name))
+			qm.del(qm.index(query.name));
+		query = Query();
+		query.endDate = DateTime::now();
+		mapToGui();
+	}
+}
+
+void QueryOptionsView::queryClickedSlot()
+{
+	mapFromGui();
+
+	QueryModel & qm = queryModel(dbname);
+	if(!qm.set.has(query.name))
+		query.name = "";
+	else if(qm.set.query(query.name) != query)
+		query.name = "";
+
+	accept();
+}
+
+void QueryOptionsView::resetClickedSlot()
+{
+	mapToGui();
+}
+
+void QueryOptionsView::backClickedSlot()
+{
+	reject();
+}
+
+void QueryOptionsView::querySelectedSlot()
+{
+	QueryModel & qm = queryModel(dbname);
+	Text name(nameEditor.text());
+	if(!qm.set.has(name))
+		return;
+	query = qm.set.query(name);
+	mapToGui();
+}
+
+void QueryOptionsView::layoutContentChangeSlot()
+{
+	updateToolButtonStates();
+	relayout();
+}
+
+void QueryOptionsView::updateToolButtonStates()
+{
+	bool modified = !(
+			query.name == nameEditor.text() &&
+			query.startDate == startDate.edit.dateTime() &&
+//			query.endDate == endDate.edit.dateTime() &&
+
+			((bool)(query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
+			((bool)(query.partners.size()) ==(partnerFilter.box.checkState()==Qt::Checked)) &&
+			((bool)(query.withTags.size()) ==(withTagFilter.box.checkState()==Qt::Checked)) &&
+			((bool)(query.withoutTags.size()) ==(withoutTagFilter.box.checkState()==Qt::Checked)) &&
+
+			query.withTags == tagsWidget.selectedTags() &&
+			query.withoutTags == withoutTagsWidget.selectedTags()
+			);
+	if(!modified)
+		if(query.wares.size() && (wareFilter.box.checkState()==Qt::Checked))
+			if(query.wares.queryAt(0).ware != wareSelector.box.currentText())
+				modified = true;
+	if(!modified)
+		if(query.partners.size() && (partnerFilter.box.checkState()==Qt::Checked))
+			if(query.partners.queryAt(0).partner != partnerSelector.box.currentText())
+				modified = true;
+	if(!modified)
+		if(query.withTags.size() && (withTagFilter.box.checkState()==Qt::Checked))
+			if(query.withTags != tagsWidget.selectedTags())
+				modified = true;
+	if(!modified)
+		if(query.withoutTags.size() && (withoutTagFilter.box.checkState()==Qt::Checked))
+			if(query.withoutTags != withoutTagsWidget.selectedTags())
+				modified = true;
+
+	if(!modified){
+		switch(query.stockOption) {
+			case QueryStockOptions::AllItemChanges :
+				if(stockOptions.group.checkedButton() != &stockOptAll)
+					modified = true;
+				break;
+			case QueryStockOptions::Gains :
+				if(stockOptions.group.checkedButton() != &stockOptOnStock)
+					modified = true;
+				break;
+			case QueryStockOptions::Looses :
+				if(stockOptions.group.checkedButton() != &stockOptUsedUp)
+					modified = true;
+				break;
+			default:
+				modified = true;
+				break;
+		}
+	}
+
+	if(!modified){
+		if(withoutTagFilter.box.checkState()==Qt::Checked){
+			switch(query.tagOption) {
+				case (QueryTagOptions::MatchAll) :
+					if(tagOptions.group.checkedButton() != &tagOptAllMatch)
+					modified = true;
+					break;
+				case QueryTagOptions::MatchAny :
+					if(tagOptions.group.checkedButton() != &tagOptAnyMatch)
+						modified = true;
+					break;
+				default:
+					modified = true;
+					break;
+			}
+		} else if(query.tagOption != QueryTagOptions::MatchAny)
+			modified = true;
+	}
+
+	bool hasName(nameEditor.text().size());
+
+	/* Lets adjust states */
+
+	saveButton.setVisible(modified && hasName);
+	delButton.setVisible(!modified && hasName);
+	resetButton.setVisible(modified);
+
+	wareSelector.setVisible(wareFilter.box.checkState()==Qt::Checked);
+	partnerSelector.setVisible(partnerFilter.box.checkState()==Qt::Checked);
+	tagOptions.setVisible(withTagFilter.box.checkState()==Qt::Checked);
+	tagsWidget.setVisible(withTagFilter.box.checkState()==Qt::Checked);
+	withoutTagsWidget.setVisible(withoutTagFilter.box.checkState()==Qt::Checked);
+
+	if(modified)
+		toolBar.clearInfo();
+
+	toolBar.updateButtons();
+}

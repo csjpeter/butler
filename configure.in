@@ -3,6 +3,7 @@
 source config
 
 PKGNAME=@PKGNAME@
+ENDUSER_LICENSE="$(cat enduser-license | sed 's|$|\\\\n\\\\\\|g')"
 
 DEBUG=no
 
@@ -27,10 +28,16 @@ function generate ()
 		-e "s|@RANLIB@|${RANLIB}|g" \
 		-e "s|@OBJCOPY@|${OBJCOPY}|g" \
 		-e "s|@MOC@|${MOC}|g" \
-		-e "s|@DOCDIR@|${DOCDIR}|g" \
+		-e "s|@DOC_DIR@|${DOC_DIR}|g" \
 		-e "s|@PKGCONFIG@|${PKGCONFIG}|g" \
 		-e "s|@CONFIG@|${CONFIG}|g" \
 		-e "s|@MAN_DIR@|${MAN_DIR}|g" \
+		-e "s|@APPS_DIR@|${APPS_DIR}|g" \
+		-e "s|@ICONS_PREFIX@|${ICONS_PREFIX}|g" \
+		-e "s|@CSS_PREFIX@|${CSS_PREFIX}|g" \
+		-e "s|@TRANSLATIONS_PREFIX@|${TRANSLATIONS_PREFIX}|g" \
+                -e "s|@DATACLASS_GENERATOR@|\"${DATACLASS_GENERATOR}\"|g" \
+                -e "s|@ENDUSER_LICENSE@|\"${ENDUSER_LICENSE}\n\"|g" \
 		> $2 || exit $?
 }
 
@@ -66,16 +73,30 @@ function process_args ()
 				PREFIX=$(echo ${VALUE} | sed 's|^/*||g')
 				prefix=$PREFIX # dh_auto_configure compatibility
 			;;
+			(--translations-prefix)
+				TRANSLATIONS_PREFIX=${VALUE}
+			;;
+			(--css-prefix)
+				CSS_PREFIX=${VALUE}
+			;;
+			(--icons-prefix)
+				ICONS_PREFIX=${VALUE}
+			;;
 			(--tcroot)
 				TCROOT="${VALUE}"
 			;;
 			(--debug)
-				CFLAGS="${CFLAGS} -fno-builtin -O0"
-				DEFINES="${DEFINES} -DDEBUG"
+				CFLAGS="${CFLAGS} -fno-builtin -O0 -ggdb3"
 				DEBUG=yes
+			;;
+			(--relative-path)
+				DEFINES="${DEFINES} -DRELATIVE_PATH"
 			;;
 			(--gnu-source)
 				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
+			;;
+			(--non-gnu-source)
+				CFLAGS="-U_GNU_SOURCE"
 			;;
 			(--fpic)
 				CFLAGS="${CFLAGS} -fPIC"
@@ -91,6 +112,9 @@ function process_args ()
 			;;
 			(--libs)
 				LIBS="${LIBS} ${VALUE}"
+			;;
+			(--cflags)
+				CFLAGS="${CFLAGS} ${VALUE}"
 			;;
 			(--ldflags)
 				LDFLAGS="${LDFLAGS} ${VALUE}"
@@ -115,6 +139,9 @@ function process_args ()
 			;;
 			(--libexecdir)
 			        LIBEXEC_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
+			;;
+			(--appsdir)
+			        APPS_DIR=$(eval echo ${VALUE} | sed 's|^/*||g')
 			;;
 			# Some option we want to accept but do nothing for them
 			(--disable-maintainer-mode)
@@ -161,27 +188,27 @@ test "x${TARGET_ARCH}" = "x${HOST_ARCH}" && {
 	PKGCONFIG=${TARGET_ARCH}-pkg-config
 }
 
+DATACLASS_GENERATOR=$(${PKGCONFIG} --variable prefix libcsjp0.3)bin/libcsjp0.3-data-class-generator
 #CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtCore)"
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtSql)"
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags QtGui)"
-CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.1)"
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Sql)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Gui)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags Qt5Widgets)" || exit $?
+CFLAGS="${CFLAGS} $(${PKGCONFIG} --cflags libcsjp0.3)" || exit $?
 echo "${CONFIG}" | grep staticbuild > /dev/null && {
-	LDFLAGS="${LDFLAGS} -static-libgcc -static-libstdc++"
-#	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)"
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtSql)"
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtGui)"
-	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.1)"
+#	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs QtCore)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Sql)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Gui)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs Qt5Widgets)" || exit $?
+	STATICS+="${STATICS} $(${PKGCONFIG} --static --libs libcsjp0.3)" || exit $?
 } || {
-#	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)"
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtSql)"
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtGui)"
-	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.1)"
+#	LIBS+="${LIBS} $(${PKGCONFIG} --libs QtCore)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Sql)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Gui)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs Qt5Widgets)" || exit $?
+	LIBS+="${LIBS} $(${PKGCONFIG} --libs libcsjp0.3)" || exit $?
 }
 
-TCROOT="${TCROOT}"
-
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
-STATICS="${STATICS}"
 
 INCLUDES=-Isrc
 
@@ -190,27 +217,28 @@ CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 # Adjusting PREFIX and TCROOT if non-empty
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }
 test "x${TCROOT}" = "x" || { TCROOT="${TCROOT}/" ; }
+test "x${ICONS_PREFIX}" = "x" && { ICONS_PREFIX=${PREFIX} ; }
+test "x${CSS_PREFIX}" = "x" && { CSS_PREFIX=${PREFIX} ; }
+test "x${TRANSLATIONS_PREFIX}" = "x" && { TRANSLATIONS_PREFIX=${PREFIX} ; }
 
-test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${TCROOT}${PREFIX}include ; }
-test "x${MAN_DIR}" = "x" && { MAN_DIR=${TCROOT}${PREFIX}share/man ; }
-test "x${INFO_DIR}" = "x" && { INFO_DIR=${TCROOT}${PREFIX}share/info ; }
-test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=${TCROOT}etc ; }
-test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=${TCROOT}var ; }
-test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${TCROOT}${PREFIX}lib ; }
+test "x${INCLUDE_DIR}" = "x" && { INCLUDE_DIR=${PREFIX}include ; }
+test "x${MAN_DIR}" = "x" && { MAN_DIR=${PREFIX}share/man ; }
+test "x${INFO_DIR}" = "x" && { INFO_DIR=${PREFIX}share/info ; }
+test "x${SYSCONF_DIR}" = "x" && { SYSCONF_DIR=etc ; }
+test "x${LOCALSTATE_DIR}" = "x" && { LOCALSTATE_DIR=var ; }
+test "x${LIBEXEC_DIR}" = "x" && { LIBEXEC_DIR=${PREFIX}lib ; }
+test "x${APPS_DIR}" = "x" && { APPS_DIR=${PREFIX}share/applications ; }
 
-DOCDIR=${TCROOT}${PREFIX}share/doc/${PKGNAME}
+DOC_DIR=${PREFIX}share/doc/${PKGNAME}
 
-APPSDIR=${TCROOT}${PREFIX}share/applications
-
-generate Makefile.in Makefile || exit $?
-generate doxyfile.in doxyfile || exit $?
-generate debian/${PKGNAME}.install.in debian/${PKGNAME}.install || exit $?
-generate debian/${PKGNAME}-dbg.install.in debian/${PKGNAME}-dbg.install || exit $?
-generate config.h.in src/config.h || exit $?
-
-test -d ${APPSDIR} || { mkdir -p ${APPSDIR} || exit $? ; }
-generate butler.desktop.in ${APPSDIR}/${PKGNAME}.desktop || exit $?
-
-test -d ${MAN_DIR}/man1 || { mkdir -p ${MAN_DIR}/man1 || exit $? ; }
-generate butler.man.in ${MAN_DIR}/man1/${PKGNAME}.1 || exit $?
+echo "Configuring files..."
+for f in $(find . -name \*\.in); do
+	F=$(echo $f | sed 's|\.in$||g')
+	# dont regenerate config.h if it already exists
+	echo $F | grep -q "config\.h$" && test -f $F && continue;
+	echo $F
+	generate $f $F || exit $?
+	! echo $F | grep -q "\.sh$" || { chmod u+x $F || exit $? ; }
+done
+echo "Configure done"
 

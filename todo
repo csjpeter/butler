@@ -1,6 +1,6 @@
 
-- ware nevének módosítása módosítsa a már megvásárolt termékek neveit is
-  hiba következmény: nem lehet olyan árúra keresni ami nem létezik az árulistában
+- Végére járni az openssl kérdésnek: http://doc.qt.io/qt-5/opensslsupport.html
+
 - gyors keresés ware, shop és tag listában
 - a query view-ban kilépés és újraindítás után más van kijelölve mint előtte, ha az újraindítás során változik a tag-lista. Valószínű pozíció szerint van mentve a választott tag.
 - keresőben tag-ek és/vagy kapcsolatban való használata, esetleg tiltó használat is, azaz, minden ami nem a megadott tag

@@ -6,77 +6,60 @@
 #ifndef BUTLER_EDITWAREVIEW_H
 #define BUTLER_EDITWAREVIEW_H
 
-#include <QDialog>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
+#include <butler_dataclasses.h>
+#include <butler_pannview.h>
+#include <butler_tagwidget.h>
 
-#include <butler_ware.h>
-
-#include "butler_waresmodel.h"
-
-/*forwards*/
-class QAction;
-class QToolButton;
-class QLineEdit;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QScrollArea;
-class QListView;
-
-namespace Butler {
-
-class TagWidget;
-
-class EditWareView : public QDialog
+class EditWareView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	EditWareView(QWidget *parent, WaresModel &);
+	EditWareView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditWareView() {}
 
 	void setCursor(const QModelIndex& index);
-
-private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();
 
+private:
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout(bool test = false);
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
-	void closeSlot();
+	void saveSlot();
+	void resetSlot();
 
 private:
-	Ware ware;
-	WaresModel &model;
+	const QString & dbname;
+	WareModel & model;
 	QModelIndex cursor;
+	Ware ware;
 
-	QLineEdit *nameEditor;
-	QLineEdit *unitEditor;
-	QLineEdit *categoriesEditor;
-	TagWidget *tagsSelector;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
-	QPushButton *closeButton;
+	InputEditor nameEditor;
+	InputEditor unitEditor;
+	InputEditor typesEditor;
+	TagWidget tagsWidget;
 };
 
-}
-
 #endif
-
-

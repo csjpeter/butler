@@ -1,0 +1,377 @@
+/** 
+ * Author: Csaszar, Peter <csjpeter@gmail.com>
+ * Copyright (C) 2013 Csaszar, Peter
+ */
+
+/* dashed | dot-dash | dot-dot-dash | dotted | double | groove | inset | outset | ridge | solid */
+
+/* ideal relative font sizes:
+ * 1, 1.2, 1.4, 1.7, 2.1, 2.5, 3, 3.6, 4.3, 5.2, 6.2, 7.4, 8.9, 10.7 */
+
+* {
+/*	border-width: 0.05mm;
+	border-color: red;*/
+/*	font-family: "Arial";*/
+/*	border-radius: 1mm;*/
+	background-color: black;
+	font-size: 2.5mm;
+	font-style: normal;
+	font-weight: normal;
+	border-color: #444444;
+	border-style: solid;
+	color: #cccccc;
+	margin: 0mm;
+	padding: 0mm;
+	selection-color: #cccccc;
+	selection-background-color: #222288;
+	alternate-background-color: #181818;
+	gridline-color: transparent;
+	icon-size: 8mm;
+}
+
+QLabel::pressed:focus {
+	border-width: 0mm;
+}
+
+*:focus, *::pressed:focus, *::indicator:focus, QCheckBox::indicator:focus, QCheckBox::pressed:focus, QCheckBox:focus {
+/*	border-color: #338833;
+	border-width: 0.4mm;
+	border-style: solid;*/
+}
+
+/* Temporary, experimenting */
+
+/* disables selection-color and selection-background-color */
+/*QAbstractItemView::item {
+	border-width: 0.25mm;
+	border-right-width: solid gray;
+}*/
+
+/* Scrollbar */
+
+QScrollBar, \
+QScrollBar::up-arrow, \
+QScrollBar::down-arrow, \
+QScrollBar::add-page, \
+QScrollBar::sub-page, \
+QScrollBar::add-line, \
+QScrollBar::sub-line, \
+QScrollBar::down-button, \
+QScrollBar::up-button, \
+QScrollBar::handle {
+	border: none;
+}
+QScrollBar:vertical { width: 1mm; }
+QScrollBar:horizontal { height: 1mm; }
+QScrollBar::handle { background-color: #666666; }
+QScrollBar::handle:vertical { min-height: 10mm; }
+QScrollBar::handle:horizontal { min-width: 10mm; }
+QAbstractScrollArea QScrollBar#pannviewscrollbar:vertical { padding-left: 0.5mm; }
+QAbstractScrollArea QScrollBar#pannviewscrollbar:horizontal { padding-top: 0.5mm; }
+ControlBar QScrollBar:vertical { width: 0.4mm; }
+ControlBar QScrollBar:horizontal { height: 0.4mm; }
+ControlBar QScrollBar::handle:vertical { min-height: 3mm; }
+
+/* Some common interactive rule */
+
+QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
+	font-size: 3mm;
+}
+
+QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox {
+	min-width: 30mm;
+}
+
+DoubleEditor QLineEdit {
+	min-width: 10mm;
+}
+
+QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox, QRadioButton {
+	padding-right: 1mm;
+	padding-left: 1mm;
+	min-height: 7mm;
+	max-height: 7mm;
+}
+
+QTextEdit, QLineEdit, QComboBox, QDateTimeEdit, QAbstractSpinBox, QCheckBox::indicator, QRadioButton::indicator {
+	border: solid;
+	border-width: 0.4mm;
+	border-radius: 1mm;
+	border-color: #666666;
+}
+
+QPushButton:disabled, QToolButton:disabled, QLineEdit:disabled, QComboBox:disabled, QDateTimeEdit:disabled, QTextEdit:disabled, QAbstractSpinBox:disabled {
+	border-width: 0mm;
+}
+
+/* Some class specifics */
+
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
+	font-weight: bold;
+}
+
+*[windowTitle="true"], *[windowTitle="true"] QLabel {
+	color: #ffffff;
+	background: #8888ff;
+	font-weight: bold;
+	border: solid;
+	border-width: 0.2mm;
+	border-color: #6666dd;
+}
+
+QLabel {
+	color: #888888;
+}
+
+QPushButton {
+	font-size: 3mm;
+	font-weight: bold;
+	border-width: 0.2mm;
+	border-radius: 2.7mm;
+	padding-right: 2.5mm;
+	padding-left: 2.5mm;
+/*	min-width: 16mm;*/
+	min-height: 5.5mm;
+	max-height: 5.5mm;
+	margin: 0mm;
+	margin-left: 1mm;
+	margin-right: 1mm;
+	border-color: #444444;
+	background-color: #888888;
+	color: black;
+	icon-size: 4mm;
+}
+
+QPushButton:default {
+	background-color: #4444aa;
+}
+
+QPushButton:pressed {
+	background-color: #444444;
+	border-color: #888888;
+	color: #888888;
+}
+/*
+ToolBar ControlBar {
+	min-height: 9mm;
+}
+
+CustomView ToolBar ControlBar {
+	min-height: 12.5mm;
+}
+*/
+QToolButton {
+	font-size: 2.1mm;
+	border-width: 0mm;
+	border-radius: 1mm;
+}
+
+QToolButton:pressed {
+	border-width: 0.2mm;
+	background-color: #444444;
+	border-color: #666666;
+}
+
+QMessageBox {
+	dialogbuttonbox-buttons-have-icons: true;
+	icon-size: 16mm;
+}
+
+QTextEdit {
+	padding: 0mm;
+	min-height: 20mm;
+	max-height: 20mm;
+}
+
+QTextEdit QScrollBar {
+	min-width: 3mm;
+}
+
+QTextEdit QScrollBar, QTextEdit QScrollBar:disable {
+	border-width: 0mm;
+}
+
+/* QSpinBox and QDoubleSpinBox */
+
+QAbstractSpinBox, QAbstractSpinBox:no-frame {
+}
+
+/* QTableView and QHeaderView */
+
+QTableView {
+	border-width: 0.4mm;
+	color: #cccccc;
+}
+
+QTableView QHeaderView::section, \
+QTableView QHeaderView::section:first, \
+QTableView QHeaderView::section:last, \
+QTableView QHeaderView::section:middle, \
+QTableView QHeaderView::section:next-selected, \
+QTableView QHeaderView::section:previous-selected, \
+QTableView QHeaderView::section:selected, \
+QTableView QHeaderView::section:checked {
+	border-style: solid;
+	border-color: #444444;
+	border-top-style: none;
+	border-bottom-style: ridge;
+	border-bottom-width: 0.4mm;
+	border-left-style: none;
+/*	border-left-width: 0.5mm;*/
+	border-right-style: dotted;
+	border-right-width: 0.4mm;
+	background-color: #000000;
+	color: #888888;
+}
+
+QTableView QHeaderView::section:first {
+	border-left: none;
+}
+
+QTableView QHeaderView::section:last {
+	border-right: none;
+}
+
+QTableView QHeaderView::section:only-one {
+	border: none;
+	max-height: 0mm;
+	max-width: 0mm;
+}
+
+/* QCheckBox and QRadioButton */
+
+QCheckBox {
+	margin: 0.5mm;
+}
+
+QCheckBox::indicator {
+	height: 6mm;
+	width: 6mm;
+}
+
+QCheckBox::indicator:checked {
+	image: url(ICONS_DIR/tick.png);
+}
+
+QCheckBox:focus, QCheckBox::pressed::indicator:focus {
+	border-width: 0mm;
+}
+
+QRadioButton {
+	margin: 0.5mm;
+}
+
+QRadioButton::indicator {
+	height: 6mm;
+	width: 6mm;
+	border-radius: 3.3mm;
+}
+
+QRadioButton::indicator:checked {
+/*	background-color: #226622;*/
+	image: url(ICONS_DIR/tick.png);
+}
+
+QRadioButton:focus, QRadioButton::pressed::indicator:focus {
+	border-width: 0mm;
+}
+
+/* QDateTimeEdit */
+
+QDateTimeEdit {
+	min-height: 7mm;
+	max-height: 7mm;
+}
+
+QDateTimeEdit * {
+	padding: 0mm;
+	margin: 0mm;
+	border: 0mm;
+}
+
+QDateTimeEdit::drop-down:disabled {
+	border-width: 0mm;
+	image: url();
+}
+
+QDateTimeEdit::drop-down {
+	width: 7mm;
+	height: 7mm;
+	image: url(ICONS_DIR/calendar.png);
+}
+
+QDateTimeEdit::drop-down:pressed {
+	width: 7mm;
+	height: 7mm;
+	image: url(ICONS_DIR/comboarrowup.png);
+}
+
+/* QComboBox */
+
+QComboBox QLabel {
+	border-width: 0mm;
+	padding: 0mm;
+	margin: 0mm;
+}
+
+QComboBox QLineEdit {
+	border-width: 0mm;
+}
+
+QComboBox QLineEdit:focus {
+	border-width: 0mm;
+}
+
+QComboBox::drop-down {
+	width: 7mm;
+	height: 7mm;
+	image: url(ICONS_DIR/comboarrowdown.png);
+}
+
+QComboBox::drop-down:pressed {
+	width: 7mm;
+	height: 7mm;
+	image: url(ICONS_DIR/comboarrowup.png);
+}
+
+/* QCalendarWidget */
+
+* QCalendarWidget {
+	border: solid;
+	border-width: 0.2mm;
+	border-color: red;
+}
+
+QCalendarWidget * {
+	border-width: 0mm;
+	font-size: 3mm;
+}
+
+QCalendarWidget QAbstractButton {
+	padding-top: 2mm;
+	padding-bottom: 2mm;
+	padding-right: 3mm;
+	padding-left: 3mm;
+}
+
+/* MainView specials */
+
+MainView QToolButton {
+	font-size: 3mm;
+	font-weight: normal;
+	border: none;
+	text-align: left;
+	padding-right: 3mm;
+	padding-left: 3mm;
+	min-height: 10mm;
+	max-height: 10mm;
+	background-color: black;
+	color: #cccccc;
+	margin: 0mm;
+}
+
+MainView QToolButton:pressed {
+	color: #cccccc;
+	background-color: #222288;
+}

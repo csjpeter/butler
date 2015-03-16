@@ -1,5 +1,4 @@
-
-This binary package, @PKGNAME@ @VERSION@ was created by
+This software package, @PKGNAME@ @VERSION@ was created by
 @AUTHOR@ <@EMAIL@> on @CURRENT_DATE@.
 
 The contained software (@PKGNAME@) is a simple home accoutning tool.
@@ -46,7 +45,7 @@ your programs, too.
 When we speak of free software, we are referring to freedom, not
 price.  Our General Public Licenses are designed to make sure that you
 have the freedom to distribute copies of free software (and charge for
-     	   them if you wish), that you receive source code or can get it if you
+them if you wish), that you receive source code or can get it if you
 want it, that you can change the software or use pieces of it in new
 free programs, and that you know you can do these things.
 
@@ -696,4 +695,3 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
-

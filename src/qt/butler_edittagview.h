@@ -6,75 +6,57 @@
 #ifndef BUTLER_EDITTAGVIEW_H
 #define BUTLER_EDITTAGVIEW_H
 
-#include <QDialog>
-#include <QDataWidgetMapper>
-#include <QModelIndex>
+#include <butler_dataclasses.h>
+#include <butler_pannview.h>
 
-#include <butler_tag.h>
-
-#include "butler_tagsmodel.h"
-#include "butler_tagsmodel.h"
-
-/*forwards*/
-class QAction;
-class QToolButton;
-class QLineEdit;
-class QTextEdit;
-class QCheckBox;
-class QDateTimeEdit;
-class QPushButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QScrollArea;
-class QStandardItemModel;
-class QListView;
-
-namespace Butler {
-
-class TagWidget;
-
-class EditTagView : public QDialog
+class EditTagView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	EditTagView(QWidget *parent, TagsModel &);
+	EditTagView(const QString & dbname, QWidget * parent = 0);
+	virtual ~EditTagView() {}
 
 	void setCursor(const QModelIndex& index);
-
-private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();
 
+private:
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+
 	void mapToGui();
 	void mapFromGui();
 
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
-	void saveSlot();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
 	void prevClickedSlot();
 	void nextClickedSlot();
+	void saveSlot();
+	void resetSlot();
 
 private:
-	Tag tag;
-	TagsModel &model;
+	const QString & dbname;
+	TagModel & model;
 	QModelIndex cursor;
+	Tag tag;
 
-	QLineEdit *nameEditor;
-	QLineEdit *descEditor;
+	Button doneButton;
+	Button resetButton;
+	Button prevButton;
+	Button nextButton;
 
-	QPushButton *prevButton;
-	QPushButton *saveButton;
-	QPushButton *nextButton;
+	InputEditor nameEditor;
+	InputEditor descEditor;
 };
 
-}
-
 #endif
-
-

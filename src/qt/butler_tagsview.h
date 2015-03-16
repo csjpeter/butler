@@ -6,73 +6,61 @@
 #ifndef BUTLER_TAGSVIEW_H
 #define BUTLER_TAGSVIEW_H
 
-#include <QWidget>
-
-#include <butler_query.h>
-
-#include "butler_tagsmodel.h"
+#include <butler_pannview.h>
+#include <butler_databases.h>
 
 /*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QStandardItemModel;
-class QSqlTableModel;
-
-namespace Butler {
-
 class NewTagView;
 class EditTagView;
 
-class TagsView : public QWidget
+class TagsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	TagsView(QWidget *parent = 0);
-	~TagsView();
+	TagsView(const QString & dbname, QWidget * parent = 0);
+	virtual ~TagsView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
-	void loadState();
-	void saveState();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
 	void newTag();
-	void finishedNewTag(int);
 	void editTag();
-	void finishedEditTag(int);
 	void delTag();
+	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
+public:
+	const QString dbname;
 private:
-	TagsModel &model;
+	TagModel & model;
 
-	QTableView *queryView;
-	QSqlTableModel *queryTable;
+	ToolButton addButton;
+	ToolButton delButton;
+	ToolButton editButton;
+	ToolButton refreshButton;
 
-	QToolBar *actionTB;
+	TableView tableView;
 
-	QToolButton *newTBtn;
-	QToolButton *editTBtn;
-	QToolButton *delTBtn;
-
-	QAction *newAct;
-	QAction *editAct;
-	QAction *delAct;
-
-	NewTagView *newTagView;
-	EditTagView *editTagView;
+	EditTagView * newTagView;
+	EditTagView * editTagView;
 };
 
-}
-
 #endif
-
-

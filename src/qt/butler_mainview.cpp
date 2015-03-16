@@ -7,304 +7,528 @@
 
 #include <config.h>
 
-#include "butler_db.h"
+#include "butler_databases.h"
 
-#include "butler_shoppingview.h"
-#include "butler_shopsview.h"
-#include "butler_stockview.h"
+#include "butler_databasesview.h"
 #include "butler_tagsview.h"
 #include "butler_waresview.h"
-#include "butler_customview.h"
+#include "butler_companyview.h"
+#include "butler_partnersview.h"
+#include "butler_accountsview.h"
+#include "butler_brandsview.h"
+#include "butler_inventoriesview.h"
 #include "butler_queryoptionsview.h"
+#include "butler_infoview.h"
+#include "butler_edititemview.h"
+#include "butler_customview.h"
 
-#include "butler_application.h"
+#include "butler_config.h"
 
 #include "butler_mainview.h"
 
-namespace Butler {
+SCC TidContext = "MainView";
 
-	MainView& MainView::instance()
-	{
-		static MainView* instance = 0;
-		if(instance == 0)
-			instance = new MainView;
-		return *instance;
-	}
+SCC TidMainWindowTitle = QT_TRANSLATE_NOOP("MainView", "%1 - main view");
+SCC TidTodoButton = QT_TRANSLATE_NOOP("MainView", "Todo notes");
+SCC TidShoppingButton = QT_TRANSLATE_NOOP("MainView", "Shopping list");
+SCC TidNewItemButton = QT_TRANSLATE_NOOP("MainView", "Expense/Income");
+SCC TidAnaliticsButton = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
+SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
+SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
+SCC TidAccountsButton = QT_TRANSLATE_NOOP("MainView", "Accounts");
+SCC TidWareButton = QT_TRANSLATE_NOOP("MainView", "Wares");
+SCC TidTagButton = QT_TRANSLATE_NOOP("MainView", "Tags");
+SCC TidBrandButton = QT_TRANSLATE_NOOP("MainView", "Brands");
+SCC TidInventoryButton = QT_TRANSLATE_NOOP("MainView", "Inventories");
+SCC TidDatabasesButton = QT_TRANSLATE_NOOP("MainView", "Databases");
+SCC TidInfoButton = QT_TRANSLATE_NOOP("MainView", "Legal informations");
+SCC TidQuitButton = QT_TRANSLATE_NOOP("MainView", "Quit");
+SCC TidCurrentDbInfo = QT_TRANSLATE_NOOP("MainView", "Current database: %1");
 
-	MainView::MainView(QWidget *parent) :
-		QWidget(parent),
-		shoppingView(NULL),
-		stockView(NULL),
-		customView(NULL),
-		shopsView(NULL),
-		tagsView(NULL),
-		waresView(NULL),
-		queryOptionsView(NULL)
-	{
-		/* action toolbar */
-		actionTB = new QToolBar(tr("Action toolbar"));
-		
-		/* actions */
-		shoppingAct = new QAction(QIcon(ICONS_PATH "shopping.png"), tr("&Shopping"), this);
-		shoppingAct->setShortcut(tr("S"));
-		shoppingAct->setToolTip(tr("Shopping list"));
-		connect(shoppingAct, SIGNAL(triggered()), this, SLOT(openShoppingView()));
-		shoppingTBtn = new QToolButton(actionTB);
-		shoppingTBtn->setDefaultAction(shoppingAct);
-		shoppingTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		actionTB->addWidget(shoppingTBtn);
-
-		stockAct = new QAction(QIcon(ICONS_PATH "stock.png"), tr("&Maintain stock"), this);
-		stockAct->setShortcut(tr("M"));
-		stockAct->setToolTip(tr("Maintain stock list"));
-		connect(stockAct, SIGNAL(triggered()), this, SLOT(openStockView()));
-		stockTBtn = new QToolButton(actionTB);
-		stockTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		stockTBtn->setDefaultAction(stockAct);
-		actionTB->addWidget(stockTBtn);
-
-		customAct = new QAction(QIcon(ICONS_PATH "custom.png"), tr("&Custom list"), this);
-		customAct->setShortcut(tr("C"));
-		customAct->setToolTip(tr("Lists by custom queries"));
-		connect(customAct, SIGNAL(triggered()), this, SLOT(openCustomView()));
-		customTBtn = new QToolButton(actionTB);
-		customTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		customTBtn->setDefaultAction(customAct);
-		actionTB->addWidget(customTBtn);
-
-		shopsAct = new QAction(QIcon(ICONS_PATH "shop.png"), tr("S&hops"), this);
-		shopsAct->setShortcut(tr("L"));
-		shopsAct->setToolTip(tr("List of shops"));
-		connect(shopsAct, SIGNAL(triggered()), this, SLOT(openShopsView()));
-		shopsTBtn = new QToolButton(actionTB);
-		shopsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		shopsTBtn->setDefaultAction(shopsAct);
-		actionTB->addWidget(shopsTBtn);
-
-		tagsAct = new QAction(QIcon(ICONS_PATH "tag.png"), tr("&Tags"), this);
-		tagsAct->setShortcut(tr("T"));
-		tagsAct->setToolTip(tr("Tag editor"));
-		connect(tagsAct, SIGNAL(triggered()), this, SLOT(openTagsView()));
-		tagsTBtn = new QToolButton(actionTB);
-		tagsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		tagsTBtn->setDefaultAction(tagsAct);
-		actionTB->addWidget(tagsTBtn);
-
-		waresAct = new QAction(QIcon(ICONS_PATH "ware.png"), tr("&Wares"), this);
-		waresAct->setShortcut(tr("W"));
-		waresAct->setToolTip(tr("Ware editor"));
-		connect(waresAct, SIGNAL(triggered()), this, SLOT(openWaresView()));
-		waresTBtn = new QToolButton(actionTB);
-		waresTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		waresTBtn->setDefaultAction(waresAct);
-		actionTB->addWidget(waresTBtn);
-
-/*		queryOptionsAct = new QAction(QIcon(ICONS_PATH "query.png"), tr("&Queries"), this);
-		queryOptionsAct->setShortcut(tr("Q"));
-		queryOptionsAct->setToolTip(tr("Set filter options for user queries"));
-		connect(queryOptionsAct, SIGNAL(triggered()), this, SLOT(openQueryOptionsView()));
-		queryOptionsTBtn = new QToolButton(actionTB);
-		queryOptionsTBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-		queryOptionsTBtn->setDefaultAction(queryOptionsAct);
-		actionTB->addWidget(queryOptionsTBtn);
+/* Search for images using google:
+https://www.googleapis.com/customsearch/v1?key=AIzaSyBz1WwkrfA8UursvLiUqRTJ2nC5bytMHQk&fileType=jpg&fileType=ong&cr=hu&searchType=image&cx=007625690417709007201:tyovxvdl-ek&q=tolnatej
 */
-		/* making the window layouting */
-//		QVBoxLayout *layout = new QVBoxLayout;
-		QHBoxLayout *layout = new QHBoxLayout;
-		layout->setContentsMargins(0,0,0,0);
-		setLayout(layout);
-//		actionTB->setOrientation(Qt::Vertical);
-		actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-//		actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		actionTB->setIconSize(QSize(64,64));
-		layout->addWidget(actionTB);
 
-		/* restore last state */
-		loadState();
-		
-		QSettings settings(this);
-		if(settings.value("mainview/shoppingview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openShoppingView()));
-		if(settings.value("mainview/stockview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openStockView()));
-		if(settings.value("mainview/customview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openCustomView()));
-		if(settings.value("mainview/shopsview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openShopsView()));
-		if(settings.value("mainview/tagsview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openTagsView()));
-		if(settings.value("mainview/waresview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openWaresView()));
-		if(settings.value("mainview/queryoptionsview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(openQueryOptionsView()));
+MainView::MainView(QWidget *parent) :
+	PannView(parent),
+	todoButton(QIcon(Path::icon("list.png")),
+			TidTodoButton, TidContext, QKeySequence(Qt::Key_F1)),
+	shoppingButton(QIcon(Path::icon("shopping.png")),
+			TidShoppingButton, TidContext, QKeySequence(Qt::Key_F2)),
+	newItemButton(QIcon(Path::icon("accounting.png")),
+			TidNewItemButton, TidContext, QKeySequence(Qt::Key_F3)),
+	analiticsButton(QIcon(Path::icon("analitics.png")),
+			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F4)),
+	companyButton(QIcon(Path::icon("company.png")),
+			TidCompanyButton, TidContext, QKeySequence(Qt::Key_F5)),
+	partnersButton(QIcon(Path::icon("partner.png")),
+			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F5)),
+	accountsButton(QIcon(Path::icon("account.png")),
+			TidAccountsButton, TidContext, QKeySequence(Qt::Key_F5)),
+	wareButton(QIcon(Path::icon("ware.png")),
+			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
+	tagButton(QIcon(Path::icon("tag.png")),
+			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
+	brandButton(QIcon(Path::icon("brand.png")),
+			TidBrandButton, TidContext, QKeySequence(Qt::Key_F8)),
+	inventoryButton(QIcon(Path::icon("inventory.png")),
+			TidInventoryButton, TidContext, QKeySequence(Qt::Key_F9)),
+	databasesButton(QIcon(Path::icon("databases.png")),
+			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F10)),
+	infoButton(QIcon(Path::icon("info.png")),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F11)),
+	quitButton(QIcon(Path::icon("delete.png")),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F12)),
+	//shoppingView(NULL),
+	newItemView(NULL),
+	customView(NULL),
+	companyView(NULL),
+	partnersView(NULL),
+	accountsView(NULL),
+	waresView(NULL),
+	tagsView(NULL),
+	brandsView(NULL),
+	inventoriesView(NULL),
+	databasesView(NULL),
+	queryOptionsView(NULL),
+	infoView(NULL)
+{
+	setWindowIcon(QIcon(Path::icon("butler.png")));
+	setAttribute(Qt::WA_QuitOnClose, true);
 
-	}
+	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(accept()));
 
-	MainView::~MainView()
-	{
-	}
+//	connect(&todoButton, SIGNAL(clicked()), this, SLOT(openTodoView()));
+//	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
+	connect(&newItemButton, SIGNAL(clicked()), this, SLOT(openEditItemView()));
+	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
+	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
+	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
+	connect(&accountsButton, SIGNAL(clicked()), this, SLOT(openAccountsView()));
+	connect(&wareButton, SIGNAL(clicked()), this, SLOT(openWaresView()));
+	connect(&tagButton, SIGNAL(clicked()), this, SLOT(openTagsView()));
+	connect(&brandButton, SIGNAL(clicked()), this, SLOT(openBrandsView()));
+	connect(&inventoryButton, SIGNAL(clicked()), this, SLOT(openInventoriesView()));
+	connect(&databasesButton, SIGNAL(clicked()), this, SLOT(openDatabasesView()));
+	connect(&infoButton, SIGNAL(clicked()), this, SLOT(openInfoView()));
+	connect(&quitButton, SIGNAL(clicked()), this, SLOT(accept()));
 
-	void MainView::showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
-	}
-
-	void MainView::closeEvent(QCloseEvent *event)
-	{
-		saveState();
-
-		if(shoppingView){
-			shoppingView->deleteLater();
-			shoppingView->close();
-		}
-
-		if(stockView){
-			stockView->deleteLater();
-			stockView->close();
-		}
-
-		if(customView){
-			customView->deleteLater();
-			customView->close();
-		}
-
-		if(shopsView){
-			shopsView->deleteLater();
-			shopsView->close();
-		}
-
-		if(tagsView){
-			tagsView->deleteLater();
-			tagsView->close();
-		}
-
-		if(waresView){
-			waresView->deleteLater();
-			waresView->close();
-		}
-
-		if(queryOptionsView){
-			queryOptionsView->deleteLater();
-			queryOptionsView->close();
-		}
-
-		QWidget::closeEvent(event);
-	}
-
-	void MainView::loadState()
-	{
-		QSettings settings(this);
-		QPoint pos = settings.value("mainview/position", QPoint()).toPoint();
-		QSize size = settings.value("mainview/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		move(pos);
-	}
-
-	void MainView::saveState()
-	{
-		QSettings settings(this);
-		settings.setValue("mainview/position", pos());
-		settings.setValue("mainview/size", size());
-		settings.setValue("mainview/shoppingview",
-				shoppingView != NULL && shoppingView->isVisible());
-		settings.setValue("mainview/stockview",
-				stockView != NULL && stockView->isVisible());
-		settings.setValue("mainview/customview",
-				customView != NULL && customView->isVisible());
-		settings.setValue("mainview/shopsview",
-				shopsView != NULL && shopsView->isVisible());
-		settings.setValue("mainview/tagsview",
-				tagsView != NULL && tagsView->isVisible());
-		settings.setValue("mainview/waresview",
-				waresView != NULL && waresView->isVisible());
-		settings.setValue("mainview/queryoptionsview",
-				queryOptionsView != NULL && queryOptionsView->isVisible());
-		
-		settings.setValue("mainview/dbfile", Butler::LocalDb::dbFileName);
-	}
-
-	void MainView::openShoppingView()
-	{
-		if(!shoppingView){
-			shoppingView = new ShoppingView();
-			shoppingView->setWindowTitle(tr("Shopping list"));
-		}
-		shoppingView->show();
-		shoppingView->raise();
-		shoppingView->activateWindow();
-	}
-
-	void MainView::openStockView()
-	{
-		if(!stockView){
-			stockView = new StockView();
-			stockView->setWindowTitle(tr("Stock list"));
-		}
-		stockView->show();
-		stockView->raise();
-		stockView->activateWindow();
-	}
-
-	void MainView::openShopsView()
-	{
-		if(!shopsView){
-			shopsView = new ShopsView();
-			shopsView->setWindowTitle(tr("Shop list"));
-		}
-		shopsView->show();
-		shopsView->raise();
-		shopsView->activateWindow();
-	}
-
-	void MainView::openCustomView()
-	{
-		if(!customView){
-			customView = new CustomView();
-			customView->setWindowTitle(tr("User query result"));
-		}
-		customView->show();
-		customView->raise();
-		customView->activateWindow();
-	}
-
-	void MainView::openTagsView()
-	{
-		if(!tagsView){
-			tagsView = new TagsView();
-			tagsView->setWindowTitle(tr("Tag editor"));
-		}
-		tagsView->show();
-		tagsView->raise();
-		tagsView->activateWindow();
-	}
-
-	void MainView::openWaresView()
-	{
-		if(!waresView){
-			waresView = new WaresView();
-			waresView->setWindowTitle(tr("Ware editor"));
-		}
-		waresView->show();
-		waresView->raise();
-		waresView->activateWindow();
-	}
-
-	void MainView::openQueryOptionsView()
-	{
-/*		if(!queryOptionsView){
-			queryOptionsView = new QueryOptionsView();
-			queryOptionsView->setWindowTitle(tr("Set query options"));
-		}
-		queryOptionsView->show();
-*/	}
-
-	void MainView::about()
-	{
-		QMessageBox::about(this, tr("Butler"),
-				tr("Butler is a helper for home keeping via maintaining shoping lists."));
-	}
-
+	retranslate();
+	loadState();
 }
 
+MainView::~MainView()
+{
+//	delete todoView;
+	//delete shoppingView;
+	delete newItemView;
+	delete customView;
+	delete accountsView;
+	delete partnersView;
+	delete companyView;
+	delete tagsView;
+	delete inventoriesView;
+	delete brandsView;
+	delete databasesView;
+	delete waresView;
+	delete queryOptionsView;
+	delete infoView;
+}
 
+void MainView::retranslate()
+{
+	setWindowTitle(tr(TidMainWindowTitle).arg(PKGNAME));
+	activeDbChanged();
+
+	relayout();
+}
+
+void MainView::applyLayout()
+{
+	HLayout * mainLayout = new HLayout;
+
+	VLayout * layout = new VLayout;
+
+	layout->addWidget(&infoLabel);
+
+	layout->addStretch(0);
+
+//	layout->addWidget(&todoButton);
+//	layout->addWidget(&shoppingButton);
+	layout->addWidget(&newItemButton);
+	layout->addWidget(&analiticsButton);
+	layout->addWidget(&wareButton);
+	layout->addWidget(&tagButton);
+	layout->addWidget(&brandButton);
+	layout->addWidget(&inventoryButton);
+	layout->addWidget(&partnersButton);
+	layout->addWidget(&accountsButton);
+	layout->addWidget(&companyButton);
+	layout->addWidget(&databasesButton);
+	layout->addWidget(&infoButton);
+	layout->addWidget(&quitButton);
+
+	layout->addStretch(0);
+
+	mainLayout->addStretch(0);
+	mainLayout->addLayout(layout);
+	mainLayout->addStretch(0);
+
+	setLayout(mainLayout);
+}
+
+void MainView::relayout()
+{
+	todoButton.expanding();
+	shoppingButton.expanding();
+	newItemButton.expanding();
+	analiticsButton.expanding();
+	companyButton.expanding();
+	partnersButton.expanding();
+	accountsButton.expanding();
+	wareButton.expanding();
+	tagButton.expanding();
+	brandButton.expanding();
+	inventoryButton.expanding();
+	inventoryButton.expanding();
+	databasesButton.expanding();
+	infoButton.expanding();
+	quitButton.expanding();
+
+	applyLayout();
+}
+
+void MainView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void MainView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+
+	relayout();
+}
+
+void MainView::showEvent(QShowEvent *event)
+{
+	PannView::showEvent(event);
+	relayout();
+}
+
+void MainView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+	QTimer::singleShot(0, qApp, SLOT(quit()));
+}
+
+void MainView::loadState()
+{
+	QString prefix("MainView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	try {
+		//if(settings.value(prefix + "/todoview", false).toBool())
+		//	openTodoView();
+		//if(settings.value(prefix + "/shoppingview", false).toBool())
+		//	openShoppingView();
+		if(settings.value(prefix + "/newitemview", false).toBool())
+			openEditItemView();
+		if(settings.value(prefix + "/customview", false).toBool())
+			openCustomView();
+		if(settings.value(prefix + "/partnersview", false).toBool())
+			openPartnersView();
+		if(settings.value(prefix + "/companyview", false).toBool())
+			openCompanyView();
+		if(settings.value(prefix + "/waresview", false).toBool())
+			openWaresView();
+		if(settings.value(prefix + "/tagsview", false).toBool())
+			openTagsView();
+		if(settings.value(prefix + "/tagsview", false).toBool())
+			openBrandsView();
+		if(settings.value(prefix + "/databasesview", false).toBool())
+			openDatabasesView();
+		if(settings.value(prefix + "/queryoptionsview", false).toBool())
+			openQueryOptionsView();
+		if(settings.value(prefix + "/infoview", false).toBool())
+			openInfoView();
+
+		QTimer::singleShot(0, this, SLOT(activateSavedActiveWindow()));
+	} catch (DbError & e) {
+		EXCEPTION(e);
+	}
+}
+
+void MainView::activateSavedActiveWindow()
+{
+	QString prefix("MainView");
+	QSettings settings;
+	PannView * activeWindow = 0;
+	QString activeWindowName = settings.value(
+			prefix + "/activeWindow", false).toString();
+	if(activeWindowName == "mainView")
+		activeWindow = this;
+	//else if(activeWindowName == "shoppingView")
+	//	activeWindow = shoppingView;
+	else if(activeWindowName == "newItemView")
+		activeWindow = newItemView;
+	else if(activeWindowName == "customView")
+		activeWindow = customView;
+	else if(activeWindowName == "partnersView")
+		activeWindow = partnersView;
+	else if(activeWindowName == "companyView")
+		activeWindow = companyView;
+	else if(activeWindowName == "waresView")
+		activeWindow = waresView;
+	else if(activeWindowName == "tagsView")
+		activeWindow = tagsView;
+	else if(activeWindowName == "brandsView")
+		activeWindow = brandsView;
+	else if(activeWindowName == "inventoriesView")
+		activeWindow = inventoriesView;
+	else if(activeWindowName == "databasesView")
+		activeWindow = databasesView;
+	else if(activeWindowName == "queryOptionsView")
+		activeWindow = queryOptionsView;
+	else if(activeWindowName == "infoView")
+		activeWindow = infoView;
+	if(activeWindow)
+		activeWindow->activate();
+}
+
+void MainView::saveState()
+{
+	QString prefix("MainView");
+	PannView::saveState(prefix);
+	QSettings settings;
+
+//	SAVE_VIEW_STATE(todoView);
+	//SAVE_VIEW_STATE(shoppingView);
+	SAVE_VIEW_STATE(newItemView);
+	SAVE_VIEW_STATE(customView);
+	SAVE_VIEW_STATE(partnersView);
+	SAVE_VIEW_STATE(companyView);
+	SAVE_VIEW_STATE(tagsView);
+	SAVE_VIEW_STATE(brandsView);
+	SAVE_VIEW_STATE(inventoriesView);
+	SAVE_VIEW_STATE(waresView);
+	SAVE_VIEW_STATE(databasesView);
+	SAVE_VIEW_STATE(queryOptionsView);
+	SAVE_VIEW_STATE(infoView);
+
+	QWidget * activeWindow = QApplication::activeWindow();
+	const char * activeWindowName = 0;
+	if(activeWindow == this)
+		activeWindowName = "mainView";
+	//else if(activeWindow == shoppingView)
+	//	activeWindowName = "shoppingView";
+	else if(activeWindow == newItemView)
+		activeWindowName = "newItemView";
+	else if(activeWindow == customView)
+		activeWindowName = "customView";
+	else if(activeWindow == partnersView)
+		activeWindowName = "partnersView";
+	else if(activeWindow == companyView)
+		activeWindowName = "companyView";
+	else if(activeWindow == waresView)
+		activeWindowName = "waresView";
+	else if(activeWindow == tagsView)
+		activeWindowName = "tagsView";
+	else if(activeWindow == brandsView)
+		activeWindowName = "brandsView";
+	else if(activeWindow == inventoriesView)
+		activeWindowName = "inventoriesView";
+	else if(activeWindow == databasesView)
+		activeWindowName = "databasesView";
+	else if(activeWindow == queryOptionsView)
+		activeWindowName = "queryOptionsView";
+	else if(activeWindow == infoView)
+		activeWindowName = "infoView";
+	settings.setValue(prefix + "/activeWindow", activeWindowName);
+}
+
+void MainView::activeDbChanged()
+{
+	if(Config::defaultDbName != "localdb")
+		infoLabel.setText(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+	else
+		infoLabel.setText("");
+}
+/*
+void MainView::openTodoView()
+{
+	if(!todoView)
+		todoView = new TodoView(Config::defaultDbName);
+	todoView->activate();
+}*/
+/*
+void MainView::openShoppingView()
+{
+	if(!shoppingView)
+		shoppingView = new ShoppingView(Config::defaultDbName);
+	if(shoppingView->dbname == Config::defaultDbName){
+		shoppingView->activate();
+	} else {
+		ShoppingView *anotherShoppingView;
+		anotherShoppingView = new ShoppingView(Config::defaultDbName);
+		anotherShoppingView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherShoppingView->activate();
+	}
+}
+*/
+void MainView::openEditItemView()
+{
+	if(!newItemView)
+		newItemView = EditItemView::newItemViewFactory(Config::defaultDbName);
+	if(newItemView->dbname == Config::defaultDbName){
+		newItemView->activate();
+	} else {
+		EditItemView *anotherEditItemView;
+		anotherEditItemView = EditItemView::newItemViewFactory(Config::defaultDbName);
+		anotherEditItemView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherEditItemView->activate();
+	}
+}
+
+void MainView::openCustomView()
+{
+	if(!customView)
+		customView = new CustomView(Config::defaultDbName);
+
+	if(!customView->isVisible() && customView->dbname == Config::defaultDbName){
+		customView->activate();
+	} else {
+		CustomView *anotherCustomView;
+		anotherCustomView = new CustomView(Config::defaultDbName);
+		anotherCustomView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherCustomView->activate();
+	}
+}
+
+void MainView::openCompanyView()
+{
+	if(!companyView)
+		companyView = new CompanyView(Config::defaultDbName);
+	if(companyView->dbname == Config::defaultDbName){
+		companyView->activate();
+	} else {
+		CompanyView *anotherCompanyView;
+		anotherCompanyView = new CompanyView(Config::defaultDbName);
+		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherCompanyView->activate();
+	}
+}
+
+void MainView::openPartnersView()
+{
+	if(!partnersView)
+		partnersView = new PartnersView(Config::defaultDbName);
+	if(partnersView->dbname == Config::defaultDbName){
+		partnersView->activate();
+	} else {
+		PartnersView *anotherPartnersView;
+		anotherPartnersView = new PartnersView(Config::defaultDbName);
+		anotherPartnersView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherPartnersView->activate();
+	}
+}
+
+void MainView::openAccountsView()
+{
+	if(!accountsView)
+		accountsView = new AccountsView(Config::defaultDbName);
+	if(accountsView->dbname == Config::defaultDbName){
+		accountsView->activate();
+	} else {
+		AccountsView *anotherAccountsView;
+		anotherAccountsView = new AccountsView(Config::defaultDbName);
+		anotherAccountsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherAccountsView->activate();
+	}
+}
+
+void MainView::openWaresView()
+{
+	if(!waresView)
+		waresView = new WaresView(Config::defaultDbName);
+	if(waresView->dbname == Config::defaultDbName){
+		waresView->activate();
+	} else {
+		WaresView *anotherWaresView;
+		anotherWaresView = new WaresView(Config::defaultDbName);
+		anotherWaresView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherWaresView->activate();
+	}
+}
+
+void MainView::openDatabasesView()
+{
+	if(!databasesView){
+		databasesView = new DatabasesView();
+		connect(databasesView, SIGNAL(activeDbChanged()), this, SLOT(activeDbChanged()));
+	}
+	databasesView->activate();
+}
+
+void MainView::openTagsView()
+{
+	if(!tagsView)
+		tagsView = new TagsView(Config::defaultDbName);
+	if(tagsView->dbname == Config::defaultDbName){
+		tagsView->activate();
+	} else {
+		TagsView *anotherTagsView;
+		anotherTagsView = new TagsView(Config::defaultDbName);
+		anotherTagsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherTagsView->activate();
+	}
+}
+
+void MainView::openBrandsView()
+{
+	if(!brandsView)
+		brandsView = new BrandsView(Config::defaultDbName);
+	if(brandsView->dbname == Config::defaultDbName){
+		brandsView->activate();
+	} else {
+		BrandsView *anotherBrandsView;
+		anotherBrandsView = new BrandsView(Config::defaultDbName);
+		anotherBrandsView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherBrandsView->activate();
+	}
+}
+
+void MainView::openInventoriesView()
+{
+	if(!inventoriesView)
+		inventoriesView = new InventoriesView(Config::defaultDbName);
+	if(inventoriesView->dbname == Config::defaultDbName){
+		inventoriesView->activate();
+	} else {
+		InventoriesView *anotherInventoriesView;
+		anotherInventoriesView = new InventoriesView(Config::defaultDbName);
+		anotherInventoriesView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherInventoriesView->activate();
+	}
+}
+
+void MainView::openQueryOptionsView()
+{
+#if 0
+	if(!queryOptionsView)
+		queryOptionsView = new QueryOptionsView;
+	queryOptionsView->activate();
+#endif
+}
+
+void MainView::openInfoView()
+{
+	if(!infoView)
+		infoView = new InfoView;
+	infoView->activate();
+}

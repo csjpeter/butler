@@ -7,9 +7,10 @@ source /etc/lsb-release
 BUILD_DIST=${DISTRIB_CODENAME}
 HOST_DIST=${DISTRIB_CODENAME}
 TARGET_DIST=${DISTRIB_CODENAME}
-DEBIAN_ARCH=$(dpkg-architecture -qDEB_BUILD_ARCH)
-CURRENT_DATE=$(LANG=en date +"%a, %d %b %Y %H:%M:%S %z")
-CURRENT_YEAR=$(LANG=en date +"%Y")
+CURRENT_DATE=$(LC_ALL=en_US.UTF-8 date +"%a, %d %b %Y %H:%M:%S %z")
+CURRENT_YEAR=$(LC_ALL=en_US.UTF-8 date +"%Y")
+VERSION_PACKAGING=${VERSION}
+PACKAGING="debian"
 
 while ! test "x$1" = "x"; do
 	! test "x$1" = "x--" || {
@@ -41,6 +42,19 @@ while ! test "x$1" = "x"; do
 			}
 			TARGET_DIST="${VALUE}"
 		;;
+		(--version-postfix)
+			! test "x${VALUE}" = "x" || {
+				echo "Missing version postfix value."
+				exit $?
+			}
+			VERSION_PACKAGING=${VERSION}-${VALUE}
+		;;
+		(--packaging)
+			PACKAGING=${VALUE}
+		;;
+		(--exec-postfix)
+			EXEC_POSTFIX=${VALUE}
+		;;
 		(*)
 			echo "Invalid argument ($1) found on command line."
 			exit 1
@@ -60,70 +74,46 @@ test "x${HOST_DIST}" = "x${TARGET_DIST}" && {
 }
 
 # param 1 : inflie
-# param 2 : outfile
-function generate ()
+# stdout is the outfile
+function dist-generator ()
 {
-	cat $1 | sed \
-		-e "s|@PRJNAME@|${PRJNAME}|g" \
-		-e "s|@PRJDESC@|${PRJDESC}|g" \
-		-e "s|@PRJDESCRIPTION@|${PRJDESCRIPTION}|g" \
-		-e "s|@PKGNAME@|${PKGNAME}|g" \
-		-e "s|@VERSION_MAJOR@|${VERSION_MAJOR}|g" \
-		-e "s|@VERSION_MINOR@|${VERSION_MINOR}|g" \
-		-e "s|@VERSION_PATCH@|${VERSION_PATCH}|g" \
-		-e "s|@VERSION_API@|${VERSION_API}|g" \
-		-e "s|@VERSION@|${VERSION}|g" \
-		-e "s|@DEVELOPMENT_START_YEAR@|${DEVELOPMENT_START_YEAR}|g" \
-		-e "s|@AUTHOR@|${AUTHOR}|g" \
-		-e "s|@EMAIL@|${EMAIL}|g" \
-		-e "s|@TARGET_DIST@|${TARGET_DIST}|g" \
-		-e "s|@HOST_DIST@|${HOST_DIST}|g" \
-		-e "s|@DEBIAN_ARCH@|${DEBIAN_ARCH}|g" \
-		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \
-		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \
-                -e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \
-		> $2 || exit $?
+cat << EOF > generator.${PACKAGING}.sh
+	cat \$1 | sed \\
+		-e "s|@PRJNAME@|${PRJNAME}|g" \\
+		-e "s|@PRJDESC@|${PRJDESC}|g" \\
+		-e "s|@PRJDESCRIPTION@|${PRJDESCRIPTION}|g" \\
+		-e "s|@PKGNAME@|${PKGNAME}|g" \\
+		-e "s|@PKGNAME_BASE@|${PKGNAME_BASE}|g" \\
+		-e "s|@VERSION_MAJOR@|${VERSION_MAJOR}|g" \\
+		-e "s|@VERSION_MINOR@|${VERSION_MINOR}|g" \\
+		-e "s|@VERSION_PATCH@|${VERSION_PATCH}|g" \\
+		-e "s|@VERSION_API@|${VERSION_API}|g" \\
+		-e "s|@VERSION@|${VERSION}|g" \\
+		-e "s|@VERSION_PACKAGING@|${VERSION_PACKAGING}|g" \\
+		-e "s|@DEVELOPMENT_START_YEAR@|${DEVELOPMENT_START_YEAR}|g" \\
+		-e "s|@AUTHOR@|${AUTHOR}|g" \\
+		-e "s|@EMAIL@|${EMAIL}|g" \\
+		-e "s|@ORGANIZATION@|${ORGANIZATION}|g" \\
+		-e "s|@ORGANIZATION_DOMAIN_NAME@|${ORGANIZATION_DOMAIN_NAME}|g" \\
+		-e "s|@TARGET_DIST@|${TARGET_DIST}|g" \\
+		-e "s|@HOST_DIST@|${HOST_DIST}|g" \\
+		-e "s|@CURRENT_DATE@|${CURRENT_DATE}|g" \\
+		-e "s|@CURRENT_YEAR@|${CURRENT_YEAR}|g" \\
+		-e "s|@PRECONFIGURATION@|${PRECONFIGURATION}|g" \\
+		-e "s|@EXEC_POSTFIX@|${EXEC_POSTFIX}|g" \\
+		|| exit \$?
+EOF
+	chmod u+x generator.${PACKAGING}.sh
 }
 
 #
 # project directory
 #
 
-test -d ${DIST_DIR} || { mkdir -p ${DIST_DIR} || exit $? ; }
+dist-generator
 
-cp -p config ${DIST_DIR}/config || exit $?
-generate configure.in ${DIST_DIR}/configure || exit $?
-chmod u+x ${DIST_DIR}/configure || exit $?
-generate Makefile.in ${DIST_DIR}/Makefile.in || exit $?
-generate license.in ${DIST_DIR}/license || exit $?
-#generate binlicense.in ${DIST_DIR}/license.binary || exit $?
-#generate srclicense.in ${DIST_DIR}/license.source || exit $?
-generate doxyfile.in ${DIST_DIR}/doxyfile.in || exit $?
-generate butler.desktop.in ${DIST_DIR}/butler.desktop.in || exit $?
-generate butler.man.in ${DIST_DIR}/butler.man.in || exit $?
-generate config.h.in ${DIST_DIR}/config.h.in || exit $?
-
-make -f source.mk DIST_DIR=${DIST_DIR} source -s
-
-#
-# debian packaging directory
-#
-test -d ${DIST_DIR}/debian || { mkdir -p ${DIST_DIR}/debian || exit $? ; }
-
-generate license.in ${DIST_DIR}/debian/copyright || exit $?
-generate debian/changelog.in ${DIST_DIR}/debian/changelog || exit $?
-generate debian/control.in ${DIST_DIR}/debian/control || exit $?
-test "x${BUILD_DIST}" = "x${TARGET_DIST}" && {
-	generate debian/rules.native.in ${DIST_DIR}/debian/rules || exit $?
-} || {
-	generate debian/rules.cross.in ${DIST_DIR}/debian/rules || exit $?
-}
-chmod u+x ${DIST_DIR}/debian/rules || exit $?
-echo "5" > ${DIST_DIR}/debian/compat || exit $?
-
-test -d ${DIST_DIR}/debian/source || { mkdir -p ${DIST_DIR}/debian/source || exit $? ; }
-echo "1.0" > ${DIST_DIR}/debian/source/format || exit $?
-
-generate debian/pkg.install.in ${DIST_DIR}/debian/${PKGNAME}.install.in || exit $?
-generate debian/dbg.install.in ${DIST_DIR}/debian/${PKGNAME}-dbg.install.in || exit $?
+echo "Copying changed files..."
+make -f source.mk DIST_DIR=${DIST_DIR} PKGNAME=${PKGNAME} PACKAGING=${PACKAGING} source || exit $?
+make -f source.mk DIST_DIR=${DIST_DIR} PKGNAME=${PKGNAME} PACKAGING=${PACKAGING} ${PACKAGING} || exit $?
+echo "Copying changed done"
 

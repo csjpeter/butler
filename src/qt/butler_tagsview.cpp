@@ -8,218 +8,235 @@
 #include <config.h>
 
 #include "butler_tagsview.h"
-#include "butler_newtagview.h"
 #include "butler_edittagview.h"
 
-#include "butler_application.h"
+SCC TidContext = "TagsView";
 
-#include "butler_db.h"
+SCC TidTagsWindowTitle = QT_TRANSLATE_NOOP("TagsView", "Tag list");
+SCC TidAddButton = QT_TRANSLATE_NOOP("TagsView", "Add new tag");
+SCC TidEditButton = QT_TRANSLATE_NOOP("TagsView", "Edit tag");
+SCC TidDelButton = QT_TRANSLATE_NOOP("TagsView", "Delete tag");
+SCC TidRefreshButton = QT_TRANSLATE_NOOP("TagsView", "Refresh tag list");
 
-namespace Butler {
+TagsView::TagsView(const QString & dbname, QWidget * parent) :
+	PannView(parent),
+	dbname(dbname),
+	model(tagModel(dbname)),
+	addButton(QIcon(Path::icon("add.png")),
+			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
+	delButton(QIcon(Path::icon("delete.png")),
+			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
+	editButton(QIcon(Path::icon("edit.png")),
+			TidEditButton, TidContext, QKeySequence(Qt::Key_F3)),
+	refreshButton(QIcon(Path::icon("refresh.png")),
+			TidRefreshButton, TidContext, QKeySequence(QKeySequence::Refresh)),
+	newTagView(NULL),
+	editTagView(NULL)
+{
+	setWindowIcon(QIcon(Path::icon("tag.png")));
 
-	TagsView::TagsView(QWidget *parent) :
-		QWidget(parent),
-		model(TagsModel::instance()),
-		newTagView(NULL),
-		editTagView(NULL)
-	{
-		/* action toolbar */
-		actionTB = new QToolBar(tr("Action toolbar"));
+	tableView.setModel(&model);
+	tableView.hideColumn(Tag::LastModified);
 
-		/* actions */
-		newAct = new QAction(QIcon(ICONS_PATH "add.png"), tr("&New"), this);
-		newAct->setShortcut(tr("N"));
-		newAct->setToolTip(tr("Add new tag to buy"));
-		connect(newAct, SIGNAL(triggered()), this, SLOT(newTag()));
+	toolBar.addToolWidget(addButton);
+	toolBar.addToolWidget(editButton);
+	toolBar.addToolWidget(delButton);
+	toolBar.addToolWidget(refreshButton);
 
-		editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
-		editAct->setShortcut(tr("E"));
-		editAct->setToolTip(tr("Edit tag details"));
-		connect(editAct, SIGNAL(triggered()), this, SLOT(editTag()));
+	connect(&addButton, SIGNAL(clicked()), this, SLOT(newTag()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editTag()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delTag()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refresh()));
 
-		delAct = new QAction(QIcon(ICONS_PATH "delete.png"), tr("&Delete"), this);
-		delAct->setShortcut(tr("D"));
-		delAct->setToolTip(tr("Delete tag from tagping list"));
-		connect(delAct, SIGNAL(triggered()), this, SLOT(delTag()));
+	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
 
-		/* tool buttons */
-		newTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(newTBtn);
-		newTBtn->setContentsMargins(20,20,20,20);
-		newTBtn->setDefaultAction(newAct);
-
-		delTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(delTBtn);
-		delTBtn->setDefaultAction(delAct);
-
-		editTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(editTBtn);
-		editTBtn->setDefaultAction(editAct);
-
-		/* query result list */
-		queryView = new QTableView();
-		queryView->setModel(&model);
-		queryView->verticalHeader()->hide();
-		queryView->horizontalHeader()->setMovable(true);
-		queryView->horizontalHeader()->setSortIndicatorShown(true);
-		queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-		queryView->horizontalHeader()->setResizeMode(
-				TagsModel::Name, QHeaderView::ResizeToContents);
-		queryView->horizontalHeader()->setResizeMode(
-				TagsModel::Description, QHeaderView::Stretch);
-		queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-		queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-		queryView->setBackgroundRole(QPalette::AlternateBase);
-		queryView->setBackgroundRole(QPalette::Window);
-		connect(queryView->horizontalHeader(),
-				SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-				this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder)));
-
-//		queryView->hideColumn(TagsModel::Description);
-
-		/* making the window layouting */
-		QVBoxLayout *layout = new QVBoxLayout;
-//		QHBoxLayout *layout = new QHBoxLayout;
-		layout->setContentsMargins(0,0,0,0);
-		setLayout(layout);
-//		actionTB->setOrientation(Qt::Vertical);
-//		actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-		actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		layout->addWidget(actionTB);
-		layout->addWidget(queryView);
-
-		/* restore last state */
-		loadState();
-	}
-
-	TagsView::~TagsView()
-	{
-	}
-
-	void TagsView::showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
-		if(!model.query()){
-			QMessageBox(	QMessageBox::Warning,
-					tr("Querying the list of tags failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}
-
-		QSettings settings(this);
-
-		QString name = settings.value("tagsview/currentitem", "").toString();
-		queryView->selectRow(model.index(name));
-
-		if(settings.value("tagsview/edittagview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(editItem()));
-	}
-
-	void TagsView::closeEvent(QCloseEvent *event)
-	{
-		saveState();
-
-		QWidget::closeEvent(event);
-	}
-
-	void TagsView::loadState()
-	{
-		QSettings settings(this);
-		QPoint pos = settings.value("tagsview/position", QPoint()).toPoint();
-		QSize size = settings.value("tagsview/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		move(pos);
-	}
-
-	void TagsView::saveState()
-	{
-		QSettings settings(this);
-		settings.setValue("tagsview/position", pos());
-		settings.setValue("tagsview/size", size());
-
-		QString tagName;
-		if(queryView->currentIndex().isValid())
-			tagName = model.tag(queryView->currentIndex().row()).name;
-		settings.setValue("tagsview/currentitem", tagName);
-
-		settings.setValue("tagsview/edittagview",
-				editTagView != NULL && editTagView->isVisible());
-	}
-	
-	void TagsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
-	{
-		model.sort(logicalIndex, order == Qt::AscendingOrder);
-	}
-
-	void TagsView::newTag()
-	{
-		if(!newTagView)
-			newTagView = new NewTagView(this, model);
-
-		connect(newTagView, SIGNAL(finished(int)), this, SLOT(finishedNewTag(int)));
-		newTagView->show();
-	}
-
-	void TagsView::finishedNewTag(int res)
-	{
-		(void)res;
-
-		newTagView->disconnect(this, SLOT(finishedNewTag(int)));
-	}
-
-	void TagsView::editTag()
-	{
-		if(!queryView->currentIndex().isValid()){
-			QMessageBox::information(this, tr("Information"),
-					tr("Please select tag first!"));
-			return;
-		}
-
-		if(!editTagView)
-			editTagView = new EditTagView(this, model);
-
-		connect(editTagView, SIGNAL(finished(int)), this, SLOT(finishedEditTag(int)));
-		editTagView->setCursor(queryView->currentIndex());
-		editTagView->show();
-	}
-
-	void TagsView::finishedEditTag(int res)
-	{
-		Q_UNUSED(res);
-
-		editTagView->disconnect(this, SLOT(finishedEditTag(int)));
-	}
-
-	void TagsView::delTag()
-	{
-		if(!queryView->currentIndex().isValid()){
-			QMessageBox::information(this, tr("Information"),
-					tr("Please select tag first!"));
-			return;
-		}
-
-		int row = queryView->currentIndex().row();
-		const Tag &tag = model.tag(row);
-		QMessageBox *msg = new QMessageBox(
-				QMessageBox::Question,
-				tr("Shall we delete?"),
-				tag.name,
-				QMessageBox::Yes | QMessageBox::No,
-				0, Qt::Dialog);
-		if(msg->exec() == QMessageBox::Yes){
-			if(!model.del(row)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Delete tag failed"),
-						model.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		}
-
-		delete msg;
-	}
+	setupView();
+	retranslate();
+	loadState();
 }
 
+TagsView::~TagsView()
+{
+	delete newTagView;
+	delete editTagView;
+}
 
+void TagsView::retranslate()
+{
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidTagsWindowTitle));
+	relayout();
+}
+
+void TagsView::applyLayout()
+{
+	delete layout();
+
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addWidget(&tableView);
+
+	setLayout(mainLayout);
+}
+
+void TagsView::relayout()
+{
+	if(tableView.horizontalHeader()->width() < width())
+		tableView.horizontalHeader()->setSectionResizeMode(
+				Tag::Description, QHeaderView::Stretch);
+	else
+		tableView.horizontalHeader()->setSectionResizeMode(
+				Tag::Description, QHeaderView::ResizeToContents);
+
+	applyLayout();
+
+	updateToolButtonStates();
+}
+
+void TagsView::updateToolButtonStates()
+{
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+	}
+	toolBar.updateButtons();
+}
+
+void TagsView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void TagsView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+
+	relayout();
+}
+
+void TagsView::keyPressEvent(QKeyEvent * event)
+{
+	qApp->postEvent(&tableView, new QKeyEvent(*event));
+}
+
+void TagsView::showEvent(QShowEvent *event)
+{
+	PannView::showEvent(event);
+	relayout();
+}
+
+void TagsView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void TagsView::loadState()
+{
+	QString prefix("TagsView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	tableView.loadState(prefix);
+
+	Text name;
+	name <<= settings.value(prefix + "/currentitem", "");
+	int col = settings.value(prefix + "/currentitemCol", "").toInt();
+	if(model.set.has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), col));
+
+	if(settings.value(prefix + "/editTagView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editItem()));
+}
+
+void TagsView::saveState()
+{
+	QString prefix("TagsView");
+	PannView::saveState(prefix);
+	QSettings settings;
+
+	QString name;
+	if(tableView.currentIndex().isValid())
+		name = model.data(tableView.currentIndex().row()).name;
+	settings.setValue(prefix + "/currentitem", name);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
+
+	tableView.saveState(prefix);
+
+	SAVE_VIEW_STATE(editTagView);
+}
+
+void TagsView::newTag()
+{
+	if(!newTagView)
+		newTagView = new EditTagView(dbname);
+
+	newTagView->activate();
+}
+
+void TagsView::editTag()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select tag first."));
+		return;
+	}
+
+	if(!editTagView)
+		editTagView = new EditTagView(dbname);
+
+	editTagView->setCursor(tableView.currentIndex());
+	editTagView->activate();
+}
+
+void TagsView::delTag()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select tag first."));
+		return;
+	}
+
+	int row = tableView.currentIndex().row();
+	const Tag & tag = model.data(row);
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Deleting a tag"),
+			tr("Shall we delete this tag: ") + tag.name,
+			QMessageBox::Yes | QMessageBox::No,
+			0, Qt::Dialog));
+	if(msg->exec() == QMessageBox::Yes)
+		model.del(row);
+}
+
+void TagsView::refresh()
+{
+	Text name;
+	if(tableView.currentIndex().isValid())
+		name = model.data(tableView.currentIndex().row()).name;
+
+	model.query();
+
+	if(model.set.has(name))
+		tableView.setCurrentIndex(model.index(model.index(name), 0));
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
+}
+
+void TagsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
+{
+	model.sort(logicalIndex, order);
+}
+
+void TagsView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() == previous.isValid())
+		return;
+	updateToolButtonStates();
+}

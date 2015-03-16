@@ -6,93 +6,69 @@
 #ifndef BUTLER_CUSTOMVIEW_H
 #define BUTLER_CUSTOMVIEW_H
 
-#include <QWidget>
+#include <butler_pannview.h>
 
-#include <butler_query.h>
-
-#include "butler_custommodel.h"
-
-#include "butler_localdb.h"
-
-/*forwards*/
-class QAction;
-class QToolButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QTableView;
-class QStandardItemModel;
-class QSqlTableModel;
-
-namespace Butler {
-
-class AccountingView;
+class EditItemView;
 class EditItemView;
 class QueryOptionsView;
 class EditWareView;
+class StatsView;
 
-class CustomView : public QWidget, LocalDb
+class CustomView : public PannView
 {
 private:
 	Q_OBJECT
-
+	MY_Q_OBJECT
 public:
-	CustomView(QWidget *parent = 0);
-	~CustomView();
+	CustomView(const QString & dbname, QWidget *parent = 0);
+	virtual ~CustomView();
+
+	virtual void loadState();
+	virtual void saveState();
 
 private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
-	void loadState();
-	void saveState();
-	
-	void updateStatistics();
+	void retranslate();
+	void applyLayout();
+	void relayout();
+	void updateToolButtonStates();
+
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
 	void editItem();
 	void delItem();
-	void openAccountingView();
-	void finishedEditItem(int);
-	void filterItems();
-	void filterAcceptedSlot();
-	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void shoppingItem();
+	void refreshItems();
 	void editWare();
-	void finishedEditWare(int);
+	void filterItems();
+	void applyNewFilter();
+	void statsItems();
+	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
+	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
+public:
+	const QString dbname;
 private:
-	CustomModel model;
+	csjp::Object<ItemModel> model;
 
-	QTableView *queryView;
+	ToolButton editButton;
+	ToolButton delButton;
+	ToolButton shoppingButton;
+	ToolButton statsButton;
+	ToolButton refreshButton;
+	ToolButton filterButton;
 
-	QToolBar *actionTB;
+	TableView tableView;
 
-	QToolButton *editTBtn;
-	QToolButton *delTBtn;
-	QToolButton *accountingTBtn;
-	QToolButton *filterTBtn;
-	QToolButton *wareEditTBtn;
-
-	QAction *editAct;
-	QAction *delAct;
-	QAction *accountingAct;
-	QAction *filterAct;
-	QAction *wareEditAct;
-
-	QLabel *itemCountLabel;
-	QLabel *itemSumQuantityLabel;
-	QLabel *itemSumPriceLabel;
-	QLabel *avgUnitPriceLabel;
-	QLabel *minUnitPriceLabel;
-	QLabel *maxUnitPriceLabel;
-
-	AccountingView *accountingView;
 	EditItemView *editItemView;
 	QueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
+	StatsView *statsView;
 };
 
-}
-
 #endif
-

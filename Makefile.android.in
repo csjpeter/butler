@@ -1,0 +1,22 @@
+
+ICONS_DIR=android/assets/share/@PKGNAME_BASE@/icons
+CSS_DIR=android/assets/share/@PKGNAME_BASE@/css
+TRANSLATIONS_DIR=android/assets/share/@PKGNAME_BASE@/translations
+
+BUTLER_IMAGES+=\
+	android/res/drawable/icon.png
+
+BUILD_DEPS+=\
+	android/libs/$(ARM_CPU)/lib@PKGNAME_BASE@.so
+
+android/libs/$(ARM_CPU)/%: \
+		tmp/@TCROOT@@PREFIX@lib/lib@PKGNAME_BASE@.so
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $^ $@
+	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
+
+android/res/drawable/icon.png: \
+		share/icons/butler.png
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $+ $@
+

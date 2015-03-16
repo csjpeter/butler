@@ -8,364 +8,345 @@
 #include <config.h>
 
 #include "butler_customview.h"
-#include "butler_edititemview.h"
-#include "butler_shoppingview.h"
 #include "butler_queryoptionsview.h"
-#include "butler_accountingview.h"
+#include "butler_edititemview.h"
 #include "butler_editwareview.h"
+#include "butler_statsview.h"
+#include "butler_config.h"
 
-#include "butler_application.h"
+SCC TidContext = "CustomView";
 
-#include "butler_db.h"
+SCC TidAnaliticsWindowTitle = QT_TRANSLATE_NOOP("CustomView", "Analitics");
+SCC TidEditItemButton = QT_TRANSLATE_NOOP("CustomView", "Edit item");
+SCC TidDeleteItemButton = QT_TRANSLATE_NOOP("CustomView", "Delete item");
+SCC TidRefreshItemsButton = QT_TRANSLATE_NOOP("CustomView", "Refresh items");
+SCC TidShoppingItemButton = QT_TRANSLATE_NOOP("CustomView", "Add item to shopping list");
+SCC TidFilterItemButton = QT_TRANSLATE_NOOP("CustomView", "Filter items");
+SCC TidStatsItemButton = QT_TRANSLATE_NOOP("CustomView", "Statistics");
 
-namespace Butler {
+CustomView::CustomView(const QString & dbname, QWidget * parent) :
+	PannView(parent),
+	dbname(dbname),
+	model(itemModel(dbname)),
+	editButton(QIcon(Path::icon("edit.png")),
+			TidEditItemButton, TidContext, QKeySequence(Qt::Key_F1)),
+	delButton(QIcon(Path::icon("delete.png")),
+			TidDeleteItemButton, TidContext, QKeySequence(Qt::Key_F2)),
+	shoppingButton(QIcon(Path::icon("shopping.png")),
+			TidShoppingItemButton, TidContext, QKeySequence(Qt::Key_F3)),
+	statsButton(QIcon(Path::icon("statistics.png")),
+			TidStatsItemButton, TidContext, QKeySequence(Qt::Key_F4)),
+	refreshButton(QIcon(Path::icon("refresh.png")),
+			TidRefreshItemsButton, TidContext, QKeySequence(QKeySequence::Refresh)),/*F5*/
+	filterButton(QIcon(Path::icon("query.png")),
+			TidFilterItemButton, TidContext, QKeySequence(Qt::Key_F6)),
+	editItemView(NULL),
+	queryOptsView(NULL),
+	editWareView(NULL),
+	statsView(NULL)
+{
+	setWindowIcon(QIcon(Path::icon("list.png")));
 
-	CustomView::CustomView(QWidget *parent) :
-		QWidget(parent),
-		accountingView(NULL),
-		editItemView(NULL),
-		queryOptsView(NULL),
-		editWareView(NULL)
-	{
-		/* action toolbar */
-		actionTB = new QToolBar(tr("Action toolbar"));
+	tableView.setModel(&model);
+	tableView.hideColumn(Item::LastModified);
 
-		/* actions */
-		accountingAct = new QAction(
-				QIcon(ICONS_PATH "add.png"), tr("&Accounting"), this);
-		accountingAct->setShortcut(tr("A"));
-		accountingAct->setToolTip(tr("Accounting"));
-		connect(accountingAct, SIGNAL(triggered()), this, SLOT(openAccountingView()));
+	toolBar.addToolWidget(editButton);
+	toolBar.addToolWidget(delButton);
+	//toolBar.addToolWidget(shoppingButton);
+	toolBar.addToolWidget(statsButton);
+	toolBar.addToolWidget(refreshButton);
+	toolBar.addToolWidget(filterButton);
 
-		editAct = new QAction(QIcon(ICONS_PATH "edit.png"), tr("&Edit"), this);
-		editAct->setShortcut(tr("E"));
-		editAct->setToolTip(tr("Edit item details"));
-		connect(editAct, SIGNAL(triggered()), this, SLOT(editItem()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
+	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(shoppingItem()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refreshItems()));
+	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
+	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
+//	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
 
-		delAct = new QAction(QIcon(ICONS_PATH "delete.png"), tr("&Delete"), this);
-		delAct->setShortcut(tr("D"));
-		delAct->setToolTip(tr("Delete item"));
-		connect(delAct, SIGNAL(triggered()), this, SLOT(delItem()));
+	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
 
-		filterAct = new QAction(QIcon(ICONS_PATH "query.png"), tr("&Filter"), this);
-		filterAct->setShortcut(tr("F"));
-		filterAct->setToolTip(tr("Filter by tags"));
-		connect(filterAct, SIGNAL(triggered()), this, SLOT(filterItems()));
+	setupView();
+	retranslate();
+	loadState();
+}
 
-		wareEditAct = new QAction(QIcon(ICONS_PATH "ware.png"), tr("Edit"), this);
-		wareEditAct->setShortcut(tr("W"));
-		wareEditAct->setToolTip(tr("Edit ware details"));
-		connect(wareEditAct, SIGNAL(triggered()), this, SLOT(editWare()));
+CustomView::~CustomView()
+{
+	delete editItemView;
+	delete queryOptsView;
+	delete editWareView;
+	delete statsView;
+}
 
-		/* upload bills */
-		accountingTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(accountingTBtn);
-		accountingTBtn->setDefaultAction(accountingAct);
+void CustomView::retranslate()
+{
+	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	setWindowTitle(titlePrefix + tr(TidAnaliticsWindowTitle));
+	relayout();
+}
 
-		/* tool buttons */
-		editTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(editTBtn);
-		editTBtn->setDefaultAction(editAct);
+void CustomView::applyLayout()
+{
+	delete layout();
 
-		/* delete button */
-		delTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(delTBtn);
-		delTBtn->setDefaultAction(delAct);
+	VLayout * mainLayout = new VLayout;
+	mainLayout->addWidget(&tableView);
 
-		/* adjust query details */
-		filterTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(filterTBtn);
-		filterTBtn->setDefaultAction(filterAct);
+	setLayout(mainLayout);
+}
 
-		/* edit ware details */
-		wareEditTBtn = new QToolButton(actionTB);
-		actionTB->addWidget(wareEditTBtn);
-		wareEditTBtn->setDefaultAction(wareEditAct);
-
-		/* query result list */
-		queryView = new QTableView();
-		queryView->setModel(&model);
-//		queryView->verticalHeader()->hide();
-		queryView->horizontalHeader()->setSortIndicatorShown(true);
-		queryView->horizontalHeader()->setMovable(true);
-		queryView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-		queryView->horizontalHeader()->setResizeMode(
-				Item::Uploaded, QHeaderView::ResizeToContents);
-		queryView->horizontalHeader()->setResizeMode(
-				Item::Purchased, QHeaderView::ResizeToContents);
-		queryView->horizontalHeader()->setResizeMode(
-				Item::OnStock, QHeaderView::ResizeToContents);
-		queryView->horizontalHeader()->setResizeMode(
+void CustomView::relayout()
+{
+	if(tableView.horizontalHeader()->width() < width())
+		tableView.horizontalHeader()->setSectionResizeMode(
 				Item::Comment, QHeaderView::Stretch);
-		queryView->setSelectionBehavior(QAbstractItemView::SelectRows);
-		queryView->setSelectionMode(QAbstractItemView::SingleSelection);
-		queryView->setBackgroundRole(QPalette::AlternateBase);
-		queryView->setBackgroundRole(QPalette::Window);
-		connect(queryView->horizontalHeader(),
-				SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)),
-				this, SLOT(sortIndicatorChangedSlot(int, Qt::SortOrder))
-				);
-		
-		queryView->hideColumn(Item::Bought);
+	else
+		tableView.horizontalHeader()->setSectionResizeMode(
+				Item::Comment, QHeaderView::ResizeToContents);
 
-		/* statistics in grid layout */
-		QGridLayout *statGrid = new QGridLayout();
-		QLabel *label;
+//	LayoutState newState = LayoutState::Wide;
+//	newState = LayoutState::Expanding;
+//	newState = LayoutState::Wide;
+	applyLayout();
 
-		label = new QLabel(tr("Number of queried items : "));
-		statGrid->addWidget(label, 0, 0, 1, 1);
-		itemCountLabel = new QLabel();
-		statGrid->addWidget(itemCountLabel, 0, 1, 1, 1);
-		label = new QLabel(tr("Minimal unit price : "));
-		statGrid->addWidget(label, 0, 2, 1, 1);
-		minUnitPriceLabel = new QLabel();
-		statGrid->addWidget(minUnitPriceLabel, 0, 3, 1, 1);
-		label = new QLabel(tr("Maximal unit price : "));
-		statGrid->addWidget(label, 0, 4, 1, 1);
-		maxUnitPriceLabel = new QLabel();
-		statGrid->addWidget(maxUnitPriceLabel, 0, 5, 1, 1);
-
-
-		label = new QLabel(tr("Summary of queried quantites : "));
-		statGrid->addWidget(label, 1, 0, 1, 1);
-		itemSumQuantityLabel = new QLabel();
-		statGrid->addWidget(itemSumQuantityLabel, 1, 1, 1, 1);
-		label = new QLabel(tr("Summary of paid prices : "));
-		statGrid->addWidget(label, 1, 2, 1, 1);
-		itemSumPriceLabel = new QLabel();
-		statGrid->addWidget(itemSumPriceLabel, 1, 3, 1, 1);
-		label = new QLabel(tr("Avergae unit price : "));
-		statGrid->addWidget(label, 1, 4, 1, 1);
-		avgUnitPriceLabel = new QLabel();
-		statGrid->addWidget(avgUnitPriceLabel, 1, 5, 1, 1);
-
-		/* making the window layouting */
-		QVBoxLayout *layout = new QVBoxLayout;
-//		QHBoxLayout *layout = new QHBoxLayout;
-		layout->setContentsMargins(0,0,0,0);
-		setLayout(layout);
-//		actionTB->setOrientation(Qt::Vertical);
-//		actionTB->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-		actionTB->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		layout->addWidget(actionTB);
-		layout->addLayout(statGrid);
-		layout->addWidget(queryView);
-
-		/* restore last state */
-		loadState();
+	if(width() < sizeHint().width()) {
+//		newState = LayoutState::Medium;
+		applyLayout();
 	}
 
-	CustomView::~CustomView()
-	{
+	if(width() < sizeHint().width()) {
+//		newState = LayoutState::Narrow;
+		applyLayout();
 	}
 
-	void CustomView::showEvent(QShowEvent *event)
-	{
-		QWidget::showEvent(event);
+	updateToolButtonStates();
+}
 
-		QuerySet qs;
-		db().query().query(qs);
-		if(qs.size())
-			model.opts = qs.queryAt(0);
-		model.opts.name = "default";
+void CustomView::updateToolButtonStates()
+{
+	if(tableView.currentIndex().isValid()){
+		editButton.show();
+		delButton.show();
+		//shoppingButton.show();
+	} else {
+		editButton.hide();
+		delButton.hide();
+		shoppingButton.hide();
+	}
+	toolBar.updateButtons();
+}
 
-		if(!model.query()){
-			QMessageBox(	QMessageBox::Warning,
-					tr("Querying the list of items failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}
-		updateStatistics();
-		
-		QSettings settings(this);
+void CustomView::changeEvent(QEvent * event)
+{
+	QWidget::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
 
-		QDateTime uploaded = settings.value("customview/currentitem", "").toDateTime();
-		queryView->selectRow(model.index(uploaded));
+void CustomView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
 
-		if(settings.value("customview/edititemview", false).toBool())
-			QTimer::singleShot(0, this, SLOT(editItem()));
+	relayout();
+}
+
+void CustomView::keyPressEvent(QKeyEvent * event)
+{
+	qApp->postEvent(&tableView, new QKeyEvent(*event));
+}
+
+void CustomView::showEvent(QShowEvent *event)
+{
+	PannView::showEvent(event);
+	relayout();
+}
+
+void CustomView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void CustomView::loadState()
+{
+	QString prefix("CustomView");
+	PannView::loadState(prefix);
+	QSettings settings;
+
+	Text queryName(settings.value(prefix + "/query", ""));
+	QueryModel & qm = queryModel(dbname);
+	if(qm.set.has(queryName))
+		model->opts = qm.set.query(queryName);
+	model->query();
+
+	tableView.loadState(prefix);
+
+	DateTime uploadDate(settings.value(prefix + "/currentitem", ""));
+	int col = settings.value(prefix + "/currentitemCol", "").toInt();
+	if(model->set.has(uploadDate))
+		tableView.setCurrentIndex(model->index(model->index(uploadDate), col));
+
+	if(settings.value(prefix + "/editItemView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editItem()));
+
+	if(settings.value(prefix + "/queryOptsView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(filterItems()));
+
+	updateToolButtonStates();
+}
+
+void CustomView::saveState()
+{
+	QString prefix("CustomView");
+	PannView::saveState(prefix);
+	QSettings settings;
+
+	settings.setValue(prefix + "/query", model->opts.name);
+
+	QString uploadDate;
+	if(tableView.currentIndex().isValid()){
+		const Item & item = model->data(tableView.currentIndex().row());
+		uploadDate = item.uploadDate.toString(Qt::ISODate);
+	}
+	settings.setValue(prefix + "/currentitem", uploadDate);
+	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
+
+	tableView.saveState(prefix);
+
+	SAVE_VIEW_STATE(editItemView);
+	SAVE_VIEW_STATE(queryOptsView);
+}
+
+void CustomView::refreshItems()
+{
+	DateTime uploadDate;
+	if(tableView.currentIndex().isValid()){
+		const Item & item = model->data(tableView.currentIndex().row());
+		uploadDate = item.uploadDate;
 	}
 
-	void CustomView::closeEvent(QCloseEvent *event)
-	{
-		saveState();
+	model->query();
 
-		QWidget::closeEvent(event);
+	if(model->set.has(uploadDate))
+		tableView.setCurrentIndex(model->index(model->index(uploadDate), 0));
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
+}
+
+void CustomView::editItem()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select item first."));
+		return;
 	}
 
-	void CustomView::loadState()
-	{
-		QSettings settings(this);
-		QPoint pos = settings.value("customview/position", QPoint()).toPoint();
-		QSize size = settings.value("customview/size", QSize()).toSize();
-		if(size.isValid())
-			resize(size);
-		move(pos);
+	if(!editItemView)
+		editItemView = new EditItemView(dbname, *model);
+
+	editItemView->setCursor(tableView.currentIndex());
+	editItemView->activate();
+}
+
+void CustomView::delItem()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select item first."));
+		return;
 	}
 
-	void CustomView::saveState()
-	{
-		QSettings settings(this);
-		settings.setValue("customview/position", pos());
-		settings.setValue("customview/size", size());
+	int row = tableView.currentIndex().row();
+	const Item & item = model->data(row);
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Deleting an item"),
+			tr("Shall we delete this item: ") + item.name +
+			(item.type.size() ? (" (" + item.type + ")") : ""),
+			QMessageBox::Yes | QMessageBox::No,
+			0, Qt::Dialog));
+	if(msg->exec() == QMessageBox::Yes)
+		model->del(row);
+}
 
-		QString uploaded;
-		if(queryView->currentIndex().isValid()){
-			const Item &item = model.item(queryView->currentIndex().row());
-			uploaded = item.uploaded.toString(Qt::ISODate);
-		}
-		settings.setValue("customview/currentitem", uploaded);
-
-		settings.setValue("customview/edititemview",
-				editItemView != NULL && editItemView->isVisible());
+void CustomView::shoppingItem()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select item first."));
+		return;
 	}
 
-	void CustomView::editItem()
-	{
-		if(!queryView->currentIndex().isValid()){
-			QMessageBox::information(this, tr("Information"),
-					tr("Please select item first!"));
-			return;
-		}
-
-		if(!editItemView){
-			editItemView = new EditItemView(this, model);
-			editItemView->setModal(true);
-/*			editItemView->setWindowModality(Qt::ApplicationModal);*/
-			editItemView->setWindowTitle(tr("Edit item details"));
-		}
-		connect(editItemView, SIGNAL(finished(int)), this, SLOT(finishedEditItem(int)));
-		editItemView->setCursor(queryView->currentIndex());
-		editItemView->show();
-	}
-
-	void CustomView::finishedEditItem(int res)
-	{
-		Q_UNUSED(res);
-
-		editItemView->disconnect(this, SLOT(finishedEditItem(int)));
-	}
-
-	void CustomView::delItem()
-	{
-		if(!queryView->currentIndex().isValid()){
-			QMessageBox::information(this, tr("Information"),
-					tr("Please select item first!"));
-			return;
-		}
-
-		int row = queryView->currentIndex().row();
-		const Item &item = model.item(row);
-		QMessageBox *msg = new QMessageBox(
-				QMessageBox::Question,
-				tr("Shall we delete?"),
-				item.name + ", " + item.category,
-				QMessageBox::Yes | QMessageBox::No,
-				0, Qt::Dialog);
-		if(msg->exec() == QMessageBox::Yes){
-			if(!model.del(row)){
-				QMessageBox(	QMessageBox::Warning,
-						tr("Delete item failed"),
-						model.error(),
-						QMessageBox::Ok,
-						0, Qt::Dialog).exec();
-			}
-		}
-
-		delete msg;
-	}
-
-	void CustomView::openAccountingView()
-	{
-		if(!accountingView){
-			accountingView = new AccountingView(this, model);
-			accountingView->setModal(true);
-/*			accountingView->setWindowModality(Qt::ApplicationModal);*/
-			accountingView->setWindowTitle(tr("Accounting view"));
-		}
-		accountingView->show();
-	}
-
-	void CustomView::editWare()
-	{
-		if(!queryView->currentIndex().isValid()){
-			QMessageBox::information(this, tr("Information"),
-					tr("Please select an item first!"));
-			return;
-		}
-
-		WaresModel & waresModel = WaresModel::instance();
-		if(!editWareView)
-			editWareView = new EditWareView(this, waresModel);
-
-		const Item &item = model.item(queryView->currentIndex().row());
-
-		connect(editWareView, SIGNAL(finished(int)), this, SLOT(finishedEditWare(int)));
-		editWareView->setCursor(waresModel.index(waresModel.index(item.name), 0));
-		editWareView->show();
-	}
-
-	void CustomView::finishedEditWare(int res)
-	{
-		Q_UNUSED(res);
-
-		editWareView->disconnect(this, SLOT(finishedEditWare(int)));
-	}
-
-	void CustomView::filterItems()
-	{
-		if(!queryOptsView){
-			queryOptsView = new QueryOptionsView(model.opts);
-			queryOptsView->setModal(true);
-/*			queryOptsView->setWindowModality(Qt::ApplicationModal);*/
-			queryOptsView->setWindowTitle(tr("Query options view"));
-			connect(queryOptsView, SIGNAL(accepted()),
-					this, SLOT(filterAcceptedSlot()));
-			QuerySet qs;
-			db().query().query(qs);
-			if(qs.size())
-				model.opts = qs.queryAt(0);
-			model.opts.name = "default";
-		}
-		queryOptsView->show();
-	}
-	
-	void CustomView::filterAcceptedSlot()
-	{
-		QuerySet qs;
-		db().query().query(qs);
-		if(qs.size()){
-			model.opts.name = "default";
-			db().query().update(qs.queryAt(0), model.opts);
-		} else {
-			model.opts.name = "default";
-			db().query().insert(model.opts);
-		}
-
-		if(!model.query()){
-			QMessageBox(	QMessageBox::Warning,
-					tr("Querying the list of items failed"),
-					model.error(),
-					QMessageBox::Ok,
-					0, Qt::Dialog).exec();
-		}
-		updateStatistics();
-	}
-
-	void CustomView::updateStatistics()
-	{
-		itemCountLabel->setNum((int)model.stat.itemCount);
-		itemSumQuantityLabel->setNum(model.stat.sumQuantity);
-		itemSumPriceLabel->setNum((int)model.stat.sumPrice);
-		avgUnitPriceLabel->setNum(model.stat.avgPrice);
-		minUnitPriceLabel->setNum(model.stat.cheapestUnitPrice);
-		maxUnitPriceLabel->setNum(model.stat.mostExpUnitPrice);
-	}
-
-	void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
-	{
-		model.sort(logicalIndex, order == Qt::AscendingOrder);
+	int row = tableView.currentIndex().row();
+	const Item & item = model->data(row);
+	csjp::Object<QMessageBox> msg(new QMessageBox(
+			QMessageBox::Question,
+			tr("Adding to shopping list"),
+			QString("Shall we add a corresponding item to the shopping list:\n") +
+			item.name + (item.type.size() ? (" (" + item.type + ")") : ""),
+			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
+	int res = msg->exec();
+	if(res == QMessageBox::Yes){
+		//model->addShoppingItem(row);
 	}
 }
 
+void CustomView::editWare()
+{
+	if(!tableView.currentIndex().isValid()){
+		QMessageBox::information(this, tr("Information"),
+				tr("Please select an item first."));
+		return;
+	}
+
+	WareModel & wm = wareModel(dbname);
+	if(!editWareView)
+		editWareView = new EditWareView(dbname);
+
+	const Item & item = model->data(tableView.currentIndex().row());
+
+	editWareView->setCursor(wm.index(wm.index(item.name), 0));
+	editWareView->activate();
+}
+
+void CustomView::filterItems()
+{
+	if(!queryOptsView){
+		queryOptsView = new QueryOptionsView(dbname);
+		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(applyNewFilter()));
+	}
+	queryOptsView->query = model->opts;
+	queryOptsView->activate();
+}
+
+void CustomView::applyNewFilter()
+{
+	model->opts = queryOptsView->query;
+	model->query();
+	tableView.setCurrentIndex(model->index(-1, -1));
+	updateToolButtonStates();
+	relayout();
+}
+
+void CustomView::statsItems()
+{
+	if(!statsView)
+		statsView = new StatsView(model->stat);
+	statsView->activate();
+}
+
+void CustomView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
+{
+	model->sort(logicalIndex, order);
+}
+
+void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)
+{
+	if(current.isValid() == previous.isValid())
+		return;
+	updateToolButtonStates();
+}

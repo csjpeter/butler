@@ -1,0 +1,12 @@
+/* MainView specials */
+
+*[infoField="true"], *[infoField="true"] QLabel {
+	color: #bbaa00;
+	font-weight: bold;
+}
+
+QTextEdit {
+	padding: 0mm;
+	min-height: 20mm;
+	max-height: 20mm;
+}

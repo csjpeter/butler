@@ -6,89 +6,79 @@
 #ifndef BUTLER_QUERYOPTIONSVIEW_H
 #define BUTLER_QUERYOPTIONSVIEW_H
 
-#include <QDialog>
+#include <butler_dataclasses.h>
+#include <butler_tagwidget.h>
+#include <butler_pannview.h>
 
-#include "butler_tagsmodel.h"
-
-/*forwards*/
-class QAction;
-class QToolButton;
-class QRadioButton;
-class QButtonGroup;
-class QLineEdit;
-class QTextEdit;
-class QDateTimeEdit;
-class QPushButton;
-class QMenu;
-class QToolBar;
-class QLabel;
-class QComboBox;
-class QCheckBox;
-class QTableView;
-class QScrollArea;
-class QListView;
-class QStandardItemModel;
-
-namespace Butler {
-
-class TagWidget;
-
-class QueryOptionsView : public QDialog
+class QueryOptionsView : public PannView
 {
 private:
 	Q_OBJECT
+	MY_Q_OBJECT
 
 public:
-	QueryOptionsView(Query &query, QWidget *parent = 0);
+	QueryOptionsView(const QString & dbname, QWidget * parent = 0);
 	virtual ~QueryOptionsView();
-
-protected:
-
-private:
-	void showEvent(QShowEvent *event);
-	void closeEvent(QCloseEvent *event);
 
 	void loadState();
 	void saveState();
-	
-	void mapToGui();
-	void mapFromGui();
-	
-//	QString stringSetToString(const csjp::OwnerContainer<QString> &strSet);
-
-private slots:
-	void okClickedSlot(bool);
-	void selectAllClickedSlot(bool);
-	void selectNoneClickedSlot(bool);
 
 private:
-	Query &query;
+	virtual void showEvent(QShowEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
-	QLineEdit *nameEditor;
-	QDateTimeEdit *startDate;
-	QDateTimeEdit *endDate;
-	QCheckBox *wareFilter;
-	QComboBox *wareBox;
-	QCheckBox *shopFilter;
-	QComboBox *shopBox;
-	TagWidget *tagsSelector;
-	TagWidget *withoutTagsSelector;
+	void mapToGui();
+	void mapFromGui();
 
-	QButtonGroup *stockOptions;
-	QRadioButton *stockOptAll;
-	QRadioButton *stockOptOnStock;
-	QRadioButton *stockOptUsedUp;
+	virtual void changeEvent(QEvent * event);
+	virtual void resizeEvent(QResizeEvent * event);
+
+private slots:
+	void retranslate();
+	void applyLayout(LayoutState state, bool test = false);
+	void relayout();
+	void queryClickedSlot();
+	void saveClickedSlot();
+	void delClickedSlot();
+	void resetClickedSlot();
+	void backClickedSlot();
+	void querySelectedSlot();
+	void layoutContentChangeSlot();
+	void updateToolButtonStates();
+
+private:
+	const QString & dbname;
+
+public:
+	Query query;
+
+private:
+	Button queryButton;
+	Button saveButton;
+	Button delButton;
+	Button resetButton;
+
+	ComboSelector nameEditor;
+	DateTimeEditor startDate;
+	DateTimeEditor endDate;
+	Selector wareSelector;
+	FormCheckBox wareFilter;
+	Selector partnerSelector;
+	FormCheckBox partnerFilter;
+
+	ButtonGroup stockOptions;
+	QRadioButton stockOptAll;
+	QRadioButton stockOptOnStock;
+	QRadioButton stockOptUsedUp;
 	
-	QButtonGroup *tagOptions;
-	QRadioButton *tagOptAllMatch;
-	QRadioButton *tagOptAnyMatch;
+	ButtonGroup tagOptions;
+	QRadioButton tagOptAllMatch;
+	QRadioButton tagOptAnyMatch;
 
-	QPushButton *selectAllButton;
-	QPushButton *selectNoneButton;
-	QPushButton *okButton;
+	FormCheckBox withTagFilter;
+	TagWidget tagsWidget;
+	FormCheckBox withoutTagFilter;
+	TagWidget withoutTagsWidget;
 };
 
-}
-
 #endif
-

@@ -8,21 +8,30 @@
 
 #include <QApplication>
 
+#include "butler_mainview.h"
+
 /* Forwards: */
 class QSessionManager;
 
-namespace Butler {
-
 class Application : public QApplication
 {
+private:
+	Q_OBJECT
+	MY_Q_OBJECT
 public:
-	Application(int &argc, char *argv[]);
+	Application(int & argc, char *argv[]);
 	virtual ~Application();
 
+	void loadTranslation(const char * langCode = NULL);
+	void pixelPerMM();
+	void loadCSS();
+
+	MainView & mainView();
+
 	virtual bool notify(QObject * receiver, QEvent * event);
+
+private:
+	MainView * mainViewPtr;
 };
 
-}
-
 #endif
-

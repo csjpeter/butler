@@ -5,59 +5,122 @@
 
 #include <stdio.h>
 
-#include <csjp_logger.h>
+#include <csjp_object.h>
 
 #include <QtGui>
 
 #include "butler_application.h"
-#include "butler_localdb.h"
+#include "butler_databases.h"
 #include "butler_mainview.h"
+#include "butler_config.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char *args[])
 {
-/*	QT_REQUIRE_VERSION(argc, argv, "4.0.2");*/
+	csjp::setBinaryName(args[0]);
+	Application app(argc, args);
+
 #ifdef DEBUG
-	csjp::setLogDir("./");
+	csjp::verboseMode = true;
 #endif
 
-	Butler::Application app(argc, argv);
+	int argi = 1;
 
-	if(1 < argc){
-		if(QString(argv[1]) == "--help"){
-			printf("Usage: %s [--dbfile file]\n\n", argv[0]);
-		} else if(QString(argv[1]) == "--dbfile"){
-			if(argc < 2){
-				printf("There should be a filename as second parameter.\n");
-				exit(EXIT_FAILURE);
-			}
-			printf("Using %s as database file.\n", argv[2]);
-			Butler::LocalDb::dbFileName = QString(argv[2]);
-		}
+	if(1 <= argc - argi && (
+			  !strcmp(args[argi], "--help") ||
+			  !strcmp(args[argi], "-h"))){
+		printf(	"Usage: %s [--logdir|-l dir] [--verbose|-v]\n"
+			"       %s [--help|-h]\n"
+			"\n", args[0], args[0]);
+		return 0;
 	}
 
-#ifdef MAEMO
-#define CSS_BUFFER_SIZE 64*1024
-	{
-		MSG("Loading css file...");
-		char buf[CSS_BUFFER_SIZE];
-		QFile cssFile("/usr/share/butler/css/maemo.css");
-		if(cssFile.open(QIODevice::ReadOnly)){
-			int read = cssFile.read(buf, CSS_BUFFER_SIZE-1);
-			if(0 < read){
-				buf[read] = 0;
-				MSG("%s", buf);
-				app.setStyleSheet(buf);
-			}
-		} else {
-			WARNING("Cant open css file");
+	while(argi < argc){
+		if(2 <= argc - argi && (
+				  !strcmp(args[argi], "--logdir") ||
+				  !strcmp(args[argi], "-l"))){
+			csjp::setLogDir(args[argi+1]);
+			argi += 2;
+			continue;
 		}
+		if(1 <= argc - argi && (
+				  !strcmp(args[argi], "--verbose") ||
+				  !strcmp(args[argi], "-v"))){
+			csjp::verboseMode = true;
+			argi++;
+			continue;
+		}
+
+		if(!strcmp(args[argi], "")) /* The rests are Qt arguments. */
+			break;
+
+		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
+		LOG("Bad argument given: '%s'", args[argi]);
+		return 1;
 	}
+
+#ifdef Q_OS_ANDROID
+	QDir filesDir("/data/data/com." PRJNAME "/files");
+	filesDir.mkpath("qt/plugins/platform/android");
+	filesDir.mkpath("qt/plugins/sqldrivers");
+/*
+	const char * libandroid = "/data/data/com." PRJNAME "/files/"
+			"qt/plugins/platform/android/libandroid-9.so";
+	if(!QFile::remove(libandroid))
+		LOG("Failed to remove %s", libandroid);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libandroid-9.so", libandroid))
+		LOG("Failed to create %s", libandroid);
+*/
+
+	const char * libqsqlpsql = "/data/data/com." PRJNAME
+					"/files/qt/plugins/sqldrivers/libqsqlpsql.so";
+	if(!QFile::remove(libqsqlpsql))
+		LOG("Failed to remove %s", libqsqlpsql);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlpsql.so", libqsqlpsql))
+		LOG("Failed to create %s", libqsqlpsql);
+
+	const char * libqsqlite = "/data/data/com." PRJNAME
+					"/files/qt/plugins/sqldrivers/libqsqlite.so";
+	if(!QFile::remove(libqsqlite))
+		LOG("Failed to remove %s", libqsqlite);
+	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlite.so", libqsqlite))
+		LOG("Failed to create %s", libqsqlite);
+
+	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
+	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
+	app.addLibraryPath("/data/data/com." PRJNAME "/files/qt/plugins");
 #endif
 
-	Butler::MainView &view = Butler::MainView::instance();
-//	view.setFixedSize(800, 480);
-	view.show();
+	try {
+		LOG("Environment variables:\n%s",
+			C_STR(QProcessEnvironment::systemEnvironment().toStringList().join("\n")));
 
-	return app.exec();
+		Path::initRootPath(args[0]);
+		Path::initConfigFileName();
+		app.setWindowIcon(QIcon(Path::icon("butler.png")));
+
+		app.loadTranslation();
+		app.loadTranslation("hu");
+		app.pixelPerMM();
+		Config::thresholdScrollDistance = Config::pxPerMM * 2;
+		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
+		app.loadCSS();
+		Config::load();
+		loadDatabaseConfigs();
+
+		LOG("Library paths: %s", C_STR(qApp->libraryPaths().join(", ")));
+
+		/* Show main view and run the app */
+		app.mainView().show();
+		bool ret = app.exec();
+		saveDatabaseConfigs();
+		Config::save();
+		return ret;
+	} catch (csjp::Exception & e) {
+		EXCEPTION(e);
+		return -1;
+	} catch (std::exception & e) {
+		fprintf(stderr, "Failed main view construction or other unexpected exception: %s",
+				e.what());
+		return -1;
+	}
 }
-
