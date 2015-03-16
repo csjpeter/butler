@@ -83,15 +83,22 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 	if((int)dataSet.size() <= index.row())
 		return false;
 
+	int row = index.row();
+	@Type@ modified(dataSet.queryAt(row));
+
 	switch(index.column()){
 @For{Field@
 		case @Type@::@.EnumName@ :
-			dataSet.queryAt(index.row()).@.Name@ <<= value;
+			@IfNotSet{@
+			modified.@.Name@ <<= value;
+			@IfNotSet}@@IfIsSet{@
+			modified.setAs@.EnumName@s(value.toString());
+			@IfIsSet}@
+			update(row, modified);
 			break;
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :
-			//dataSet.queryAt(index.row()).@.Name@ <<= value;
 			break;
 @}@
 		default :

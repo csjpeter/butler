@@ -461,6 +461,26 @@ public:
 					idx++;
 					//LOG("end next");
 				}
+			} else if(block.chopFront("@IfIsSet{@")){
+				unint pos;
+				if(!field.set)
+					if(block.findFirst(pos, "@IfIsSet}@"))
+						block.chopFront(pos);
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfIsSet}@")){
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfNotSet{@")){
+				unint pos;
+				if(field.set)
+					if(block.findFirst(pos, "@IfNotSet}@"))
+						block.chopFront(pos);
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfNotSet}@")){
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
 			} else if(block.chopFront("@NumOfFields@")){
 				code << numOfFields;
 			} else if(block.chopFront("@NumOfTableFields@")){
