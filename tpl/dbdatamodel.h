@@ -3,13 +3,21 @@ private:
 	MY_Q_OBJECT;
 
 private:
-	@Type@Set & dataSet;
+	SqlConnection & sql;
+	@Type@Db db;
+	@Type@Set dataSet;
 public:
 	const @Type@Set & set;
 
 public:
-	@Type@Model(@Type@Set & dataSet) : dataSet(dataSet), set(dataSet) {}
-	virtual ~@Type@Model() {}
+	virtual ~@Type@Model() {
+		/* FIXME
+		 * Since @Type@Model instances are held in a static storage class container somewhere,
+		 * it might happen on destruction time, that itemOperationListener (which is also a
+		 * static storage class object) got destroyed before some @Type@model instances. */
+		if(operationListeners.has(*this))
+			operationListeners.remove(*this);
+	}
 
 	/*virtual QModelIndex index(
 			int row, int column,
@@ -44,5 +52,18 @@ public:
 	void del(int row);
 	void addNew(@Type@ &);
 	void update(int row, @Type@ & modified);
+	void query();
+
+protected:
+	bool queryFilter(const @Type@ & modified);
+	static void objChange(const @Type@Db & db, const @Type@ & modified);
+	/* return true if 'modified' should be in query list */
+	void objChangeListener(const @Type@Db & db, const @Type@ & modified);
+	static void objRemoved(const @Type@Db & db, const @Type@ & removed);
+	void objRemovedListener(const @Type@Db & db, const @Type@ & removed);
 
 private:
+	static csjp::ReferenceContainer<@Type@Model> operationListeners;
+
+private:
+

@@ -15,21 +15,75 @@
 @declare@ Tag
 class TagModel : public AbstractTableModel
 {
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ WareTag
+class WareTagModel : public AbstractTableModel
+{
 @include@ datamodel.h
-@include@ datamodel_spec.h
+};
+
+@declare@ WareType
+class WareTypeModel : public AbstractTableModel
+{
+@include@ datamodel.h
 };
 
 @declare@ Ware
 class WareModel : public AbstractTableModel
 {
-@include@ datamodel.h
-@include@ datamodel_spec.h
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Company
+class CompanyModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Brand
+class BrandModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Inventory
+class InventoryModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Partner
+class PartnerModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Account
+class AccountModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
+@declare@ Payment
+class PaymentModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
 };
 
 @declare@ Item
 class ItemModel : public AbstractTableModel
 {
-@include@ datamodel.h
+@include@ dbdatamodel.h
 public:
 	ItemModel(SqlConnection & sql, const WareModel & wmodel);
 	const WareModel & wmodel;
@@ -59,5 +113,37 @@ public:
 	Query opts;
 	QueryStat stat;
 };
+
+@declare@ QueryWithTag
+class QueryWithTagModel : public AbstractTableModel
+{
+@include@ datamodel.h
+};
+
+@declare@ QueryWithoutTag
+class QueryWithoutTagModel : public AbstractTableModel
+{
+@include@ datamodel.h
+};
+
+@declare@ QueryWare
+class QueryWareModel : public AbstractTableModel
+{
+@include@ datamodel.h
+};
+
+@declare@ QueryPartner
+class QueryPartnerModel : public AbstractTableModel
+{
+@include@ datamodel.h
+};
+
+@declare@ Query
+class QueryModel : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+@include@ dbdatamodel_spec.h
+};
+
 
 #endif

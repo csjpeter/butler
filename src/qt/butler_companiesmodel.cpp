@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include <QtGui>
 
 #include "butler_companiesmodel.h"
@@ -259,3 +259,4 @@ void CompaniesModel::sort(int column, bool ascending)
 		companies.ordering.moveToFront(static_cast<Company::Fields>(column));
 		companies.sort();
 }
+#endif

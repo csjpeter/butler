@@ -3,6 +3,7 @@
  * Copyright (C) 2014 Csaszar, Peter
  */
 
+#if 0
 #ifndef BUTLER_ACCOUNTSMODEL_H
 #define BUTLER_ACCOUNTSMODEL_H
 
@@ -61,4 +62,5 @@ protected:
 	AccountSet accounts;
 };
 
+#endif
 #endif

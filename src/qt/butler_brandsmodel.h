@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 #ifndef BUTLER_BRANDSMODEL_H
 #define BUTLER_BRANDSMODEL_H
 
@@ -63,4 +64,5 @@ protected:
 	BrandSet brands;
 };
 
+#endif
 #endif

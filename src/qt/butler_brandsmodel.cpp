@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 //#define DEBUG
 #include <csjp_logger.h>
 #undef DEBUG
@@ -222,3 +223,4 @@ void BrandsModel::sort(int column, bool ascending)
     brands.ordering.moveToFront(static_cast<Brand::Fields>(column));
 	brands.sort();
 }
+#endif

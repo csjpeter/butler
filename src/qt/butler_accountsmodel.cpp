@@ -3,6 +3,7 @@
  * Copyright (C) 2014 Csaszar, Peter
  */
 
+#if 0
 #include <QtGui>
 
 #include "butler_accountsmodel.h"
@@ -247,3 +248,4 @@ void AccountsModel::sort(int column, bool ascending)
     accounts.ordering.moveToFront(static_cast<Account::Fields>(column));
 	accounts.sort();
 }
+#endif

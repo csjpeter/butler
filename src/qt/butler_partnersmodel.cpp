@@ -3,6 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#if 0
 #include <QtGui>
 
 #include "butler_partnersmodel.h"
@@ -269,3 +270,4 @@ void PartnersModel::sort(int column, bool ascending)
 	partners.ordering.moveToFront(static_cast<Partner::Fields>(column));
 	partners.sort();
 }
+#endif

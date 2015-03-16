@@ -2,7 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009 Csaszar, Peter
  */
-
+#if 0
 #include <QtGui>
 
 #include "butler_queriesmodel.h"
@@ -231,3 +231,4 @@ void QueriesModel::sort(int column, bool ascending)
 	queries.ordering.moveToFront(static_cast<Query::Fields>(column));
 	queries.sort();
 }
+#endif

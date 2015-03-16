@@ -1,3 +1,5 @@
+csjp::ReferenceContainer<@Type@Model> @Type@Model::operationListeners;
+
 Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 {
 	if(index.row() < (int)dataSet.size() && index.column() < @Type@::NumOfFields - 2)
@@ -181,19 +183,69 @@ const @Type@& @Type@Model::data(int row) const
 
 void @Type@Model::del(int row)
 {
-	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	dataSet.removeAt(row);
+	@Type@ & obj = dataSet.queryAt(row);
+	db.del(obj);
+	objRemoved(db, obj);
 }
 
 void @Type@Model::addNew(@Type@ & obj)
 {
-	ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
-	dataSet.add(new @Type@(modified));
+	db.insert(obj);
+	objChange(db, obj);
 }
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
-	dataSet.queryAt(row) = modified;
-	dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+	@Type@ & orig = dataSet.queryAt(row);
+	db.update(orig, modified);
+	objChange(db, modified);
+}
+
+void @Type@Model::objRemoved(const @Type@Db & db, const @Type@ & r)
+{
+	for(auto & i : operationListeners)
+		i.objRemovedListener(db, r);
+}
+
+void @Type@Model::objRemovedListener(const @Type@Db & db, const @Type@ & r)
+{
+	if(& db != &(this->db))
+		return;
+
+	if(!dataSet.has(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@))
+		return;
+
+	int row = dataSet.index(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@);
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	dataSet.removeAt(row);
+}
+
+void @Type@Model::objChange(const @Type@Db & db, const @Type@ & modified)
+{
+	for(auto & i : operationListeners)
+		i.objChangeListener(db, modified);
+}
+
+void @Type@Model::objChangeListener(const @Type@Db & db, const @Type@ & modified)
+{
+	if(& db != &(this->db))
+		return;
+
+	bool want = queryFilter(modified);
+	if(dataSet.has(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@)){
+		int row = dataSet.index(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@);
+		if(want){
+			dataSet.queryAt(row) = modified;
+			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+		} else {
+			ModelRemoveGuard g(this, QModelIndex(), row, row);
+			dataSet.removeAt(row);
+		}
+	} else {
+		if(want){
+			ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+			dataSet.add(new @Type@(modified));
+		}
+	}
 }
 

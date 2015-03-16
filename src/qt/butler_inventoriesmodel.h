@@ -3,6 +3,7 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
+#if 0
 #ifndef BUTLER_INVENTORIESMODEL_H
 #define BUTLER_INVENTORIESMODEL_H
 
@@ -63,4 +64,5 @@ protected:
 	InventorySet inventories;
 };
 
+#endif
 #endif

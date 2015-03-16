@@ -3,6 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#if 0
 #ifndef BUTLER_COMPANIESMODEL_H
 #define BUTLER_COMPANIESMODEL_H
 
@@ -61,4 +62,5 @@ protected:
 	CompanySet companies;
 };
 
+#endif
 #endif

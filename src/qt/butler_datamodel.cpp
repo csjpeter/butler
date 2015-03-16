@@ -15,7 +15,13 @@ SCC TidTagFieldLastModified	= QT_TRANSLATE_NOOP("TagModel", "Last modification d
 SCC TidTagFieldDeleted		= QT_TRANSLATE_NOOP("TagModel", "Is deleted");
 
 @declare@ Tag
-@include@ datamodel_spec.cpp
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ WareTag
+@include@ datamodel.cpp
+
+@declare@ WareType
 @include@ datamodel.cpp
 
 SCC TidWareFieldName = QT_TRANSLATE_NOOP("WaresModel", "Name");
@@ -27,8 +33,32 @@ SCC TidWareFieldLastModified	= QT_TRANSLATE_NOOP("TagModel", "Last modification 
 SCC TidWareFieldDeleted		= QT_TRANSLATE_NOOP("TagModel", "Is deleted");
 
 @declare@ Ware
-@include@ datamodel_spec.cpp
-@include@ datamodel.cpp
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Company
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Brand
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Inventory
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Partner
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Account
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
+
+@declare@ Payment
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
 
 SCC TidItemFieldUploadDate	= QT_TRANSLATE_NOOP("ItemsModel", "Upload date");
 SCC TidItemFieldName		= QT_TRANSLATE_NOOP("ItemsModel", "Common name");
@@ -49,7 +79,7 @@ SCC TidItemFieldUnitPrice	= QT_TRANSLATE_NOOP("ItemsModel", "Unit price");
 SCC TidItemFieldQuantityWithUnit	= QT_TRANSLATE_NOOP("ItemsModel", "Quantity");
 
 @declare@ Item
-@include@ datamodel.cpp
+@include@ dbdatamodel.cpp
 
 ItemModel::ItemModel(SqlConnection & sql, const WareModel & wmodel) :
 	sql(sql),
@@ -73,4 +103,20 @@ bool ItemModel::queryFilter(const Item & modified)
 	(void)(modified);
 	return true;
 }
+
+@declare@ QueryWithTag
+@include@ datamodel.cpp
+
+@declare@ QueryWithoutTag
+@include@ datamodel.cpp
+
+@declare@ QueryWare
+@include@ datamodel.cpp
+
+@declare@ QueryPartner
+@include@ datamodel.cpp
+
+@declare@ Query
+@include@ datamodel.cpp
+
 

@@ -3,6 +3,7 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#if 0
 #ifndef BUTLER_QUERIESMODEL_H
 #define BUTLER_QUERIESMODEL_H
 
@@ -60,4 +61,5 @@ protected:
 	QuerySet queries;
 };
 
+#endif
 #endif
