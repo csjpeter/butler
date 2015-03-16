@@ -129,7 +129,7 @@ case "${CMD}" in
 			--host=${ANDROID_SDK_API}-${ARCH} \
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} make $@ || exit $?
+		exec_in_dir ${DIST} make -j${JOBS} $@ || exit $?
 	;;
 esac
 

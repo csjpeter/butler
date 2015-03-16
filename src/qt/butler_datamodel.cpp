@@ -206,6 +206,7 @@ SCC TidQueryFieldLastModified	= QT_TRANSLATE_NOOP("QueryModel", "Last modificati
 SCC TidQueryFieldDeleted		= QT_TRANSLATE_NOOP("QueryModel", "Is deleted");
 
 @declare@ Query
-@include@ datamodel.cpp
+@include@ dbdatamodel_spec.cpp
+@include@ dbdatamodel.cpp
 
 
