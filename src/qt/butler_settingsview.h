@@ -49,7 +49,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	TagsModel & model;
+	TTagModel & model;
 
 	ToolButton addButton;
 	ToolButton delButton;

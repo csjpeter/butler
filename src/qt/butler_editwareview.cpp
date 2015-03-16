@@ -7,8 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editwareview.h"
-#include "butler_waresmodel.h"
-#include "butler_tagsmodel.h"
 #include "butler_tagwidget.h"
 
 SCC TidContext = "EditWareView";

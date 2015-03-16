@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editpartnerview.h"
-#include "butler_partnersmodel.h"
 
 SCC TidContext = "EditPartnerView";
 
@@ -39,7 +38,7 @@ EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
-	companyEditor(&companiesModel(dbname), Company::Name)
+	companyEditor(&companyModel(dbname), Company::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -108,7 +107,7 @@ void EditPartnerView::saveState()
 void EditPartnerView::mapToGui()
 {
 	if(cursor.isValid())
-		partner = Partner(model.partner(cursor.row()));
+		partner = Partner(model.data(cursor.row()));
 
 	nameEditor.editor.setText(partner.name);
 	storeNameEditor.editor.setText(partner.storeName);
@@ -275,7 +274,7 @@ void EditPartnerView::saveSlot()
 	mapFromGui();
 
 	/* Add company if not yet known. */
-	CompaniesModel & cm = companiesModel(dbname);
+	CompanyModel & cm = companyModel(dbname);
 	int i = cm.index(companyEditor.text());
 	if(i == -1){
 		Company company;
@@ -284,7 +283,7 @@ void EditPartnerView::saveSlot()
 	}
 
 	if(cursor.isValid()){
-		if(model.partner(cursor.row()) != partner)
+		if(model.data(cursor.row()) != partner)
 			model.update(cursor.row(), partner);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

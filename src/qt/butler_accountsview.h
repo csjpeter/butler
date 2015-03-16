@@ -49,7 +49,7 @@ private slots:
 public:
 	const QString dbname;
 private:
-	AccountsModel & model;
+	AccountModel & model;
 
 	ToolButton addButton;
 	ToolButton delButton;

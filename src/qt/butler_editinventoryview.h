@@ -46,7 +46,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	InventoriesModel & model;
+	InventoryModel & model;
 	QModelIndex cursor;
 	Inventory inventory;
 

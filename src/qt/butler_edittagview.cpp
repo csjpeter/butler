@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_edittagview.h"
-#include "butler_tagsmodel.h"
 
 SCC TidContext = "EditTagView";
 

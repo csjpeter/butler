@@ -39,7 +39,7 @@ public slots:
 	virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
 public:
-	int index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const NO_FCLOG;
+	//int index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const NO_FCLOG;
 	const @Type@& data(int row) const NO_FCLOG;
 	void del(int row);
 	void addNew(@Type@ &);

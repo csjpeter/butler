@@ -21,7 +21,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("InventoriesView", "Refresh inventory l
 InventoriesView::InventoriesView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(inventoriesModel(dbname)),
+	model(inventoryModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -148,7 +148,7 @@ void InventoriesView::loadState()
 	Text name;
 	name <<= settings.value(prefix + "/currentitem", "");
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.inventorySet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editInventoryView", false).toBool())
@@ -163,7 +163,7 @@ void InventoriesView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.inventory(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -204,7 +204,7 @@ void InventoriesView::delInventory()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Inventory & inventory = model.inventory(row);
+	const Inventory & inventory = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a inventory"),
@@ -219,11 +219,11 @@ void InventoriesView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.inventory(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.inventorySet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -231,7 +231,7 @@ void InventoriesView::refresh()
 
 void InventoriesView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void InventoriesView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

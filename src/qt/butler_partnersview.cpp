@@ -148,7 +148,7 @@ void PartnersView::loadState()
 
 	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.partnerSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editPartnerView", false).toBool())
@@ -165,7 +165,7 @@ void PartnersView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.partner(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -206,7 +206,7 @@ void PartnersView::delPartner()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Partner & partner = model.partner(row);
+	const Partner & partner = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a partner"),
@@ -221,11 +221,11 @@ void PartnersView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.partner(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.partnerSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -233,7 +233,7 @@ void PartnersView::refresh()
 
 void PartnersView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void PartnersView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

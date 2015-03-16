@@ -36,13 +36,13 @@
 /*@BeginDecl@
 	Class Ware
 	Fields {
-		Text name; key			; TEXT
-		Text unit;				; TEXT
-		Text icon;				; TEXT
-		WareTypeSet types; set	;
-		WareTagSet tags; set	;
-		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		Text name; key				; TEXT
+		Text unit;					; TEXT
+		Text icon;					; TEXT
+		WareTypeSet types; set,spec	;
+		WareTagSet tags; set,spec	;
+		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -201,17 +201,17 @@
 /*@BeginDecl@
 	Class Query
 	Fields {
-		Text name; key						; TEXT
-		DateTime startDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		DateTime endDate;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		enum QueryStockOptions stockOption;		; INTEGER NOT NULL
-		enum QueryTagOptions tagOption;			; INTEGER NOT NULL
-		QueryWithTagSet withTags; set		;
-		QueryWithoutTagSet withoutTags; set	;
-		QueryWareSet wares; set				;
-		QueryPartnerSet partners; set		;
-		DateTime lastModified;				; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;						; CHAR(1) NOT NULL DEFAULT 'N'
+		Text name; key							; TEXT
+		DateTime startDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime endDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		enum QueryStockOptions stockOption;spec	; INTEGER NOT NULL
+		enum QueryTagOptions tagOption; spec	; INTEGER NOT NULL
+		QueryWithTagSet withTags; set,spec		;
+		QueryWithoutTagSet withoutTags; set,spec;
+		QueryWareSet wares; set,spec			;
+		QueryPartnerSet partners; set,spec		;
+		DateTime lastModified;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		bool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)

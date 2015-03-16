@@ -14,10 +14,6 @@
 
 #include "butler_config.h"
 #include "butler_edititemview.h"
-#include "butler_itemsmodel.h"
-#include "butler_tagsmodel.h"
-#include "butler_waresmodel.h"
-#include "butler_partnersmodel.h"
 
 SCC TidContext = "EditItemView";
 
@@ -66,10 +62,10 @@ EditItemView::EditItemView(const QString & dbname, ItemModel & model, QWidget * 
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
 	wareEditor(&wareModel(dbname), Ware::Name),
-	brandEditor(&brandsModel(dbname), Brand::Name),
-	accountEditor(&accountsModel(dbname), Account::Name),
+	brandEditor(&brandModel(dbname), Brand::Name),
+	accountEditor(&accountModel(dbname), Account::Name),
 	partnerEditor(&partnersModel(dbname), Partner::Name),
-	inventoryEditor(&inventoriesModel(dbname), Inventory::Name),
+	inventoryEditor(&inventoryModel(dbname), Inventory::Name),
 	tagsWidget(dbname),
 	lastNumEdited(0),
 	lastLastNumEdited(0)
@@ -437,14 +433,14 @@ void EditItemView::saveSlot()
 	int i;
 
 	/* Add partner if not yet known. */
-	PartnersModel & sm = partnersModel(dbname);
+	PartnerModel & sm = partnersModel(dbname);
 	i = sm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;
 		partner.name = partnerEditor.text();
 		partner.company = partnerEditor.text();
 		/* Add company if not yet known. */
-		CompaniesModel & cm = companiesModel(dbname);
+		CompanyModel & cm = companyModel(dbname);
 		int i = cm.index(partner.company);
 		if(i == -1){
 			Company company;
@@ -455,14 +451,14 @@ void EditItemView::saveSlot()
 	}
 
 	/* Add brand if not yet known. */
-	BrandsModel & bm = brandsModel(dbname);
+	BrandModel & bm = brandModel(dbname);
 	i = bm.index(brandEditor.text());
 	if(i == -1){
 		Brand brand;
 		brand.name = brandEditor.text();
 		brand.company = partnerEditor.text();
 		/* Add company if not yet known. */
-		CompaniesModel & cm = companiesModel(dbname);
+		CompanyModel & cm = companyModel(dbname);
 		int i = cm.index(brand.company);
 		if(i == -1){
 			Company company;
@@ -473,7 +469,7 @@ void EditItemView::saveSlot()
 	}
 
 	/* Add account if not yet known. */
-	AccountsModel & am = accountsModel(dbname);
+	AccountModel & am = accountModel(dbname);
 	i = am.index(accountEditor.text());
 	if(i == -1){
 		Account account;
@@ -482,7 +478,7 @@ void EditItemView::saveSlot()
 	}
 
 	/* Add inventory if not yet known. */
-	InventoriesModel & im = inventoriesModel(dbname);
+	InventoryModel & im = inventoryModel(dbname);
 	i = im.index(inventoryEditor.text());
 	if(i == -1){
 		Inventory inventory;
@@ -639,10 +635,10 @@ void EditItemView::accountNameEditFinishedSlot()
 	lastAccountName = accountEditor.editor.text();
 
 	Account account;
-	AccountsModel & am = accountsModel(dbname);
+	AccountModel & am = accountModel(dbname);
 	int i = am.index(lastAccountName);
 	if(i != -1)
-		account = am.account(i);
+		account = am.data(i);
 
 	grossPriceEditor.setSuffix(account.currency);
 }

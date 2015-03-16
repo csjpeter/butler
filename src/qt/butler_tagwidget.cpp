@@ -9,7 +9,6 @@
 
 #include "butler_config.h"
 #include "butler_tagwidget.h"
-#include "butler_waresmodel.h"
 
 
 TagWidget::TagWidget(const QString & dbname, QWidget * parent) :

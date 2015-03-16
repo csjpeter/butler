@@ -22,7 +22,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("AccountsView", "Refresh account list")
 AccountsView::AccountsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(accountsModel(dbname)),
+	model(accountModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -148,7 +148,7 @@ void AccountsView::loadState()
 
 	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.accountSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editAccountView", false).toBool())
@@ -165,7 +165,7 @@ void AccountsView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.account(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -206,7 +206,7 @@ void AccountsView::delAccount()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Account & account = model.account(row);
+	const Account & account = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a account"),
@@ -221,11 +221,11 @@ void AccountsView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.account(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.accountSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -233,7 +233,7 @@ void AccountsView::refresh()
 
 void AccountsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void AccountsView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

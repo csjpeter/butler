@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editinventoryview.h"
-#include "butler_inventoriesmodel.h"
 
 SCC TidContext = "EditInventoryView";
 
@@ -29,7 +28,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditInventoryView", "Inventory is upda
 EditInventoryView::EditInventoryView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(inventoriesModel(dbname)),
+	model(inventoryModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -92,7 +91,7 @@ void EditInventoryView::saveState()
 void EditInventoryView::mapToGui()
 {
 	if(cursor.isValid())
-		inventory = Inventory(model.inventory(cursor.row()));
+		inventory = Inventory(model.data(cursor.row()));
 
 	nameEditor.editor.setText(inventory.name);
 	commentEditor.edit.setText(inventory.comment);
@@ -219,7 +218,7 @@ void EditInventoryView::saveSlot()
 	mapFromGui();
 
 	if(cursor.isValid()){
-		if(model.inventory(cursor.row()) != inventory)
+		if(model.data(cursor.row()) != inventory)
 			model.update(cursor.row(), inventory);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

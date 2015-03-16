@@ -292,6 +292,17 @@ inline bool operator<(const Text & a, const QueryWithTag & b) { return b.tag.isM
 inline bool operator<(const QueryWithTag & a, const Text & b) { return a.tag.isLess(b); }
 @include@ dataclass_set.h
 /* non-transactional */
+inline QString & operator<<= (QString & str, const QueryWithTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+/* non-transactional */
 inline StringSet & operator<<= (StringSet & list, const QueryWithTagSet & queryTags)
 {
 	list.clear();
@@ -324,6 +335,17 @@ inline bool operator<(const Text & a, const QueryWithoutTag & b) { return b.tag.
 inline bool operator<(const QueryWithoutTag & a, const Text & b) { return a.tag.isLess(b); }
 @include@ dataclass_set.h
 /* non-transactional */
+inline QString & operator<<= (QString & str, const QueryWithoutTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+/* non-transactional */
 inline StringSet & operator<<= (StringSet & list, const QueryWithoutTagSet & queryTags)
 {
 	list.clear();
@@ -354,6 +376,17 @@ class QueryWare
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+/* non-transactional */
+inline QString & operator<<= (QString & str, const QueryWareSet & wares)
+{
+	str.clear();
+	for(auto & ware : wares){
+		if(str.size())
+			str.append(", ");
+		str.append(ware.ware);
+	}
+	return str;
+}
 
 
 @declare@ QueryPartner
@@ -363,6 +396,17 @@ class QueryPartner
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
+/* non-transactional */
+inline QString & operator<<= (QString & str, const QueryPartnerSet & partners)
+{
+	str.clear();
+	for(auto & partner : partners){
+		if(str.size())
+			str.append(", ");
+		str.append(partner.partner);
+	}
+	return str;
+}
 
 
 @declare@ Query

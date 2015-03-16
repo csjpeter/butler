@@ -232,12 +232,12 @@ void DatabasesView::useDbDesc()
 
 		tagModel(dbname);
 		wareModel(dbname);
-		inventoriesModel(dbname);
-		companiesModel(dbname);
+		inventoryModel(dbname);
+		companyModel(dbname);
 		partnersModel(dbname);
-		accountsModel(dbname);
-		brandsModel(dbname);
-		queriesModel(dbname);
+		accountModel(dbname);
+		brandModel(dbname);
+		queryModel(dbname);
 		//shoppingModel(dbname);
 		csjp::Object<ItemModel> tmpModel(itemModel(dbname));
 

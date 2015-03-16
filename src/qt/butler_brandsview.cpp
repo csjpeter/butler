@@ -21,7 +21,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("BrandsView", "Refresh brand list");
 BrandsView::BrandsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(brandsModel(dbname)),
+	model(brandModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -148,7 +148,7 @@ void BrandsView::loadState()
 	Text name;
 	name <<= settings.value(prefix + "/currentitem", "");
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.brandSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editBrandView", false).toBool())
@@ -163,7 +163,7 @@ void BrandsView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.brand(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -204,7 +204,7 @@ void BrandsView::delBrand()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Brand & brand = model.brand(row);
+	const Brand & brand = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a brand"),
@@ -219,11 +219,11 @@ void BrandsView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.brand(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.brandSet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -231,7 +231,7 @@ void BrandsView::refresh()
 
 void BrandsView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void BrandsView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

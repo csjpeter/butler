@@ -22,7 +22,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("CompanyView", "Refresh company list");
 CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(companiesModel(dbname)),
+	model(companyModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
@@ -149,7 +149,7 @@ void CompanyView::loadState()
 
 	Text name(settings.value(prefix + "/currentitem", ""));
 	int col = settings.value(prefix + "/currentitemCol", "").toInt();
-	if(model.companySet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), col));
 
 	if(settings.value(prefix + "/editCompanyView", false).toBool())
@@ -166,7 +166,7 @@ void CompanyView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.company(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -207,7 +207,7 @@ void CompanyView::delCompany()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Company & company = model.company(row);
+	const Company & company = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a company"),
@@ -222,11 +222,11 @@ void CompanyView::refresh()
 {
 	Text name;
 	if(tableView.currentIndex().isValid())
-		name = model.company(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 
 	model.query();
 
-	if(model.companySet().has(name))
+	if(model.set.has(name))
 		tableView.setCurrentIndex(model.index(model.index(name), 0));
 
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
@@ -234,7 +234,7 @@ void CompanyView::refresh()
 
 void CompanyView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void CompanyView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

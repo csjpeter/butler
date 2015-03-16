@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editbrandview.h"
-#include "butler_brandsmodel.h"
 
 SCC TidContext = "EditBrandView";
 
@@ -29,12 +28,12 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditBrandView", "Brand is updated.");
 EditBrandView::EditBrandView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(brandsModel(dbname)),
+	model(brandModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
-	companyEditor(&companiesModel(dbname), Company::Name)
+	companyEditor(&companyModel(dbname), Company::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -93,7 +92,7 @@ void EditBrandView::saveState()
 void EditBrandView::mapToGui()
 {
 	if(cursor.isValid())
-		brand = Brand(model.brand(cursor.row()));
+		brand = Brand(model.data(cursor.row()));
 
 	nameEditor.editor.setText(brand.name);
 	companyEditor.setText(brand.company);
@@ -220,7 +219,7 @@ void EditBrandView::saveSlot()
 	mapFromGui();
 
 	/* Add company if not yet known. */
-	CompaniesModel & cm = companiesModel(dbname);
+	CompanyModel & cm = companyModel(dbname);
 	int i = cm.index(companyEditor.text());
 	if(i == -1){
 		Company company;
@@ -229,7 +228,7 @@ void EditBrandView::saveSlot()
 	}
 
 	if(cursor.isValid()){
-		if(model.brand(cursor.row()) != brand)
+		if(model.data(cursor.row()) != brand)
 			model.update(cursor.row(), brand);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

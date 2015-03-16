@@ -20,40 +20,28 @@ class Database
 private:
 	QString dbname;
 	SqlConnection * sql;
-	CompanyDb * companyDb;
-	BrandDb * brandDb;
-	InventoryDb * inventoryDb;
-	AccountDb * accountDb;
-	PartnerDb * partnerDb;
-	QueryDb * queryDb;
-	TagModel * tagsModel;
+	TagModel * tagModel;
 	WareModel * wareModel;
-	CompaniesModel * companyModel;
-	BrandsModel * brandsModel;
-	InventoriesModel * inventoriesModel;
-	AccountsModel * accountsModel;
-	PartnersModel * partnersModel;
-	QueriesModel * queriesModel;
+	CompanyModel * companyModel;
+	BrandModel * brandModel;
+	InventoryModel * inventoryModel;
+	AccountModel * accountModel;
+	PartnerModel * partnersModel;
+	QueryModel * queryModel;
 	//ShoppingModel * shoppingModel;
 
 public:
 	Database(const QString & dbname) :
 		dbname(dbname),
 		sql(0),
-		companyDb(0),
-		brandDb(0),
-		inventoryDb(0),
-		accountDb(0),
-		partnerDb(0),
-		queryDb(0),
-		tagsModel(0),
+		tagModel(0),
 		wareModel(0),
 		companyModel(0),
-		brandsModel(0),
-		inventoriesModel(0),
-		accountsModel(0),
+		brandModel(0),
+		inventoryModel(0),
+		accountModel(0),
 		partnersModel(0),
-		queriesModel(0)
+		queryModel(0)
 		//shoppingModel(0)
 	{
 	}
@@ -62,21 +50,14 @@ public:
 	~Database()
 	{
 		//delete shoppingModel;
-		delete queriesModel;
+		delete queryModel;
 		delete partnersModel;
-		delete accountsModel;
+		delete accountModel;
 		delete companyModel;
-		delete inventoriesModel;
-		delete brandsModel;
+		delete inventoryModel;
+		delete brandModel;
 		delete wareModel;
-		delete tagsModel;
-
-		delete queryDb;
-		delete partnerDb;
-		delete accountDb;
-		delete companyDb;
-		delete inventoryDb;
-		delete brandDb;
+		delete tagModel;
 
 		delete sql;
 	}
@@ -109,9 +90,9 @@ public:
 
 	TagModel & tags()
 	{
-		if(!tagsModel)
-			tagsModel = new TagModel(sqlConn());
-		return *tagsModel;
+		if(!tagModel)
+			tagModel = new TagModel(sqlConn());
+		return *tagModel;
 	}
 
 	WareModel & wares()
@@ -121,58 +102,46 @@ public:
 		return *wareModel;
 	}
 
-	CompaniesModel & company()
+	CompanyModel & company()
 	{
-		if(!companyDb)
-			companyDb = new CompanyDb(sqlConn());
 		if(!companyModel)
-			companyModel = new CompaniesModel(*companyDb);
+			companyModel = new CompanyModel(sqlConn());
 		return *companyModel;
 	}
 
-	BrandsModel & brands()
+	BrandModel & brands()
 	{
-		if(!brandDb)
-			brandDb = new BrandDb(sqlConn());
-		if(!brandsModel)
-			brandsModel = new BrandsModel(*brandDb);
-		return *brandsModel;
+		if(!brandModel)
+			brandModel = new BrandModel(sqlConn());
+		return *brandModel;
 	}
 
-	InventoriesModel & inventories()
+	InventoryModel & inventories()
 	{
-		if(!inventoryDb)
-			inventoryDb = new InventoryDb(sqlConn());
-		if(!inventoriesModel)
-			inventoriesModel = new InventoriesModel(*inventoryDb);
-		return *inventoriesModel;
+		if(!inventoryModel)
+			inventoryModel = new InventoryModel(sqlConn());
+		return *inventoryModel;
 	}
 
-	AccountsModel & accounts()
+	AccountModel & accounts()
 	{
-		if(!accountDb)
-			accountDb = new AccountDb(sqlConn());
-		if(!accountsModel)
-			accountsModel = new AccountsModel(*accountDb);
-		return *accountsModel;
+		if(!accountModel)
+			accountModel = new AccountModel(sqlConn());
+		return *accountModel;
 	}
 
-	PartnersModel & partners()
+	PartnerModel & partners()
 	{
-		if(!partnerDb)
-			partnerDb = new PartnerDb(sqlConn());
 		if(!partnersModel)
-			partnersModel = new PartnersModel(*partnerDb);
+			partnersModel = new PartnerModel(sqlConn());
 		return *partnersModel;
 	}
 
-	QueriesModel & queries()
+	QueryModel & queries()
 	{
-		if(!queryDb)
-			queryDb = new QueryDb(sqlConn());
-		if(!queriesModel)
-			queriesModel = new QueriesModel(*queryDb);
-		return *queriesModel;
+		if(!queryModel)
+			queryModel = new QueryModel(sqlConn());
+		return *queryModel;
 	}
 /*
 	ShoppingModel & shoppingItems()
@@ -314,32 +283,32 @@ WareModel & wareModel(const QString & dbname)
 	return loadDatabase(dbname).wares();
 }
 
-CompaniesModel & companiesModel(const QString & dbname)
+CompanyModel & companyModel(const QString & dbname)
 {
 	return loadDatabase(dbname).company();
 }
 
-BrandsModel & brandsModel(const QString & dbname)
+BrandModel & brandModel(const QString & dbname)
 {
 	return loadDatabase(dbname).brands();
 }
 
-InventoriesModel & inventoriesModel(const QString & dbname)
+InventoryModel & inventoryModel(const QString & dbname)
 {
 	return loadDatabase(dbname).inventories();
 }
 
-AccountsModel & accountsModel(const QString & dbname)
+AccountModel & accountModel(const QString & dbname)
 {
 	return loadDatabase(dbname).accounts();
 }
 
-PartnersModel & partnersModel(const QString & dbname)
+PartnerModel & partnersModel(const QString & dbname)
 {
 	return loadDatabase(dbname).partners();
 }
 
-QueriesModel & queriesModel(const QString & dbname)
+QueryModel & queryModel(const QString & dbname)
 {
 	return loadDatabase(dbname).queries();
 }

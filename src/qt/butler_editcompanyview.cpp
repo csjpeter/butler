@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editcompanyview.h"
-#include "butler_companiesmodel.h"
 
 SCC TidContext = "EditCompanyView";
 
@@ -33,7 +32,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditCompanyView", "Company is updated.
 EditCompanyView::EditCompanyView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(companiesModel(dbname)),
+	model(companyModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -104,7 +103,7 @@ void EditCompanyView::saveState()
 void EditCompanyView::mapToGui()
 {
 	if(cursor.isValid())
-		company = Company(model.company(cursor.row()));
+		company = Company(model.data(cursor.row()));
 
 	nameEditor.editor.setText(company.name);
 	countryEditor.editor.setText(company.country);
@@ -263,7 +262,7 @@ void EditCompanyView::saveSlot()
 	mapFromGui();
 
 	if(cursor.isValid()){
-		if(model.company(cursor.row()) != company)
+		if(model.data(cursor.row()) != company)
 			model.update(cursor.row(), company);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

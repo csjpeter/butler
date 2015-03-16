@@ -26,17 +26,19 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 
 	switch(index.column()){
 @For{Field@
+	@IfNotSpec{@
 		case @Type@::@.EnumName@ :
-			@IfNotSet{@
-			return dataSet.queryAt(index.row()).@.Name@;
-			@IfNotSet}@@IfIsSet{@
+				return dataSet.queryAt(index.row()).@.Name@;
+				break;
+	@IfNotSpec}@@IfIsSpec{@
+		/*case @Type@::@.EnumName@ :
 			{
 				QString s;
 				s <<= dataSet.queryAt(index.row()).@.Name@;
 				return s;
 			}
-			@IfIsSet}@
-			break;
+			break;*/
+	@IfIsSpec}@
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :
@@ -96,14 +98,17 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 
 	switch(index.column()){
 @For{Field@
+		@IfNotSpec{@
 		case @Type@::@.EnumName@ :
-			@IfNotSet{@
 			modified.@.Name@ <<= value;
-			@IfNotSet}@@IfIsSet{@
-			modified.setAs@.EnumName@(value.toString());
-			@IfIsSet}@
 			update(row, modified);
 			break;
+		@IfNotSpec}@@IfIsSpec{@
+		/*case @Type@::@.EnumName@ :
+			modified.setAs@.EnumName@(value.toString());
+			update(row, modified);
+			break;*/
+		@IfIsSpec}@
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :

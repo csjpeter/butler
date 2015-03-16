@@ -24,17 +24,19 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 
 	switch(index.column()){
 @For{Field@
+		@IfNotSpec{@
 		case @Type@::@.EnumName@ :
-			@IfNotSet{@
 			return dataSet.queryAt(index.row()).@.Name@;
-			@IfNotSet}@@IfIsSet{@
+			break;
+		@IfNotSpec}@@IfIsSpec{@
+		/*case @Type@::@.EnumName@ :
 			{
 				QString s;
 				s <<= dataSet.queryAt(index.row()).@.Name@;
 				return s;
 			}
-			@IfIsSet}@
-			break;
+			break;*/
+		@IfIsSpec}@
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :
@@ -94,14 +96,17 @@ bool @Type@Model::setData(const QModelIndex & index, const QVariant & value, int
 
 	switch(index.column()){
 @For{Field@
-		case @Type@::@.EnumName@ :
-			@IfNotSet{@
-			modified.@.Name@ <<= value;
-			@IfNotSet}@@IfIsSet{@
-			modified.setAs@.EnumName@(value.toString());
-			@IfIsSet}@
-			update(row, modified);
-			break;
+	@IfNotSpec{@
+	case @Type@::@.EnumName@ :
+		modified.@.Name@ <<= value;
+		update(row, modified);
+		break;
+	@IfNotSpec}@@IfIsSpec{@
+/*	case @Type@::@.EnumName@ :
+		modified.setAs@.EnumName@(value.toString());
+		update(row, modified);
+		break;*/
+	@IfIsSpec}@
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :
@@ -165,7 +170,7 @@ void @Type@Model::sort(int column, Qt::SortOrder order)
 	dataSet.ordering.moveToFront(static_cast<@Type@::Fields>(column));
 	dataSet.sort();
 }
-
+/*
 int @Type@Model::index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const
 {
 	if(dataSet.has(@For{KeyField@@.Name@, @-@@.Name@@}@))
@@ -173,7 +178,7 @@ int @Type@Model::index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ &
 	else
 		return -1;
 }
-
+*/
 const @Type@& @Type@Model::data(int row) const
 {
 	return dataSet.queryAt(row);
@@ -188,7 +193,7 @@ void @Type@Model::del(int row)
 void @Type@Model::addNew(@Type@ & obj)
 {
 	ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
-	dataSet.add(new @Type@(modified));
+	dataSet.add(new @Type@(obj));
 }
 
 void @Type@Model::update(int row, @Type@ & modified)

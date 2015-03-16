@@ -46,7 +46,7 @@ private slots:
 
 private:
 	const QString & dbname;
-	PartnersModel & model;
+	PartnerModel & model;
 	QModelIndex cursor;
 	Partner partner;
 

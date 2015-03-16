@@ -22,13 +22,14 @@ public:
 		key(false),
 		set(false),
 		link(false),
-		derived(false)
+		derived(false),
+		spec(false)
 	{
 	}
 
 	FieldDesc(const StringChunk & name, const StringChunk & type,
 			const StringChunk & sqlDecl, const StringChunk & comment,
-			bool key, bool set, bool link, bool derived) :
+			bool key, bool set, bool link, bool derived, bool spec) :
 		name(name),
 		type(type),
 		enumName(name),
@@ -37,7 +38,8 @@ public:
 		key(key),
 		set(set),
 		link(link),
-		derived(derived)
+		derived(derived),
+		spec(spec)
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
@@ -58,6 +60,7 @@ public:
 	bool set;
 	bool link;
 	bool derived;
+	bool spec;
 };
 
 bool operator<(const FieldDesc & a, const FieldDesc & b)
@@ -121,6 +124,7 @@ public:
 		bool set = false;
 		bool link = false;
 		bool derived = false;
+		bool spec = false; // in gui represent it as string
 		if(1 < words.length){
 			auto modifiers = words[1].split(",");
 			for(auto& mod : modifiers) mod.trim(" \t");
@@ -128,6 +132,7 @@ public:
 			set = modifiers.has("set");
 			link = modifiers.has("link");
 			derived = modifiers.has("derived");
+			spec = modifiers.has("spec");
 		}
 
 		StringChunk sql;
@@ -135,7 +140,7 @@ public:
 			sql = words[2];
 
 		fields.setCapacity(fields.capacity+1);
-		fields.add(name, type, sql, comment, key, set, link, derived);
+		fields.add(name, type, sql, comment, key, set, link, derived, spec);
 	}
 
 	void parseConstraintList(const StringChunk & line)
@@ -461,6 +466,26 @@ public:
 					idx++;
 					//LOG("end next");
 				}
+			} else if(block.chopFront("@IfIsSpec{@")){
+				unint pos;
+				if(!field.spec)
+					if(block.findFirst(pos, "@IfIsSpec}@"))
+						block.chopFront(pos);
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfIsSpec}@")){
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfNotSpec{@")){
+				unint pos;
+				if(field.spec)
+					if(block.findFirst(pos, "@IfNotSpec}@"))
+						block.chopFront(pos);
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
+			} else if(block.chopFront("@IfNotSpec}@")){
+				block.trimFront("\n\r");
+				block.trimFront(" \t");
 			} else if(block.chopFront("@IfIsSet{@")){
 				unint pos;
 				if(!field.set)

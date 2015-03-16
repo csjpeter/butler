@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editaccountview.h"
-#include "butler_accountsmodel.h"
 
 SCC TidContext = "EditAccountView";
 
@@ -32,7 +31,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditAccountView", "Account is updated.
 EditAccountView::EditAccountView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(accountsModel(dbname)),
+	model(accountModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
@@ -102,7 +101,7 @@ void EditAccountView::saveState()
 void EditAccountView::mapToGui()
 {
 	if(cursor.isValid())
-		account = Account(model.account(cursor.row()));
+		account = Account(model.data(cursor.row()));
 
 	nameEditor.editor.setText(account.name);
 	currencyEditor.editor.setText(account.currency);
@@ -253,7 +252,7 @@ void EditAccountView::saveSlot()
 	mapFromGui();
 
 	/* Add partner if not yet known. */
-	PartnersModel & pm = partnersModel(dbname);
+	PartnerModel & pm = partnersModel(dbname);
 	int i = pm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;
@@ -262,7 +261,7 @@ void EditAccountView::saveSlot()
 	}
 
 	if(cursor.isValid()){
-		if(model.account(cursor.row()) != account)
+		if(model.data(cursor.row()) != account)
 			model.update(cursor.row(), account);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

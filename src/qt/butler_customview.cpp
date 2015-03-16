@@ -178,9 +178,9 @@ void CustomView::loadState()
 	QSettings settings;
 
 	Text queryName(settings.value(prefix + "/query", ""));
-	QueriesModel & qm = queriesModel(dbname);
-	if(qm.querySet().has(queryName))
-		model->opts = qm.querySet().query(queryName);
+	QueryModel & qm = queryModel(dbname);
+	if(qm.set.has(queryName))
+		model->opts = qm.set.query(queryName);
 	model->query();
 
 	tableView.loadState(prefix);

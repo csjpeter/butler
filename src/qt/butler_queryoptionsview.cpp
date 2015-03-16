@@ -8,8 +8,6 @@
 #include "butler_config.h"
 #include "butler_queryoptionsview.h"
 #include "butler_tagwidget.h"
-#include "butler_waresmodel.h"
-#include "butler_partnersmodel.h"
 
 SCC TidContext = "QueryOptionsView";
 
@@ -52,7 +50,7 @@ QueryOptionsView::QueryOptionsView(const QString & dbname, QWidget * parent) :
 	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
 	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	nameEditor(&queriesModel(dbname), Query::Name),
+	nameEditor(&queryModel(dbname), Query::Name),
 	wareSelector(&wareModel(dbname), Ware::Name),
 	partnerSelector(&partnersModel(dbname), Partner::Name),
 	tagsWidget(dbname),
@@ -167,7 +165,7 @@ void QueryOptionsView::mapToGui()
 		wareFilter.box.setChecked(false);
 
 	if(query.partners.size()){
-		PartnersModel & sm = partnersModel(dbname);
+		PartnerModel & sm = partnersModel(dbname);
 		int row = sm.index(query.partners.queryAt(0).partner);
 		if(0 <= row){
 			partnerFilter.box.blockSignals(true);
@@ -234,9 +232,9 @@ void QueryOptionsView::mapFromGui()
 	query.partners.clear();
 	if(partnerFilter.box.isChecked()){
 		int i = partnerSelector.box.currentIndex();
-		PartnersModel & sm = partnersModel(dbname);
+		PartnerModel & sm = partnersModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.partners.add(new QueryPartner(query.name, sm.partner(i).name.trimmed()));
+			query.partners.add(new QueryPartner(query.name, sm.data(i).name.trimmed()));
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
@@ -461,9 +459,9 @@ void QueryOptionsView::saveClickedSlot()
 {
 	mapFromGui();
 
-	QueriesModel & qm = queriesModel(dbname);
-	if(qm.querySet().has(query.name)) {
-		if(qm.querySet().query(query.name) != query)
+	QueryModel & qm = queryModel(dbname);
+	if(qm.set.has(query.name)) {
+		if(qm.set.query(query.name) != query)
 			qm.update(qm.index(query.name), query);
 	} else
 		qm.addNew(query);
@@ -480,8 +478,8 @@ void QueryOptionsView::delClickedSlot()
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		QueriesModel & qm = queriesModel(dbname);
-		if(qm.querySet().has(query.name))
+		QueryModel & qm = queryModel(dbname);
+		if(qm.set.has(query.name))
 			qm.del(qm.index(query.name));
 		query = Query();
 		query.endDate = DateTime::now();
@@ -493,10 +491,10 @@ void QueryOptionsView::queryClickedSlot()
 {
 	mapFromGui();
 
-	QueriesModel & qm = queriesModel(dbname);
-	if(!qm.querySet().has(query.name))
+	QueryModel & qm = queryModel(dbname);
+	if(!qm.set.has(query.name))
 		query.name = "";
-	else if(qm.querySet().query(query.name) != query)
+	else if(qm.set.query(query.name) != query)
 		query.name = "";
 
 	accept();
@@ -514,11 +512,11 @@ void QueryOptionsView::backClickedSlot()
 
 void QueryOptionsView::querySelectedSlot()
 {
-	QueriesModel & qm = queriesModel(dbname);
+	QueryModel & qm = queryModel(dbname);
 	Text name(nameEditor.text());
-	if(!qm.querySet().has(name))
+	if(!qm.set.has(name))
 		return;
-	query = qm.querySet().query(name);
+	query = qm.set.query(name);
 	mapToGui();
 }
 

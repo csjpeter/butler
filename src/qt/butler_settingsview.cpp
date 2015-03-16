@@ -21,7 +21,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("SettingsView", "Refresh tag list");
 SettingsView::SettingsView(const QString & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(tagsModel(dbname)),
+	model(tagModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
