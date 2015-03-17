@@ -215,6 +215,7 @@ $(DIST_DIR)/src/butler_sql_connection.h: \
 		tpl/dataclass_nonmembers.h \
 		tpl/dataclass_set.h \
 		src/butler_sql_connection.h \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_sql_connection.h > $@
@@ -226,6 +227,7 @@ $(DIST_DIR)/src/butler_dataclasses.h: \
 		tpl/dataclass_nonmembers.h \
 		tpl/dataclass_set.h \
 		src/butler_dataclasses.h \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dataclasses.h > $@
@@ -235,6 +237,7 @@ $(DIST_DIR)/src/butler_dataclasses.cpp: \
 		tpl/dataclass_db.cpp \
 		tpl/dataclass_members.cpp \
 		src/butler_dataclasses.cpp \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dataclasses.cpp > $@
@@ -242,6 +245,7 @@ $(DIST_DIR)/src/butler_dataclasses.cpp: \
 $(DIST_DIR)/src/butler_dbclasses.h: \
 		tpl/dbclass.h \
 		src/butler_dbclasses.h \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dbclasses.h > $@
@@ -249,6 +253,7 @@ $(DIST_DIR)/src/butler_dbclasses.h: \
 $(DIST_DIR)/src/butler_dbclasses.cpp: \
 		tpl/dbclass.cpp \
 		src/butler_dbclasses.cpp \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/butler_dbclasses.cpp > $@
@@ -258,6 +263,7 @@ $(DIST_DIR)/src/qt/butler_datamodel.h: \
 		tpl/dbdatamodel.h \
 		tpl/dbdatamodel_spec.h \
 		src/qt/butler_datamodel.h \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/qt/butler_datamodel.h > $@
@@ -267,6 +273,7 @@ $(DIST_DIR)/src/qt/butler_datamodel.cpp: \
 		tpl/dbdatamodel.cpp \
 		tpl/dbdatamodel_spec.cpp \
 		src/qt/butler_datamodel.cpp \
+		src/butler_declarations.h \
 		tools/generator
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	tools/generator -t ./tpl/ -d src/butler_declarations.h < src/qt/butler_datamodel.cpp > $@
@@ -378,8 +385,6 @@ source: \
 	\
 	$(DIST_DIR)/src/qt/butler_databases.h \
 	$(DIST_DIR)/src/qt/butler_databases.cpp \
-	$(DIST_DIR)/src/qt/butler_databasesmodel.h \
-	$(DIST_DIR)/src/qt/butler_databasesmodel.cpp \
 	$(DIST_DIR)/src/qt/butler_databasesview.h \
 	$(DIST_DIR)/src/qt/butler_databasesview.cpp \
 	\

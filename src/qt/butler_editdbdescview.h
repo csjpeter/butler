@@ -7,7 +7,6 @@
 #define BUTLER_EDITCOMPANYVIEW_H
 
 #include <butler_pannview.h>
-#include <butler_databasesmodel.h>
 
 class EditDbDescView : public PannView
 {

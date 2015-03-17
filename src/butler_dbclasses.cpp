@@ -41,7 +41,7 @@
 @declare@ Item
 @include@ dbclass.cpp
 
-void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
+void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & set)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
@@ -50,22 +50,22 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 
 	/* assemble command */
 	QString cmd("SELECT"
-			" MAX(items.upload_date) AS upload_date,"
-			" MAX(items.name) AS name,"
-			" MAX(items.unit) AS unit,"
-			" MAX(items.type) AS type,"
-			" MAX(items.brand) AS brand,"
-			" MAX(items.quantity) AS quantity, "
-			" MAX(items.price) AS price,"
-			" MAX(items.currency) AS currency,"
-			" MAX(items.account) AS account,"
-			" MAX(items.partner) AS partner,"
-			" MAX(items.inventory) AS inventory,"
-			" MAX(items.comment) AS comment,"
-			" MAX(items.inv_change_date) AS inv_change_date"
-			" FROM items"
-			" LEFT JOIN ware_tags ON items.name = ware_tags.name"
-			" LEFT JOIN partners ON items.partner = partners.name");
+			" MAX(Item.uploadDate) AS uploadDate,"
+			" MAX(Item.name) AS name,"
+			" MAX(Item.unit) AS unit,"
+			" MAX(Item.type) AS type,"
+			" MAX(Item.brand) AS brand,"
+			" MAX(Item.quantity) AS quantity, "
+			" MAX(Item.price) AS price,"
+			" MAX(Item.currency) AS currency,"
+			" MAX(Item.account) AS account,"
+			" MAX(Item.partner) AS partner,"
+			" MAX(Item.inventory) AS inventory,"
+			" MAX(Item.comment) AS comment,"
+			" MAX(Item.invChangeDate) AS invChangeDate"
+			" FROM Item"
+			" LEFT JOIN WareTag ON Item.name = WareTag.ware"
+			" LEFT JOIN Partner ON Item.partner = Partner.name");
 	
 	QString filter;
 
@@ -83,11 +83,11 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		filter += " AND";
 	filter += " '";
 	filter += q.startDate.isoUtcString();
-	filter += "' < inv_change_date";
+	filter += "' < invChangeDate";
 
 	if(!filter.isEmpty())
 		filter += " AND";
-	filter += " inv_change_date < '";
+	filter += " invChangeDate < '";
 	filter += q.endDate.isoUtcString();
 	filter += "'";
 
@@ -116,7 +116,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		for(i=0; i<s; i++){
 			if(0 < i)
 				wcmd += " OR";
-			wcmd += " Items.name = '";
+			wcmd += " Item.name = '";
 			wcmd += q.wares.queryAt(i).ware.replace("'", "''");
 			wcmd += "'";
 		}
@@ -133,7 +133,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		for(i=0; i<s; i++){
 			if(0 < i)
 				scmd += " OR";
-			scmd += " Partners.name = '";
+			scmd += " partners.name = '";
 			scmd += q.partners.queryAt(i).partner.replace("'", "''");
 			scmd += "'";
 		}
@@ -147,7 +147,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		QString tcmd;
 		if(!filter.isEmpty())
 			tcmd += " AND";
-		tcmd += " Items.name NOT IN(SELECT name FROM ware_tags WHERE ";
+		tcmd += " Item.name NOT IN(SELECT name FROM WareTag WHERE ";
 		for(i=0; i<s; i++){
 			if(0 < i)
 				tcmd += " OR";
@@ -165,7 +165,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 		cmd += filter;
 	}
 	
-	cmd += " GROUP BY items.upload_date";
+	cmd += " GROUP BY Item.uploadDate";
 
 	if(q.tagOption == QueryTagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";
@@ -174,10 +174,10 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 
 	sqlQuery.exec(cmd);
 
-	items.clear();
+	set.clear();
 
 	/* evaluate query result */
-	int uploadDateNo = sqlQuery.colIndex("upload_date");
+	int uploadDateNo = sqlQuery.colIndex("uploadDate");
 	int nameNo = sqlQuery.colIndex("name");
 	int unitNo = sqlQuery.colIndex("unit");
 	int typeNo = sqlQuery.colIndex("type");
@@ -189,7 +189,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 	int partnerNo = sqlQuery.colIndex("partner");
 	int inventoryNo = sqlQuery.colIndex("inventory");
 	int commentNo = sqlQuery.colIndex("comment");
-	int invChangeDateNo = sqlQuery.colIndex("inv_change_date");
+	int invChangeDateNo = sqlQuery.colIndex("invChangeDate");
 
 	/* statistics */
 	stat.itemCount = 0;
@@ -233,7 +233,7 @@ void ItemDb::query(const Query & q, QueryStat & stat, ItemSet & items)
 				stat.mostExpUnitPrice = unitPrice;
 		}
 
-		items.add(inventoryChange);
+		set.add(inventoryChange);
 	}
 
 	stat.avgPrice = sumPrice / sumQuantity;

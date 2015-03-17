@@ -14,6 +14,17 @@
 
 using namespace csjp;
 
+String & lower(String & str)
+{
+	unsigned s = str.length;
+	for(unsigned i = 0; i < s; i++){
+		char & c = str[i];
+		if('A' <= c && c <= 'Z')
+			c += 'a'-'A';
+	}
+	return str;
+}
+
 class FieldDesc
 {
 public:
@@ -43,6 +54,8 @@ public:
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
+		nameLower.assign(name);
+		lower(nameLower);
 		if(set){
 			setSubType.assign(type);
 			setSubType.chopBack(3);
@@ -50,6 +63,7 @@ public:
 	}
 
 	String name;
+	String nameLower;
 	String type;
 	String setSubType;
 	String enumName;
@@ -73,6 +87,7 @@ class Declaration
 	void (Declaration::*state)(const StringChunk &);
 public:
 	StringChunk typeName;
+	String typeNameLower;
 	Array<FieldDesc> fields;
 
 	Declaration() { clear(); }
@@ -81,6 +96,7 @@ public:
 	{
 		state = &Declaration::parseDeclaration;
 		typeName.clear();
+		typeNameLower.clear();
 		fields.clear();
 	}
 
@@ -167,6 +183,8 @@ public:
 		if(words[0] == "Class"){
 			typeName = words[1];
 			// cleanup field and constraint info
+			typeNameLower.assign(words[1]);
+			lower(typeNameLower);
 		} else if(words[0] == "Fields" && words[1] == "{"){
 			state = &Declaration::parseFieldList;
 		} else if(words[0] == "Constraints" && words[1] == "{"){
@@ -243,6 +261,10 @@ public:
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
 			code << declaration.typeName;
+		} else if(tpl.chopFront("@type@")) {
+			tpl.trimFront("\n\r");
+			//code.trimBack("\t");
+			code << declaration.typeNameLower;
 		} else if(tpl.chopFront("@TableFieldList@")) {
 			tpl.trimFront("\n\r");
 			String fieldList;
@@ -518,10 +540,12 @@ public:
 				code << idx;
 			} else if(block.chopFront("@.Name@")){
 				code << field.name;
+			} else if(block.chopFront("@.name@")){
+				code << field.nameLower;
 			} else if(block.chopFront("@.EnumName@")){
 				code << field.enumName;
 			} else if(block.chopFront("@.SqlDecl@")){
-				code << "`" << field.name << "` " << field.sqlDecl;
+				code << field.sqlDecl;
 			} else if(block.chopFront("@Constraint@")){
 				code << field.constraint;
 			} else if(block.chopFront("@.Comment@")){

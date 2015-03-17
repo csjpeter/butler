@@ -10,8 +10,6 @@
 #include "butler_databasesview.h"
 #include "butler_editdbdescview.h"
 
-#include <butler_databasesmodel.h>
-
 SCC TidContext = "DatabasesView";
 
 SCC TidDatabasesWindowTitle = QT_TRANSLATE_NOOP("DatabasesView", "Database connections list");

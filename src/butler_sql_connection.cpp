@@ -53,7 +53,8 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
 //	if(!QSqlDatabase::contains(dbDesc.name)){
 		priv->db = QSqlDatabase::addDatabase(dbDesc.driver, dbDesc.name);
 		if(priv->db.lastError().isValid())
-			throw DbError("Failed to add SQLITE database driver: %s",
+			throw DbError("Failed to add %s database driver: %s",
+					C_STR(dbDesc.driver),
 					C_STR(dbErrorString()));
 /*	} else {
 		// At once tries to open the connection with old details

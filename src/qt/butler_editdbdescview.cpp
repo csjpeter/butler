@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_editdbdescview.h"
-#include "butler_databasesmodel.h"
 
 SCC TidContext = "EditDbDescView";
 
