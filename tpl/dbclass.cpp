@@ -2,43 +2,12 @@
 
 @Type@Db::~@Type@Db() {}
 
-void @Type@Db::tableInit(SqlConnection & sql)
-{
-	SqlColumns cols;
-	const SqlTableNames & tables = sql.tables();
-
-	if(tables.has("@Type@s")){
-		cols = sql.columns("@Type@s");
-		if(
-@For{TableField@
-				!cols.has("@.Name@") ||
-@-@
-				!cols.has("@.Name@"))
-@}@
-			throw DbIncompatibleTableError(
-				"Incompatible table @Type@s in the openend database.");
-		return;
-	}
-
-	sql.exec("CREATE TABLE @Type@s ("
-@For{TableField@
-		"@.SqlDecl@, "
-@-@
-		"@.SqlDecl@"
-@}@
-@For{Constraint@
-		", @Constraint@"
-@}@
-		")");
-
-}
-
 void @Type@Db::insert(const @Type@ & obj)
 {
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("INSERT INTO @Type@s (@TableFieldList@) VALUES ("
+	sqlQuery.prepare("INSERT INTO @Type@ (@TableFieldList@) VALUES ("
 			"@For{TableField@?, @-@?@}@)");
 @For{TableField@
 	sqlQuery.bindValue(@.Idx@, obj.@.Name@);
@@ -59,7 +28,7 @@ void @Type@Db::update(const @Type@ & orig, const @Type@ & modified)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("UPDATE @Type@s SET @For{TableField@@.Name@ = ?, @-@@.Name@ = ?@}@ "
+	sqlQuery.prepare("UPDATE @Type@ SET @For{TableField@@.Name@ = ?, @-@@.Name@ = ?@}@ "
 			"WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@");
 @For{TableField@
 	sqlQuery.bindValue(@.Idx@, modified.@.Name@);
@@ -91,7 +60,7 @@ void @Type@Db::del(const @Type@ & obj)
 	SqlQuery sqlQuery(sql);
 	SqlTransaction tr(sql);
 
-	sqlQuery.prepare("DELETE FROM @Type@s WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@");
+	sqlQuery.prepare("DELETE FROM @Type@ WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@");
 @For{KeyField@
 	sqlQuery.bindValue(@.Idx@, obj.@.Name@);
 @}@
@@ -121,7 +90,7 @@ void @Type@Db::query(@Type@Set & list@For{LinkField@, const @.Type@ & _@.Name@@}
 	int @.Name@No = sqlQuery.colIndex("@.Name@");
 @}@
 
-	DBG("----- Reading all @Type@s from db:");
+	DBG("----- Reading all @Type@ from db:");
 	while (sqlQuery.next()) {
 		DBG("Next row");
 		@Type@ *record = new @Type@();

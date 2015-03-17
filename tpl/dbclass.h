@@ -1,7 +1,6 @@
 public:
 	@Type@Db(SqlConnection & sql);
 	virtual ~@Type@Db();
-	static void tableInit(SqlConnection & sql);
 
 private:
 	@Type@Db();

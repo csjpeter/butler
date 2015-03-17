@@ -170,7 +170,8 @@ void @Type@Model::sort(int column, Qt::SortOrder order)
 	dataSet.ordering.moveToFront(static_cast<@Type@::Fields>(column));
 	dataSet.sort();
 }
-/*
+
+@IfSingleKey{@
 int @Type@Model::index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ & @.Name@@}@) const
 {
 	if(dataSet.has(@For{KeyField@@.Name@, @-@@.Name@@}@))
@@ -178,7 +179,8 @@ int @Type@Model::index(@For{KeyField@const @.Type@ & @.Name@, @-@const @.Type@ &
 	else
 		return -1;
 }
-*/
+@IfSingleKey}@
+
 const @Type@& @Type@Model::data(int row) const
 {
 	return dataSet.queryAt(row);

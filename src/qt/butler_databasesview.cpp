@@ -21,10 +21,9 @@ SCC TidDelButton = QT_TRANSLATE_NOOP("DatabasesView", "Delete database connectio
 SCC TidUseButton = QT_TRANSLATE_NOOP("DatabasesView", "Use database connection");
 SCC TidCurrentDbInfo = QT_TRANSLATE_NOOP("DatabasesView", "Current database: %1");
 
-DatabasesModel model;
-
 DatabasesView::DatabasesView(QWidget * parent) :
 	PannView(parent),
+	model(databasesModel()),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	editButton(QIcon(Path::icon("edit.png")),
@@ -153,7 +152,7 @@ void DatabasesView::loadState()
 
 	QString dbname; dbname <<= settings.value(prefix + "/currentitem", "");
 	int col; col <<= settings.value(prefix + "/currentitemCol", "");
-	if(model.has(dbname))
+	if(model.set.has(dbname))
 		tableView.setCurrentIndex(model.index(model.index(dbname), col));
 
 	if(settings.value(prefix + "/newDbDescView", false).toBool())
@@ -171,7 +170,7 @@ void DatabasesView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.query(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -213,7 +212,7 @@ void DatabasesView::delDbDesc()
 	}
 
 	int row = tableView.currentIndex().row();
-	const DatabaseDescriptor & dbdesc = model.query(row);
+	const DatabaseDescriptor & dbdesc = model.data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an database connection"),
@@ -228,7 +227,7 @@ void DatabasesView::useDbDesc()
 {
 	int row = tableView.currentIndex().row();
 	try {
-		QString dbname(model.query(row).name);
+		QString dbname(model.data(row).name);
 
 		tagModel(dbname);
 		wareModel(dbname);
@@ -253,7 +252,7 @@ void DatabasesView::useDbDesc()
 
 void DatabasesView::sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order)
 {
-	model.sort(logicalIndex, order == Qt::AscendingOrder);
+	model.sort(logicalIndex, order);
 }
 
 void DatabasesView::currentIndexChanged(const QModelIndex & current, const QModelIndex & previous)

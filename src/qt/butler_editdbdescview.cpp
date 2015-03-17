@@ -39,7 +39,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditDbDescView", "Please fill th
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditDbDescView", "Database connection is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditDbDescView", "Database connection is updated.");
 
-EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
+EditDbDescView::EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent) :
 	PannView(parent),
 	model(model),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
@@ -51,12 +51,9 @@ EditDbDescView::EditDbDescView(DatabasesModel & model, QWidget * parent) :
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 
-	driverOptions.group.addButton(&qSqliteDriverOption);
-	driverOptions.group.addButton(&qPSqlDriverOption);
-	driverOptions.group.addButton(&qMysqlDriverOption);
-	driverOptions.group.addButton(&sqliteDriverOption);
-	driverOptions.group.addButton(&psqlDriverOption);
-	driverOptions.group.addButton(&mysqlDriverOption);
+	for(auto wgt : {&qSqliteDriverOption, &qPSqlDriverOption, &qMysqlDriverOption,
+			&sqliteDriverOption, &psqlDriverOption, &mysqlDriverOption})
+	driverOptions.group.addButton(wgt);
 
 	toolBar.addToolWidget(doneButton);
 	toolBar.addToolWidget(resetButton);
@@ -132,7 +129,7 @@ void EditDbDescView::saveState()
 void EditDbDescView::mapToGui()
 {
 	if(cursor.isValid())
-		dbdesc = DatabaseDescriptor(model.query(cursor.row()));
+		dbdesc = DatabaseDescriptor(model.data(cursor.row()));
 
 	nameEditor.editor.setText(dbdesc.name);
 	databaseNameEditor.editor.setText(dbdesc.databaseName);
@@ -416,7 +413,7 @@ void EditDbDescView::saveSlot()
 	mapFromGui();
 
 	if(cursor.isValid()){
-		if(model.query(cursor.row()) != dbdesc)
+		if(model.data(cursor.row()) != dbdesc)
 			model.update(cursor.row(), dbdesc);
 		updateToolButtonStates();
 		toolBar.setInfo(tr(TidInfoEditSaved));

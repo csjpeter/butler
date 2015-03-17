@@ -9,6 +9,18 @@
 
 #include <butler_datamodel.h>
 
+SCC TidDatabaseDescriptorFieldName		= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Name");
+SCC TidDatabaseDescriptorFieldDriver	= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Driver");
+SCC TidDatabaseDescriptorFieldDatabaseName= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Database name");
+SCC TidDatabaseDescriptorFieldUsername	= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Username");
+SCC TidDatabaseDescriptorFieldPassword	= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Password");
+SCC TidDatabaseDescriptorFieldSavePassword	= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Save password");
+SCC TidDatabaseDescriptorFieldHost		= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Host");
+SCC TidDatabaseDescriptorFieldPort		= QT_TRANSLATE_NOOP("DatabaseDescriptorModel", "Port");
+
+@declare@ DatabaseDescriptor
+@include@ datamodel.cpp
+
 SCC TidTagFieldName			= QT_TRANSLATE_NOOP("TagModel", "Name");
 SCC TidTagFieldDescription	= QT_TRANSLATE_NOOP("TagModel", "Description");
 SCC TidTagFieldLastModified	= QT_TRANSLATE_NOOP("TagModel", "Last modification date");

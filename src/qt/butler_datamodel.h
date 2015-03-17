@@ -13,6 +13,12 @@
 #include <butler_dbclasses.h>
 #include <butler_config.h>
 
+@declare@ DatabaseDescriptor
+class DatabaseDescriptorModel : public AbstractTableModel
+{
+@include@ datamodel.h
+};
+
 @declare@ Tag
 class TagModel : public AbstractTableModel
 {

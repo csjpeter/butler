@@ -14,6 +14,7 @@
 #include <QDir>
 
 DatabaseDescriptorSet descriptorSet;
+static DatabaseDescriptorModel databases_model(descriptorSet);
 
 class Database
 {
@@ -25,8 +26,8 @@ private:
 	CompanyModel * companyModel;
 	BrandModel * brandModel;
 	InventoryModel * inventoryModel;
-	AccountModel * accountModel;
 	PartnerModel * partnersModel;
+	AccountModel * accountModel;
 	QueryModel * queryModel;
 	//ShoppingModel * shoppingModel;
 
@@ -39,11 +40,27 @@ public:
 		companyModel(0),
 		brandModel(0),
 		inventoryModel(0),
-		accountModel(0),
 		partnersModel(0),
+		accountModel(0),
 		queryModel(0)
 		//shoppingModel(0)
 	{
+		Tag::tableInit(sqlConn());
+		Ware::tableInit(sqlConn());
+		WareType::tableInit(sqlConn());
+		WareTag::tableInit(sqlConn());
+		Company::tableInit(sqlConn());
+		Brand::tableInit(sqlConn());
+		Inventory::tableInit(sqlConn());
+		Partner::tableInit(sqlConn());
+		Account::tableInit(sqlConn());
+		Payment::tableInit(sqlConn());
+		Item::tableInit(sqlConn());
+		Query::tableInit(sqlConn());
+		QueryWithTag::tableInit(sqlConn());
+		QueryWithoutTag::tableInit(sqlConn());
+		QueryWare::tableInit(sqlConn());
+		QueryPartner::tableInit(sqlConn());
 	}
 
 	explicit Database(const Database &) = delete;
@@ -51,8 +68,8 @@ public:
 	{
 		//delete shoppingModel;
 		delete queryModel;
-		delete partnersModel;
 		delete accountModel;
+		delete partnersModel;
 		delete companyModel;
 		delete inventoryModel;
 		delete brandModel;
@@ -123,18 +140,18 @@ public:
 		return *inventoryModel;
 	}
 
-	AccountModel & accounts()
-	{
-		if(!accountModel)
-			accountModel = new AccountModel(sqlConn());
-		return *accountModel;
-	}
-
 	PartnerModel & partners()
 	{
 		if(!partnersModel)
 			partnersModel = new PartnerModel(sqlConn());
 		return *partnersModel;
+	}
+
+	AccountModel & accounts()
+	{
+		if(!accountModel)
+			accountModel = new AccountModel(sqlConn());
+		return *accountModel;
 	}
 
 	QueryModel & queries()
@@ -273,6 +290,11 @@ Database & loadDatabase(const QString & name)
 	return databases.query(name);
 }
 
+DatabaseDescriptorModel & databasesModel()
+{
+	return databases_model;
+}
+
 TagModel & tagModel(const QString & dbname)
 {
 	return loadDatabase(dbname).tags();
@@ -298,14 +320,14 @@ InventoryModel & inventoryModel(const QString & dbname)
 	return loadDatabase(dbname).inventories();
 }
 
-AccountModel & accountModel(const QString & dbname)
-{
-	return loadDatabase(dbname).accounts();
-}
-
 PartnerModel & partnersModel(const QString & dbname)
 {
 	return loadDatabase(dbname).partners();
+}
+
+AccountModel & accountModel(const QString & dbname)
+{
+	return loadDatabase(dbname).accounts();
 }
 
 QueryModel & queryModel(const QString & dbname)

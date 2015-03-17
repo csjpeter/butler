@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditDbDescView(DatabasesModel & model, QWidget * parent = 0);
+	EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent = 0);
 	virtual ~EditDbDescView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -46,7 +46,7 @@ private slots:
 	void resetSlot();
 
 private:
-	DatabasesModel & model;
+	DatabaseDescriptorModel & model;
 	QModelIndex cursor;
 	DatabaseDescriptor dbdesc;
 

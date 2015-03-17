@@ -14,13 +14,14 @@
 void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
+DatabaseDescriptorModel & databasesModel();
 TagModel & tagModel(const QString & dbname);
 WareModel & wareModel(const QString & dbname);
 CompanyModel & companyModel(const QString & dbname);
 BrandModel & brandModel(const QString & dbname);
 InventoryModel & inventoryModel(const QString & dbname);
-AccountModel & accountModel(const QString & dbname);
 PartnerModel & partnersModel(const QString & dbname);
+AccountModel & accountModel(const QString & dbname);
 QueryModel & queryModel(const QString & dbname);
 //ShoppingModel & shoppingModel(const QString & dbname);
 csjp::Object<ItemModel> itemModel(const QString & dbname);

@@ -1,6 +1,6 @@
 /**
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2013 Csaszar, Peter
+ * Copyright (C) 2015 Csaszar, Peter
  */
 
 #ifndef BUTLER_DATACLASSES_H
@@ -35,6 +35,7 @@ public:
 class Tag
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -44,6 +45,7 @@ class Tag
 class WareType
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 inline bool operator<(const Text & a, const WareType & b) { return b.type.isMore(a); }
@@ -88,6 +90,7 @@ inline QString & operator<<= (QString & str, const WareTypeSet & wareTypes)
 class WareTag
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 inline bool operator<(const Text & a, const WareTag & b) { return b.tag.isMore(a); }
@@ -141,6 +144,7 @@ inline bool operator!=(const WareTagSet & a, const StringSet & b)
 class Ware
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 
 	/* non-transactional */
 	void setAsTypes(const QString & str)
@@ -223,6 +227,7 @@ class Ware
 class Company
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -232,6 +237,7 @@ class Company
 class Brand
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -241,6 +247,7 @@ class Brand
 class Inventory
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -250,6 +257,7 @@ class Inventory
 class Partner
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -259,6 +267,7 @@ class Partner
 class Account
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -268,6 +277,7 @@ class Account
 class Payment
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -277,6 +287,7 @@ class Payment
 class Item
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -286,6 +297,7 @@ class Item
 class QueryWithTag
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 inline bool operator<(const Text & a, const QueryWithTag & b) { return b.tag.isMore(a); }
@@ -329,6 +341,7 @@ inline bool operator!=(const QueryWithTagSet & a, const StringSet & b)
 class QueryWithoutTag
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 inline bool operator<(const Text & a, const QueryWithoutTag & b) { return b.tag.isMore(a); }
@@ -373,6 +386,7 @@ inline bool operator!=(const QueryWithoutTagSet & a, const StringSet & b)
 class QueryWare
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -393,6 +407,7 @@ inline QString & operator<<= (QString & str, const QueryWareSet & wares)
 class QueryPartner
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
@@ -413,6 +428,7 @@ inline QString & operator<<= (QString & str, const QueryPartnerSet & partners)
 class Query
 {
 	@include@ dataclass_members.h
+	@include@ dataclass_db.h
 
 	/* non-transactional */
 	void setAsWithTags(const StringSet & names)

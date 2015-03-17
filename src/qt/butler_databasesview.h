@@ -50,6 +50,8 @@ private slots:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 private:
+	DatabaseDescriptorModel & model;
+
 	ToolButton addButton;
 	ToolButton editButton;
 	ToolButton delButton;
