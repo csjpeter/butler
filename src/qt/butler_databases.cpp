@@ -93,8 +93,6 @@ private:
 	{
 		if(!sql)
 			sql = new SqlConnection(descriptorSet.query(dbname));
-		if(!sql->isOpen())
-			sql->dbDesc = descriptorSet.query(dbname);
 		return *sql;
 	}
 
@@ -217,12 +215,12 @@ void loadDatabaseConfigs()
 	for(unsigned i = 0; i < s; i++){
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
 		csjp::Json & dbt = tree.properties.queryAt(i);
-		desc->name <<= dbt.key;
+		desc->name = dbt.key;
 		desc->driver <<= dbt["driver"];
 		desc->databaseName <<= dbt["databaseName"];
 		desc->username <<= dbt["username"];
 		desc->password <<= dbt["password"];
-		if(!desc->password.isEmpty())
+		if(desc->password.length)
 			desc->savePassword = true;
 		desc->host <<= dbt["host"];
 		desc->port <<= dbt["port"];
@@ -234,8 +232,8 @@ void loadDatabaseConfigs()
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = "localdb";
 		sqlitedb->driver = "QSQLITE";
-		sqlitedb->databaseName = defaultSQLiteDbFileName();
-		LOG("Sqlite db file path: %s", C_STR(sqlitedb->databaseName));
+		sqlitedb->databaseName <<= defaultSQLiteDbFileName();
+		LOG("Sqlite db file path: %s", sqlitedb->databaseName.str);
 		descriptorSet.add(sqlitedb);
 	}
 
@@ -260,8 +258,7 @@ void saveDatabaseConfigs()
 	unsigned s = descriptorSet.size();
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
-		csjp::String name(C_STR(desc.name));
-		auto & db = tree[name];
+		auto & db = tree[desc.name];
 		db["driver"] <<= desc.driver; // for example "QSQLITE"
 		db["databaseName"] <<= desc.databaseName; //file name in case of sqlite
 		db["username"] <<= desc.username;

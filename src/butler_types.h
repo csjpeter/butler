@@ -6,13 +6,15 @@
 #ifndef BUTLER_TYPES_H
 #define BUTLER_TYPES_H
 
-enum class QueryStockOptions {
+enum class QueryStockOptions
+{
 	AllItemChanges,
 	Gains,
 	Looses
 };
 
-enum class QueryTagOptions {
+enum class QueryTagOptions
+{
 	MatchAll,
 	MatchAny
 };

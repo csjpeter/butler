@@ -9,13 +9,13 @@
 /*@BeginDecl@
 	Class DatabaseDescriptor
 	Fields {
-		QString name;	key		// will be the connection name
-		QString driver;			// for example QSQLITE
-		QString databaseName;	// file name in case of sqlite
-		QString username;
-		QString password;
+		csjp::String name;	key		// will be the connection name
+		csjp::String driver;		// for example SQLITE or PSQL
+		csjp::String databaseName;	// file name in case of sqlite
+		csjp::String username;
+		csjp::String password;
 		bool savePassword;
-		QString host;			// host name or ip
+		csjp::String host;			// host name or ip
 		unsigned port;
 		}
 @EndDecl@*/

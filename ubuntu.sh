@@ -3,6 +3,7 @@
 JOBS=$(expr $(cat /proc/cpuinfo | grep processor | wc -l) + 1)
 
 # ubuntu ditributions
+trusty=14.04
 raring=13.04
 quantal=12.10
 precise=12.04
@@ -42,6 +43,7 @@ function config ()
 		--relative-path \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=usr \
+		--libs=\\\"-lpq\\\" \
 		--appsdir=usr/share/applications \
 		--fpic \
 		--gnu-source || exit $?

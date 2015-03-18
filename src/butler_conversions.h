@@ -92,6 +92,59 @@ inline QString & operator<<= (QString & qstr, const csjp::String & str)
 	qstr = str.c_str(); return qstr;
 }
 
+inline QVariant & operator<<= (QVariant & var, const csjp::String & rhs)
+{
+	QVariant v(QString(rhs.str));
+	var = v;
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const bool & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const int & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const unsigned & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const double & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const QString & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline QVariant & operator<<= (QVariant & var, const QDateTime & rhs)
+{
+	var.setValue(rhs);
+	return var;
+}
+
+inline csjp::String & operator<<= (csjp::String & str, const QVariant & v)
+{
+	str = C_STR(v.toString()); return str;
+}
+
+inline QDateTime & operator<<= (QDateTime & lhs, const QVariant & v)
+{
+	lhs = v.toDateTime(); return lhs;
+}
+
 inline QString & operator<<= (QString & qstr, const QVariant & v)
 {
 	qstr = v.toString(); return qstr;

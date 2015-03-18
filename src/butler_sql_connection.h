@@ -53,24 +53,26 @@ public:
 	~SqlConnection();
 private:
 	SqlConnection();
+	bool isOpen();
 
 public:
 	void open();
 	void close();
 
-	void exec(const QString & query);
+	void exec(const char * query);
+	void exec(const csjp::String & query) { exec(query.str); }
 	SqlColumns columns(const QString & tablename) const;
 	const SqlTableNames & tables() const;
-	bool isOpen();
-	QString dbErrorString();
-
-public:
-	DatabaseDescriptor dbDesc;
+	//QString dbErrorString();
 
 private:
+	DatabaseDescriptor dbDesc;
 	friend class SqlQuery;
 	friend class SqlTransaction;
 	SqlConnectionPrivate * priv;
+
+public:
+	const DatabaseDescriptor & desc;
 };
 
 class SqlTransaction
