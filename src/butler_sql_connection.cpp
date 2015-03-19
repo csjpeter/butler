@@ -100,15 +100,21 @@ void SqlConnection::open()
 	switch(priv->type){
 		case SqlConnectionType::PSql :
 			{
-				csjp::String str;
-				str << dbDesc.host << ":" << dbDesc.port;// dbDesc.username
-				priv->conn.pg = PQconnectdb(str.str);
+				csjp::String str, connStr;
+/*				str.cat("host='",dbDesc.host, "' port='", dbDesc.port, "'",
+						" dbname='", dbDesc.databaseName, "'",
+						" username='", dbDesc.username, "'",
+						" sslmode='allow'");
+				connStr.cat(str, " password='", dbDesc.password, "'");*/
+				str.cat("postgres://",dbDesc.username,"@",
+						dbDesc.host,":",dbDesc.port,"/",dbDesc.databaseName);
+				connStr.cat("postgres://",dbDesc.username,":",dbDesc.password,"@",
+						dbDesc.host,":",dbDesc.port,"/",dbDesc.databaseName);
+				priv->conn.pg = PQconnectdb(connStr.str);
 				if(PQstatus(priv->conn.pg) != CONNECTION_OK){
 					PQfinish(priv->conn.pg);
-					throw DbError("Failed to connect to postgresql at '%s:%u' "
-							"with user '%s'.\nError: %s",
-							dbDesc.host.str, dbDesc.port,
-							dbDesc.username.str, PQerrorMessage(priv->conn.pg));
+					throw DbError("Failed to connect to postgresql with connection string:\n"
+							"%s\n\nError:\n%s", str.str, PQerrorMessage(priv->conn.pg));
 				}
 			}
 		break;
