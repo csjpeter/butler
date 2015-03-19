@@ -84,7 +84,19 @@ bool SqlConnection::isOpen()
 {
 	switch(priv->type){
 		case SqlConnectionType::PSql :
-			return priv->conn.pg != 0;
+			if(!priv->conn.pg)
+				return false;
+			int state = PQstatus(priv->conn.pg);
+			switch(state){
+				case CONNECTION_OK:
+					return true;
+				case CONNECTION_BAD:
+					close();
+					return false;
+				default:
+					close();
+					throw LogicError("Unexpected connection state %d.", state);
+			}
 			break;
 		case SqlConnectionType::SQLite :
 			return priv->conn.lite != 0;
@@ -95,8 +107,6 @@ bool SqlConnection::isOpen()
 
 void SqlConnection::open()
 {
-	if(isOpen()) return;
-
 	switch(priv->type){
 		case SqlConnectionType::PSql :
 			{
@@ -139,8 +149,6 @@ void SqlConnection::open()
 
 void SqlConnection::close()
 {
-	if(!isOpen()) return;
-
 	switch(priv->type){
 		case SqlConnectionType::PSql :
 			PQfinish(priv->conn.pg);
@@ -161,7 +169,7 @@ void SqlConnection::close()
 
 void SqlConnection::exec(const char * query)
 {
-	open();
+	if(!isOpen()) open();
 	switch(priv->type){
 		case SqlConnectionType::PSql :
 			{
@@ -277,7 +285,7 @@ SqlQuery::SqlQuery(SqlConnection & sql) :
 	csjp::Object<SqlQueryPrivate> p(new SqlQueryPrivate());
 	priv = p.ptr;
 
-	sql.open();
+	if(!sql.isOpen()) open();
 
 /*	priv->qQuery = new QSqlQuery(sql.priv->db);
 	if(!priv->qQuery)
