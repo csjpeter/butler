@@ -18,7 +18,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("InventoriesView", "Edit inventory");
 SCC TidDelButton = QT_TRANSLATE_NOOP("InventoriesView", "Delete inventory");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("InventoriesView", "Refresh inventory list");
 
-InventoriesView::InventoriesView(const QString & dbname, QWidget * parent) :
+InventoriesView::InventoriesView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(inventoryModel(dbname)),
@@ -64,7 +64,11 @@ InventoriesView::~InventoriesView()
 
 void InventoriesView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidInventoriesWindowTitle));
 	relayout();
 }

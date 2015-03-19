@@ -29,7 +29,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditCompanyView", "Please fill t
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditCompanyView", "Company is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditCompanyView", "Company is updated.");
 
-EditCompanyView::EditCompanyView(const QString & dbname, QWidget * parent) :
+EditCompanyView::EditCompanyView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(companyModel(dbname)),

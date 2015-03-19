@@ -16,10 +16,10 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditItemView(const QString & dbname, ItemModel & model, QWidget * parent = 0);
+	EditItemView(const csjp::String & dbname, ItemModel & model, QWidget * parent = 0);
 	virtual ~EditItemView();
 
-	static EditItemView * newItemViewFactory(const QString & dbname);
+	static EditItemView * newItemViewFactory(const csjp::String & dbname);
 
 	void setCursor(const QModelIndex& index);
 
@@ -54,7 +54,7 @@ private slots:
 	void accountNameEditFinishedSlot(int);
 
 public:
-	const QString dbname;
+	const csjp::String dbname;
 private:
 	ItemModel & model;
 	ItemModel * ownModel;

@@ -25,7 +25,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditTagView", "Please fill the t
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditTagView", "Tag is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditTagView", "Tag is updated.");
 
-EditTagView::EditTagView(const QString & dbname, QWidget * parent) :
+EditTagView::EditTagView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(tagModel(dbname)),

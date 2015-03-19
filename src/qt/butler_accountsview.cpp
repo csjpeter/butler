@@ -19,7 +19,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("AccountsView", "Edit account");
 SCC TidDelButton = QT_TRANSLATE_NOOP("AccountsView", "Delete account");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("AccountsView", "Refresh account list");
 
-AccountsView::AccountsView(const QString & dbname, QWidget * parent) :
+AccountsView::AccountsView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(accountModel(dbname)),
@@ -65,7 +65,11 @@ AccountsView::~AccountsView()
 
 void AccountsView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidAccountsWindowTitle));
 	relayout();
 }

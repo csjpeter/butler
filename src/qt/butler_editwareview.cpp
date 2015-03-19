@@ -28,7 +28,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditWareView", "Please fill the 
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditWareView", "Ware is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditWareView", "Ware is updated.");
 
-EditWareView::EditWareView(const QString & dbname, QWidget * parent) :
+EditWareView::EditWareView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(wareModel(dbname)),

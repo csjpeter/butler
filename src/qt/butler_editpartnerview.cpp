@@ -30,7 +30,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditPartnerView", "Please fill t
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is updated.");
 
-EditPartnerView::EditPartnerView(const QString & dbname, QWidget * parent) :
+EditPartnerView::EditPartnerView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(partnersModel(dbname)),

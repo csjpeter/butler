@@ -19,7 +19,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("PartnersView", "Edit partner");
 SCC TidDelButton = QT_TRANSLATE_NOOP("PartnersView", "Delete partner");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("PartnersView", "Refresh partner list");
 
-PartnersView::PartnersView(const QString & dbname, QWidget * parent) :
+PartnersView::PartnersView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(partnersModel(dbname)),
@@ -65,7 +65,11 @@ PartnersView::~PartnersView()
 
 void PartnersView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidPartnersWindowTitle));
 	relayout();
 }

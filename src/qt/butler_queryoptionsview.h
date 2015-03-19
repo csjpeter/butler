@@ -17,7 +17,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	QueryOptionsView(const QString & dbname, QWidget * parent = 0);
+	QueryOptionsView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~QueryOptionsView();
 
 	void loadState();
@@ -47,7 +47,7 @@ private slots:
 	void updateToolButtonStates();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 
 public:
 	Query query;

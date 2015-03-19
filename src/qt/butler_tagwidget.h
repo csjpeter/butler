@@ -22,7 +22,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	TagWidget(const QString & dbname, QWidget * parent = 0);
+	TagWidget(const csjp::String & dbname, QWidget * parent = 0);
 
 public:
 	void setTags(const QueryWithTagSet & tags);
@@ -52,7 +52,7 @@ private slots:
 	void selectionChangedSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	const TagSet & tagSet;
 	csjp::SorterOwnerContainer<QCheckBox> btnContainer;
 

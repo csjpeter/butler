@@ -355,7 +355,7 @@ void MainView::saveState()
 void MainView::activeDbChanged()
 {
 	if(Config::defaultDbName != "localdb")
-		infoLabel.setText(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+		infoLabel.setText(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
 	else
 		infoLabel.setText("");
 }

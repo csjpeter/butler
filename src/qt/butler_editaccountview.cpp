@@ -28,7 +28,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditAccountView", "Please fill t
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditAccountView", "Account is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditAccountView", "Account is updated.");
 
-EditAccountView::EditAccountView(const QString & dbname, QWidget * parent) :
+EditAccountView::EditAccountView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(accountModel(dbname)),

@@ -55,9 +55,6 @@ private:
 	Button nextButton;
 	
 	ButtonGroup driverOptions;
-	QRadioButton qSqliteDriverOption;
-	QRadioButton qPSqlDriverOption;
-	QRadioButton qMysqlDriverOption;
 	QRadioButton sqliteDriverOption;
 	QRadioButton psqlDriverOption;
 	QRadioButton mysqlDriverOption;

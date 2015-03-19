@@ -25,7 +25,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditBrandView", "Please fill the
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditBrandView", "Brand is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditBrandView", "Brand is updated.");
 
-EditBrandView::EditBrandView(const QString & dbname, QWidget * parent) :
+EditBrandView::EditBrandView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(brandModel(dbname)),

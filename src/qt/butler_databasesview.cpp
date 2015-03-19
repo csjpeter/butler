@@ -66,7 +66,7 @@ DatabasesView::~DatabasesView()
 void DatabasesView::retranslate()
 {
 	setWindowTitle(tr(TidDatabasesWindowTitle));
-	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
 	relayout();
 }
 
@@ -148,7 +148,7 @@ void DatabasesView::loadState()
 
 	tableView.loadState(prefix);
 
-	QString dbname; dbname <<= settings.value(prefix + "/currentitem", "");
+	csjp::String dbname; dbname <<= settings.value(prefix + "/currentitem", "");
 	int col; col <<= settings.value(prefix + "/currentitemCol", "");
 	if(model.set.has(dbname))
 		tableView.setCurrentIndex(model.index(model.index(dbname), col));
@@ -168,7 +168,7 @@ void DatabasesView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.data(tableView.currentIndex().row()).name;
+		name = model.data(tableView.currentIndex().row()).name.str;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -214,7 +214,7 @@ void DatabasesView::delDbDesc()
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an database connection"),
-			tr("Shall we delete this database connection: ") + dbdesc.name,
+			tr("Shall we delete this database connection: ") + dbdesc.name.str,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
@@ -225,7 +225,7 @@ void DatabasesView::useDbDesc()
 {
 	int row = tableView.currentIndex().row();
 	try {
-		QString dbname(model.data(row).name);
+		const csjp::String & dbname(model.data(row).name);
 
 		tagModel(dbname);
 		wareModel(dbname);
@@ -239,7 +239,7 @@ void DatabasesView::useDbDesc()
 		csjp::Object<ItemModel> tmpModel(itemModel(dbname));
 
 		Config::defaultDbName = dbname;
-		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName));
+		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
 		activeDbChanged();
 	} catch (DbConnectError & e) {
 		QString info = e.what();

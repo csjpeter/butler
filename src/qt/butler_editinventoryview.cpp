@@ -25,7 +25,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditInventoryView", "Please fill
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditInventoryView", "Inventory is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditInventoryView", "Inventory is updated.");
 
-EditInventoryView::EditInventoryView(const QString & dbname, QWidget * parent) :
+EditInventoryView::EditInventoryView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(inventoryModel(dbname)),

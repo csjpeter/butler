@@ -23,7 +23,7 @@ csjp::Json config;
 namespace Config {
 
 QString configFileName;
-QString defaultDbName = "localdb";
+csjp::String defaultDbName("localdb");
 QLocale locale;
 double pxPerMM = 0;
 double scaleFactor = 1;

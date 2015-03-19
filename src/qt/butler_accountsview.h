@@ -19,7 +19,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	AccountsView(const QString & dbname, QWidget * parent = 0);
+	AccountsView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~AccountsView();
 
 	virtual void loadState();
@@ -47,7 +47,7 @@ private slots:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 public:
-	const QString dbname;
+	const csjp::String dbname;
 private:
 	AccountModel & model;
 

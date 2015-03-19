@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditBrandView(const QString & dbname, QWidget * parent = 0);
+	EditBrandView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditBrandView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -45,7 +45,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	BrandModel & model;
 	QModelIndex cursor;
 	Brand brand;

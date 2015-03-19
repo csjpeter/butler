@@ -18,7 +18,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("TagsView", "Edit tag");
 SCC TidDelButton = QT_TRANSLATE_NOOP("TagsView", "Delete tag");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("TagsView", "Refresh tag list");
 
-TagsView::TagsView(const QString & dbname, QWidget * parent) :
+TagsView::TagsView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(tagModel(dbname)),
@@ -64,7 +64,11 @@ TagsView::~TagsView()
 
 void TagsView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidTagsWindowTitle));
 	relayout();
 }

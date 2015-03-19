@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditCompanyView(const QString & dbname, QWidget * parent = 0);
+	EditCompanyView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditCompanyView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -45,7 +45,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	CompanyModel & model;
 	QModelIndex cursor;
 	Company company;

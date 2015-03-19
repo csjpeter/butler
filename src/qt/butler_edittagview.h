@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditTagView(const QString & dbname, QWidget * parent = 0);
+	EditTagView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditTagView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -45,7 +45,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	TagModel & model;
 	QModelIndex cursor;
 	Tag tag;

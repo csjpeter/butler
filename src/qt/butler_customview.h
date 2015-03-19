@@ -20,7 +20,7 @@ private:
 	Q_OBJECT
 	MY_Q_OBJECT
 public:
-	CustomView(const QString & dbname, QWidget *parent = 0);
+	CustomView(const csjp::String & dbname, QWidget *parent = 0);
 	virtual ~CustomView();
 
 	virtual void loadState();
@@ -52,7 +52,7 @@ private slots:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 public:
-	const QString dbname;
+	const csjp::String dbname;
 private:
 	csjp::Object<ItemModel> model;
 

@@ -17,7 +17,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditWareView(const QString & dbname, QWidget * parent = 0);
+	EditWareView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditWareView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -46,7 +46,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	WareModel & model;
 	QModelIndex cursor;
 	Ware ware;

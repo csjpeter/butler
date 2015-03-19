@@ -24,7 +24,7 @@ SCC TidShoppingItemButton = QT_TRANSLATE_NOOP("CustomView", "Add item to shoppin
 SCC TidFilterItemButton = QT_TRANSLATE_NOOP("CustomView", "Filter items");
 SCC TidStatsItemButton = QT_TRANSLATE_NOOP("CustomView", "Statistics");
 
-CustomView::CustomView(const QString & dbname, QWidget * parent) :
+CustomView::CustomView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(itemModel(dbname)),
@@ -83,7 +83,11 @@ CustomView::~CustomView()
 
 void CustomView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidAnaliticsWindowTitle));
 	relayout();
 }

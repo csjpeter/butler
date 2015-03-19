@@ -11,7 +11,7 @@
 #include "butler_tagwidget.h"
 
 
-TagWidget::TagWidget(const QString & dbname, QWidget * parent) :
+TagWidget::TagWidget(const csjp::String & dbname, QWidget * parent) :
 	QWidget(parent),
 	dbname(dbname),
 	tagSet(tagModel(dbname).set),

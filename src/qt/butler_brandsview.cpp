@@ -18,7 +18,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("BrandsView", "Edit brand");
 SCC TidDelButton = QT_TRANSLATE_NOOP("BrandsView", "Delete brand");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("BrandsView", "Refresh brand list");
 
-BrandsView::BrandsView(const QString & dbname, QWidget * parent) :
+BrandsView::BrandsView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(brandModel(dbname)),
@@ -64,7 +64,11 @@ BrandsView::~BrandsView()
 
 void BrandsView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidBrandsWindowTitle));
 	relayout();
 }

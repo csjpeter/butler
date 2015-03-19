@@ -44,7 +44,7 @@ SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditItemView", "Please fill at l
 SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is saved, you may add another.");
 SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditItemView", "Item is updated.");
 
-EditItemView * EditItemView::newItemViewFactory(const QString & dbname)
+EditItemView * EditItemView::newItemViewFactory(const csjp::String & dbname)
 {
 	csjp::Object<ItemModel> ownModel = itemModel(dbname);
 	EditItemView * view = new EditItemView(dbname, *ownModel);
@@ -52,7 +52,7 @@ EditItemView * EditItemView::newItemViewFactory(const QString & dbname)
 	return view;
 }
 
-EditItemView::EditItemView(const QString & dbname, ItemModel & model, QWidget * parent) :
+EditItemView::EditItemView(const csjp::String & dbname, ItemModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model),

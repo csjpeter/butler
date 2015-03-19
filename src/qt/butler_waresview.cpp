@@ -19,7 +19,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("WaresView", "Edit ware or service");
 SCC TidDelButton = QT_TRANSLATE_NOOP("WaresView", "Delete ware or service");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("WaresView", "Refresh ware/service list");
 
-WaresView::WaresView(const QString & dbname, QWidget * parent) :
+WaresView::WaresView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(wareModel(dbname)),
@@ -65,7 +65,11 @@ WaresView::~WaresView()
 
 void WaresView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidWaresWindowTitle));
 	relayout();
 }

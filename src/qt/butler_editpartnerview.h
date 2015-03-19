@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditPartnerView(const QString & dbname, QWidget * parent = 0);
+	EditPartnerView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditPartnerView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -45,7 +45,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	PartnerModel & model;
 	QModelIndex cursor;
 	Partner partner;

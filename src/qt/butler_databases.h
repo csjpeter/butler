@@ -15,15 +15,15 @@ void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
 DatabaseDescriptorModel & databasesModel();
-TagModel & tagModel(const QString & dbname);
-WareModel & wareModel(const QString & dbname);
-CompanyModel & companyModel(const QString & dbname);
-BrandModel & brandModel(const QString & dbname);
-InventoryModel & inventoryModel(const QString & dbname);
-PartnerModel & partnersModel(const QString & dbname);
-AccountModel & accountModel(const QString & dbname);
-QueryModel & queryModel(const QString & dbname);
-//ShoppingModel & shoppingModel(const QString & dbname);
-csjp::Object<ItemModel> itemModel(const QString & dbname);
+TagModel & tagModel(const csjp::String & dbname);
+WareModel & wareModel(const csjp::String & dbname);
+CompanyModel & companyModel(const csjp::String & dbname);
+BrandModel & brandModel(const csjp::String & dbname);
+InventoryModel & inventoryModel(const csjp::String & dbname);
+PartnerModel & partnersModel(const csjp::String & dbname);
+AccountModel & accountModel(const csjp::String & dbname);
+QueryModel & queryModel(const csjp::String & dbname);
+//ShoppingModel & shoppingModel(const csjp::String & dbname);
+csjp::Object<ItemModel> itemModel(const csjp::String & dbname);
 
 #endif

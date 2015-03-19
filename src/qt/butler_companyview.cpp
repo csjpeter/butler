@@ -19,7 +19,7 @@ SCC TidEditButton = QT_TRANSLATE_NOOP("CompanyView", "Edit company");
 SCC TidDelButton = QT_TRANSLATE_NOOP("CompanyView", "Delete company");
 SCC TidRefreshButton = QT_TRANSLATE_NOOP("CompanyView", "Refresh company list");
 
-CompanyView::CompanyView(const QString & dbname, QWidget * parent) :
+CompanyView::CompanyView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(companyModel(dbname)),
@@ -66,7 +66,11 @@ CompanyView::~CompanyView()
 
 void CompanyView::retranslate()
 {
-	QString titlePrefix(dbname == "localdb" ? "" : dbname + " :: ");
+	QString titlePrefix;
+	if(dbname != "localdb"){
+		titlePrefix = dbname.str;
+		titlePrefix += " :: ";
+	}
 	setWindowTitle(titlePrefix + tr(TidCompanyWindowTitle));
 	relayout();
 }

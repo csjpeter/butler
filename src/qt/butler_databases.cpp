@@ -19,7 +19,7 @@ static DatabaseDescriptorModel databases_model(descriptorSet);
 class Database
 {
 private:
-	QString dbname;
+	csjp::String dbname;
 	SqlConnection * sql;
 	TagModel * tagModel;
 	WareModel * wareModel;
@@ -32,7 +32,7 @@ private:
 	//ShoppingModel * shoppingModel;
 
 public:
-	Database(const QString & dbname) :
+	Database(const csjp::String & dbname) :
 		dbname(dbname),
 		sql(0),
 		tagModel(0),
@@ -85,8 +85,8 @@ public:
 
 	bool isLess(const Database & dm) const { return dbname < dm.dbname; }
 	
-	bool isLess(const QString & s) const { return dbname < s; }
-	bool isMore(const QString & s) const { return s < dbname; }
+	bool isLess(const csjp::String & s) const { return dbname < s; }
+	bool isMore(const csjp::String & s) const { return s < dbname; }
 
 private:
 	SqlConnection & sqlConn()
@@ -185,12 +185,12 @@ inline bool operator<(const Database & a, const Database & b)
 	return a.isLess(b);
 }
 
-inline bool operator<(const QString & a, const Database & b)
+inline bool operator<(const csjp::String & a, const Database & b)
 {
 	return b.isMore(a);
 }
 
-inline bool operator<(const Database & a, const QString & b)
+inline bool operator<(const Database & a, const csjp::String & b)
 {
 	return a.isLess(b);
 }
@@ -274,12 +274,11 @@ void saveDatabaseConfigs()
 
 csjp::OwnerContainer<Database> databases;
 
-Database & loadDatabase(const QString & name)
+Database & loadDatabase(const csjp::String & name)
 {
 	if(!databases.has(name)){
 		if(!descriptorSet.has(name))
-			throw DbError("Database connection '%s' is not yet specified.",
-					C_STR(name));
+			throw DbError("Database connection '%s' is not yet specified.", name.str);
 		csjp::Object<Database> db(new Database(name));
 		databases.add(db);
 	}
@@ -292,52 +291,52 @@ DatabaseDescriptorModel & databasesModel()
 	return databases_model;
 }
 
-TagModel & tagModel(const QString & dbname)
+TagModel & tagModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).tags();
 }
 
-WareModel & wareModel(const QString & dbname)
+WareModel & wareModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).wares();
 }
 
-CompanyModel & companyModel(const QString & dbname)
+CompanyModel & companyModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).company();
 }
 
-BrandModel & brandModel(const QString & dbname)
+BrandModel & brandModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).brands();
 }
 
-InventoryModel & inventoryModel(const QString & dbname)
+InventoryModel & inventoryModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).inventories();
 }
 
-PartnerModel & partnersModel(const QString & dbname)
+PartnerModel & partnersModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).partners();
 }
 
-AccountModel & accountModel(const QString & dbname)
+AccountModel & accountModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).accounts();
 }
 
-QueryModel & queryModel(const QString & dbname)
+QueryModel & queryModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).queries();
 }
 /*
-ShoppingModel & shoppingModel(const QString & dbname)
+ShoppingModel & shoppingModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).shoppingItems();
 }
 */
-csjp::Object<ItemModel> itemModel(const QString & dbname)
+csjp::Object<ItemModel> itemModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).items();
 }

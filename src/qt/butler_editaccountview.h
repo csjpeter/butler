@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditAccountView(const QString & dbname, QWidget * parent = 0);
+	EditAccountView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~EditAccountView() {}
 
 	void setCursor(const QModelIndex& index);
@@ -45,7 +45,7 @@ private slots:
 	void resetSlot();
 
 private:
-	const QString & dbname;
+	const csjp::String & dbname;
 	AccountModel & model;
 	QModelIndex cursor;
 	Account account;

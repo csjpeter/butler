@@ -19,7 +19,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	PartnersView(const QString & dbname, QWidget * parent = 0);
+	PartnersView(const csjp::String & dbname, QWidget * parent = 0);
 	virtual ~PartnersView();
 
 	virtual void loadState();
@@ -47,7 +47,7 @@ private slots:
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 public:
-	const QString dbname;
+	const csjp::String dbname;
 private:
 	PartnerModel & model;
 
