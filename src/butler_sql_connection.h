@@ -28,6 +28,16 @@ class DatabaseDescriptor
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
+inline bool operator<(const char * lhs, const DatabaseDescriptor & rhs)
+{
+	return lhs < rhs.name;
+}
+
+inline bool operator<(const DatabaseDescriptor & lhs, const char * rhs)
+{
+	return lhs.name < rhs;
+}
+
 
 
 DECL_EXCEPTION(csjp::Exception, DbError);
