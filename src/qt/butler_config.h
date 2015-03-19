@@ -17,7 +17,7 @@
 extern csjp::Json config;
 
 namespace Config {
-	extern QString configFileName;
+	extern csjp::String configFileName;
 	extern csjp::String defaultDbName;
 	extern QLocale locale;
 	extern double pxPerMM;

@@ -89,6 +89,11 @@ tmp/src/%.opp: src/%.cpp \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(OBJCOPY) --only-keep-debug $^ $@
 
+@TCROOT@@PREFIX@bin/%-dbg : \
+		tmp/@TCROOT@@PREFIX@bin/%
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	cp $^ $@
+
 @TCROOT@@PREFIX@bin/% : \
 		tmp/@TCROOT@@PREFIX@bin/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)

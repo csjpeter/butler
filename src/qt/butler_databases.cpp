@@ -216,13 +216,13 @@ void loadDatabaseConfigs()
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
 		csjp::Json & dbt = tree.properties.queryAt(i);
 		desc->name = dbt.key;
-		desc->driver <<= dbt["driver"];
-		desc->databaseName <<= dbt["databaseName"];
-		desc->username <<= dbt["username"];
-		desc->password <<= dbt["password"];
+		desc->driver = dbt["driver"];
+		desc->databaseName = dbt["databaseName"];
+		desc->username = dbt["username"];
+		desc->password = dbt["password"];
 		if(desc->password.length)
 			desc->savePassword = true;
-		desc->host <<= dbt["host"];
+		desc->host = dbt["host"];
 		desc->port <<= dbt["port"];
 		descriptorSet.add(desc);
 	}
@@ -259,17 +259,16 @@ void saveDatabaseConfigs()
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
 		auto & db = tree[desc.name];
-		db["driver"] <<= desc.driver; // for example "QSQLITE"
-		db["databaseName"] <<= desc.databaseName; //file name in case of sqlite
-		db["username"] <<= desc.username;
+		db["driver"] = desc.driver; // for example "QSQLITE"
+		db["databaseName"] = desc.databaseName; //file name in case of sqlite
+		db["username"] = desc.username;
 		/* DO NOT SAVE THE VALUE OF desc.savePassword */
 		if(desc.savePassword)
-			db["password"] <<= desc.password;
-		db["host"] <<= desc.host; // domain name or ip
+			db["password"] = desc.password;
+		db["host"] = desc.host; // domain name or ip
 		db["port"] <<= desc.port;
 	}
-	csjp::Json & origTree = config["database-connections"];
-	origTree = move_cast(tree);
+	config["database-connections"] = move_cast(tree);
 }
 
 csjp::OwnerContainer<Database> databases;

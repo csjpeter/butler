@@ -22,7 +22,7 @@ csjp::Json config;
 
 namespace Config {
 
-QString configFileName;
+csjp::String configFileName;
 csjp::String defaultDbName("localdb");
 QLocale locale;
 double pxPerMM = 0;
@@ -36,9 +36,9 @@ void save()
 
 	settings.setValue(prefix + "/locale", locale.bcp47Name());
 
-	config["defaultDb"] <<= Config::defaultDbName;
+	config["defaultDb"] = Config::defaultDbName;
 
-	csjp::File file(C_STR(configFileName));
+	csjp::File file(configFileName);
 	file.overWrite(config.toString());
 }
 
@@ -51,12 +51,12 @@ void load()
 	if(l.size())
 		locale = QLocale(l);
 
-	csjp::File file(C_STR(configFileName));
+	csjp::File file(configFileName);
 	if(file.exists())
 		config <<= file.readAll();
 
 	if(config.properties.has("defaultDb"))
-		Config::defaultDbName <<= config["defaultDb"];
+		Config::defaultDbName = config["defaultDb"];
 }
 
 const QString & dateTimeFormat()
@@ -168,7 +168,7 @@ void initConfigFileName()
 
 	if(!dir.exists(".butler"))
 		dir.mkdir(".butler");
-	Config::configFileName = QDir::toNativeSeparators(
+	Config::configFileName <<= QDir::toNativeSeparators(
 			QDir::homePath() + QString("/.butler/config.json")
 			);
 }
