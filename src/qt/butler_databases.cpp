@@ -216,7 +216,12 @@ void loadDatabaseConfigs()
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
 		csjp::Json & dbt = tree.properties.queryAt(i);
 		desc->name = dbt.key;
-		desc->driver = dbt["driver"];
+		if(dbt["driver"] == "PSql")
+			desc->driver = SqlDriver::PSql;
+		else if(dbt["driver"] == "SQLite")
+			desc->driver = SqlDriver::SQLite;
+		else if(dbt["driver"] == "MySQL")
+			desc->driver = SqlDriver::MySQL;
 		desc->databaseName = dbt["databaseName"];
 		desc->username = dbt["username"];
 		desc->password = dbt["password"];
@@ -231,7 +236,7 @@ void loadDatabaseConfigs()
 	if(!descriptorSet.has("localdb")){
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = "localdb";
-		sqlitedb->driver = "QSQLITE";
+		sqlitedb->driver = SqlDriver::SQLite;
 		sqlitedb->databaseName <<= defaultSQLiteDbFileName();
 		LOG("Sqlite db file path: %s", sqlitedb->databaseName.str);
 		descriptorSet.add(sqlitedb);
@@ -259,7 +264,11 @@ void saveDatabaseConfigs()
 	for(unsigned i = 0; i < s; i++){
 		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
 		auto & db = tree[desc.name];
-		db["driver"] = desc.driver; // for example "QSQLITE"
+		switch(desc.driver){
+			case SqlDriver::PSql: db["driver"] = "PSql"; break;
+			case SqlDriver::SQLite: db["driver"] = "SQLite"; break;
+			case SqlDriver::MySQL: db["driver"] = "MySQL"; break;
+		}
 		db["databaseName"] = desc.databaseName; //file name in case of sqlite
 		db["username"] = desc.username;
 		/* DO NOT SAVE THE VALUE OF desc.savePassword */

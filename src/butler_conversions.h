@@ -16,6 +16,39 @@
 #include <QString>
 #include <QVariant>
 
+inline QVariant & operator<<= (QVariant & lhs, const enum SqlDriver & rhs)
+{
+	switch(rhs)
+	{
+		case SqlDriver::PSql :
+			lhs = "PSql";
+			break;
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
+			break;
+		case SqlDriver::MySQL :
+			lhs = "MySQL";
+			break;
+		default:
+			throw csjp::InvalidArgument();
+	}
+	return lhs;
+}
+
+inline enum SqlDriver & operator<<= (enum SqlDriver & lhs, const QVariant & rhs)
+{
+		QString s = rhs.toString();
+		if(s == "PSql")
+				lhs = SqlDriver::PSql;
+		else if(s == "SQLite")
+				lhs = SqlDriver::SQLite;
+		else if(s == "MySQL")
+				lhs = SqlDriver::MySQL;
+		else
+			throw csjp::InvalidArgument();
+	return lhs;
+}
+
 inline QString & operator<<= (QString & qstr, const enum QueryStockOptions & rhs)
 {
 	switch(rhs)

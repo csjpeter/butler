@@ -63,9 +63,9 @@ public:
 	~SqlConnection();
 private:
 	SqlConnection();
-	bool isOpen();
 
 public:
+	bool isOpen();
 	void open();
 	void close();
 

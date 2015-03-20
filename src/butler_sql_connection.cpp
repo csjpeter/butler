@@ -16,54 +16,36 @@
 
 #include "butler_sql_connection.h"
 
-enum class SqlConnectionType
-{
-	PSql,
-	SQLite
-};
-
 typedef struct SqlConnectionPrivate
 {
-	SqlConnectionPrivate(SqlConnectionType type) :
-		type(type)
-	{
-		transactions = 0;
-
-		switch(type){
-			case SqlConnectionType::PSql :
-				conn.pg = 0;
-				break;
-			case SqlConnectionType::SQLite :
-				conn.lite = 0;
-				break;
-		}
-	}
-
-	const SqlConnectionType type;
-
-	union ConnectionPtr{
+	union {
 		PGconn * pg;
 		sqlite3 * lite;
+		void * mysql;
 	} conn;
 	unsigned transactions;
 	mutable SqlTableNames tables;
 } SqlConnectionPrivate;
 
-SqlConnection::SqlConnection(const DatabaseDescriptor & dbDesc) :
-	dbDesc(dbDesc),
+SqlConnection::SqlConnection(const DatabaseDescriptor & _dbDesc) :
+	dbDesc(_dbDesc),
 	priv(NULL),
 	desc(dbDesc)
 {
-	SqlConnectionType type;
-	if(dbDesc.driver == "SQLITE")
-		type = SqlConnectionType::SQLite;
-	else if(dbDesc.driver == "PSQL")
-		type = SqlConnectionType::PSql;
-	else
-		throw new csjp::InvalidArgument("Unsupported SQL driver '%s' requested.",dbDesc.driver.str);
-
-	csjp::Object<SqlConnectionPrivate> p(new SqlConnectionPrivate(type));
+	csjp::Object<SqlConnectionPrivate> p(new SqlConnectionPrivate());
 	priv = p.ptr;
+	priv->transactions = 0;
+	switch(desc.driver){
+		case SqlDriver::PSql :
+			priv->conn.pg = 0;
+			break;
+		case SqlDriver::SQLite :
+			priv->conn.lite = 0;
+			break;
+		case SqlDriver::MySQL :
+			priv->conn.mysql = 0;
+			break;
+	}
 	open();
 	p.ptr = NULL;
 }
@@ -82,24 +64,29 @@ SqlConnection::~SqlConnection()
 
 bool SqlConnection::isOpen()
 {
-	switch(priv->type){
-		case SqlConnectionType::PSql :
-			if(!priv->conn.pg)
-				return false;
-			int state = PQstatus(priv->conn.pg);
-			switch(state){
-				case CONNECTION_OK:
-					return true;
-				case CONNECTION_BAD:
-					close();
+	switch(desc.driver){
+		case SqlDriver::PSql :
+			{
+				if(!priv->conn.pg)
 					return false;
-				default:
-					close();
-					throw LogicError("Unexpected connection state %d.", state);
+				int state = PQstatus(priv->conn.pg);
+				switch(state){
+					case CONNECTION_OK:
+						return true;
+					case CONNECTION_BAD:
+						close();
+						return false;
+					default:
+						close();
+						throw csjp::LogicError("Unexpected connection state %d.", state);
+				}
 			}
 			break;
-		case SqlConnectionType::SQLite :
+		case SqlDriver::SQLite :
 			return priv->conn.lite != 0;
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented();
 			break;
 	}
 	return false;
@@ -107,19 +94,19 @@ bool SqlConnection::isOpen()
 
 void SqlConnection::open()
 {
-	switch(priv->type){
-		case SqlConnectionType::PSql :
+	switch(desc.driver){
+		case SqlDriver::PSql :
 			{
 				csjp::String str, connStr;
-/*				str.cat("host='",dbDesc.host, "' port='", dbDesc.port, "'",
-						" dbname='", dbDesc.databaseName, "'",
-						" username='", dbDesc.username, "'",
+/*				str.cat("host='",desc.host, "' port='", desc.port, "'",
+						" dbname='", desc.databaseName, "'",
+						" username='", desc.username, "'",
 						" sslmode='allow'");
-				connStr.cat(str, " password='", dbDesc.password, "'");*/
-				str.cat("postgres://",dbDesc.username,"@",
-						dbDesc.host,":",dbDesc.port,"/",dbDesc.databaseName);
-				connStr.cat("postgres://",dbDesc.username,":",dbDesc.password,"@",
-						dbDesc.host,":",dbDesc.port,"/",dbDesc.databaseName);
+				connStr.cat(str, " password='", desc.password, "'");*/
+				str.cat("postgres://",desc.username,"@",
+						desc.host,":",desc.port,"/",desc.databaseName);
+				connStr.cat("postgres://",desc.username,":",desc.password,"@",
+						desc.host,":",desc.port,"/",desc.databaseName);
 				priv->conn.pg = PQconnectdb(connStr.str);
 				if(PQstatus(priv->conn.pg) != CONNECTION_OK){
 					PQfinish(priv->conn.pg);
@@ -127,13 +114,13 @@ void SqlConnection::open()
 							"%s\n\nError:\n%s", str.str, PQerrorMessage(priv->conn.pg));
 				}
 			}
-		break;
-		case SqlConnectionType::SQLite :
+			break;
+		case SqlDriver::SQLite :
 			{
-				int res = sqlite3_open(dbDesc.databaseName.str, &(priv->conn.lite));
+				int res = sqlite3_open(desc.databaseName.str, &(priv->conn.lite));
 				if(res < 0 || priv->conn.lite == 0)
 					throw DbError("Failed to open sqlite database/file '%s'\n",
-							dbDesc.databaseName.str);
+							desc.databaseName.str);
 				/*q = priv->db.exec("PRAGMA foreign_keys = ON");
 				q = priv->db.exec("PRAGMA foreign_keys");
         		if(q.value(0).toInt() != 1){
@@ -142,26 +129,32 @@ void SqlConnection::open()
 							"on or not supported at all.");
 				}*/
 			}
-		break;
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented();
+			break;
 	}
 	ENSURE(isOpen(), csjp::LogicError);
 }
 
 void SqlConnection::close()
 {
-	switch(priv->type){
-		case SqlConnectionType::PSql :
+	switch(desc.driver){
+		case SqlDriver::PSql :
 			PQfinish(priv->conn.pg);
 			priv->conn.pg = 0;
 			break;
-		case SqlConnectionType::SQLite :
+		case SqlDriver::SQLite :
 			{
 				int res = sqlite3_close(priv->conn.lite);
 				if(res < 0)
 					throw DbError("Failed to close sqlite database/file '%s'\n",
-							dbDesc.databaseName.str);
+							desc.databaseName.str);
 				priv->conn.lite = 0;
 			}
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented();
 			break;
 	}
 	ENSURE(!isOpen(), csjp::LogicError);
@@ -170,8 +163,8 @@ void SqlConnection::close()
 void SqlConnection::exec(const char * query)
 {
 	if(!isOpen()) open();
-	switch(priv->type){
-		case SqlConnectionType::PSql :
+	switch(desc.driver){
+		case SqlDriver::PSql :
 			{
 				PGresult * res = PQexec(priv->conn.pg, query);
 				if(PQresultStatus(res) != PGRES_COMMAND_OK) {
@@ -182,7 +175,7 @@ void SqlConnection::exec(const char * query)
 				PQclear(res);
 			}
 			break;
-		case SqlConnectionType::SQLite :
+		case SqlDriver::SQLite :
 			{
 				char * errmsg = 0;
 				int res = sqlite3_exec(priv->conn.lite, query, 0, 0, &errmsg);
@@ -193,6 +186,9 @@ void SqlConnection::exec(const char * query)
 					throw e;
 				}
 			}
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented();
 			break;
 	}
 }
@@ -221,8 +217,8 @@ const SqlTableNames & SqlConnection::tables() const
 QString SqlConnection::dbErrorString()
 {
 	QString str;
-	switch(priv->type){
-		case SqlConnectionType::PSql :
+	switch(desc.driver){
+		case SqlDriver::PSql :
 			str = PQerrorMessage(priv->conn.pg);
 			break;
 		default:
@@ -285,7 +281,7 @@ SqlQuery::SqlQuery(SqlConnection & sql) :
 	csjp::Object<SqlQueryPrivate> p(new SqlQueryPrivate());
 	priv = p.ptr;
 
-	if(!sql.isOpen()) open();
+	if(!sql.isOpen()) sql.open();
 
 /*	priv->qQuery = new QSqlQuery(sql.priv->db);
 	if(!priv->qQuery)
@@ -310,7 +306,7 @@ void SqlQuery::exec(const QString &query)
 	if(!priv->qQuery->exec(query))
 		throw DbError("The below sql query failed on connection %s:\n"
 				"%s\nDatabase reports error: %s",
-				C_STR(sql.dbDesc.name),
+				C_STR(sql.desc.name),
 				C_STR(query),
 				C_STR(sql.dbErrorString()));*/
 }
@@ -396,7 +392,7 @@ void SqlQuery::exec()
 	if(!priv->qQuery->exec())
 		throw DbError("The below sql query failed on connection %s:\n"
 				"%s\nDatabase reports error: %s",
-			C_STR(sql.dbDesc.name), C_STR(queryString()), C_STR(sql.dbErrorString()));*/
+			C_STR(sql.desc.name), C_STR(queryString()), C_STR(sql.dbErrorString()));*/
 }
 
 bool SqlQuery::next()

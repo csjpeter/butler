@@ -135,11 +135,11 @@ void EditDbDescView::mapToGui()
 	sqliteDriverOption.setChecked(false);
 	psqlDriverOption.setChecked(false);
 	mysqlDriverOption.setChecked(false);
-	if(dbdesc.driver == "SQLITE")
+	if(dbdesc.driver == "SQLite")
 		sqliteDriverOption.setChecked(true);
-	else if(dbdesc.driver == "PSQL")
+	else if(dbdesc.driver == "PSql")
 		psqlDriverOption.setChecked(true);
-	else if(dbdesc.driver == "MYSQL")
+	else if(dbdesc.driver == "MySQL")
 		mysqlDriverOption.setChecked(true);
 
 	updateToolButtonStates();
@@ -156,11 +156,11 @@ void EditDbDescView::mapFromGui()
 	dbdesc.port = portEditor.value();
 
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
-		dbdesc.driver = "SQLITE";
+		dbdesc.driver = SqlDriver::SQLite;
 	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
-		dbdesc.driver = "PSQL";
+		dbdesc.driver = SqlDriver::PSql;
 	else if(driverOptions.group.checkedButton() == &mysqlDriverOption)
-		dbdesc.driver = "MYSQL";
+		dbdesc.driver = SqlDriver::MySQL;
 }
 
 void EditDbDescView::changeEvent(QEvent * event)
@@ -294,13 +294,13 @@ void EditDbDescView::updateToolButtonStates()
 			);
 
 	if(!modified){
-		if(dbdesc.driver == "SQLITE" &&
+		if(dbdesc.driver == "SQLite" &&
 				driverOptions.group.checkedButton() != &sqliteDriverOption)
 			modified = true;
-		else if(dbdesc.driver == "PSQL" &&
+		else if(dbdesc.driver == "PSql" &&
 				driverOptions.group.checkedButton() != &psqlDriverOption)
 			modified = true;
-		else if(dbdesc.driver == "MYSQL" &&
+		else if(dbdesc.driver == "MySQL" &&
 				driverOptions.group.checkedButton() != &mysqlDriverOption)
 			modified = true;
 	}

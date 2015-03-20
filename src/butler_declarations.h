@@ -10,7 +10,7 @@
 	Class DatabaseDescriptor
 	Fields {
 		csjp::String name;	key		// will be the connection name
-		csjp::String driver;		// for example SQLITE or PSQL
+		SqlDriver driver;			// for example SQLite or PSql
 		csjp::String databaseName;	// file name in case of sqlite
 		csjp::String username;
 		csjp::String password;

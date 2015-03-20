@@ -43,6 +43,7 @@ function config ()
 		--relative-path \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=usr \
+		--cflags=\\\"-fno-candidate-functions\\\" \
 		--libs=\\\"-lpq\\\" \
 		--appsdir=usr/share/applications \
 		--fpic \
