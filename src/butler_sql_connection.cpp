@@ -206,6 +206,8 @@ SqlColumns SqlConnection::columns(const QString &tablename) const
 
 const SqlTableNames & SqlConnection::tables() const
 {
+	/*("SELECT table_name FROM information_schema.tables "
+		"WHERE table_schema = 'public' ORDER BY table_name;");*/
 /*	if(!priv->tables.size()){
 		QStringList list(priv->db.tables());
 		for(int i = 0; i < list.size(); i++)
