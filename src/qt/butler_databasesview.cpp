@@ -242,7 +242,9 @@ void DatabasesView::useDbDesc()
 		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
 		activeDbChanged();
 	} catch (DbConnectError & e) {
-		QString info = e.what();
+		QString info;
+		for(const auto & str : e)
+			info += QString::fromUtf8(str) + "\n";
 		QMessageBox(QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();
 	}

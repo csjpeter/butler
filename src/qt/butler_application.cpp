@@ -212,7 +212,8 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		return res;
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);
-		info = QString::fromUtf8(e.what());
+		for(const auto & str : e)
+			info += "\n" + QString::fromUtf8(str);
 	} catch(std::exception& e) {
 		info = QString::fromUtf8(e.what());
 	}

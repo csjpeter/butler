@@ -1,10 +1,14 @@
 /** 
  * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
+ * Copyright (C) 2015 Csaszar, Peter
  */
 
 #ifndef BUTLER_SQL_CONNECTION_H
 #define BUTLER_SQL_CONNECTION_H
+
+#include <postgresql/libpq-fe.h>
+#include <sqlite3.h>
+//#include <sqlite3ext.h>
 
 #include <csjp_string.h>
 #include <csjp_pod_array.h>
@@ -19,12 +23,10 @@
 #include <QVariant>
 
 @declare@ DatabaseDescriptor
-
 class DatabaseDescriptor
 {
 	@include@ dataclass_members.h
 };
-
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
 
@@ -51,7 +53,26 @@ DECL_EXCEPTION(DbError, DbConnectError);
  * - escaping required while assempling item queries
  */
 
-class SqlConnectionPrivate;
+class SqlResult
+{
+public:
+	~SqlResult();
+	SqlResult(PGresult * res) : driver(SqlDriver::PSql) { this->res.pg = res; }
+	SqlResult(sqlite3_stmt * res) : driver(SqlDriver::SQLite) { this->res.lite = res; }
+
+	int numOfRows() { return PQntuples(res.pg); }
+	int numOfCols() { return PQnfields(res.pg); }
+	char * getValue(int row, int col) { return PQgetvalue(res.pg, row, col); }
+private:
+	SqlResult() = delete;
+private:
+	SqlDriver driver;
+	union {
+		PGresult * pg;
+		sqlite3_stmt *lite;
+		void * mysql;
+	} res;
+};
 
 typedef csjp::OwnerContainer<csjp::String> SqlColumns;
 typedef csjp::OwnerContainer<csjp::String> SqlTableNames;
@@ -69,20 +90,27 @@ public:
 	void open();
 	void close();
 
-	void exec(const char * query);
-	void exec(const csjp::String & query) { exec(query.str); }
+	SqlResult exec(const char * query, csjp::unint len);
+	SqlResult exec(const char * q) { ENSURE(q, csjp::InvalidArgument); return exec(q, strlen(q)); }
+	SqlResult exec(const csjp::String & query) { return exec(query.str, query.length); }
 	SqlColumns columns(const QString & tablename) const;
 	const SqlTableNames & tables() const;
 	//QString dbErrorString();
 
 private:
-	DatabaseDescriptor dbDesc;
-	friend class SqlQuery;
 	friend class SqlTransaction;
-	SqlConnectionPrivate * priv;
+	unsigned transactions;
+	DatabaseDescriptor dbDesc;
+	//friend class SqlQuery;
+	mutable SqlTableNames tableNames;
 
 public:
 	const DatabaseDescriptor & desc;
+	union {
+		PGconn * pg;
+		sqlite3 * lite;
+		void * mysql;
+	} conn;
 };
 
 class SqlTransaction
@@ -95,8 +123,6 @@ private:
 	SqlConnection & sql;
 	bool committed;
 };
-
-class SqlQueryPrivate;
 
 class SqlVariant
 {
@@ -142,7 +168,7 @@ private:
 
 private:
 	SqlConnection & sql;
-	SqlQueryPrivate * priv;
+	bool prepared;
 };
 
 inline Text & operator<<= (Text & qstr, const SqlVariant & v)

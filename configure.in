@@ -107,9 +107,6 @@ function process_args ()
 			(--perfmode)
 				DEFINES="${DEFINES} -DPERFMODE"
 			;;
-			(--stlcompatible)
-				DEFINES="${DEFINES} -DSTLCOMPATIBLE"
-			;;
 			(--libs)
 				LIBS="${LIBS} ${VALUE}"
 			;;

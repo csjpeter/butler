@@ -211,10 +211,8 @@ void loadDatabaseConfigs()
 {
 	descriptorSet.clear();
 	csjp::Json & tree = config["database-connections"];
-	unsigned s = tree.properties.size();
-	for(unsigned i = 0; i < s; i++){
+	for(auto & dbt : tree.properties){
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
-		csjp::Json & dbt = tree.properties.queryAt(i);
 		desc->name = dbt.key;
 		if(dbt["driver"] == "PSql")
 			desc->driver = SqlDriver::PSql;
@@ -260,9 +258,7 @@ void loadDatabaseConfigs()
 void saveDatabaseConfigs()
 {
 	csjp::Json tree("database-connections");
-	unsigned s = descriptorSet.size();
-	for(unsigned i = 0; i < s; i++){
-		const DatabaseDescriptor & desc = descriptorSet.queryAt(i);
+	for(const auto & desc : descriptorSet){
 		auto & db = tree[desc.name];
 		switch(desc.driver){
 			case SqlDriver::PSql: db["driver"] = "PSql"; break;
