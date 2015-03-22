@@ -62,7 +62,7 @@ public:
 		iterator(SqlResult & res, bool valid = true): res(res), valid(valid) {}
 		iterator operator++() { iterator i(res, valid); valid = res.nextRow(); return i; }
 		bool operator!=(const iterator & other) { return valid != other.valid; }
-		const SqlResult & operator*() const { return res; }
+		SqlResult & operator*() const { return res; }
 		//SqlResult & operator*() { return res; }
 	private:
 		SqlResult & res;
@@ -77,7 +77,7 @@ public:
 
 	//int numOfRows() const { return PQntuples(res.pg); }
 	//int numOfCols() const;
-	char * value(int col) const;
+	char * value(int col);
 	bool nextRow();
 private:
 	SqlResult() = delete;

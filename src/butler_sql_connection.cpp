@@ -24,7 +24,7 @@ int SqlResult::numOfCols() const
 	}
 }
 */
-char * SqlResult::value(int col) const
+char * SqlResult::value(int col)
 {
 	switch(driver){
 		case SqlDriver::PSql :
@@ -320,10 +320,13 @@ SqlColumns SqlConnection::columns(const QString &tablename)
 const SqlTableNames & SqlConnection::tables()
 {
 	if(!tableNames.size()){
-		SqlResult result = exec(	"SELECT table_name FROM information_schema.tables "
-				"WHERE table_schema = 'public' ORDER BY table_name;");
-/*		for(const auto & row : result)
-			tableNames.add(new csjp::String(row.value()));*/
+		SqlResult result = exec("SELECT table_name FROM information_schema.tables "
+								"WHERE table_schema = 'public' ORDER BY table_name;");
+		LOG("Tables:");
+		for(auto & row : result){
+			tableNames.add(new csjp::String(row.value(0)));
+			LOG(" - %s", row.value(0));
+		}
 	}
 	return tableNames;
 }
