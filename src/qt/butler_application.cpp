@@ -217,6 +217,10 @@ bool Application::notify(QObject * receiver, QEvent * event)
 	} catch(std::exception& e) {
 		info = QString::fromUtf8(e.what());
 	}
+	if(1024 < info.size()){
+		info.resize(1024);
+		info.append(" ...");
+	}
 
 	QMessageBox(	QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();

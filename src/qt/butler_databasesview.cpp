@@ -245,6 +245,10 @@ void DatabasesView::useDbDesc()
 		QString info;
 		for(const auto & str : e)
 			info += QString::fromUtf8(str) + "\n";
+		if(1024 < info.size()){
+			info.resize(1024);
+			info.append(" ...");
+		}
 		QMessageBox(QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();
 	}

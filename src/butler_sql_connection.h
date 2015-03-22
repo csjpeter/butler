@@ -107,12 +107,12 @@ public:
 	void open();
 	void close();
 
-	SqlResult exec(const char * query, csjp::unint len);
-	SqlResult exec(const char * q) {ENSURE(q,csjp::InvalidArgument);return exec(q,strlen(q));}
-	SqlResult exec(const csjp::String & query) { return exec(query.str, query.length); }
-	SqlColumns columns(const QString & tablename);
+	SqlResult execl(const char * query, csjp::unint len);
+	SqlResult exec(const char * q) {ENSURE(q,csjp::InvalidArgument);return execl(q,strlen(q));}
+	SqlResult exec(const csjp::String & query) { return execl(query.str, query.length); }
+	SqlColumns columns(const char * tablename);
+	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.str); }
 	const SqlTableNames & tables();
-	//QString dbErrorString();
 
 private:
 	friend class SqlTransaction;
@@ -128,6 +128,53 @@ public:
 		sqlite3 * lite;
 		void * mysql;
 	} conn;
+#if 0
+	template<typename Arg> void bind(const Arg & arg)
+	{
+	}
+	template<typename Arg, typename... Args> void bind(const Arg & arg, const Args & ... args)
+	{
+		bind(args...);
+	}
+	template<typename... Args> void exec(const csjp::StringChunk & query, const Args & ... args)
+	{
+		//*this << query; exec(args...);
+		if(!isOpen()) open();
+		switch(desc.driver){
+			case SqlDriver::PSql :
+				{
+					int nParams = 0;
+					const char * const *paramValues = 0;
+					PGresult * res = PQexecParams(
+								conn.pg, query, nParams, 0, paramValues, 0, 0, 0/*text result*/);
+					/*if(!res)
+					  throw DbError("Fatal, the sql query result is null. Error message:\n%s",
+					  PQerrorMessage(conn.pg));*/
+					const char * errMsg = PQerrorMessage(conn.pg);
+					int status = PQresultStatus(res);
+					if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
+						PQclear(res);
+						throw DbError("Failed SQL command:\n%s\n\n"
+								"Status:%d\nError message:\n%s", query, status, errMsg);
+					}
+					try {
+						return SqlResult(res);
+					} catch (std::exception & e) {
+						PQclear(res);
+						throw;
+					}
+				}
+				break;
+			case SqlDriver::SQLite :
+				throw csjp::NotImplemented();
+				break;
+			case SqlDriver::MySQL :
+				throw csjp::NotImplemented();
+				break;
+		}
+		Throw(csjp::ShouldNeverReached);
+	}
+#endif
 };
 
 class SqlTransaction

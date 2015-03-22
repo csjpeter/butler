@@ -203,20 +203,26 @@ void SqlConnection::close()
 	ENSURE(!isOpen(), csjp::LogicError);
 }
 
-SqlResult SqlConnection::exec(const char * query, csjp::unint len)
+SqlResult SqlConnection::execl(const char * query, csjp::unint len)
 {
 	if(!isOpen()) open();
 	switch(desc.driver){
 		case SqlDriver::PSql :
 			{
-				PGresult * res = PQexec(conn.pg, query);
+				//PGresult * res = PQexec(conn.pg, query);
+				int nParams = 0;
+				const char * const *paramValues = 0;
+				PGresult * res = PQexecParams(
+							conn.pg, query, nParams, 0, paramValues, 0, 0, 0/*text result*/);
 				/*if(!res)
 					throw DbError("Fatal, the sql query result is null. Error message:\n%s",
 							PQerrorMessage(conn.pg));*/
-				if(PQresultStatus(res) != PGRES_COMMAND_OK) {
+				const char * errMsg = PQerrorMessage(conn.pg);
+				int status = PQresultStatus(res);
+				if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
 					PQclear(res);
-					throw DbError("Failed SQL command:\n%s\n\nError message:\n%s",
-							query, PQerrorMessage(conn.pg));
+					throw DbError("Failed SQL command:\n%s\n\n"
+							"Status:%d\nError message:\n%s", query, status, errMsg);
 				}
 				try {
 					return SqlResult(res);
@@ -262,58 +268,18 @@ SqlResult SqlConnection::exec(const char * query, csjp::unint len)
 	Throw(csjp::ShouldNeverReached);
 }
 
-#if 0
-template<typename... Args>
-SqlResult SqlConnection::exec(const char * query, const Args & ... args)
-{
-	if(!isOpen()) open();
-	switch(desc.driver){
-		case SqlDriver::PSql :
-			{
-				/*PGresult *PQexecParams(PGconn *conn,
-						const char *command,
-						int nParams,
-						const Oid *paramTypes,
-						const char * const *paramValues,
-						const int *paramLengths,
-						const int *paramFormats,
-						int resultFormat);*/
-				PGresult * res = PQexec(conn.pg, query);
-				/*if(!res)
-					throw DbError("Fatal, the sql query result is null. Error message:\n%s",
-							PQerrorMessage(conn.pg));*/
-				if(PQresultStatus(res) != PGRES_COMMAND_OK) {
-					PQclear(res);
-					throw DbError("Failed SQL command:\n%s\n\nError message:\n%s",
-							query, PQerrorMessage(conn.pg));
-				}
-				try {
-					return SqlResult(res);
-				} catch (std::exception & e) {
-					PQclear(res);
-					throw;
-				}
-			}
-			break;
-		case SqlDriver::SQLite :
-			throw csjp::NotImplemented();
-			break;
-		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
-			break;
-	}
-	Throw(csjp::ShouldNeverReached);
-}
-#endif
-
-SqlColumns SqlConnection::columns(const QString &tablename)
+SqlColumns SqlConnection::columns(const char * tablename)
 {
 	(void)tablename;
+/*	SqlResult result = exec("SELECT column_name "
+			"FROM information_schema.columns "
+			"WHERE table_schema='public' AND table_name='$1';", tablename);*/
 	SqlColumns cols;
-	/*QSqlRecord rec = db.record(tablename);
-	int c = rec.count();
-	for(int i = 0; i < c; i++)
-		cols.add(new csjp::String(C_STR(rec.field(i).name())));*/
+/*	LOG("Columns for table %s:", tablename);
+	for(auto & row : result){
+		cols.add(new csjp::String(row.value(0)));
+		LOG(" - %s", row.value(0));
+	}*/
 	return cols;
 }
 
@@ -330,20 +296,6 @@ const SqlTableNames & SqlConnection::tables()
 	}
 	return tableNames;
 }
-/*
-QString SqlConnection::dbErrorString()
-{
-	QString str;
-	switch(desc.driver){
-		case SqlDriver::PSql :
-			str = PQerrorMessage(conn.pg);
-			break;
-		default:
-			str = db.lastError().text();
-	}
-	return str;
-}
-*/
 
 SqlTransaction::SqlTransaction(SqlConnection & sql) :
 	sql(sql),
