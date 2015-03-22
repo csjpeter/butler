@@ -11,6 +11,52 @@
 #include <QStringList>
 
 #include "butler_sql_connection.h"
+/*
+int SqlResult::numOfCols() const
+{
+	switch(driver){
+		case SqlDriver::PSql :
+			return PQnfields(res.pg);
+		case SqlDriver::SQLite :
+			break;
+		case SqlDriver::MySQL :
+			break;
+	}
+}
+*/
+char * SqlResult::value(int col) const
+{
+	switch(driver){
+		case SqlDriver::PSql :
+			return PQgetvalue(res.pg, row, col);
+		case SqlDriver::SQLite :
+			break;
+		case SqlDriver::MySQL :
+			break;
+	}
+}
+
+bool SqlResult::nextRow()
+{
+	switch(driver){
+		case SqlDriver::PSql :
+			{
+				int rows = PQntuples(res.pg);
+				if(rows <= row)
+					return false;
+				row++;
+				if(rows <= row)
+					return false;
+				return true;
+			}
+		case SqlDriver::SQLite :
+			sqlite3_step(res.lite);
+			row++;
+			break;
+		case SqlDriver::MySQL :
+			break;
+	}
+}
 
 SqlResult::~SqlResult()
 {
@@ -271,13 +317,12 @@ SqlColumns SqlConnection::columns(const QString &tablename) const
 
 const SqlTableNames & SqlConnection::tables() const
 {
-	/*("SELECT table_name FROM information_schema.tables "
-		"WHERE table_schema = 'public' ORDER BY table_name;");*/
-/*	if(!tables.size()){
-		QStringList list(db.tables());
-		for(int i = 0; i < list.size(); i++)
-			tables.add(new csjp::String(C_STR(list[i])));
-	}*/
+	if(!tableNames.size()){
+		SqlResult result = exec(	"SELECT table_name FROM information_schema.tables "
+				"WHERE table_schema = 'public' ORDER BY table_name;");
+		for(const auto & row : result)
+			tableNames.add(new csjp::String(row.value()));
+	}
 	return tableNames;
 }
 /*

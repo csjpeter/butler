@@ -56,13 +56,29 @@ DECL_EXCEPTION(DbError, DbConnectError);
 class SqlResult
 {
 public:
+	class iterator
+	{
+		public:
+			iterator(SqlResult & res, bool valid = true): res(res), valid(valid) {}
+			iterator operator++() { iterator i(res, valid); valid = res.nextRow(); return i; }
+			bool operator!=(const iterator & other) { return valid != other.valid; }
+			const SqlResult & operator*() const { return res; }
+			//SqlResult & operator*() { return res; }
+		private:
+			SqlResult & res;
+			bool valid;
+	};
+	iterator begin() const { return iterator(res); }
+	iterator end() const { return iterator(res, false); }
+public:
 	~SqlResult();
-	SqlResult(PGresult * res) : driver(SqlDriver::PSql) { this->res.pg = res; }
-	SqlResult(sqlite3_stmt * res) : driver(SqlDriver::SQLite) { this->res.lite = res; }
+	SqlResult(PGresult * res) : driver(SqlDriver::PSql), row(0) { this->res.pg = res; }
+	SqlResult(sqlite3_stmt * res) : driver(SqlDriver::SQLite), row(0) { this->res.lite = res; }
 
-	int numOfRows() { return PQntuples(res.pg); }
-	int numOfCols() { return PQnfields(res.pg); }
-	char * getValue(int row, int col) { return PQgetvalue(res.pg, row, col); }
+	//int numOfRows() const { return PQntuples(res.pg); }
+	//int numOfCols() const;
+	char * value(int col) const;
+	bool nextRow();
 private:
 	SqlResult() = delete;
 private:
@@ -72,6 +88,7 @@ private:
 		sqlite3_stmt *lite;
 		void * mysql;
 	} res;
+	csjp::unint row;
 };
 
 typedef csjp::OwnerContainer<csjp::String> SqlColumns;
