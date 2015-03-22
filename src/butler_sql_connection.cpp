@@ -203,17 +203,13 @@ void SqlConnection::close()
 	ENSURE(!isOpen(), csjp::LogicError);
 }
 
-SqlResult SqlConnection::execl(const char * query, csjp::unint len)
+SqlResult SqlConnection::exec(const char * query)
 {
 	if(!isOpen()) open();
 	switch(desc.driver){
 		case SqlDriver::PSql :
 			{
-				//PGresult * res = PQexec(conn.pg, query);
-				int nParams = 0;
-				const char * const *paramValues = 0;
-				PGresult * res = PQexecParams(
-							conn.pg, query, nParams, 0, paramValues, 0, 0, 0/*text result*/);
+				PGresult * res = PQexec(conn.pg, query);
 				/*if(!res)
 					throw DbError("Fatal, the sql query result is null. Error message:\n%s",
 							PQerrorMessage(conn.pg));*/
@@ -237,7 +233,7 @@ SqlResult SqlConnection::execl(const char * query, csjp::unint len)
 				char * errmsg = 0;
 				//int res = sqlite3_exec(conn.lite, query, 0, 0, &errmsg);
 				sqlite3_stmt *ppStmt = 0;
-				int res = sqlite3_prepare_v2(conn.lite, query, len, &ppStmt, 0);
+				int res = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
 				if(res != SQLITE_OK || errmsg != 0){
 					DbError e("Failed to prepare sqlite query:\n%s\n\nError:\n%s",
 							query, errmsg);
@@ -270,28 +266,52 @@ SqlResult SqlConnection::execl(const char * query, csjp::unint len)
 
 SqlColumns SqlConnection::columns(const char * tablename)
 {
-	(void)tablename;
-/*	SqlResult result = exec("SELECT column_name "
-			"FROM information_schema.columns "
-			"WHERE table_schema='public' AND table_name='$1';", tablename);*/
 	SqlColumns cols;
-/*	LOG("Columns for table %s:", tablename);
-	for(auto & row : result){
-		cols.add(new csjp::String(row.value(0)));
-		LOG(" - %s", row.value(0));
-	}*/
+	switch(desc.driver){
+		case SqlDriver::PSql :
+			{
+				(void)tablename;
+				SqlResult result = exec("SELECT column_name "
+						"FROM information_schema.columns "
+						"WHERE table_schema='public' AND table_name=$1;", tablename);
+				LOG("Columns for table %s:", tablename);
+				for(auto & row : result){
+					cols.add(new csjp::String(row.value(0)));
+					LOG(" - %s", row.value(0));
+				}
+			}
+			break;
+		case SqlDriver::SQLite :
+			throw csjp::NotImplemented();
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented();
+			break;
+	}
 	return cols;
 }
 
 const SqlTableNames & SqlConnection::tables()
 {
 	if(!tableNames.size()){
-		SqlResult result = exec("SELECT table_name FROM information_schema.tables "
-								"WHERE table_schema = 'public' ORDER BY table_name;");
-		LOG("Tables:");
-		for(auto & row : result){
-			tableNames.add(new csjp::String(row.value(0)));
-			LOG(" - %s", row.value(0));
+		switch(desc.driver){
+			case SqlDriver::PSql :
+				{
+					SqlResult result = exec("SELECT table_name FROM information_schema.tables "
+							"WHERE table_schema = 'public' ORDER BY table_name;");
+					LOG("Tables:");
+					for(auto & row : result){
+						tableNames.add(new csjp::String(row.value(0)));
+						LOG(" - %s", row.value(0));
+					}
+				}
+				break;
+			case SqlDriver::SQLite :
+				throw csjp::NotImplemented();
+				break;
+			case SqlDriver::MySQL :
+				throw csjp::NotImplemented();
+				break;
 		}
 	}
 	return tableNames;

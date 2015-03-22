@@ -107,9 +107,8 @@ public:
 	void open();
 	void close();
 
-	SqlResult execl(const char * query, csjp::unint len);
-	SqlResult exec(const char * q) {ENSURE(q,csjp::InvalidArgument);return execl(q,strlen(q));}
-	SqlResult exec(const csjp::String & query) { return execl(query.str, query.length); }
+	SqlResult exec(const char * query);
+	SqlResult exec(const csjp::String & query) { return exec(query.str); }
 	SqlColumns columns(const char * tablename);
 	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.str); }
 	const SqlTableNames & tables();
@@ -128,25 +127,41 @@ public:
 		sqlite3 * lite;
 		void * mysql;
 	} conn;
-#if 0
-	template<typename Arg> void bind(const Arg & arg)
+
+	template<typename Arg> void bind(csjp::Array<csjp::String> & params, const Arg & arg)
 	{
+		csjp::String str;
+		str << arg;
+		if(params.capacity == params.length)
+			params.setCapacity(params.length + 1);
+		params.add(move_cast(str));
 	}
-	template<typename Arg, typename... Args> void bind(const Arg & arg, const Args & ... args)
+	template<typename Arg, typename... Args>
+		void bind(csjp::Array<csjp::String> & params, const Arg & arg, const Args & ... args)
 	{
-		bind(args...);
+		csjp::String str;
+		str << arg;
+		if(params.capacity == params.length)
+			params.setCapacity(params.length * 2);
+		params.add(move_cast(str));
+		bind(params, args...);
 	}
-	template<typename... Args> void exec(const csjp::StringChunk & query, const Args & ... args)
+	template<typename... Args> SqlResult exec(const char * query, const Args & ... args)
 	{
-		//*this << query; exec(args...);
+		csjp::Array<csjp::String> paramArray(16);
+		bind(paramArray, args...);
 		if(!isOpen()) open();
 		switch(desc.driver){
 			case SqlDriver::PSql :
 				{
-					int nParams = 0;
-					const char * const *paramValues = 0;
+					csjp::PodArray<const char *> paramValues;
+					//LOG("Query: %s", query);
+					for(const auto & p : paramArray){
+						paramValues.add(p.str);
+						//LOG("Param: %s", p.str);
+					}
 					PGresult * res = PQexecParams(
-								conn.pg, query, nParams, 0, paramValues, 0, 0, 0/*text result*/);
+								conn.pg, query, paramValues.length, 0, paramValues.data, 0, 0, 0);
 					/*if(!res)
 					  throw DbError("Fatal, the sql query result is null. Error message:\n%s",
 					  PQerrorMessage(conn.pg));*/
@@ -166,7 +181,46 @@ public:
 				}
 				break;
 			case SqlDriver::SQLite :
-				throw csjp::NotImplemented();
+				{
+					char * errmsg = 0;
+					//int res = sqlite3_exec(conn.lite, query, 0, 0, &errmsg);
+					sqlite3_stmt *ppStmt = 0;
+					int res = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
+					if(res != SQLITE_OK || errmsg != 0){
+						DbError e("Failed to prepare sqlite query:\n%s\n\nError:\n%s",
+								query, errmsg);
+						sqlite3_free(errmsg);
+						sqlite3_finalize(ppStmt);
+						throw e;
+					}
+					LOG("Query: %s", query);
+					int i = 0;
+					for(const auto & p : paramArray){
+						LOG("Param: %s", p.str);
+						res = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
+						if(res != SQLITE_OK || errmsg != 0){
+							DbError e("Failed to bind parameter '%s' to sqlite query:\n%s"
+									"\n\nError:\n%s", p.str, query, errmsg);
+							sqlite3_free(errmsg);
+							sqlite3_finalize(ppStmt);
+							throw e;
+						}
+					}
+					res = sqlite3_step(ppStmt);
+					if(res != SQLITE_OK || errmsg != 0){
+						DbError e("Failed to execute sqlite query:\n%s\n\nError:\n%s",
+								query, errmsg);
+						sqlite3_free(errmsg);
+						sqlite3_finalize(ppStmt);
+						throw e;
+					}
+					try {
+						return SqlResult(ppStmt);
+					} catch (std::exception & e) {
+						sqlite3_finalize(ppStmt);
+						throw;
+					}
+				}
 				break;
 			case SqlDriver::MySQL :
 				throw csjp::NotImplemented();
@@ -174,7 +228,7 @@ public:
 		}
 		Throw(csjp::ShouldNeverReached);
 	}
-#endif
+
 };
 
 class SqlTransaction

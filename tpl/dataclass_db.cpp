@@ -7,7 +7,7 @@ void @Type@::tableInit(SqlConnection & sql)
 	//	LOG("table %s", t.str);
 
 	if(tables.has("@type@")){
-		cols = sql.columns("@Type@");
+		cols = sql.columns("@type@");
 		//LOG("Table @Type@");
 		//for(auto & c : cols)
 		//	LOG("column %s", c.str);
