@@ -58,18 +58,18 @@ class SqlResult
 public:
 	class iterator
 	{
-		public:
-			iterator(SqlResult & res, bool valid = true): res(res), valid(valid) {}
-			iterator operator++() { iterator i(res, valid); valid = res.nextRow(); return i; }
-			bool operator!=(const iterator & other) { return valid != other.valid; }
-			const SqlResult & operator*() const { return res; }
-			//SqlResult & operator*() { return res; }
-		private:
-			SqlResult & res;
-			bool valid;
+	public:
+		iterator(SqlResult & res, bool valid = true): res(res), valid(valid) {}
+		iterator operator++() { iterator i(res, valid); valid = res.nextRow(); return i; }
+		bool operator!=(const iterator & other) { return valid != other.valid; }
+		const SqlResult & operator*() const { return res; }
+		//SqlResult & operator*() { return res; }
+	private:
+		SqlResult & res;
+		bool valid;
 	};
-	iterator begin() const { return iterator(res); }
-	iterator end() const { return iterator(res, false); }
+	iterator begin() { return iterator(*this); }
+	iterator end() { return iterator(*this, false); }
 public:
 	~SqlResult();
 	SqlResult(PGresult * res) : driver(SqlDriver::PSql), row(0) { this->res.pg = res; }
@@ -88,7 +88,7 @@ private:
 		sqlite3_stmt *lite;
 		void * mysql;
 	} res;
-	csjp::unint row;
+	int row;
 };
 
 typedef csjp::OwnerContainer<csjp::String> SqlColumns;
@@ -108,10 +108,10 @@ public:
 	void close();
 
 	SqlResult exec(const char * query, csjp::unint len);
-	SqlResult exec(const char * q) { ENSURE(q, csjp::InvalidArgument); return exec(q, strlen(q)); }
+	SqlResult exec(const char * q) {ENSURE(q,csjp::InvalidArgument);return exec(q,strlen(q));}
 	SqlResult exec(const csjp::String & query) { return exec(query.str, query.length); }
-	SqlColumns columns(const QString & tablename) const;
-	const SqlTableNames & tables() const;
+	SqlColumns columns(const QString & tablename);
+	const SqlTableNames & tables();
 	//QString dbErrorString();
 
 private:

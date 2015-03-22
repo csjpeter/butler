@@ -30,10 +30,11 @@ char * SqlResult::value(int col) const
 		case SqlDriver::PSql :
 			return PQgetvalue(res.pg, row, col);
 		case SqlDriver::SQLite :
-			break;
+			return 0;
 		case SqlDriver::MySQL :
-			break;
+			return 0;
 	}
+	Throw(csjp::ShouldNeverReached);
 }
 
 bool SqlResult::nextRow()
@@ -52,10 +53,11 @@ bool SqlResult::nextRow()
 		case SqlDriver::SQLite :
 			sqlite3_step(res.lite);
 			row++;
-			break;
+			return false;
 		case SqlDriver::MySQL :
-			break;
+			return false;
 	}
+	Throw(csjp::ShouldNeverReached);
 }
 
 SqlResult::~SqlResult()
@@ -304,7 +306,7 @@ SqlResult SqlConnection::exec(const char * query, const Args & ... args)
 }
 #endif
 
-SqlColumns SqlConnection::columns(const QString &tablename) const
+SqlColumns SqlConnection::columns(const QString &tablename)
 {
 	(void)tablename;
 	SqlColumns cols;
@@ -315,13 +317,13 @@ SqlColumns SqlConnection::columns(const QString &tablename) const
 	return cols;
 }
 
-const SqlTableNames & SqlConnection::tables() const
+const SqlTableNames & SqlConnection::tables()
 {
 	if(!tableNames.size()){
 		SqlResult result = exec(	"SELECT table_name FROM information_schema.tables "
 				"WHERE table_schema = 'public' ORDER BY table_name;");
-		for(const auto & row : result)
-			tableNames.add(new csjp::String(row.value()));
+/*		for(const auto & row : result)
+			tableNames.add(new csjp::String(row.value()));*/
 	}
 	return tableNames;
 }
