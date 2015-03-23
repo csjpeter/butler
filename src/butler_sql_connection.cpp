@@ -11,30 +11,18 @@
 #include <QStringList>
 
 #include "butler_sql_connection.h"
-/*
-int SqlResult::numOfCols() const
-{
-	switch(driver){
-		case SqlDriver::PSql :
-			return PQnfields(res.pg);
-		case SqlDriver::SQLite :
-			break;
-		case SqlDriver::MySQL :
-			break;
-	}
-}
-*/
-char * SqlResult::value(int col)
+
+const char * SqlResult::value(int col)
 {
 	switch(driver){
 		case SqlDriver::PSql :
 			return PQgetvalue(res.pg, row, col);
 		case SqlDriver::SQLite :
-			return 0;
+			return (const char*)sqlite3_column_text(res.lite, col);
 		case SqlDriver::MySQL :
 			return 0;
 	}
-	Throw(csjp::ShouldNeverReached);
+	throw csjp::ShouldNeverReached(EXCLI);
 }
 
 bool SqlResult::nextRow()
@@ -51,13 +39,18 @@ bool SqlResult::nextRow()
 				return true;
 			}
 		case SqlDriver::SQLite :
-			sqlite3_step(res.lite);
-			row++;
-			return false;
+			{
+				int err = sqlite3_step(res.lite);
+				if(err == SQLITE_ROW){
+					row++;
+					return true;
+				}
+				return false;
+			}
 		case SqlDriver::MySQL :
 			return false;
 	}
-	Throw(csjp::ShouldNeverReached);
+	throw csjp::ShouldNeverReached(EXCLI);
 }
 
 SqlResult::~SqlResult()
@@ -129,7 +122,7 @@ bool SqlConnection::isOpen()
 			return conn.lite != 0;
 			break;
 		case SqlDriver::MySQL :
-			Throw(csjp::NotImplemented);
+			throw csjp::NotImplemented(EXCLI);
 			break;
 	}
 	return false;
@@ -140,41 +133,33 @@ void SqlConnection::open()
 	switch(desc.driver){
 		case SqlDriver::PSql :
 			{
-				csjp::String str, connStr;
-/*				str.cat("host='",desc.host, "' port='", desc.port, "'",
-						" dbname='", desc.databaseName, "'",
-						" username='", desc.username, "'",
-						" sslmode='allow'");
-				connStr.cat(str, " password='", desc.password, "'");*/
-				str.cat("postgres://",desc.username,"@",
-						desc.host,":",desc.port,"/",desc.databaseName);
+				csjp::String connStr;
 				connStr.cat("postgres://",desc.username,":",desc.password,"@",
-						desc.host,":",desc.port,"/",desc.databaseName);
+							desc.host,":",desc.port,"/",desc.databaseName);
 				conn.pg = PQconnectdb(connStr.str);
 				if(PQstatus(conn.pg) != CONNECTION_OK){
 					PQfinish(conn.pg);
+					csjp::String str;
+					str.cat("postgres://",desc.username,"@",
+							desc.host,":",desc.port,"/",desc.databaseName);
 					throw DbError("Failed to connect to postgresql with connection string:\n"
-							"%s\n\nError:\n%s", str.str, PQerrorMessage(conn.pg));
+							"%s\nError:\n%s", str.str, PQerrorMessage(conn.pg));
 				}
 			}
 			break;
 		case SqlDriver::SQLite :
 			{
-				int res = sqlite3_open_v2(desc.databaseName.str, &(conn.lite), 0, 0);
+				int res = sqlite3_open_v2(desc.databaseName.str, &(conn.lite),
+						SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
 				if(res != SQLITE_OK || conn.lite == 0)
-					throw DbError("Failed to open sqlite database/file '%s'\n",
-							desc.databaseName.str);
-				/*q = db.exec("PRAGMA foreign_keys = ON");
-				q = db.exec("PRAGMA foreign_keys");
-        		if(q.value(0).toInt() != 1){
-					db.close();
-					throw DbError("Reference constraits could not turned "
-							"on or not supported at all.");
-				}*/
+					throw DbError("Failed to open sqlite database/file '%s'\nError:\n%s",
+							desc.databaseName.str, sqlite3_errstr(res));
+				exec("PRAGMA foreign_keys = ON");
+				//exec("PRAGMA foreign_keys"); // query the value
 			}
 			break;
 		case SqlDriver::MySQL :
-			Throw(csjp::NotImplemented);
+			throw csjp::NotImplemented(EXCLI);
 			break;
 	}
 	ENSURE(isOpen(), csjp::LogicError);
@@ -197,27 +182,34 @@ void SqlConnection::close()
 			}
 			break;
 		case SqlDriver::MySQL :
-			Throw(csjp::NotImplemented);
+			throw csjp::NotImplemented(EXCLI);
 			break;
 	}
 	ENSURE(!isOpen(), csjp::LogicError);
 }
 
-SqlResult SqlConnection::exec(const char * query)
+SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const char * query)
 {
 	if(!isOpen()) open();
 	switch(desc.driver){
 		case SqlDriver::PSql :
 			{
-				PGresult * res = PQexec(conn.pg, query);
+				csjp::PodArray<const char *> paramValues;
+				//LOG("Query: %s", query);
+				for(const auto & p : params){
+					paramValues.add(p.str);
+					//LOG("Param: %s", p.str);
+				}
+				PGresult * res = PQexecParams(
+							conn.pg, query, paramValues.length, 0, paramValues.data, 0, 0, 0);
 				/*if(!res)
-					throw DbError("Fatal, the sql query result is null. Error message:\n%s",
-							PQerrorMessage(conn.pg));*/
+				  throw DbError("Fatal, the sql query result is null. Error message:\n%s",
+				  PQerrorMessage(conn.pg));*/
 				const char * errMsg = PQerrorMessage(conn.pg);
 				int status = PQresultStatus(res);
 				if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
 					PQclear(res);
-					throw DbError("Failed SQL command:\n%s\n\n"
+					throw DbError("Failed SQL command:\n%s\n"
 							"Status:%d\nError message:\n%s", query, status, errMsg);
 				}
 				try {
@@ -230,22 +222,30 @@ SqlResult SqlConnection::exec(const char * query)
 			break;
 		case SqlDriver::SQLite :
 			{
-				char * errmsg = 0;
-				//int res = sqlite3_exec(conn.lite, query, 0, 0, &errmsg);
 				sqlite3_stmt *ppStmt = 0;
 				int res = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
-				if(res != SQLITE_OK || errmsg != 0){
-					DbError e("Failed to prepare sqlite query:\n%s\n\nError:\n%s",
-							query, errmsg);
-					sqlite3_free(errmsg);
+				if(res != SQLITE_OK){
+					DbError e("Failed to prepare sqlite query:\n%s\nError:\n%s",
+							query, sqlite3_errstr(res));
 					sqlite3_finalize(ppStmt);
 					throw e;
 				}
+				LOG("Query: %s", query);
+				int i = 0;
+				for(const auto & p : params){
+					LOG("Param: %s", p.str);
+					res = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
+					if(res != SQLITE_OK){
+						DbError e("Failed to bind parameter '%s' to sqlite query:\n%s"
+								"\nError:\n%s", p.str, query, sqlite3_errstr(res));
+						sqlite3_finalize(ppStmt);
+						throw e;
+					}
+				}
 				res = sqlite3_step(ppStmt);
-				if(res != SQLITE_OK || errmsg != 0){
-					DbError e("Failed to execute sqlite query:\n%s\n\nError:\n%s",
-							query, errmsg);
-					sqlite3_free(errmsg);
+				if(res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW){
+					DbError e("Failed to execute sqlite query:\n%s\nError: %d\n%s",
+							query, res, sqlite3_errstr(res));
 					sqlite3_finalize(ppStmt);
 					throw e;
 				}
@@ -258,37 +258,10 @@ SqlResult SqlConnection::exec(const char * query)
 			}
 			break;
 		case SqlDriver::MySQL :
-			Throw(csjp::NotImplemented);
+			throw csjp::NotImplemented(EXCLI);
 			break;
 	}
-	Throw(csjp::ShouldNeverReached);
-}
-
-SqlColumns SqlConnection::columns(const char * tablename)
-{
-	SqlColumns cols;
-	switch(desc.driver){
-		case SqlDriver::PSql :
-			{
-				(void)tablename;
-				SqlResult result = exec("SELECT column_name "
-						"FROM information_schema.columns "
-						"WHERE table_schema='public' AND table_name=$1;", tablename);
-				LOG("Columns for table %s:", tablename);
-				for(auto & row : result){
-					cols.add(new csjp::String(row.value(0)));
-					LOG(" - %s", row.value(0));
-				}
-			}
-			break;
-		case SqlDriver::SQLite :
-			Throw(csjp::NotImplemented);
-			break;
-		case SqlDriver::MySQL :
-			Throw(csjp::NotImplemented);
-			break;
-	}
-	return cols;
+	throw csjp::ShouldNeverReached(EXCLI);
 }
 
 const SqlTableNames & SqlConnection::tables()
@@ -307,14 +280,56 @@ const SqlTableNames & SqlConnection::tables()
 				}
 				break;
 			case SqlDriver::SQLite :
-				Throw(csjp::NotImplemented);
+				{
+					SqlResult result = exec("SELECT name FROM sqlite_master WHERE type='table'");
+					LOG("Tables:");
+					for(auto & row : result){
+						tableNames.add(new csjp::String(row.value(0)));
+						LOG(" - %s", row.value(0));
+					}
+				}
 				break;
 			case SqlDriver::MySQL :
-				Throw(csjp::NotImplemented);
+				throw csjp::NotImplemented(EXCLI);
 				break;
 		}
 	}
 	return tableNames;
+}
+
+SqlColumns SqlConnection::columns(const char * tablename)
+{
+	SqlColumns cols;
+	switch(desc.driver){
+		case SqlDriver::PSql :
+			{
+				SqlResult result = exec("SELECT column_name "
+						"FROM information_schema.columns "
+						"WHERE table_schema='public' AND table_name=$1;", tablename);
+				LOG("Columns for table %s:", tablename);
+				for(auto & row : result){
+					cols.add(new csjp::String(row.value(0)));
+					LOG(" - %s", row.value(0));
+				}
+			}
+			break;
+		case SqlDriver::SQLite :
+			{
+				csjp::String query;
+				query.cat("PRAGMA table_info('", tablename, "')");
+				SqlResult result = exec(query);
+				LOG("Columns for table %s:", tablename);
+				for(auto & row : result){
+					cols.add(new csjp::String(row.value(1)));
+					LOG(" - %s", row.value(1));
+				}
+			}
+			break;
+		case SqlDriver::MySQL :
+			throw csjp::NotImplemented(EXCLI);
+			break;
+	}
+	return cols;
 }
 
 SqlTransaction::SqlTransaction(SqlConnection & sql) :

@@ -62,8 +62,8 @@ public:
 		iterator(SqlResult & res, bool valid = true): res(res), valid(valid) {}
 		iterator operator++() { iterator i(res, valid); valid = res.nextRow(); return i; }
 		bool operator!=(const iterator & other) { return valid != other.valid; }
-		SqlResult & operator*() const { return res; }
-		//SqlResult & operator*() { return res; }
+		//const SqlResult & operator*() const { return res; }
+		SqlResult & operator*() { return res; }
 	private:
 		SqlResult & res;
 		bool valid;
@@ -75,9 +75,7 @@ public:
 	SqlResult(PGresult * res) : driver(SqlDriver::PSql), row(0) { this->res.pg = res; }
 	SqlResult(sqlite3_stmt * res) : driver(SqlDriver::SQLite), row(0) { this->res.lite = res; }
 
-	//int numOfRows() const { return PQntuples(res.pg); }
-	//int numOfCols() const;
-	char * value(int col);
+	const char * value(int col);
 	bool nextRow();
 private:
 	SqlResult() = delete;
@@ -106,12 +104,9 @@ public:
 	bool isOpen();
 	void open();
 	void close();
-
-	SqlResult exec(const char * query);
-	SqlResult exec(const csjp::String & query) { return exec(query.str); }
+	const SqlTableNames & tables();
 	SqlColumns columns(const char * tablename);
 	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.str); }
-	const SqlTableNames & tables();
 
 private:
 	friend class SqlTransaction;
@@ -146,87 +141,20 @@ public:
 		params.add(move_cast(str));
 		bind(params, args...);
 	}
+private:
+	SqlResult exec(const csjp::Array<csjp::String> & params, const char * query);
+public:
+	SqlResult exec(const char * query)
+	{
+		csjp::Array<csjp::String> params;
+		return exec(params, query);
+	}
+	SqlResult exec(const csjp::String & query) { return exec(query.str); }
 	template<typename... Args> SqlResult exec(const char * query, const Args & ... args)
 	{
-		csjp::Array<csjp::String> paramArray(16);
-		bind(paramArray, args...);
-		if(!isOpen()) open();
-		switch(desc.driver){
-			case SqlDriver::PSql :
-				{
-					csjp::PodArray<const char *> paramValues;
-					//LOG("Query: %s", query);
-					for(const auto & p : paramArray){
-						paramValues.add(p.str);
-						//LOG("Param: %s", p.str);
-					}
-					PGresult * res = PQexecParams(
-								conn.pg, query, paramValues.length, 0, paramValues.data, 0, 0, 0);
-					/*if(!res)
-					  throw DbError("Fatal, the sql query result is null. Error message:\n%s",
-					  PQerrorMessage(conn.pg));*/
-					const char * errMsg = PQerrorMessage(conn.pg);
-					int status = PQresultStatus(res);
-					if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
-						PQclear(res);
-						throw DbError("Failed SQL command:\n%s\n\n"
-								"Status:%d\nError message:\n%s", query, status, errMsg);
-					}
-					try {
-						return SqlResult(res);
-					} catch (std::exception & e) {
-						PQclear(res);
-						throw;
-					}
-				}
-				break;
-			case SqlDriver::SQLite :
-				{
-					char * errmsg = 0;
-					//int res = sqlite3_exec(conn.lite, query, 0, 0, &errmsg);
-					sqlite3_stmt *ppStmt = 0;
-					int res = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
-					if(res != SQLITE_OK || errmsg != 0){
-						DbError e("Failed to prepare sqlite query:\n%s\n\nError:\n%s",
-								query, errmsg);
-						sqlite3_free(errmsg);
-						sqlite3_finalize(ppStmt);
-						throw e;
-					}
-					LOG("Query: %s", query);
-					int i = 0;
-					for(const auto & p : paramArray){
-						LOG("Param: %s", p.str);
-						res = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
-						if(res != SQLITE_OK || errmsg != 0){
-							DbError e("Failed to bind parameter '%s' to sqlite query:\n%s"
-									"\n\nError:\n%s", p.str, query, errmsg);
-							sqlite3_free(errmsg);
-							sqlite3_finalize(ppStmt);
-							throw e;
-						}
-					}
-					res = sqlite3_step(ppStmt);
-					if(res != SQLITE_OK || errmsg != 0){
-						DbError e("Failed to execute sqlite query:\n%s\n\nError:\n%s",
-								query, errmsg);
-						sqlite3_free(errmsg);
-						sqlite3_finalize(ppStmt);
-						throw e;
-					}
-					try {
-						return SqlResult(ppStmt);
-					} catch (std::exception & e) {
-						sqlite3_finalize(ppStmt);
-						throw;
-					}
-				}
-				break;
-			case SqlDriver::MySQL :
-				Throw(csjp::NotImplemented);
-				break;
-		}
-		Throw(csjp::ShouldNeverReached);
+		csjp::Array<csjp::String> params(16);
+		bind(params, args...);
+		return exec(params, query);
 	}
 
 };

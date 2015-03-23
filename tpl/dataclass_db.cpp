@@ -18,15 +18,15 @@ void @Type@::tableInit(SqlConnection & sql)
 				!cols.has("@.name@"))
 @}@
 			throw DbIncompatibleTableError(
-				"Incompatible table @Type@ in the openend database.");
+				"Incompatible table @type@ in the openend database.");
 		return;
 	}
 
-	sql.exec("CREATE TABLE @Type@ ("
+	sql.exec("CREATE TABLE @type@ ("
 @For{TableField@
-		"@.Name@ @.SqlDecl@, "
+		"@.name@ @.SqlDecl@, "
 @-@
-		"@.Name@ @.SqlDecl@"
+		"@.name@ @.SqlDecl@"
 @}@
 @For{Constraint@
 		", @Constraint@"

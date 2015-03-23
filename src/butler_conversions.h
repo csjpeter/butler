@@ -30,8 +30,7 @@ inline QVariant & operator<<= (QVariant & lhs, const enum SqlDriver & rhs)
 			lhs = "MySQL";
 			break;
 		default:
-			throw csjp::InvalidArgument("SqlDriver enum: %d", (int)rhs);
-			//Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	}
 	return lhs;
 }
@@ -46,7 +45,7 @@ inline enum SqlDriver & operator<<= (enum SqlDriver & lhs, const QVariant & rhs)
 		else if(s == "MySQL")
 				lhs = SqlDriver::MySQL;
 		else
-			Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
@@ -64,7 +63,7 @@ inline QString & operator<<= (QString & qstr, const enum QueryStockOptions & rhs
 			qstr = "Looses";
 			break;
 		default:
-			Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	}
 	return qstr;
 }
@@ -79,7 +78,7 @@ inline enum QueryStockOptions & operator<<= (enum QueryStockOptions & lhs, const
 		else if(s == "Looses")
 				lhs = QueryStockOptions::Looses;
 		else
-			Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
@@ -94,7 +93,7 @@ inline QString & operator<<= (QString & qstr, const enum QueryTagOptions & rhs)
 			qstr = "MatchAny";
 			break;
 		default:
-			Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	}
 	return qstr;
 }
@@ -107,7 +106,7 @@ inline enum QueryTagOptions & operator<<= (enum QueryTagOptions & lhs, const QVa
 		else if(s == "MatchAny")
 				lhs = QueryTagOptions::MatchAny;
 		else
-			Throw(csjp::InvalidArgument);
+			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
