@@ -162,9 +162,9 @@ bool Application::notify(QObject * receiver, QEvent * event)
 					return true;//repeated alt press QT BUG return as if handled
 				else
 					altPressed = true;
-				DBG("Key press 0x%x for %s:%p",
+				/*DBG("Key press 0x%x for %s:%p",
 						keyEvent->key(),
-						receiver->metaObject()->className(), receiver);
+						receiver->metaObject()->className(), receiver);*/
 			}
 			break;
 		case QEvent::KeyRelease:
@@ -172,23 +172,23 @@ bool Application::notify(QObject * receiver, QEvent * event)
 				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 				if(keyEvent->key() == Qt::Key_Alt)
 					altPressed = false;
-				DBG("Key release 0x%x for %s:%p",
+				/*DBG("Key release 0x%x for %s:%p",
 						keyEvent->key(),
-						receiver->metaObject()->className(), receiver);
+						receiver->metaObject()->className(), receiver);*/
 			}
 			break;
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
 #ifdef DEBUG
-			{
+/*			{
 				QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 				QPoint pos = mouseEvent->globalPos();
 				DBG("Mouse event at %d, %d for %s:%p",
 						pos.x(), pos.y(),
 						receiver->metaObject()->className(), receiver);
-			}
-			break;
+			}*/
 #endif
+			break;
 		case QEvent::MouseMove:
 			{
 				QObject * o = receiver;
@@ -208,7 +208,7 @@ bool Application::notify(QObject * receiver, QEvent * event)
 				event->type(), event,
 				receiver->metaObject()->className(), receiver);*/
 		bool res = QApplication::notify(receiver, event);
-		DBG("Res %s", (res) ? "true" : "false");
+		//DBG("Res %s", (res) ? "true" : "false");
 		return res;
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);

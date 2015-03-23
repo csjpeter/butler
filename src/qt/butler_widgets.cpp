@@ -342,7 +342,7 @@ void PortEditor::textChangedSlot(const QString & newStr)
 		DBG("Invalid text: %s", C_STR(str));
 		return;
 	}
-	DBG("Value: %f", value());
+	DBG("Value: %u", value());
 
 	valueChanged(value());
 	valueChanged(editor.text());

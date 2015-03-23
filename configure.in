@@ -85,7 +85,7 @@ function process_args ()
 				TCROOT="${VALUE}"
 			;;
 			(--debug)
-				CFLAGS="${CFLAGS} -fno-builtin -O0 -g3 -ggdb3"
+				CFLAGS="${CFLAGS} -fno-builtin -rdynamic -O0 -g3 -ggdb3 "#-DDEBUG"
 				DEBUG=yes
 			;;
 			(--relative-path)
