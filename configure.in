@@ -19,7 +19,6 @@ function generate ()
 		-e "s|@LDFLAGS@|${LDFLAGS}|g" \
 		-e "s|@LIBS@|${LIBS}|g" \
 		-e "s|@STATICS@|${STATICS}|g" \
-		-e "s|@DEFINES@|${DEFINES}|g" \
 		-e "s|@CXX@|${CXX}|g" \
 		-e "s|@CC@|${CC}|g" \
 		-e "s|@CPP@|${CPP}|g" \
@@ -86,11 +85,11 @@ function process_args ()
 				TCROOT="${VALUE}"
 			;;
 			(--debug)
-				CFLAGS="${CFLAGS} -fno-builtin -O0 -ggdb3"
+				CFLAGS="${CFLAGS} -fno-builtin -O0 -g3 -ggdb3"
 				DEBUG=yes
 			;;
 			(--relative-path)
-				DEFINES="${DEFINES} -DRELATIVE_PATH"
+				CFLAGS="${CFLAGS} -DRELATIVE_PATH"
 			;;
 			(--gnu-source)
 				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
@@ -105,7 +104,7 @@ function process_args ()
 				CONFIG="${CONFIG} staticbuild"
 			;;
 			(--perfmode)
-				DEFINES="${DEFINES} -DPERFMODE"
+				CFLAGS="${CFLAGS} -DPERFMODE"
 			;;
 			(--libs)
 				LIBS="${LIBS} ${VALUE}"
@@ -160,6 +159,8 @@ process_args $@
 
 ! test ${DEBUG} = "no" || { CFLAGS="${CFLAGS} -O2" ; }
 
+CFLAGS="${CFLAGS} -Werror -Wall -Wextra -MMD -std=c++0x -D_ISOC99_SOURCE"
+
 ! test "x${HOST_ARCH}" = "x" || { HOST_ARCH=${BUILD_ARCH} ; }
 ! test "x${TARGET_ARCH}" = "x" || { TARGET_ARCH=${HOST_ARCH} ; }
 
@@ -211,8 +212,6 @@ echo "${CONFIG}" | grep staticbuild > /dev/null && {
 LDFLAGS="${LDFLAGS} -Wl,--as-needed"
 
 INCLUDES=-Isrc
-
-CFLAGS="${CFLAGS} -Werror -Wall -Wextra -g -MMD -std=c++0x -D_ISOC99_SOURCE"
 
 # Adjusting PREFIX and TCROOT if non-empty
 test "x${PREFIX}" = "x" || { PREFIX="${PREFIX}/" ; }

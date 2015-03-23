@@ -32,6 +32,7 @@ function exec_in_dir ()
 function config ()
 {
 	local DIST=$1
+	shift
 	eval VERSION_POSTFIX=\$${DIST}-${DIST}
 	./dist-config.sh \
 		--build=${DIST} \
@@ -39,15 +40,16 @@ function config ()
 		--target=${DIST} \
 		--version-postfix=${VERSION_POSTFIX} \
 		-- \
-		--debug \
-		--relative-path \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=usr \
 		--cflags=\\\"-fno-candidate-functions\\\" \
 		--libs=\\\"-lpq\\\" \
 		--appsdir=usr/share/applications \
 		--fpic \
-		--gnu-source || exit $?
+		--gnu-source \
+		$@ \
+		--relative-path \
+		|| exit $?
 
 		#--prefix=opt/${PKGNAME_BASE}
 
@@ -118,11 +120,11 @@ case "${CMD}" in
 	;;
 	(code)
 		shift
-		config ${DISTRIB_CODENAME} || exit $?
+		config ${DISTRIB_CODENAME} --debug || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make -j1 $@ || exit $?
 	;;
 	(*)
-		config ${DISTRIB_CODENAME} || exit $?
+		config ${DISTRIB_CODENAME} --debug || exit $?
 		exec_in_dir ${DISTRIB_CODENAME} make -j${JOBS} $@ || exit $?
 	;;
 esac

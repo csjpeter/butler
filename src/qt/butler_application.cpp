@@ -222,6 +222,7 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		info.append(" ...");
 	}
 
+	LOG("%s", __PRETTY_FUNCTION__);
 	QMessageBox(	QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();
 
