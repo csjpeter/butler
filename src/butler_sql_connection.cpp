@@ -129,7 +129,7 @@ bool SqlConnection::isOpen()
 			return conn.lite != 0;
 			break;
 		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 	}
 	return false;
@@ -174,7 +174,7 @@ void SqlConnection::open()
 			}
 			break;
 		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 	}
 	ENSURE(isOpen(), csjp::LogicError);
@@ -197,7 +197,7 @@ void SqlConnection::close()
 			}
 			break;
 		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 	}
 	ENSURE(!isOpen(), csjp::LogicError);
@@ -258,7 +258,7 @@ SqlResult SqlConnection::exec(const char * query)
 			}
 			break;
 		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 	}
 	Throw(csjp::ShouldNeverReached);
@@ -282,10 +282,10 @@ SqlColumns SqlConnection::columns(const char * tablename)
 			}
 			break;
 		case SqlDriver::SQLite :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 		case SqlDriver::MySQL :
-			throw csjp::NotImplemented();
+			Throw(csjp::NotImplemented);
 			break;
 	}
 	return cols;
@@ -307,10 +307,10 @@ const SqlTableNames & SqlConnection::tables()
 				}
 				break;
 			case SqlDriver::SQLite :
-				throw csjp::NotImplemented();
+				Throw(csjp::NotImplemented);
 				break;
 			case SqlDriver::MySQL :
-				throw csjp::NotImplemented();
+				Throw(csjp::NotImplemented);
 				break;
 		}
 	}

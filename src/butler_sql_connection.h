@@ -223,7 +223,7 @@ public:
 				}
 				break;
 			case SqlDriver::MySQL :
-				throw csjp::NotImplemented();
+				Throw(csjp::NotImplemented);
 				break;
 		}
 		Throw(csjp::ShouldNeverReached);

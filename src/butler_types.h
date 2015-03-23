@@ -29,7 +29,7 @@ inline bool operator==(const SqlDriver & lhs, const char * rhs)
 			return csjp::CString(rhs) == "MySQL";
 			break;
 		default:
-			throw csjp::InvalidArgument();
+			Throw(csjp::InvalidArgument);
 	}
 	return false;
 }

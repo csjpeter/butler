@@ -249,7 +249,6 @@ void DatabasesView::useDbDesc()
 			info.resize(1024);
 			info.append(" ...");
 		}
-		LOG("%s", __PRETTY_FUNCTION__);
 		QMessageBox(QMessageBox::Warning, "Exception thrown", info,
 			QMessageBox::Ok, 0, Qt::Dialog).exec();
 	}

@@ -79,13 +79,12 @@ tmp/src/%.opp: src/%.cpp \
 		tmp/@TCROOT@@PREFIX@lib/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $^ $@
-	#$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
+	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
 
 @TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@lib/% : \
 		tmp/@TCROOT@@PREFIX@lib/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	#$(OBJCOPY) --only-keep-debug $^ $@
-	cp $^ $@
+	$(OBJCOPY) --only-keep-debug $^ $@
 
 @TCROOT@@PREFIX@bin/%-dbg : \
 		tmp/@TCROOT@@PREFIX@bin/%
@@ -96,13 +95,12 @@ tmp/src/%.opp: src/%.cpp \
 		tmp/@TCROOT@@PREFIX@bin/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $^ $@
-	#$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
+	$(STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded $@
 
 @TCROOT@@PREFIX@lib/debug/@TCROOT@@PREFIX@bin/% : \
 		tmp/@TCROOT@@PREFIX@bin/%
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	#$(OBJCOPY) --only-keep-debug $^ $@
-	cp $^ $@
+	$(OBJCOPY) --only-keep-debug $^ $@
 
 #
 # build goals
