@@ -104,7 +104,7 @@ public:
 	bool isOpen();
 	void open();
 	void close();
-	const SqlTableNames & tables();
+	SqlTableNames tables();
 	SqlColumns columns(const char * tablename);
 	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.str); }
 
@@ -113,7 +113,6 @@ private:
 	unsigned transactions;
 	DatabaseDescriptor dbDesc;
 	//friend class SqlQuery;
-	mutable SqlTableNames tableNames;
 
 public:
 	const DatabaseDescriptor & desc;
