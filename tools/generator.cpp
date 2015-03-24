@@ -240,18 +240,32 @@ inline bool operator<(const Declaration & a, const char * b)
 	return a.typeName < b;
 }
 
+inline bool operator<(const StringChunk & a, const Declaration & b)
+{
+	return a < b.typeName;
+}
+
+inline bool operator<(const Declaration & a, const StringChunk & b)
+{
+	return a.typeName < b;
+}
+
 class TemplateParser
 {
 	String & code;
-	const Declaration & declaration;
 	StringChunk tpl;
+	const OwnerContainer<Declaration> & declarations;
+	const StringChunk & tplDir;
+	unint declIdx;
 	unint tplLineNo;
 	unint tplLastLineStartPos;
 	const char * const until;
 public:
-	TemplateParser(String & code, const String & tpl, const Declaration & declaration) :
-		code(code), declaration(declaration), tpl(tpl.str, tpl.length),
-		tplLineNo(1), tplLastLineStartPos(0), until(tpl.str + tpl.length)
+	TemplateParser(String & code, const String & tpl,
+			const OwnerContainer<Declaration> & declarations,
+			const StringChunk & tplDir, unint declIdx = 0) :
+		code(code), tpl(tpl.str, tpl.length), declarations(declarations), tplDir(tplDir),
+		declIdx(declIdx), tplLineNo(1), tplLastLineStartPos(0), until(tpl.str + tpl.length)
 	{
 	}
 
@@ -260,15 +274,15 @@ public:
 		if(tpl.chopFront("@Type@")) {
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
-			code << declaration.typeName;
+			code << declarations[declIdx].typeName;
 		} else if(tpl.chopFront("@type@")) {
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
-			code << declaration.typeNameLower;
+			code << declarations[declIdx].typeNameLower;
 		} else if(tpl.chopFront("@TableFieldList@")) {
 			tpl.trimFront("\n\r");
 			String fieldList;
-			for(auto& field : declaration.fields){
+			for(auto& field : declarations[declIdx].fields){
 				if(field.set || !field.name.length)
 					continue;
 				if(fieldList.length)
@@ -279,7 +293,7 @@ public:
 		} else if(tpl.chopFront("@KeyFieldList@")) {
 			tpl.trimFront("\n\r");
 			String fieldList;
-			for(auto& field : declaration.fields){
+			for(auto& field : declarations[declIdx].fields){
 				if(!field.key || !field.name.length)
 					continue;
 				if(fieldList.length)
@@ -297,7 +311,7 @@ public:
 
 	bool parseForEach(StringChunk & tpl, bool skipMode = false)
 	{
-		const Array<FieldDesc> & fields = declaration.fields;
+		const Array<FieldDesc> & fields = declarations[declIdx].fields;
 		const char * what = 0;
 
 		if(tpl.chopFront("@For{Field@"))
@@ -576,7 +590,7 @@ public:
 			} else if(tpl.chopFront("@IfSingleKey{@")){
 				unint pos;
 				unsigned c = 0;
-				for(auto& field : declaration.fields)
+				for(auto& field : declarations[declIdx].fields)
 					if(field.key)
 						c++;
 				if(c != 1)
@@ -588,7 +602,7 @@ public:
 			} else if(tpl.chopFront("@IfHasLinkField{@")){
 				unint pos;
 				unsigned c = 0;
-				for(auto& field : declaration.fields)
+				for(auto& field : declarations[declIdx].fields)
 					if(field.link)
 						c++;
 				if(c == 0)
@@ -597,73 +611,37 @@ public:
 				tpl.trimFront("\n\r");
 			} else if(tpl.chopFront("@IfHasLinkField}@")){
 				tpl.trimFront("\n\r");
+			} else if(tpl.chopFront("@declare@")){
+				unint pos;
+				if(!tpl.findFirst(pos, "\n"))
+					pos = tpl.length;
+				StringChunk declaredClass(tpl.str, pos);
+				tpl.chopFront(pos);
+				declaredClass.trim(" \t\n\r");
+				if(!declarations.has(declaredClass))
+					throw ParseError("Unknown class %.*s",
+							(int)declaredClass.length,
+							declaredClass.str);
+				declIdx = declarations.index(declaredClass);
+			} else if(tpl.chopFront("@include@")){
+				unint pos;
+				if(!tpl.findFirst(pos, "\n"))
+					pos = tpl.length;
+				StringChunk includeList(tpl.str, pos);
+				tpl.chopFront(pos);
+				auto files = includeList.split(" ");
+				for(auto& file : files){
+					String tplFileName(tplDir);
+					tplFileName << file;
+					File tplFile(tplFileName);
+					String newTpl = tplFile.readAll();
+					TemplateParser parser(code, newTpl,
+							declarations, tplDir, declIdx);
+					parser.parse();
+				}
 			} else
 				parseCommonMarker(tpl);
 		}
-	}
-};
-
-class InputCode
-{
-	void (InputCode::*state)(const StringChunk &);
-
-	const StringChunk & tplDir;
-	const OwnerContainer<Declaration> & declarations;
-	unint declIdx;
-public:
-	String code;
-
-public:
-	InputCode(const StringChunk & tplDir, const OwnerContainer<Declaration> & declarations) :
-		state(&InputCode::parseCode),
-		tplDir(tplDir),
-		declarations(declarations),
-		declIdx(0)
-	{
-	}
-
-	void parseCode(const StringChunk & line)
-	{
-		unint pos;
-		if(!line.findFirst(pos, "@")){
-			code << line << "\n";
-			return;
-		}
-		if(line.findFirst(pos, "@declare@"))
-			parseDeclaration(line, pos + 10);
-		else if(line.findFirst(pos, "@include@"))
-			parseInclude(line, pos + 10);
-		else
-			code << line << "\n";
-	}
-
-	void parseDeclaration(const StringChunk & line, unint pos)
-	{
-		StringChunk declaredClass(line.str + pos, line.length - pos);
-		declaredClass.trim(" \t\n\r");
-		if(!declarations.has(declaredClass.str))
-			throw ParseError("Unknown class %.*s",
-					(int)declaredClass.length, declaredClass.str);
-		declIdx = declarations.index(declaredClass.str);
-	}
-
-	void parseInclude(const StringChunk & line, unint pos)
-	{
-		StringChunk includeList(line.str + pos, line.length - pos);
-		auto files = includeList.split(" ");
-		for(auto& file : files){
-			String tplFileName(tplDir);
-			tplFileName << file;
-			File tplFile(tplFileName);
-			String tpl = tplFile.readAll();
-			TemplateParser tplParser(code, tpl, declarations[declIdx]);
-			tplParser.parse();
-		}
-	}
-
-	void parse(const StringChunk & line)
-	{
-		(this->*state)(line);
 	}
 };
 
@@ -674,6 +652,7 @@ int main(int argc, char *args[])
 	set_segmentation_fault_signal_handler();
 	StringChunk tplDir;
 	StringChunk declFileName;
+	StringChunk inputFileName;
 
 #ifdef DEBUG
 	csjp::verboseMode = true;
@@ -719,6 +698,13 @@ int main(int argc, char *args[])
 			argi += 2;
 			continue;
 		}
+		if(1 <= argc - argi && (
+				!strcmp(args[argi], "--input") ||
+				!strcmp(args[argi], "-i"))){
+			inputFileName = args[argi+1];
+			argi += 2;
+			continue;
+		}
 
 		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
 		LOG("Bad argument given: '%s'", args[argi]);
@@ -726,34 +712,29 @@ int main(int argc, char *args[])
 	}
 
 	OwnerContainer<Declaration> declarations;
-	Declaration declaration;
+	String code;
 
-	InputCode inputCode(tplDir, declarations);
 	File declFile(declFileName);
 	String declBuf = declFile.readAll();
 	declBuf.replace("\r", "");
 	Declaration::parseAllDeclaration(declarations, declBuf);
 
-	unsigned l;
-	SorterOwnerContainer<String> lines;
-	try{
-		char * line = 0;
-		ssize_t read = 0;
-		size_t len = 0;
-		while ((read = getline(&line, &len, stdin)) != -1) {
-			l++;
-			Object<String> lineStr(new String());
-			lineStr->adopt(line, len);
-			lineStr->trim("\n\r");
-			lineStr->trimBack("\t ");
-			lines.add(lineStr);
-			StringChunk lineChunk(lines.last().str, lines.last().length);
-			inputCode.parse(lineChunk);
-		}
+	LOG("Declared classes:");
+	for(auto & i : declarations){
+		LOG(" - %.*s : %s", (int)i.typeName.length, i.typeName.str,
+				declarations.has(i.typeName) ? "true" : "false");
+	}
+	
+	File inputFile(inputFileName);
+	String inputBuf = inputFile.readAll();
+	inputBuf.replace("\r", "");
+
+	TemplateParser parser(code, inputBuf, declarations, tplDir);
+	try {
+		parser.parse();
 	} catch (Exception & e) {
-		e.note("Excpetion happened while processing stdin line %u.", 3);
 		EXCEPTION(e);
 		return -1;
 	}
-	puts(inputCode.code.str);
+	puts(code.str);
 }
