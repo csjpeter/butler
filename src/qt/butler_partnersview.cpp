@@ -22,7 +22,7 @@ SCC TidRefreshButton = QT_TRANSLATE_NOOP("PartnersView", "Refresh partner list")
 PartnersView::PartnersView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(partnersModel(dbname)),
+	model(partnerModel(dbname)),
 	addButton(QIcon(Path::icon("add.png")),
 			TidAddButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),

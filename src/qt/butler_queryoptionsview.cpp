@@ -52,7 +52,7 @@ QueryOptionsView::QueryOptionsView(const csjp::String & dbname, QWidget * parent
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	nameEditor(&queryModel(dbname), Query::Name),
 	wareSelector(&wareModel(dbname), Ware::Name),
-	partnerSelector(&partnersModel(dbname), Partner::Name),
+	partnerSelector(&partnerModel(dbname), Partner::Name),
 	tagsWidget(dbname),
 	withoutTagsWidget(dbname)
 {
@@ -165,7 +165,7 @@ void QueryOptionsView::mapToGui()
 		wareFilter.box.setChecked(false);
 
 	if(query.partners.size()){
-		PartnerModel & sm = partnersModel(dbname);
+		PartnerModel & sm = partnerModel(dbname);
 		int row = sm.index(query.partners.queryAt(0).partner);
 		if(0 <= row){
 			partnerFilter.box.blockSignals(true);
@@ -232,7 +232,7 @@ void QueryOptionsView::mapFromGui()
 	query.partners.clear();
 	if(partnerFilter.box.isChecked()){
 		int i = partnerSelector.box.currentIndex();
-		PartnerModel & sm = partnersModel(dbname);
+		PartnerModel & sm = partnerModel(dbname);
 		if(0 <= i && i < sm.rowCount())
 			query.partners.add(new QueryPartner(query.name, sm.data(i).name.trimmed()));
 	}

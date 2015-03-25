@@ -231,7 +231,7 @@ void DatabasesView::useDbDesc()
 		wareModel(dbname);
 		inventoryModel(dbname);
 		companyModel(dbname);
-		partnersModel(dbname);
+		partnerModel(dbname);
 		accountModel(dbname);
 		brandModel(dbname);
 		queryModel(dbname);

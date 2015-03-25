@@ -36,7 +36,7 @@ EditAccountView::EditAccountView(const csjp::String & dbname, QWidget * parent) 
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
 	nextButton(TidNextButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Right)),
-	partnerEditor(&partnersModel(dbname), Partner::Name)
+	partnerEditor(&partnerModel(dbname), Partner::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
@@ -252,7 +252,7 @@ void EditAccountView::saveSlot()
 	mapFromGui();
 
 	/* Add partner if not yet known. */
-	PartnerModel & pm = partnersModel(dbname);
+	PartnerModel & pm = partnerModel(dbname);
 	int i = pm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;

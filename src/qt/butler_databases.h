@@ -15,15 +15,11 @@ void loadDatabaseConfigs();
 void saveDatabaseConfigs();
 
 DatabaseDescriptorModel & databasesModel();
-TagModel & tagModel(const csjp::String & dbname);
-WareModel & wareModel(const csjp::String & dbname);
-CompanyModel & companyModel(const csjp::String & dbname);
-BrandModel & brandModel(const csjp::String & dbname);
-InventoryModel & inventoryModel(const csjp::String & dbname);
-PartnerModel & partnersModel(const csjp::String & dbname);
-AccountModel & accountModel(const csjp::String & dbname);
-QueryModel & queryModel(const csjp::String & dbname);
-//ShoppingModel & shoppingModel(const csjp::String & dbname);
+
 csjp::Object<ItemModel> itemModel(const csjp::String & dbname);
+
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+@Type@Model & @type@Model(const csjp::String & dbname);
+@ForTypes}@
 
 #endif

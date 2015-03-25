@@ -19,33 +19,22 @@ static DatabaseDescriptorModel databases_model(descriptorSet);
 class Database
 {
 private:
+	SqlConnection sql;
+public:
+	@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+	@Type@Model @type@Model;
+	@ForTypes}@
+private:
 	csjp::String dbname;
-	SqlConnection * sql;
-	TagModel * tagModel;
-	WareModel * wareModel;
-	CompanyModel * companyModel;
-	BrandModel * brandModel;
-	InventoryModel * inventoryModel;
-	PartnerModel * partnersModel;
-	AccountModel * accountModel;
-	QueryModel * queryModel;
-	//ShoppingModel * shoppingModel;
 
 public:
 	Database(const csjp::String & dbname) :
-		dbname(dbname),
-		sql(0),
-		tagModel(0),
-		wareModel(0),
-		companyModel(0),
-		brandModel(0),
-		inventoryModel(0),
-		partnersModel(0),
-		accountModel(0),
-		queryModel(0)
-		//shoppingModel(0)
+		sql(descriptorSet.query(dbname)),
+		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+		@type@Model(sql),
+		@ForTypes}@
+		dbname(dbname)
 	{
-		SqlConnection & sql = sqlConn();
 		SqlColumns cols;
 		const SqlTableNames & tables = sql.tables();
 		//for(auto & t : tables)
@@ -64,27 +53,20 @@ public:
 			return;
 		}
 		sql.exec("CREATE TABLE @type@ ("
-			@For{TableField@"@.name@ @.SqlDecl@, "@-@"@.name@ @.SqlDecl@"@}@
-			@For{Constraint@", @Constraint@"@}@
+			@For{TableField@
+			"@.name@ @.SqlDecl@,"
+			@-@
+			"@.name@ @.SqlDecl@"
+			@}@
+			@For{Constraint@
+			", @Constraint@"
+			@}@
 			")");
 		@ForTypes}@
 	}
 
 	explicit Database(const Database &) = delete;
-	~Database()
-	{
-		//delete shoppingModel;
-		delete queryModel;
-		delete accountModel;
-		delete partnersModel;
-		delete companyModel;
-		delete inventoryModel;
-		delete brandModel;
-		delete wareModel;
-		delete tagModel;
-
-		delete sql;
-	}
+	~Database(){}
 
 	Database& operator=(const Database &) = delete;
 
@@ -95,84 +77,13 @@ public:
 	bool isLess(const csjp::String & s) const { return dbname < s; }
 	bool isMore(const csjp::String & s) const { return s < dbname; }
 
-private:
-	SqlConnection & sqlConn()
-	{
-		if(!sql)
-			sql = new SqlConnection(descriptorSet.query(dbname));
-		return *sql;
-	}
-
 public:
 	csjp::Object<ItemModel> items()
 	{
 		/* Each item view shall have its own special item model. */
-		return csjp::Object<ItemModel>(new ItemModel(sqlConn(), wares()));
+		return csjp::Object<ItemModel>(new ItemModel(sql, wareModel));
 	}
 
-	TagModel & tags()
-	{
-		if(!tagModel)
-			tagModel = new TagModel(sqlConn());
-		return *tagModel;
-	}
-
-	WareModel & wares()
-	{
-		if(!wareModel)
-			wareModel = new WareModel(sqlConn());
-		return *wareModel;
-	}
-
-	CompanyModel & company()
-	{
-		if(!companyModel)
-			companyModel = new CompanyModel(sqlConn());
-		return *companyModel;
-	}
-
-	BrandModel & brands()
-	{
-		if(!brandModel)
-			brandModel = new BrandModel(sqlConn());
-		return *brandModel;
-	}
-
-	InventoryModel & inventories()
-	{
-		if(!inventoryModel)
-			inventoryModel = new InventoryModel(sqlConn());
-		return *inventoryModel;
-	}
-
-	PartnerModel & partners()
-	{
-		if(!partnersModel)
-			partnersModel = new PartnerModel(sqlConn());
-		return *partnersModel;
-	}
-
-	AccountModel & accounts()
-	{
-		if(!accountModel)
-			accountModel = new AccountModel(sqlConn());
-		return *accountModel;
-	}
-
-	QueryModel & queries()
-	{
-		if(!queryModel)
-			queryModel = new QueryModel(sqlConn());
-		return *queryModel;
-	}
-/*
-	ShoppingModel & shoppingItems()
-	{
-		if(!shoppingModel)
-			shoppingModel = new ShoppingModel(*itemDb, wares());
-		return *shoppingModel;
-	}
-*/
 private:
 	void equal(const Database & tag);
 };
@@ -302,52 +213,14 @@ DatabaseDescriptorModel & databasesModel()
 	return databases_model;
 }
 
-TagModel & tagModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).tags();
-}
-
-WareModel & wareModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).wares();
-}
-
-CompanyModel & companyModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).company();
-}
-
-BrandModel & brandModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).brands();
-}
-
-InventoryModel & inventoryModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).inventories();
-}
-
-PartnerModel & partnersModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).partners();
-}
-
-AccountModel & accountModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).accounts();
-}
-
-QueryModel & queryModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).queries();
-}
-/*
-ShoppingModel & shoppingModel(const csjp::String & dbname)
-{
-	return loadDatabase(dbname).shoppingItems();
-}
-*/
 csjp::Object<ItemModel> itemModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).items();
 }
+
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+@Type@Model & @type@Model(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).@type@Model;
+}
+@ForTypes}@

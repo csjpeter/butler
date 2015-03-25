@@ -64,7 +64,7 @@ EditItemView::EditItemView(const csjp::String & dbname, ItemModel & model, QWidg
 	wareEditor(&wareModel(dbname), Ware::Name),
 	brandEditor(&brandModel(dbname), Brand::Name),
 	accountEditor(&accountModel(dbname), Account::Name),
-	partnerEditor(&partnersModel(dbname), Partner::Name),
+	partnerEditor(&partnerModel(dbname), Partner::Name),
 	inventoryEditor(&inventoryModel(dbname), Inventory::Name),
 	tagsWidget(dbname),
 	lastNumEdited(0),
@@ -433,7 +433,7 @@ void EditItemView::saveSlot()
 	int i;
 
 	/* Add partner if not yet known. */
-	PartnerModel & sm = partnersModel(dbname);
+	PartnerModel & sm = partnerModel(dbname);
 	i = sm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;

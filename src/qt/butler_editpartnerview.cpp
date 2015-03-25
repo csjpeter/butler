@@ -33,7 +33,7 @@ SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditPartnerView", "Partner is updated.
 EditPartnerView::EditPartnerView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(partnersModel(dbname)),
+	model(partnerModel(dbname)),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
 	prevButton(TidPrevButton, TidContext, QKeySequence(Qt::CTRL + Qt::Key_Left)),
