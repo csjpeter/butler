@@ -209,4 +209,166 @@ inline bool & operator<<= (bool & b, const QVariant & v)
 	b = v.toBool(); return b;
 }
 
+inline QStringList & operator<<= (QStringList & list, const WareTypeSet & wareTypes)
+{
+	list.clear();
+	for(auto & wareType : wareTypes)
+		list.append(wareType.type);
+	return list;
+}
+
+inline QString & operator<<= (QString & str, const WareTypeSet & wareTypes)
+{
+	str.clear();
+	for(auto & wareType : wareTypes){
+		if(str.length())
+			str.append(", ");
+		str.append(wareType.type);
+	}
+	return str;
+}
+
+inline StringSet & operator<<= (StringSet & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.add(new Text(wareTag.tag));
+	return list;
+}
+
+inline QStringList & operator<<= (QStringList & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.append(wareTag.tag);
+	return list;
+}
+
+inline QString & operator<<= (QString & str, const WareTagSet & wareTags)
+{
+	str.clear();
+	for(auto & wareTag : wareTags){
+		if(str.length())
+			str.append(", ");
+		str.append(wareTag.tag);
+	}
+	return str;
+}
+
+inline QString & operator<<= (QString & str, const QueryWithTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+
+inline StringSet & operator<<= (StringSet & list, const QueryWithTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+
+inline QString & operator<<= (QString & str, const QueryWithoutTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+
+inline StringSet & operator<<= (StringSet & list, const QueryWithoutTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+
+inline QString & operator<<= (QString & str, const QueryPartnerSet & partners)
+{
+	str.clear();
+	for(auto & partner : partners){
+		if(str.size())
+			str.append(", ");
+		str.append(partner.partner);
+	}
+	return str;
+}
+
+inline QString & operator<<= (QString & str, const QueryWareSet & wares)
+{
+	str.clear();
+	for(auto & ware : wares){
+		if(str.size())
+			str.append(", ");
+		str.append(ware.ware);
+	}
+	return str;
+}
+
+
+
+
+inline bool operator==(const WareTypeSet & a, const QString & b)
+{
+	QStringList sl;
+	sl = b.split(",", QString::SkipEmptyParts);
+	unsigned s = sl.size();
+	if(s != a.size())
+		return false;
+	unsigned i;
+	for(i=0; i<s; i++)
+		if(!a.has(Text(sl.at(i).trimmed())))
+			return false;
+	return true;
+}
+
+inline bool operator==(const WareTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const WareTagSet & a, const StringSet & b){ return !(a == b); }
+
+inline bool operator==(const QueryWithTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const QueryWithTagSet & a, const StringSet & b){ return !(a == b); }
+
+inline bool operator==(const QueryWithoutTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const QueryWithoutTagSet & a, const StringSet & b){ return !(a == b); }
+
 #endif

@@ -272,21 +272,15 @@ SqlTableNames SqlConnection::tables()
 			{
 				SqlResult result = exec("SELECT table_name FROM information_schema.tables "
 						"WHERE table_schema = 'public' ORDER BY table_name;");
-				//LOG("Tables:");
-				for(auto & row : result){
+				for(auto & row : result)
 					tableNames.add(new csjp::String(row.value(0)));
-					//LOG(" - %s", row.value(0));
-				}
 			}
 			break;
 		case SqlDriver::SQLite :
 			{
 				SqlResult result = exec("SELECT name FROM sqlite_master WHERE type='table'");
-				//LOG("Tables:");
-				for(auto & row : result){
+				for(auto & row : result)
 					tableNames.add(new csjp::String(row.value(0)));
-					//LOG(" - %s", row.value(0));
-				}
 			}
 			break;
 		case SqlDriver::MySQL :
@@ -305,11 +299,8 @@ SqlColumns SqlConnection::columns(const char * tablename)
 				SqlResult result = exec("SELECT column_name "
 						"FROM information_schema.columns "
 						"WHERE table_schema='public' AND table_name=$1;", tablename);
-				//LOG("Columns for table %s:", tablename);
-				for(auto & row : result){
+				for(auto & row : result)
 					cols.add(new csjp::String(row.value(0)));
-					//LOG(" - %s", row.value(0));
-				}
 			}
 			break;
 		case SqlDriver::SQLite :
@@ -317,11 +308,8 @@ SqlColumns SqlConnection::columns(const char * tablename)
 				csjp::String query;
 				query.cat("PRAGMA table_info('", tablename, "')");
 				SqlResult result = exec(query);
-				//LOG("Columns for table %s:", tablename);
-				for(auto & row : result){
+				for(auto & row : result)
 					cols.add(new csjp::String(row.value(1)));
-					//LOG(" - %s", row.value(1));
-				}
 			}
 			break;
 		case SqlDriver::MySQL :

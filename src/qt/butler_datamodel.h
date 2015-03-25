@@ -13,79 +13,15 @@
 #include <butler_dbclasses.h>
 #include <butler_config.h>
 
-@declare@ DatabaseDescriptor
-class DatabaseDescriptorModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
 
-@declare@ Tag
-class TagModel : public AbstractTableModel
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+class @Type@Model : public AbstractTableModel
 {
 @include@ dbdatamodel.h
 @include@ dbdatamodel_spec.h
 };
+@ForTypes}@
 
-@declare@ WareTag
-class WareTagModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
-
-@declare@ WareType
-class WareTypeModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
-
-@declare@ Ware
-class WareModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Company
-class CompanyModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Brand
-class BrandModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Inventory
-class InventoryModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Partner
-class PartnerModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Account
-class AccountModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
-
-@declare@ Payment
-class PaymentModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
 
 @declare@ Item
 class ItemModel : public AbstractTableModel
@@ -121,36 +57,13 @@ public:
 	QueryStat stat;
 };
 
-@declare@ QueryWithTag
-class QueryWithTagModel : public AbstractTableModel
+
+@ForTypes{DatabaseDescriptor,WareType,WareTag,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+class @Type@Model : public AbstractTableModel
 {
 @include@ datamodel.h
 };
-
-@declare@ QueryWithoutTag
-class QueryWithoutTagModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
-
-@declare@ QueryWare
-class QueryWareModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
-
-@declare@ QueryPartner
-class QueryPartnerModel : public AbstractTableModel
-{
-@include@ datamodel.h
-};
-
-@declare@ Query
-class QueryModel : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-@include@ dbdatamodel_spec.h
-};
+@ForTypes}@
 
 
 #endif

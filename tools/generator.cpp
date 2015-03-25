@@ -261,7 +261,7 @@ class TemplateParser
 	unint tplLastLineStartPos;
 	const char * const until;
 public:
-	TemplateParser(String & code, const String & tpl,
+	TemplateParser(String & code, const StringChunk & tpl,
 			const OwnerContainer<Declaration> & declarations,
 			const StringChunk & tplDir, unint declIdx = 0) :
 		code(code), tpl(tpl.str, tpl.length), declarations(declarations), tplDir(tplDir),
@@ -309,7 +309,7 @@ public:
 		}
 	}
 
-	bool parseForEach(StringChunk & tpl, bool skipMode = false)
+	bool parseForEachField(StringChunk & tpl, bool skipMode = false)
 	{
 		const Array<FieldDesc> & fields = declarations[declIdx].fields;
 		const char * what = 0;
@@ -378,7 +378,7 @@ public:
 				if(posBegin < posEnd){
 					tpl.chopFront(posBegin);
 					//LOG("into it 0");
-					parseForEach(tpl, true);
+					parseForEachField(tpl, true);
 					//LOG("out from it 0");
 					continue;
 				}
@@ -414,7 +414,7 @@ public:
 				if(posBegin < posLast && posBegin < posEnd){
 					tpl.chopFront(posBegin);
 					//LOG("into it 1");
-					parseForEach(tpl);
+					parseForEachField(tpl);
 					//LOG("out from it 1");
 					continue;
 				}
@@ -468,7 +468,7 @@ public:
 
 			if(block.startsWith("@For{")){
 				//LOG("into it ...");
-				if(parseForEach(block)){
+				if(parseForEachField(block)){
 					//LOG("out from it ...");
 					continue;
 				}
@@ -585,8 +585,35 @@ public:
 			code.append(tpl.str, iter - tpl.str);
 			tpl.chopFront(iter - tpl.str);
 
-			if(parseForEach(tpl)) {
+			if(parseForEachField(tpl)) {
 				;
+			} else if(tpl.chopFront("@ForTypes{")){
+				unint pos;
+				if(!tpl.findFirst(pos, "@"))
+					pos = tpl.length;
+				StringChunk typeList(tpl.str, pos);
+				tpl.chopFront(pos+1);
+				auto types = typeList.split(" \t,\n\r");
+				unint origDeclIdx = declIdx;
+				StringChunk origTpl(tpl);
+				if(!tpl.findFirst(pos, "@ForTypes}@"))
+					throw ParseError("Missing @ForTypes}@");
+				tpl.cutAt(pos); 
+				for(auto & type : types){
+					type.trim(" \t\r\n");
+					if(!declarations.has(type))
+						throw ParseError("Unknown class %.*s",
+								(int)type.length, type.str);
+					declIdx = declarations.index(type);
+					TemplateParser parser(code, tpl,
+							declarations, tplDir, declIdx);
+					parser.parse();
+				}
+				declIdx = origDeclIdx;
+				tpl = origTpl;
+				tpl.findFirst(pos, "@ForTypes}@");
+				tpl.chopFront(pos);
+				tpl.chopFront("@ForTypes}@");
 			} else if(tpl.chopFront("@IfSingleKey{@")){
 				unint pos;
 				unsigned c = 0;
@@ -635,7 +662,8 @@ public:
 					tplFileName << file;
 					File tplFile(tplFileName);
 					String newTpl = tplFile.readAll();
-					TemplateParser parser(code, newTpl,
+					StringChunk newTplChunk(newTpl.str, newTpl.length);
+					TemplateParser parser(code, newTplChunk,
 							declarations, tplDir, declIdx);
 					parser.parse();
 				}
@@ -728,8 +756,9 @@ int main(int argc, char *args[])
 	File inputFile(inputFileName);
 	String inputBuf = inputFile.readAll();
 	inputBuf.replace("\r", "");
+	StringChunk inputChunk(inputBuf.str, inputBuf.length);
 
-	TemplateParser parser(code, inputBuf, declarations, tplDir);
+	TemplateParser parser(code, inputChunk, declarations, tplDir);
 	try {
 		parser.parse();
 	} catch (Exception & e) {

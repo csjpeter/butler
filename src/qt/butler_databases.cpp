@@ -45,22 +45,29 @@ public:
 		queryModel(0)
 		//shoppingModel(0)
 	{
-		Tag::tableInit(sqlConn());
-		Ware::tableInit(sqlConn());
-		WareType::tableInit(sqlConn());
-		WareTag::tableInit(sqlConn());
-		Company::tableInit(sqlConn());
-		Brand::tableInit(sqlConn());
-		Inventory::tableInit(sqlConn());
-		Partner::tableInit(sqlConn());
-		Account::tableInit(sqlConn());
-		Payment::tableInit(sqlConn());
-		Item::tableInit(sqlConn());
-		Query::tableInit(sqlConn());
-		QueryWithTag::tableInit(sqlConn());
-		QueryWithoutTag::tableInit(sqlConn());
-		QueryWare::tableInit(sqlConn());
-		QueryPartner::tableInit(sqlConn());
+		SqlConnection & sql = sqlConn();
+		SqlColumns cols;
+		const SqlTableNames & tables = sql.tables();
+		//for(auto & t : tables)
+		//	LOG("table %s", t.str);
+		throw csjp::NotImplemented(EXCLI);
+		@ForTypes{Tag,WareType,WareTag,Ware,Company,Brand,Inventory,Partner,Account,Payment
+				Item,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner,Query@
+		if(tables.has("@type@")){
+			cols = sql.columns("@type@");
+			//LOG("Table @Type@");
+			//for(auto & c : cols)
+			//	LOG("column %s", c.str);
+			if(@For{TableField@!cols.has("@.name@") ||@-@!cols.has("@.name@"))@}@
+				throw DbIncompatibleTableError(
+					"Incompatible table @type@ in the openend database.");
+			return;
+		}
+		sql.exec("CREATE TABLE @type@ ("
+			@For{TableField@"@.name@ @.SqlDecl@, "@-@"@.name@ @.SqlDecl@"@}@
+			@For{Constraint@", @Constraint@"@}@
+			")");
+		@ForTypes}@
 	}
 
 	explicit Database(const Database &) = delete;
