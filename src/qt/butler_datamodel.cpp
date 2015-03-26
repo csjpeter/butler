@@ -147,14 +147,14 @@ SCC TidQueryFieldDeleted		= QT_TRANSLATE_NOOP("QueryModel", "Is deleted");
 @ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
 @include@ dbdatamodel_spec.cpp
 @include@ dbdatamodel.cpp
-@ForTypes}@
+@}ForTypes@
 
 @declare@ Item
 @include@ dbdatamodel.cpp
 
 @ForTypes{DatabaseDescriptor,WareType,WareTag,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
 @include@ datamodel.cpp
-@ForTypes}@
+@}ForTypes@
 
 
 ItemModel::ItemModel(SqlConnection & sql, const WareModel & wmodel) :

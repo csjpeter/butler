@@ -38,7 +38,7 @@ class @Type@
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
-@ForTypes}@
+@}ForTypes@
 
 inline bool operator<(const Text & a, const WareType & b) { return b.type.isMore(a); }
 inline bool operator<(const WareType & a, const Text & b) { return a.type.isLess(b); }
@@ -135,7 +135,7 @@ class @Type@
 };
 @include@ dataclass_nonmembers.h
 @include@ dataclass_set.h
-@ForTypes}@
+@}ForTypes@
 
 inline bool operator<(const Text & a, const QueryWithTag & b) { return b.tag.isMore(a); }
 inline bool operator<(const QueryWithTag & a, const Text & b) { return a.tag.isLess(b); }

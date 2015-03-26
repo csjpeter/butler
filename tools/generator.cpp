@@ -596,8 +596,8 @@ public:
 				auto types = typeList.split(" \t,\n\r");
 				unint origDeclIdx = declIdx;
 				StringChunk origTpl(tpl);
-				if(!tpl.findFirst(pos, "@ForTypes}@"))
-					throw ParseError("Missing @ForTypes}@");
+				if(!tpl.findFirst(pos, "@}ForTypes@"))
+					throw ParseError("Missing @}ForTypes@");
 				tpl.cutAt(pos); 
 				for(auto & type : types){
 					type.trim(" \t\r\n");
@@ -611,9 +611,9 @@ public:
 				}
 				declIdx = origDeclIdx;
 				tpl = origTpl;
-				tpl.findFirst(pos, "@ForTypes}@");
+				tpl.findFirst(pos, "@}ForTypes@");
 				tpl.chopFront(pos);
-				tpl.chopFront("@ForTypes}@");
+				tpl.chopFront("@}ForTypes@");
 			} else if(tpl.chopFront("@IfSingleKey{@")){
 				unint pos;
 				unsigned c = 0;

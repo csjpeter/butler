@@ -23,7 +23,7 @@ private:
 public:
 	@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
 	@Type@Model @type@Model;
-	@ForTypes}@
+	@}ForTypes@
 private:
 	csjp::String dbname;
 
@@ -32,7 +32,7 @@ public:
 		sql(descriptorSet.query(dbname)),
 		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
 		@type@Model(sql),
-		@ForTypes}@
+		@}ForTypes@
 		dbname(dbname)
 	{
 		SqlColumns cols;
@@ -62,7 +62,7 @@ public:
 			", @Constraint@"
 			@}@
 			")");
-		@ForTypes}@
+		@}ForTypes@
 	}
 
 	explicit Database(const Database &) = delete;
@@ -223,4 +223,4 @@ csjp::Object<ItemModel> itemModel(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).@type@Model;
 }
-@ForTypes}@
+@}ForTypes@

@@ -20,6 +20,6 @@ csjp::Object<ItemModel> itemModel(const csjp::String & dbname);
 
 @ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
 @Type@Model & @type@Model(const csjp::String & dbname);
-@ForTypes}@
+@}ForTypes@
 
 #endif

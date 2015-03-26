@@ -20,7 +20,7 @@ class @Type@Model : public AbstractTableModel
 @include@ dbdatamodel.h
 @include@ dbdatamodel_spec.h
 };
-@ForTypes}@
+@}ForTypes@
 
 
 @declare@ Item
@@ -63,7 +63,7 @@ class @Type@Model : public AbstractTableModel
 {
 @include@ datamodel.h
 };
-@ForTypes}@
+@}ForTypes@
 
 
 #endif
