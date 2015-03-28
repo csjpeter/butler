@@ -6,7 +6,7 @@
 #include <QtGlobal>
 #include <QtGui>
 
-#include <csjp_logger.h>
+#include <csjp_string.h>
 
 #include <butler_macros.h>
 #include <butler_texts.h>

@@ -54,7 +54,7 @@ int main(int argc, char *args[])
 			break;
 
 		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
-		LOG("Bad argument given: '%s'", args[argi]);
+		LOG("Bad argument given: '%'", args[argi]);
 		return 1;
 	}
 
@@ -66,24 +66,24 @@ int main(int argc, char *args[])
 	const char * libandroid = "/data/data/com." PRJNAME "/files/"
 			"qt/plugins/platform/android/libandroid-9.so";
 	if(!QFile::remove(libandroid))
-		LOG("Failed to remove %s", libandroid);
+		LOG("Failed to remove ", libandroid);
 	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libandroid-9.so", libandroid))
-		LOG("Failed to create %s", libandroid);
+		LOG("Failed to create ", libandroid);
 */
 
 	const char * libqsqlpsql = "/data/data/com." PRJNAME
 					"/files/qt/plugins/sqldrivers/libqsqlpsql.so";
 	if(!QFile::remove(libqsqlpsql))
-		LOG("Failed to remove %s", libqsqlpsql);
+		LOG("Failed to remove ", libqsqlpsql);
 	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlpsql.so", libqsqlpsql))
-		LOG("Failed to create %s", libqsqlpsql);
+		LOG("Failed to create ", libqsqlpsql);
 
 	const char * libqsqlite = "/data/data/com." PRJNAME
 					"/files/qt/plugins/sqldrivers/libqsqlite.so";
 	if(!QFile::remove(libqsqlite))
-		LOG("Failed to remove %s", libqsqlite);
+		LOG("Failed to remove ", libqsqlite);
 	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlite.so", libqsqlite))
-		LOG("Failed to create %s", libqsqlite);
+		LOG("Failed to create ", libqsqlite);
 
 	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
 	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
@@ -91,8 +91,8 @@ int main(int argc, char *args[])
 #endif
 
 	try {
-		LOG("Environment variables:\n%s",
-			C_STR(QProcessEnvironment::systemEnvironment().toStringList().join("\n")));
+		LOG("Environment variables:\n",
+			QProcessEnvironment::systemEnvironment().toStringList().join("\n"));
 
 		Path::initRootPath(args[0]);
 		Path::initConfigFileName();
@@ -102,12 +102,12 @@ int main(int argc, char *args[])
 		app.loadTranslation("hu");
 		app.pixelPerMM();
 		Config::thresholdScrollDistance = Config::pxPerMM * 2;
-		DBG("kinetic scroll treshold: %d", Config::thresholdScrollDistance);
+		DBG("kinetic scroll treshold: ", Config::thresholdScrollDistance);
 		app.loadCSS();
 		Config::load();
 		loadDatabaseConfigs();
 
-		LOG("Library paths: %s", C_STR(qApp->libraryPaths().join(", ")));
+		LOG("Library paths: ", qApp->libraryPaths().join(", "));
 
 		/* Show main view and run the app */
 		app.mainView().show();

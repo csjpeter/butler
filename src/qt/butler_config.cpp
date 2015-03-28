@@ -76,8 +76,7 @@ void initLibPath(QString path)
 	QDir dir(path);
 	QDir::entryList(QDir::AllDirs);
 	LOG();
-	LOG("QT_PLUGIN_PATH=%s",
-			C_STR(QProcessEnvironment::systemEnvironment().value("QT_PLUGIN_PATH")));
+	LOG("QT_PLUGIN_PATH=", QProcessEnvironment::systemEnvironment().value("QT_PLUGIN_PATH"));
 
 }
 */
@@ -88,7 +87,7 @@ const QString translation(const char * lang)
 	path += rootDir;
 #endif
 	path.append(TRANSLATIONS_PATH);
-	LOG("Translation path: %s", C_STR(path));
+	LOG("Translation path: ", path);
 	path += lang;
 	path += ".qm";
 	return path;
@@ -102,7 +101,7 @@ const QString icon(const char * fileName)
 #endif
 	iconPath.append(ICONS_PATH);
 	iconPath.append(fileName);
-	LOG("Icon path: %s", C_STR(iconPath));
+	LOG("Icon path: ", iconPath);
 	return iconPath;
 }
 
@@ -114,20 +113,20 @@ const QString css(const char * fileName)
 #endif
 	cssPath.append(CSS_PATH);
 	cssPath.append(fileName);
-	LOG("CSS path: %s", C_STR(cssPath));
+	LOG("CSS path: ", cssPath);
 	return cssPath;
 }
 
 void initRootPath(const char * args0)
 {
-	LOG("args0: %s", args0);
+	LOG("args0: ", args0);
 	csjp::String cmd(C_STR(QDir::fromNativeSeparators(args0)));
 
 	csjp::String prefix(PREFIX);
-	LOG("Compile time prefix: %s", prefix.str);
+	LOG("Compile time prefix: ", prefix);
 
 	csjp::String current(C_STR(QDir::currentPath()));
-	LOG("Current path: %s", current.str);
+	LOG("Current path: %", current);
 
 	csjp::String path;
 	if(cmd.startsWith("/"))
@@ -140,7 +139,7 @@ void initRootPath(const char * args0)
 	csjp::unint pos;
 	path.findLastOf(pos, "/");
 	path.chopBack(path.length - pos);
-	LOG("Computed binary path: %s", path.str);
+	LOG("Computed binary path: %", path);
 
 	csjp::String root(path);
 	root.findLastOf(pos, "/");
@@ -158,8 +157,8 @@ void initRootPath(const char * args0)
 	rootDir.append(path.str);
 	rootDir.append("/");
 */
-	LOG("rootDir: %s", C_STR(rootDir));
-	LOG("QDir::homePath(): %s", C_STR(QDir::homePath()));
+	LOG("rootDir: %", rootDir);
+	LOG("QDir::homePath(): %", QDir::homePath());
 }
 
 void initConfigFileName()

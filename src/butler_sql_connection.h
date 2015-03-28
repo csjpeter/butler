@@ -12,6 +12,7 @@
 
 #include <csjp_string.h>
 #include <csjp_pod_array.h>
+#include <csjp_array.h>
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 #include <csjp_exception.h>

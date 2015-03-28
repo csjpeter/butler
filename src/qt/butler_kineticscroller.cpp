@@ -49,11 +49,11 @@ void KineticScroller::onSpeedTimerElapsed()
 {
 	const QPoint cursorPos = QCursor::pos();
 /*
-	DBG("Vert scroll min %d, max %d, page %d",
+	DBG("Vert scroll min %, max %, page %",
 			scrollArea->verticalScrollBar()->minimum(),
 			scrollArea->verticalScrollBar()->maximum(),
 			scrollArea->verticalScrollBar()->pageStep());
-	DBG("Horiz scroll min %d, max %d, page %d",
+	DBG("Horiz scroll min %, max %, page %",
 			scrollArea->horizontalScrollBar()->minimum(),
 			scrollArea->horizontalScrollBar()->maximum(),
 			scrollArea->horizontalScrollBar()->pageStep());
@@ -61,7 +61,7 @@ void KineticScroller::onSpeedTimerElapsed()
 	speed.setX(computeSpeed(cursorPos.x(), lastMousePos.x(), speed.x()));
 	speed.setY(computeSpeed(cursorPos.y(), lastMousePos.y(), speed.y()));
 	
-/*	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());*/
+/*	DBG("[scroll] speed %, %", speed.x(), speed.y());*/
 
 	lastMousePos = cursorPos;
 
@@ -77,8 +77,7 @@ double KineticScroller::doScroll(
 	double moveInPixels = currPixPos - origPixPos;
 	double moveInScrollUnits = moveInPixels / scrollUnitInPixels;
 	double newScrollPos = origScrollPos - moveInScrollUnits;
-/*	DBG("%.2f - %.2f - %.2f - %.2f",
-			scrollUnitInPixels, moveInPixels, moveInScrollUnits, newScrollPos);*/
+/*	DBG("% - % - % - %", scrollUnitInPixels, moveInPixels, moveInScrollUnits, newScrollPos);*/
 	scroll->setValue(newScrollPos);
 	return newScrollPos;
 }
@@ -123,10 +122,10 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 //			DBG("Press");
 			if(wgt && wgt->hasFocus() && !stealEventFromFocusedWidgets){
 				alreadyFocused = true;
-//				DBG("Already focused %s", receiver->metaObject()->className());
+//				DBG("Already focused ", receiver->metaObject()->className());
 				return false;
 			} else {
-//				DBG("Not yet focused %s", receiver->metaObject()->className());
+//				DBG("Not yet focused ", receiver->metaObject()->className());
 				alreadyFocused = false;
 			}
 			manualStop = !speed.isNull();
@@ -137,7 +136,7 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 			lastMousePos = pressedMousePosition = mouseEvent->globalPos();
 			scrolled = false;
 			speedTimer.start(gTimerInterval);
-//			DBG("return %s", manualStop ? "true" : "false" );
+//			DBG("return ", manualStop ? "true" : "false" );
 			return manualStop;
 		case QEvent::MouseMove:
 //			DBG("Move");
@@ -224,7 +223,7 @@ bool KineticScroller::eventHandler(QObject * receiver, QEvent * event)
 			speedTimer.stop();
 
 			if(!scrolled){
-//				DBG("not scrolled, manualStop: %d", manualStop);
+//				DBG("not scrolled, manualStop: ", manualStop);
 				speed.setX(0);
 				speed.setY(0);
 				return manualStop;
@@ -285,5 +284,5 @@ void KineticScroller::onKineticTimerElapsed()
 
 	stopIfAtEnd();
 
-/*	DBG("[scroll] speed %.2f, %.2f", speed.x(), speed.y());*/
+/*	DBG("[scroll] speed %, %", speed.x(), speed.y());*/
 }

@@ -69,8 +69,8 @@ void PannView::setLayout(QLayout * layout)
 QSize PannView::sizeHint()
 {
 	QSize s(scrollArea.sizeHint());
-	/*LOG("Size hint for viewport %d, %d for window with title: %s.",
-			s.rwidth(), s.rheight(), C_STR(titleLabel.text()));*/
+	/*LOG("Size hint for viewport %, % for window with title: %.",
+			s.rwidth(), s.rheight(), titleLabel.text());*/
 	return QSize(s.rwidth() + 50, s.rheight() + 50);
 }
 
@@ -96,7 +96,7 @@ bool PannView::eventFilter(QObject *obj, QEvent *event)
 		return QObject::eventFilter(obj, event);
 
 	QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-	DBG("Received key press 0x%x", keyEvent->key());
+	DBG("Received key press ", keyEvent);
 
 	switch (keyEvent->key()){
 		/*case Qt::Key_Enter:
@@ -139,7 +139,7 @@ void PannView::saveState(const QString & prefix)
 
 void PannView::setWindowTitle(const QString & str)
 {
-	//LOG("Window width: %d and %d", qApp->desktop()->width(), QWidget::width());
+	//LOG("Window width: % and %", qApp->desktop()->width(), QWidget::width());
 	//if(qApp->desktop()->width() <= QWidget::width()){
 #ifdef Q_OS_ANDROID
 		titleLabel.setText(str);

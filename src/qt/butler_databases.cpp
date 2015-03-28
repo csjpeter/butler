@@ -38,15 +38,15 @@ public:
 		SqlColumns cols;
 		const SqlTableNames & tables = sql.tables();
 		//for(auto & t : tables)
-		//	LOG("table %s", t.str);
-		throw csjp::NotImplemented(EXCLI);
+		//	LOG("table ", t);
+		//throw csjp::NotImplemented(EXCLI);
 		@ForTypes{Tag,WareType,WareTag,Ware,Company,Brand,Inventory,Partner,Account,Payment
 				Item,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner,Query@
 		if(tables.has("@type@")){
 			cols = sql.columns("@type@");
 			//LOG("Table @Type@");
 			//for(auto & c : cols)
-			//	LOG("column %s", c.str);
+			//	LOG("column ", c);
 			if(@For{TableField@!cols.has("@.name@") ||@-@!cols.has("@.name@"))@}@
 				throw DbIncompatibleTableError(
 					"Incompatible table @type@ in the openend database.");
@@ -154,7 +154,7 @@ void loadDatabaseConfigs()
 		sqlitedb->name = "localdb";
 		sqlitedb->driver = SqlDriver::SQLite;
 		sqlitedb->databaseName <<= defaultSQLiteDbFileName();
-		LOG("Sqlite db file path: %s", sqlitedb->databaseName.str);
+		LOG("Sqlite db file path: ", sqlitedb->databaseName);
 		descriptorSet.add(sqlitedb);
 	}
 
@@ -200,7 +200,7 @@ Database & loadDatabase(const csjp::String & name)
 {
 	if(!databases.has(name)){
 		if(!descriptorSet.has(name))
-			throw DbError("Database connection '%s' is not yet specified.", name.str);
+			throw DbError("Database connection '%' is not yet specified.", name);
 		csjp::Object<Database> db(new Database(name));
 		databases.add(db);
 	}

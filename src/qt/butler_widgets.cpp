@@ -29,8 +29,7 @@ TableView::TableView(QWidget * parent) :
 void TableView::loadState(const QString & pref)
 {
 	if(!model())
-		throw csjp::LogicError(
-				"Missing model in TableView when loadState() is called.");
+		throw csjp::LogicError("Missing model in %.", __PRETTY_FUNCTION__);
 
 	QString prefix(pref + "/TableView");
 	QSettings settings;
@@ -38,16 +37,16 @@ void TableView::loadState(const QString & pref)
 	int c = model()->columnCount();
 	for(int i = 0; i < c; i++){
 		int pos = settings.value(prefix + "/column" + i, i).toInt();
-		DBG("Lets move logical %d (%s, visual %d) to visual %d (%s)",
+		DBG("Lets move logical % (%, visual %) to visual % (%)",
 				i,
-				C_STR(model()->headerData(
+				model()->headerData(
 						i, Qt::Horizontal,
-						Qt::DisplayRole).toString()),
+						Qt::DisplayRole).toString(),
 				horizontalHeader()->visualIndex(i),
 				pos,
-				C_STR(model()->headerData(
+				model()->headerData(
 						horizontalHeader()->logicalIndex(pos),
-						Qt::Horizontal, Qt::DisplayRole).toString())
+						Qt::Horizontal, Qt::DisplayRole).toString()
 				);
 		horizontalHeader()->moveSection(horizontalHeader()->visualIndex(i), pos);
 	}
@@ -254,14 +253,14 @@ void LineEditor::inputMethodEvent(QInputMethodEvent * event)
 		e->setCommitString(event->commitString());
 
 	/*
-	LOG("InputMethod event type: %d", (int)e->type());
+	LOG("InputMethod event type: %", e->type());
 
 	LOG("InputMethodAttribute list:");
 	QList<QInputMethodEvent::Attribute> al = event->attributes();
 	for(int i = 0; i < al.size(); i++){
 		QInputMethodEvent::Attribute a = al.at(i);
-		LOG("InputMethodAttribute: type %d start %d length %d variant string: %s",
-				(int)a.type, a.start, a.length, C_STR(a.value.toString()));
+		LOG("InputMethodAttribute: type % start % length % variant string: %",
+				a.type, a.start, a.length, a.value.toString());
 	}*/
 
 	/*QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
@@ -272,18 +271,18 @@ void LineEditor::inputMethodEvent(QInputMethodEvent * event)
 	//QInputMethodEvent * e = event;
 
 	/*
-	LOG(		"Replacement start: %d\n"
-			"Replacement length: %d\n"
-			"Preedit string: %s\n"
-			"Commit string: %s",
+	LOG(		"Replacement start: %\n"
+			"Replacement length: %\n"
+			"Preedit string: %\n"
+			"Commit string: %",
 			e->replacementStart(),
 			e->replacementLength(),
-			C_STR(e->preeditString()),
-			C_STR(e->commitString()));
+			e->preeditString(),
+			e->commitString());
 			*/
 
 	QLineEdit::inputMethodEvent(e.data());
-	//LOG("Entry text after QLineEdit::inputMethodEvent(): %s\n", C_STR(text()));
+	//LOG("Entry text after QLineEdit::inputMethodEvent(): %\n", text());
 }
 
 InputEditor::InputEditor(QWidget * parent) :
@@ -339,10 +338,10 @@ void PortEditor::textChangedSlot(const QString & newStr)
 	int pos = editor.cursorPosition();
 	QString str(newStr);
 	if(validator.validate(str, pos) != QValidator::Acceptable){
-		DBG("Invalid text: %s", C_STR(str));
+		DBG("Invalid text: ", str);
 		return;
 	}
-	DBG("Value: %u", value());
+	DBG("Value: ", value());
 
 	valueChanged(value());
 	valueChanged(editor.text());
@@ -415,7 +414,7 @@ void DoubleEditor::resetRegexp()
 			QRegExp::escape(Config::locale.decimalPoint()),
 			QRegExp::escape(QString::number(precision)),
 			QRegExp::escape(suffix)));
-	DBG("Validator regx: %s", C_STR(regx));
+	DBG("Validator regx: ", regx);
 	validator.setRegExp(QRegExp(regx));
 }
 
@@ -424,10 +423,10 @@ void DoubleEditor::textChangedSlot(const QString & newText)
 	int pos = editor.cursorPosition();
 	QString str = newText;
 	if(validator.validate(str, pos) != QValidator::Acceptable){
-		DBG("Invalid text: %s", C_STR(str));
+		DBG("Invalid text: ", str);
 		return;
 	}
-	DBG("Value: %f", value());
+	DBG("Value: ", value());
 
 	if((suffix.size() && str.endsWith(suffix)) || !suffix.size()){
 		valueChanged(value());

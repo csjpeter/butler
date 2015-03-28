@@ -29,7 +29,7 @@ class FieldDesc
 {
 public:
 	FieldDesc(const StringChunk & constraint) :
-		constraint(constraint),
+		constraint(constraint.str, constraint.length),
 		key(false),
 		set(false),
 		link(false),
@@ -41,11 +41,11 @@ public:
 	FieldDesc(const StringChunk & name, const StringChunk & type,
 			const StringChunk & sqlDecl, const StringChunk & comment,
 			bool key, bool set, bool link, bool derived, bool spec) :
-		name(name),
-		type(type),
-		enumName(name),
-		sqlDecl(sqlDecl),
-		comment(comment),
+		name(name.str, name.length),
+		type(type.str, type.length),
+		enumName(name.str, name.length),
+		sqlDecl(sqlDecl.str, sqlDecl.length),
+		comment(comment.str, comment.length),
 		key(key),
 		set(set),
 		link(link),
@@ -54,10 +54,10 @@ public:
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
-		nameLower.assign(name);
+		nameLower <<= name;
 		lower(nameLower);
 		if(set){
-			setSubType.assign(type);
+			setSubType <<= type;
 			setSubType.chopBack(3);
 		}
 	}
@@ -183,7 +183,7 @@ public:
 		if(words[0] == "Class"){
 			typeName = words[1];
 			// cleanup field and constraint info
-			typeNameLower.assign(words[1]);
+			typeNameLower <<= words[1];
 			lower(typeNameLower);
 		} else if(words[0] == "Fields" && words[1] == "{"){
 			state = &Declaration::parseFieldList;
@@ -200,7 +200,7 @@ public:
 	static void parseAllDeclaration(OwnerContainer<Declaration> & declarations,
 			const String & data)
 	{
-		auto lines = data.split("\n", false);
+		auto lines = split(data, "\n", false);
 		unsigned i = 0;
 		unint pos;
 		bool declPhase = false;
@@ -219,7 +219,7 @@ public:
 					decl->parse(line);
 			}
 		} catch (Exception & e) {
-			e.note("Excpetion happened while processing declaration file line %u.", i);
+			e.note("Excpetion happened while processing declaration file line %.", i);
 			EXCEPTION(e);
 		}
 	}
@@ -333,7 +333,7 @@ public:
 		else
 			return false;
 		tpl.trimFront("\n\r");
-		//LOG("what: %s", what);
+		//LOG("what: %", what);
 
 		StringChunk lastTag("@-@");
 		StringChunk endTag("@}@");
@@ -362,9 +362,9 @@ public:
 			endIdx = i;
 			i++;
 			numOfFields++;
-			//LOG("Field name: %.*s", (int)field.name.length, field.name.str);
+			//LOG("Field name: %", field.name);
 		}
-		//LOG("what: %s, lastIdx: %u, endIdx: %u", what, lastIdx, endIdx);
+		//LOG("what: s, lastIdx: %, endIdx: %", what, lastIdx, endIdx);
 
 		// no fields to iterate on or in skip mode
 		if(!numOfFields || skipMode){
@@ -451,8 +451,8 @@ public:
 				continue;
 			}
 
-			//LOG("-Field name: %.*s", (int)field.name.length, field.name.str);
-			//LOG("-i: %d, lastIdx: %u, endIdx: %u", i, lastIdx, endIdx);
+			//LOG("-Field name: %", field.name);
+			//LOG("-i: %, lastIdx: %, endIdx: %", i, lastIdx, endIdx);
 
 			// until a '@' character just append anything to the code
 			const char * iter = block.str;
@@ -602,8 +602,7 @@ public:
 				for(auto & type : types){
 					type.trim(" \t\r\n");
 					if(!declarations.has(type))
-						throw ParseError("Unknown class %.*s",
-								(int)type.length, type.str);
+						throw ParseError("Unknown class %", type);
 					declIdx = declarations.index(type);
 					TemplateParser parser(code, tpl,
 							declarations, tplDir, declIdx);
@@ -646,9 +645,7 @@ public:
 				tpl.chopFront(pos);
 				declaredClass.trim(" \t\n\r");
 				if(!declarations.has(declaredClass))
-					throw ParseError("Unknown class %.*s",
-							(int)declaredClass.length,
-							declaredClass.str);
+					throw ParseError("Unknown class %", declaredClass);
 				declIdx = declarations.index(declaredClass);
 			} else if(tpl.chopFront("@include@")){
 				unint pos;
@@ -658,7 +655,7 @@ public:
 				tpl.chopFront(pos);
 				auto files = includeList.split(" ");
 				for(auto& file : files){
-					String tplFileName(tplDir);
+					String tplFileName(tplDir.str, tplDir.length);
 					tplFileName << file;
 					File tplFile(tplFileName);
 					String newTpl = tplFile.readAll();
@@ -735,7 +732,7 @@ int main(int argc, char *args[])
 		}
 
 		fprintf(stderr, "Bad argument given: '%s'\n", args[argi]);
-		LOG("Bad argument given: '%s'", args[argi]);
+		LOG("Bad argument given: '%'", args[argi]);
 		return 1;
 	}
 
@@ -749,8 +746,7 @@ int main(int argc, char *args[])
 
 	LOG("Declared classes:");
 	for(auto & i : declarations){
-		LOG(" - %.*s : %s", (int)i.typeName.length, i.typeName.str,
-				declarations.has(i.typeName) ? "true" : "false");
+		LOG(" - % : %", i.typeName, declarations.has(i.typeName) ? "true" : "false");
 	}
 	
 	File inputFile(inputFileName);

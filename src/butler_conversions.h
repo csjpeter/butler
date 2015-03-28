@@ -318,6 +318,19 @@ inline QString & operator<<= (QString & str, const QueryWareSet & wares)
 
 
 
+
+
+
+
+
+
+inline csjp::String & operator<< (csjp::String & str, const QString & qstr)
+{
+	str.append(C_STR(qstr)); return str;
+}
+
+
+
 inline bool operator==(const WareTypeSet & a, const QString & b)
 {
 	QStringList sl;

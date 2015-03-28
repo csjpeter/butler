@@ -37,7 +37,7 @@ void TagWidget::applyLayout()
 
 	unsigned i, s = tagSet.size();
 	unsigned rows = (s % columns) ? s / columns + 1 : s / columns;
-	DBG("Rows to apply %d", rows);
+	DBG("Rows to apply ", rows);
 
 	/* With this the nth tag in tagset will be represented by the nth
 	 * button in the btnContainer. */
@@ -59,14 +59,14 @@ void TagWidget::applyLayout()
 
 void TagWidget::relayout()
 {
-	DBG("Width: %d TagLabelWidth: %d", width(), maxTagCheckboxWidth);
+	DBG("Width: % TagLabelWidth: %", width(), maxTagCheckboxWidth);
 	int newColumns = width() / maxTagCheckboxWidth;
 	if(!newColumns)
 		newColumns = 1;
 
 	if(newColumns != columns){
 		columns = newColumns;
-		DBG("Columns changed to %d", columns);
+		DBG("Columns changed to ", columns);
 		applyLayout();
 	}
 }
@@ -77,7 +77,7 @@ QSize TagWidget::sizeHint() const
 	int lw = label.sizeHint().width();
 	if(w < lw)
 		w = lw;
-	DBG("SizeHint: %d, %d", w, -1);
+	DBG("SizeHint: %, ", w, -1);
 	return QSize(w, -1);
 }
 
@@ -94,7 +94,7 @@ int TagWidget::heightForWidth(int w) const
 		QCheckBox & tagBox = btnContainer.queryAt(0);
 		h += rows * tagBox.sizeHint().height();
 	}
-	DBG("Height: %d For width: %d", h, w);
+	DBG("Height: % For width: ", h, w);
 	return h;
 }
 

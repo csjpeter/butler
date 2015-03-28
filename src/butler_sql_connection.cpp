@@ -92,9 +92,9 @@ SqlConnection::~SqlConnection()
 	try {
 		close();
 	} catch (csjp::Exception & e) {
-		LOG("%s", e.what());
+		LOG("%", e);
 	} catch (std::exception & e) {
-		LOG("%s", e.what());
+		LOG("%", e);
 	}
 }
 
@@ -114,7 +114,7 @@ bool SqlConnection::isOpen()
 						return false;
 					default:
 						close();
-						throw csjp::LogicError("Unexpected connection state %d.", state);
+						throw csjp::LogicError("Unexpected connection state %.", state);
 				}
 			}
 			break;
@@ -143,7 +143,7 @@ void SqlConnection::open()
 					str.cat("postgres://",desc.username,"@",
 							desc.host,":",desc.port,"/",desc.databaseName);
 					throw DbError("Failed to connect to postgresql with connection string:\n"
-							"%s\nError:\n%s", str.str, PQerrorMessage(conn.pg));
+							"%\nError:\n%", str, PQerrorMessage(conn.pg));
 				}
 			}
 			break;
@@ -152,8 +152,8 @@ void SqlConnection::open()
 				int res = sqlite3_open_v2(desc.databaseName.str, &(conn.lite),
 						SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
 				if(res != SQLITE_OK || conn.lite == 0)
-					throw DbError("Failed to open sqlite database/file '%s'\nError:\n%s",
-							desc.databaseName.str, sqlite3_errstr(res));
+					throw DbError("Failed to open sqlite database/file '%'\nError:\n%",
+							desc.databaseName, sqlite3_errstr(res));
 				exec("PRAGMA foreign_keys = ON");
 				//exec("PRAGMA foreign_keys"); // query the value
 			}
@@ -176,8 +176,7 @@ void SqlConnection::close()
 			{
 				int res = sqlite3_close(conn.lite);
 				if(res < 0)
-					throw DbError("Failed to close sqlite database/file '%s'\n",
-							desc.databaseName.str);
+					throw DbError("Failed to close sqlite database/file '%'\n", desc.databaseName);
 				conn.lite = 0;
 			}
 			break;
@@ -195,22 +194,22 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 		case SqlDriver::PSql :
 			{
 				csjp::PodArray<const char *> paramValues;
-				//LOG("Query: %s", query);
+				//LOG("Query: %", query);
 				for(const auto & p : params){
 					paramValues.add(p.str);
-					//LOG("Param: %s", p.str);
+					//LOG("Param: %", p);
 				}
 				PGresult * res = PQexecParams(
 							conn.pg, query, paramValues.length, 0, paramValues.data, 0, 0, 0);
 				/*if(!res)
-				  throw DbError("Fatal, the sql query result is null. Error message:\n%s",
+				  throw DbError("Fatal, the sql query result is null. Error message:\n%",
 				  PQerrorMessage(conn.pg));*/
 				const char * errMsg = PQerrorMessage(conn.pg);
 				int status = PQresultStatus(res);
 				if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
 					PQclear(res);
-					throw DbError("Failed SQL command:\n%s\n"
-							"Status:%d\nError message:\n%s", query, status, errMsg);
+					throw DbError("Failed SQL command:\n%\n"
+							"Status:%\nError message:\n%", query, status, errMsg);
 				}
 				try {
 					return SqlResult(res);
@@ -225,26 +224,26 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				sqlite3_stmt *ppStmt = 0;
 				int res = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
 				if(res != SQLITE_OK){
-					DbError e("Failed to prepare sqlite query:\n%s\nError:\n%s",
+					DbError e("Failed to prepare sqlite query:\n%\nError:\n%",
 							query, sqlite3_errstr(res));
 					sqlite3_finalize(ppStmt);
 					throw e;
 				}
-				LOG("Query: %s", query);
+				LOG("Query: %", query);
 				int i = 0;
 				for(const auto & p : params){
-					LOG("Param: %s", p.str);
+					LOG("Param: %", p);
 					res = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
 					if(res != SQLITE_OK){
-						DbError e("Failed to bind parameter '%s' to sqlite query:\n%s"
-								"\nError:\n%s", p.str, query, sqlite3_errstr(res));
+						DbError e("Failed to bind parameter '%' to sqlite query:\n%"
+								"\nError:\n%", p, query, sqlite3_errstr(res));
 						sqlite3_finalize(ppStmt);
 						throw e;
 					}
 				}
 				res = sqlite3_step(ppStmt);
 				if(res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW){
-					DbError e("Failed to execute sqlite query:\n%s\nError: %d\n%s",
+					DbError e("Failed to execute sqlite query:\n%\nError: %\n%",
 							query, res, sqlite3_errstr(res));
 					sqlite3_finalize(ppStmt);
 					throw e;
@@ -372,13 +371,13 @@ void SqlQuery::exec(const QString &query)
 	(void)query;
 /*	prepared = false;
 
-	LOG("%s", C_STR(query));
+	LOG("%", query);
 	if(!qQuery->exec(query))
-		throw DbError("The below sql query failed on connection %s:\n"
-				"%s\nDatabase reports error: %s",
-				C_STR(sql.desc.name),
-				C_STR(query),
-				C_STR(sql.dbErrorString()));*/
+		throw DbError("The below sql query failed on connection %:\n"
+				"%\nDatabase reports error: %",
+				sql.desc.name,
+				query,
+				sql.dbErrorString());*/
 }
 
 bool SqlQuery::isPrepared()
@@ -391,9 +390,9 @@ void SqlQuery::prepare(const QString &query)
 {
 	(void)query;
 /*	if(!qQuery->prepare(query))
-		throw DbError("Failed to prepare query:\n%serror: %s",
-				C_STR(query),
-				C_STR(sql.dbErrorString()));*/
+		throw DbError("Failed to prepare query:\n%error: %",
+				query,
+				sql.dbErrorString());*/
 }
 
 void SqlQuery::bindValue(int pos, const QVariant &v)
@@ -458,11 +457,11 @@ void SqlQuery::exec()
 /*	ENSURE(qQuery, csjp::LogicError);
 	ENSURE(sql.isOpen(), csjp::LogicError);
 
-	LOG("%s", C_STR(queryString()));
+	LOG("%", queryString());
 	if(!qQuery->exec())
-		throw DbError("The below sql query failed on connection %s:\n"
-				"%s\nDatabase reports error: %s",
-			C_STR(sql.desc.name), C_STR(queryString()), C_STR(sql.dbErrorString()));*/
+		throw DbError("The below sql query failed on connection %:\n"
+				"%\nDatabase reports error: %",
+			sql.desc.name, queryString(), sql.dbErrorString());*/
 }
 
 bool SqlQuery::next()
@@ -481,8 +480,8 @@ unsigned SqlQuery::colIndex(const QString &name)
 	int ret = qQuery->record().indexOf(name);
 	if(ret < 0)
 		throw DbIncompatibleTableError(
-				"There is no column '%s' in the result for query:\n%s.",
-				C_STR(name), C_STR(queryString()));
+				"There is no column '%' in the result for query:\n%.",
+				name, queryString());
 
 	return ret;*/
 	return 0;
@@ -493,9 +492,9 @@ SqlVariant SqlQuery::sqlValue(int index)
 	(void)index;
 /*	ENSURE(qQuery, csjp::LogicError);
 
-	DBG("%s : [%s]",
-			C_STR(qQuery->record().fieldName(index)),
-			C_STR(qQuery->value(index).toString())
+	DBG("% : [%]",
+			qQuery->record().fieldName(index),
+			qQuery->value(index).toString()
 			);
 
 	return SqlVariant(qQuery->value(index));*/
@@ -507,9 +506,9 @@ QVariant SqlQuery::value(int index)
 	(void)index;
 /*	ENSURE(qQuery, csjp::LogicError);
 
-	DBG("%s : [%s]",
-			C_STR(qQuery->record().fieldName(index)),
-			C_STR(qQuery->value(index).toString())
+	DBG("% : [%]",
+			qQuery->record().fieldName(index),
+			qQuery->value(index).toString()
 			);
 
 	return qQuery->value(index);*/

@@ -43,11 +43,11 @@ void Application::loadTranslation(const char * langCode)
 		lang = "en" ; //locale.name();
 	lang.truncate(2);
 	QString trFile(Path::translation(C_STR(lang)));
-	LOG("Translation file to load: %s", C_STR(trFile));
+	LOG("Translation file to load: %", trFile);
 
 	csjp::Object<QTranslator> translator(new QTranslator);
 	if(!translator->load(trFile))
-		throw csjp::ResourceError("Can not load language file %s", C_STR(trFile));
+		throw csjp::ResourceError("Can not load language file %", trFile);
 
 	qApp->installTranslator(translator.release());
 }
@@ -57,11 +57,11 @@ void Application::pixelPerMM()
 {
 	double dpix = qApp->desktop()->physicalDpiX();
 	double dpiy = qApp->desktop()->physicalDpiY();
-	LOG("Physical DpiX: %.2f, DpiY: %.2f", dpix, dpiy);
+	LOG("Physical DpiX: %, DpiY: %", dpix, dpiy);
 
 	dpix = qApp->desktop()->logicalDpiX();
 	dpiy = qApp->desktop()->logicalDpiY();
-	LOG("Logical DpiX: %.2f, DpiY: %.2f", dpix, dpiy);
+	LOG("Logical DpiX: %, DpiY: %", dpix, dpiy);
 
 	double xpxPerMM = dpix/25.4 * 1.07; /* correction based on experience */
 	double ypxPerMM = dpiy/25.4 * 1.07; /* correction based on experience */
@@ -72,24 +72,24 @@ void Application::pixelPerMM()
 	ypxPerMM = dpiy/25.4 * 1.07; /* correction based on experience */
 
 	Config::pxPerMM = (xpxPerMM + ypxPerMM) / 2;
-	LOG("Horiz pixel per mm: %.2f, Vertic pixel per mm: %.2f, Avg pixel per mm: %.2f",
+	LOG("Horiz pixel per mm: %, Vertic pixel per mm: %, Avg pixel per mm: %",
 			xpxPerMM, ypxPerMM, Config::pxPerMM);
 
 	double width = qApp->desktop()->width();
 	double height = qApp->desktop()->height();
-	LOG("Width: %.2f, Height: %.2f", width, height);
+	LOG("Width: %, Height: %", width, height);
 
 	double widthMM = width/xpxPerMM;
 	double heightMM = height/ypxPerMM;
-	LOG("Computed Horiz length in mm: %.2f, Vertic length in mm: %.2f", widthMM, heightMM);
+	LOG("Computed Horiz length in mm: %, Vertic length in mm: %", widthMM, heightMM);
 
 	double qtWidthMM = qApp->desktop()->widthMM();
 	double qtHeightMM = qApp->desktop()->heightMM();
-	LOG("Qt given Horiz length in mm: %.2f, Vertic length in mm: %.2f", qtWidthMM, qtHeightMM);
+	LOG("Qt given Horiz length in mm: %, Vertic length in mm: %", qtWidthMM, qtHeightMM);
 
 	double base = 1000 * 1000;
 	Config::scaleFactor = log( (widthMM * heightMM) / (50.0 * 60.0) * base ) / log(base);
-	LOG("Computed scaleFactor: %.2f", Config::scaleFactor);
+	LOG("Computed scaleFactor: %", Config::scaleFactor);
 }
 
 /* Init the styleshhet */
@@ -99,7 +99,7 @@ void Application::loadCSS()
 	QString cssFileName(Path::css("application.css"));
 	QFile cssFile(cssFileName);
 	if(!cssFile.open(QIODevice::ReadOnly))
-		throw csjp::FileError("Cant open css file: %s", C_STR(cssFileName));
+		throw csjp::FileError("Cant open css file: %", cssFileName);
 	QString data(cssFile.readAll());
 
 	/* creating new css code with calculated sizes in px for the current device */
@@ -108,7 +108,7 @@ void Application::loadCSS()
 	QRegExp regExp(" ([0-9]+\\.?[0-9]*)mm");
 	QStringList cssList = data.split(regExp);
 	for(int i = 0; i < cssList.size(); i++){
-		//LOG("%s", C_STR(cssList[i]));
+		//LOG("%", cssList[i]);
 		newCSS += cssList[i];
 		int j = data.indexOf(regExp, lastPos);
 		if(-1 < j){
@@ -131,12 +131,12 @@ void Application::loadCSS()
 	newCSS.replace("\\\n", "");
 
 	qApp->setStyleSheet(newCSS);
-	DBG("CSS content:\n%s", C_STR(newCSS));
+	DBG("CSS content:\n", newCSS);
 }
 
 bool Application::notify(QObject * receiver, QEvent * event)
 {
-	//DBG("receiver: %p event: %p", receiver, event);
+	//DBG("receiver: % event: %", receiver, event);
 	QString info;
 	static bool altPressed = false;
 
@@ -162,8 +162,8 @@ bool Application::notify(QObject * receiver, QEvent * event)
 					return true;//repeated alt press QT BUG return as if handled
 				else
 					altPressed = true;
-				/*DBG("Key press 0x%x for %s:%p",
-						keyEvent->key(),
+				/*DBG("Key press % for %:%",
+						keyEvent,
 						receiver->metaObject()->className(), receiver);*/
 			}
 			break;
@@ -172,7 +172,7 @@ bool Application::notify(QObject * receiver, QEvent * event)
 				QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 				if(keyEvent->key() == Qt::Key_Alt)
 					altPressed = false;
-				/*DBG("Key release 0x%x for %s:%p",
+				/*DBG("Key release % for %:%",
 						keyEvent->key(),
 						receiver->metaObject()->className(), receiver);*/
 			}
@@ -183,12 +183,12 @@ bool Application::notify(QObject * receiver, QEvent * event)
 /*			{
 				QMouseEvent* const mouseEvent = static_cast<QMouseEvent*>(event);
 				QPoint pos = mouseEvent->globalPos();
-				DBG("Mouse event at %d, %d for %s:%p",
+				DBG("Mouse event at %, % for %:%",
 						pos.x(), pos.y(),
 						receiver->metaObject()->className(), receiver);
+			break;
 			}*/
 #endif
-			break;
 		case QEvent::MouseMove:
 			{
 				QObject * o = receiver;
@@ -204,11 +204,11 @@ bool Application::notify(QObject * receiver, QEvent * event)
 		default:
 			break;
 		}
-		/*DBG("Event %d:%p for %s:%p",
+		/*DBG("Event %:% for %:%",
 				event->type(), event,
 				receiver->metaObject()->className(), receiver);*/
 		bool res = QApplication::notify(receiver, event);
-		//DBG("Res %s", (res) ? "true" : "false");
+		//DBG("Res ", (res) ? "true" : "false");
 		return res;
 	} catch(csjp::Exception& e) {
 		EXCEPTION(e);
