@@ -102,7 +102,7 @@ public:
 
 	void parseFieldList(const StringChunk & line)
 	{
-		unint pos;
+		size_t pos;
 		StringChunk comment;
 		StringChunk decl(line);
 		// cut of the comment
@@ -202,7 +202,7 @@ public:
 	{
 		auto lines = split(data, "\n", false);
 		unsigned i = 0;
-		unint pos;
+		size_t pos;
 		bool declPhase = false;
 		try{
 			Object<Declaration> decl;
@@ -256,14 +256,14 @@ class TemplateParser
 	StringChunk tpl;
 	const OwnerContainer<Declaration> & declarations;
 	const StringChunk & tplDir;
-	unint declIdx;
-	unint tplLineNo;
-	unint tplLastLineStartPos;
+	size_t declIdx;
+	size_t tplLineNo;
+	size_t tplLastLineStartPos;
 	const char * const until;
 public:
 	TemplateParser(String & code, const StringChunk & tpl,
 			const OwnerContainer<Declaration> & declarations,
-			const StringChunk & tplDir, unint declIdx = 0) :
+			const StringChunk & tplDir, size_t declIdx = 0) :
 		code(code), tpl(tpl.str, tpl.length), declarations(declarations), tplDir(tplDir),
 		declIdx(declIdx), tplLineNo(1), tplLastLineStartPos(0), until(tpl.str + tpl.length)
 	{
@@ -368,8 +368,8 @@ public:
 
 		// no fields to iterate on or in skip mode
 		if(!numOfFields || skipMode){
-			unint posBegin;
-			unint posEnd;
+			size_t posBegin;
+			size_t posEnd;
 			while(true){
 				posBegin = tpl.length + 2;
 				posEnd = tpl.length + 1;
@@ -401,9 +401,9 @@ public:
 
 		// only one field to iterate on
 		if(endIdx == 0){
-			unint posBegin;
-			unint posLast;
-			unint posEnd;
+			size_t posBegin;
+			size_t posLast;
+			size_t posEnd;
 			while(true) {
 				posBegin = tpl.length + 2;
 				posLast = tpl.length + 1;
@@ -428,8 +428,8 @@ public:
 		code.trimBack("\t");
 
 		StringChunk block(tpl.str, tpl.length);
-		unint tplLineNoBegin = tplLineNo;
-		unint tplLastLineStartPosBegin = tplLastLineStartPos;
+		size_t tplLineNoBegin = tplLineNo;
+		size_t tplLastLineStartPosBegin = tplLastLineStartPos;
 
 		i = 0;
 		unsigned idx = 0;
@@ -503,7 +503,7 @@ public:
 					//LOG("end next");
 				}
 			} else if(block.chopFront("@IfIsSpec{@")){
-				unint pos;
+				size_t pos;
 				if(!field.spec)
 					if(block.findFirst(pos, "@IfIsSpec}@"))
 						block.chopFront(pos);
@@ -513,7 +513,7 @@ public:
 				block.trimFront("\n\r");
 				block.trimFront(" \t");
 			} else if(block.chopFront("@IfNotSpec{@")){
-				unint pos;
+				size_t pos;
 				if(field.spec)
 					if(block.findFirst(pos, "@IfNotSpec}@"))
 						block.chopFront(pos);
@@ -523,7 +523,7 @@ public:
 				block.trimFront("\n\r");
 				block.trimFront(" \t");
 			} else if(block.chopFront("@IfIsSet{@")){
-				unint pos;
+				size_t pos;
 				if(!field.set)
 					if(block.findFirst(pos, "@IfIsSet}@"))
 						block.chopFront(pos);
@@ -533,7 +533,7 @@ public:
 				block.trimFront("\n\r");
 				block.trimFront(" \t");
 			} else if(block.chopFront("@IfNotSet{@")){
-				unint pos;
+				size_t pos;
 				if(field.set)
 					if(block.findFirst(pos, "@IfNotSet}@"))
 						block.chopFront(pos);
@@ -588,13 +588,13 @@ public:
 			if(parseForEachField(tpl)) {
 				;
 			} else if(tpl.chopFront("@ForTypes{")){
-				unint pos;
+				size_t pos;
 				if(!tpl.findFirst(pos, "@"))
 					pos = tpl.length;
 				StringChunk typeList(tpl.str, pos);
 				tpl.chopFront(pos+1);
 				auto types = typeList.split(" \t,\n\r");
-				unint origDeclIdx = declIdx;
+				size_t origDeclIdx = declIdx;
 				StringChunk origTpl(tpl);
 				if(!tpl.findFirst(pos, "@}ForTypes@"))
 					throw ParseError("Missing @}ForTypes@");
@@ -614,7 +614,7 @@ public:
 				tpl.chopFront(pos);
 				tpl.chopFront("@}ForTypes@");
 			} else if(tpl.chopFront("@IfSingleKey{@")){
-				unint pos;
+				size_t pos;
 				unsigned c = 0;
 				for(auto& field : declarations[declIdx].fields)
 					if(field.key)
@@ -626,7 +626,7 @@ public:
 			} else if(tpl.chopFront("@IfSingleKey}@")){
 				tpl.trimFront("\n\r");
 			} else if(tpl.chopFront("@IfHasLinkField{@")){
-				unint pos;
+				size_t pos;
 				unsigned c = 0;
 				for(auto& field : declarations[declIdx].fields)
 					if(field.link)
@@ -638,7 +638,7 @@ public:
 			} else if(tpl.chopFront("@IfHasLinkField}@")){
 				tpl.trimFront("\n\r");
 			} else if(tpl.chopFront("@declare@")){
-				unint pos;
+				size_t pos;
 				if(!tpl.findFirst(pos, "\n"))
 					pos = tpl.length;
 				StringChunk declaredClass(tpl.str, pos);
@@ -648,7 +648,7 @@ public:
 					throw ParseError("Unknown class %", declaredClass);
 				declIdx = declarations.index(declaredClass);
 			} else if(tpl.chopFront("@include@")){
-				unint pos;
+				size_t pos;
 				if(!tpl.findFirst(pos, "\n"))
 					pos = tpl.length;
 				StringChunk includeList(tpl.str, pos);

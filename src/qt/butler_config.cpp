@@ -136,7 +136,7 @@ void initRootPath(const char * args0)
 	else
 		path << current << "/" << cmd;
 	path <<= QDir::cleanPath(QString(path.str));
-	csjp::unint pos;
+	size_t pos;
 	path.findLastOf(pos, "/");
 	path.chopBack(path.length - pos);
 	LOG("Computed binary path: %", path);
