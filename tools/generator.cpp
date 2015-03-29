@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <csjp_logger.h>
 #include <csjp_file.h>
+#include <csjp_json.h>
 #include <csjp_owner_container.h>
 #include <csjp_sorter_owner_container.h>
 
@@ -255,6 +256,7 @@ class TemplateParser
 	String & code;
 	StringChunk tpl;
 	const OwnerContainer<Declaration> & declarations;
+	Json & templates;
 	const StringChunk & tplDir;
 	size_t declIdx;
 	size_t tplLineNo;
@@ -263,8 +265,10 @@ class TemplateParser
 public:
 	TemplateParser(String & code, const StringChunk & tpl,
 			const OwnerContainer<Declaration> & declarations,
+			Json & templates,
 			const StringChunk & tplDir, size_t declIdx = 0) :
-		code(code), tpl(tpl.str, tpl.length), declarations(declarations), tplDir(tplDir),
+		code(code), tpl(tpl.str, tpl.length), declarations(declarations),
+		templates(templates), tplDir(tplDir),
 		declIdx(declIdx), tplLineNo(1), tplLastLineStartPos(0), until(tpl.str + tpl.length)
 	{
 	}
@@ -302,8 +306,8 @@ public:
 			}
 			code << fieldList;
 		} else if(tpl.length) {
-			if(tpl[0] == '@')
-				LOG("Fail");
+			//if(tpl[0] == '@')
+			//	LOG("Fail");
 			code << tpl[0];
 			tpl.chopFront(1);
 		}
@@ -587,6 +591,17 @@ public:
 
 			if(parseForEachField(tpl)) {
 				;
+			} else if(tpl.chopFront("@Define{")){
+				size_t pos;
+				if(!tpl.findFirst(pos, "@"))
+					pos = tpl.length;
+				String tplName(tpl.str, pos);
+				tpl.chopFront(pos+1);
+				if(!tpl.findFirst(pos, "@}Define@"))
+					throw ParseError("Missing @}Define@");
+				templates[tplName] = String(tpl.str, pos);
+				tpl.chopFront(pos);
+				tpl.chopFront("@}Define@");
 			} else if(tpl.chopFront("@ForTypes{")){
 				size_t pos;
 				if(!tpl.findFirst(pos, "@"))
@@ -605,7 +620,7 @@ public:
 						throw ParseError("Unknown class %", type);
 					declIdx = declarations.index(type);
 					TemplateParser parser(code, tpl,
-							declarations, tplDir, declIdx);
+							declarations, templates, tplDir, declIdx);
 					parser.parse();
 				}
 				declIdx = origDeclIdx;
@@ -632,10 +647,10 @@ public:
 					if(field.link)
 						c++;
 				if(c == 0)
-					if(tpl.findFirst(pos, "@IfHasLinkField}@"))
+					if(tpl.findFirst(pos, "@}IfHasLinkField@"))
 						tpl.chopFront(pos);
 				tpl.trimFront("\n\r");
-			} else if(tpl.chopFront("@IfHasLinkField}@")){
+			} else if(tpl.chopFront("@}IfHasLinkField@")){
 				tpl.trimFront("\n\r");
 			} else if(tpl.chopFront("@declare@")){
 				size_t pos;
@@ -655,14 +670,24 @@ public:
 				tpl.chopFront(pos);
 				auto files = includeList.split(" ");
 				for(auto& file : files){
+					LOG("Include: ", file);
 					String tplFileName(tplDir.str, tplDir.length);
 					tplFileName << file;
 					File tplFile(tplFileName);
-					String newTpl = tplFile.readAll();
-					StringChunk newTplChunk(newTpl.str, newTpl.length);
-					TemplateParser parser(code, newTplChunk,
-							declarations, tplDir, declIdx);
-					parser.parse();
+					if(tplFile.exists()) {
+						String newTpl = tplFile.readAll();
+						StringChunk newTplChunk(newTpl.str, newTpl.length);
+						TemplateParser parser(code, newTplChunk,
+							declarations, templates, tplDir, declIdx);
+						parser.parse();
+					} else {
+						//LOG("Non file template included: ", file);
+						String & newTpl = templates[file];
+						StringChunk newTplChunk(newTpl.str, newTpl.length);
+						TemplateParser parser(code, newTplChunk,
+							declarations, templates, tplDir, declIdx);
+						parser.parse();
+					}
 				}
 			} else
 				parseCommonMarker(tpl);
@@ -737,6 +762,7 @@ int main(int argc, char *args[])
 	}
 
 	OwnerContainer<Declaration> declarations;
+	Json templates;
 	String code;
 
 	File declFile(declFileName);
@@ -754,7 +780,7 @@ int main(int argc, char *args[])
 	inputBuf.replace("\r", "");
 	StringChunk inputChunk(inputBuf.str, inputBuf.length);
 
-	TemplateParser parser(code, inputChunk, declarations, tplDir);
+	TemplateParser parser(code, inputChunk, declarations, templates, tplDir);
 	try {
 		parser.parse();
 	} catch (Exception & e) {

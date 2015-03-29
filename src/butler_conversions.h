@@ -70,15 +70,15 @@ inline QString & operator<<= (QString & qstr, const enum QueryStockOptions & rhs
 
 inline enum QueryStockOptions & operator<<= (enum QueryStockOptions & lhs, const QVariant & rhs)
 {
-		QString s = rhs.toString();
-		if(s == "AllItemChanges")
-				lhs = QueryStockOptions::AllItemChanges;
-		else if(s == "Gains")
-				lhs = QueryStockOptions::Gains;
-		else if(s == "Looses")
-				lhs = QueryStockOptions::Looses;
-		else
-			throw csjp::InvalidArgument(EXCLI);
+	QString s = rhs.toString();
+	if(s == "AllItemChanges")
+		lhs = QueryStockOptions::AllItemChanges;
+	else if(s == "Gains")
+		lhs = QueryStockOptions::Gains;
+	else if(s == "Looses")
+		lhs = QueryStockOptions::Looses;
+	else
+		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
@@ -100,13 +100,13 @@ inline QString & operator<<= (QString & qstr, const enum QueryTagOptions & rhs)
 
 inline enum QueryTagOptions & operator<<= (enum QueryTagOptions & lhs, const QVariant & rhs)
 {
-		QString s = rhs.toString();
-		if(s == "MatchAll")
-				lhs = QueryTagOptions::MatchAll;
-		else if(s == "MatchAny")
-				lhs = QueryTagOptions::MatchAny;
-		else
-			throw csjp::InvalidArgument(EXCLI);
+	QString s = rhs.toString();
+	if(s == "MatchAll")
+		lhs = QueryTagOptions::MatchAll;
+	else if(s == "MatchAny")
+		lhs = QueryTagOptions::MatchAny;
+	else
+		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
@@ -208,7 +208,12 @@ inline bool & operator<<= (bool & b, const QVariant & v)
 {
 	b = v.toBool(); return b;
 }
-
+/*
+inline YNBool & operator<<= (YNBool & b, const QVariant & v)
+{
+	b.val = v.toBool(); return b;
+}
+*/
 inline QStringList & operator<<= (QStringList & list, const WareTypeSet & wareTypes)
 {
 	list.clear();
@@ -314,7 +319,6 @@ inline QString & operator<<= (QString & str, const QueryWareSet & wares)
 	}
 	return str;
 }
-
 
 
 

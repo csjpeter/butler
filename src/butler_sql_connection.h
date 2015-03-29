@@ -29,7 +29,10 @@ class DatabaseDescriptor
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
-@include@ dataclass_set.h
+class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+{
+	@include@ dataclass_set.h
+};
 
 inline bool operator<(const char * lhs, const DatabaseDescriptor & rhs)
 {
@@ -195,6 +198,7 @@ public:
 	void bindValue(int pos, const DateTime & time);
 	void bindValue(int pos, const double d);
 	void bindValue(int pos, const int i);
+	//void bindValue(int pos, const YNBool b);
 	void bindValue(int pos, const enum QueryStockOptions e);
 	void bindValue(int pos, const enum QueryTagOptions e);
 	void exec();
@@ -238,11 +242,21 @@ inline double & operator<<= (double & d, const SqlVariant & v)
 {
 	d = v.var.toDouble(); return d;
 }
-
+/*
+inline YNBool & operator<<= (YNBool & b, const SqlVariant & v)
+{
+	QChar c = v.var.toChar();
+	if(c == 'Y')
+		b = true;
+	else
+		b = false;
+	return b;
+}
+*/
 inline bool & operator<<= (bool & b, const SqlVariant & v)
 {
 	QChar c = v.var.toChar();
-	if(c == 'I')
+	if(c == 'Y')
 		b = true;
 	else
 		b = false;

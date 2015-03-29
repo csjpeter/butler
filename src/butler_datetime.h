@@ -26,10 +26,7 @@ public:
 				QDateTime(QDateTime::fromString(QString(t.c_str()), Qt::ISODate)) {}
 		virtual ~DateTime() {}
 
-		static DateTime now()
-		{
-			return DateTime(QDateTime::currentDateTime());
-		}
+		static DateTime now() { return DateTime(QDateTime::currentDateTime()); }
 
 		DateTime & operator=(const char * s)
 		{
@@ -38,61 +35,26 @@ public:
 				return *this;
 		}
 
-		DateTime & operator=(const QDateTime & t)
-		{
-				copy(t);
-				return *this;
-		}
+		DateTime & operator=(const QDateTime & t) { copy(t); return *this; }
+		DateTime & operator=(const DateTime & t) { copy(t); return *this; }
 
-		DateTime & operator=(const DateTime & t)
-		{
-				copy(t);
-				return *this;
-		}
-
-		bool isEqual(const QDateTime & t) const
-		{
-				return toString() == t.toString();
-		}
-
-		bool isLess(const QDateTime & t) const
-		{
-				return *this < t;
-		}
-
-		bool isMore(const QDateTime & t) const
-		{
-				return t < *this;
-		}
+		bool isEqual(const QDateTime & t) const { return toString() == t.toString(); }
+		bool isLess(const QDateTime & t) const { return *this < t; }
+		bool isMore(const QDateTime & t) const { return t < *this; }
 
 		/* These methods are providing and expecting only the
 		 * the ISO:8601 compatible YYYY-MM-DDTHH:MM:SS format. */
-		QString isoUtcString() const
-		{
-				return toUTC().toString("yyyy-MM-ddThh:mm:ssZ");
-		}
+		QString isoUtcString() const { return toUTC().toString("yyyy-MM-ddThh:mm:ssZ"); }
 
 private:
-		void copy(const QDateTime & t)
-		{
-				QDateTime & dt = *this;
-				dt = t;
-		}
+		void copy(const QDateTime & t) { QDateTime & dt = *this; dt = t; }
 };
 
-inline bool operator==(const DateTime & a, const DateTime & b)
-{
-		return a.isEqual(b);
-}
+inline bool operator==(const DateTime & a, const DateTime & b) { return a.isEqual(b); }
+inline bool operator!=(const DateTime & a, const DateTime & b) { return !a.isEqual(b); }
+inline bool operator<(const DateTime & a, const DateTime & b) { return a.isLess(b); }
 
-inline bool operator!=(const DateTime & a, const DateTime & b)
-{
-		return !a.isEqual(b);
-}
-
-inline bool operator<(const DateTime & a, const DateTime & b)
-{
-		return a.isLess(b);
-}
+inline DateTime & operator<<= (DateTime & lhs, const char * rhs) { lhs = rhs; return lhs; }
+inline DateTime & operator<<= (DateTime & lhs, const csjp::CString & rhs) { lhs = rhs.ptr; return lhs; }
 
 #endif

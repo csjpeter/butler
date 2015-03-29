@@ -435,7 +435,14 @@ void SqlQuery::bindValue(int pos, const int i)
 	(void)i;
 //	bindValue(pos, QVariant(i));
 }
-
+/*
+void SqlQuery::bindValue(int pos, const YNBool b)
+{
+	(void)pos;
+	(void)b;
+//	bindValue(pos, QVariant(b));
+}
+*/
 void SqlQuery::bindValue(int pos, const enum QueryStockOptions e)
 {
 	(void)pos;

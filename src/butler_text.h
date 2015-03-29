@@ -11,6 +11,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <butler_macros.h>
+
 class Text : public QString
 {
 public:
@@ -24,78 +26,30 @@ public:
 		explicit Text(const csjp::String & t) : QString(t.c_str()) {}
 		virtual ~Text() {}
 
-		Text & operator=(const char * s)
-		{
-				QString::operator=(s);
-				return *this;
-		}
+		Text & operator=(const char * s) { QString::operator=(s); return *this; }
+		Text & operator=(const Text & t) { copy(t); return *this; }
 
-		Text & operator=(const Text & t)
-		{
-				copy(t);
-				return *this;
-		}
-
-		bool isEqual(const QString & t) const
-		{
-				return QString::localeAwareCompare(*this, t) == 0;
-		}
-
-		bool isLess(const QString & t) const
-		{
-				return QString::localeAwareCompare(*this, t) < 0;
-		}
-
-		bool isMore(const QString & t) const
-		{
-				return 0 < QString::localeAwareCompare(*this, t);
-		}
+		bool isEqual(const QString & t) const { return QString::localeAwareCompare(*this, t) == 0; }
+		bool isLess(const QString & t) const { return QString::localeAwareCompare(*this, t) < 0; }
+		bool isMore(const QString & t) const { return 0 < QString::localeAwareCompare(*this, t); }
 
 private:
-		void copy(const QString & t)
-		{
-				QString::operator=(t);
-		}
+		void copy(const QString & t) { QString::operator=(t); }
 };
 
-inline bool operator==(const Text & a, const QString & b)
-{
-		return a.isEqual(b);
-}
+inline bool operator==(const Text & a, const QString & b) { return a.isEqual(b); }
+inline bool operator==(const Text & a, const Text & b) { return a.isEqual(b); }
+inline bool operator!=(const Text & a, const QString & b) { return !a.isEqual(b); }
+inline bool operator!=(const QString & a, const Text & b) { return !b.isEqual(a); }
+inline bool operator!=(const Text & a, const Text & b) { return !a.isEqual(b); }
+inline bool operator<(const Text & a, const QString & b) { return a.isLess(b); }
+inline bool operator<(const QString & a, const Text & b) { return b.isMore(a); }
+inline bool operator<(const Text & a, const Text & b) { return a.isLess(b); }
 
-inline bool operator==(const Text & a, const Text & b)
-{
-		return a.isEqual(b);
-}
+inline Text & operator<<= (Text & str, const char * rhs) { str = rhs; return str; }
+inline Text & operator<<= (Text & str, const csjp::CString & rhs) { str = rhs.ptr; return str; }
 
-inline bool operator!=(const Text & a, const QString & b)
-{
-		return !a.isEqual(b);
-}
-
-inline bool operator!=(const QString & a, const Text & b)
-{
-		return !b.isEqual(a);
-}
-
-inline bool operator!=(const Text & a, const Text & b)
-{
-		return !a.isEqual(b);
-}
-
-inline bool operator<(const Text & a, const QString & b)
-{
-		return a.isLess(b);
-}
-
-inline bool operator<(const QString & a, const Text & b)
-{
-		return b.isMore(a);
-}
-
-inline bool operator<(const Text & a, const Text & b)
-{
-		return a.isLess(b);
-}
+inline csjp::String & operator<< (csjp::String & str, const Text & rhs)
+{ str.append(C_STR(rhs)); return str; }
 
 #endif

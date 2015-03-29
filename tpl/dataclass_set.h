@@ -1,5 +1,3 @@
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
-{
 public:
 	csjp::PodArray<@Type@::Fields> ordering;
 	bool ascending;
@@ -54,5 +52,4 @@ public:
 @}@
 	}
 	~@Type@Set() {}
-};
 

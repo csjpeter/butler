@@ -77,7 +77,7 @@ void @Type@Db::query(@Type@Set & list@For{LinkField@, const @.Type@ & _@.Name@@}
 	sqlQuery.prepare("SELECT @TableFieldList@ FROM @Type@"
 @IfHasLinkField{@
 			" WHERE @For{LinkField@@.Name@ = ?, @-@@.Name@ = ?@}@"
-@IfHasLinkField}@
+@}IfHasLinkField@
 			);
 @For{LinkField@
 	sqlQuery.bindValue(@.Idx@, _@.Name@);
