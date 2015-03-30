@@ -144,14 +144,12 @@ public:
 		params.add(move_cast(str));
 		bind(params, args...);
 	}
-private:
-	SqlResult exec(const csjp::Array<csjp::String> & params, const char * query);
 public:
+	SqlResult exec(const csjp::Array<csjp::String> & params, const char * query);
+	SqlResult exec(const csjp::Array<csjp::String> & params, const csjp::String & query)
+			{ return exec(params, query.str); }
 	SqlResult exec(const char * query)
-	{
-		csjp::Array<csjp::String> params;
-		return exec(params, query);
-	}
+			{ csjp::Array<csjp::String> params; return exec(params, query); }
 	SqlResult exec(const csjp::String & query) { return exec(query.str); }
 	template<typename... Args> SqlResult exec(const char * query, const Args & ... args)
 	{
