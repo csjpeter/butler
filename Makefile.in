@@ -60,14 +60,12 @@ tmp/src/test/%.opp: src/test/%.cpp
 	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
 
 tmp/src/qt/%.opp: src/qt/%.cpp \
-		src/butler_dataclasses.h \
-		src/butler_dbclasses.h
+		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
 
 tmp/src/%.opp: src/%.cpp \
-		src/butler_dataclasses.h \
-		src/butler_dbclasses.h
+		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
@@ -119,8 +117,7 @@ TEST_BINARIES=\
 
 SQL_OBJECTS+= \
 	tmp/src/butler_sql_connection.opp \
-	tmp/src/butler_dataclasses.opp \
-	tmp/src/butler_dbclasses.opp
+	tmp/src/butler_dataclasses.opp
 
 SQL_INCLUDES=
 

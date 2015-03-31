@@ -4,7 +4,6 @@ private:
 
 private:
 	SqlConnection & sql;
-	@Type@Db db;
 	@Type@Set dataSet;
 public:
 	const @Type@Set & set;
@@ -55,12 +54,14 @@ public:
 	void query();
 
 protected:
-	bool queryFilter(const @Type@ & modified);
-	static void objChange(const @Type@Db & db, const @Type@ & modified);
 	/* return true if 'modified' should be in query list */
-	void objChangeListener(const @Type@Db & db, const @Type@ & modified);
-	static void objRemoved(const @Type@Db & db, const @Type@ & removed);
-	void objRemovedListener(const @Type@Db & db, const @Type@ & removed);
+	bool queryFilter(const @Type@ & modified);
+	static void objInserted(SqlConnection & sql, const @Type@ & obj);
+	void objInsertListener(SqlConnection & sql, const @Type@ & obj);
+	static void objChange(SqlConnection & sql, const @Type@ & orig, const @Type@ & modified);
+	void objChangeListener(SqlConnection & sql, const @Type@ & orig, const @Type@ & modified);
+	static void objRemoved(SqlConnection & sql, const @Type@ & removed);
+	void objRemovedListener(SqlConnection & sql, const @Type@ & removed);
 
 private:
 	static csjp::ReferenceContainer<@Type@Model> operationListeners;

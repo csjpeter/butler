@@ -111,7 +111,6 @@ private:
 	friend class SqlTransaction;
 	unsigned transactions;
 	DatabaseDescriptor dbDesc;
-	//friend class SqlQuery;
 
 public:
 	const DatabaseDescriptor & desc;
@@ -174,45 +173,6 @@ public:
 	QVariant var;
 };
 
-class SqlQuery
-{
-public:
-	SqlQuery(SqlConnection &);
-	~SqlQuery();
-private:
-	SqlQuery();
-
-public:
-
-	void exec(const QString & query);
-	void prepare(const QString & query);
-	bool isPrepared();
-	void bindValue(int pos, const Text & text);
-	void bindValue(int pos, const DateTime & time);
-	void bindValue(int pos, const double d);
-	void bindValue(int pos, const int i);
-	//void bindValue(int pos, const YNBool b);
-	void bindValue(int pos, const enum QueryStockOptions e);
-	void bindValue(int pos, const enum QueryTagOptions e);
-	void exec();
-	bool next();
-	unsigned colIndex(const QString & name);
-	DateTime dateTime(int index);
-	Text text(int index);
-	double real(int index);
-	int number(int index);
-	SqlVariant sqlValue(int index);
-	QVariant value(int index);
-	void finish();
-
-private:
-	QString queryString();
-	void bindValue(int pos, const QVariant & v);
-
-private:
-	SqlConnection & sql;
-	bool prepared;
-};
 
 inline Text & operator<<=(Text & qstr, const SqlVariant & v)
 {

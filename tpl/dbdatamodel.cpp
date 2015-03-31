@@ -186,59 +186,62 @@ const @Type@& @Type@Model::data(int row) const
 	return dataSet.queryAt(row);
 }
 
-void @Type@Model::del(int row)
-{
-	@Type@ & obj = dataSet.queryAt(row);
-	db.del(obj);
-	objRemoved(db, obj);
-}
-
 void @Type@Model::addNew(@Type@ & obj)
 {
-	db.insert(obj);
-	objChange(db, obj);
+	obj.toDb(sql);
+	objInserted(sql, obj);
+}
+
+void @Type@Model::objInserted(SqlConnection & sql, const @Type@ & obj)
+{
+	for(auto & i : operationListeners)
+		i.objInsertListener(sql, obj);
+}
+
+void @Type@Model::objInsertListener(SqlConnection & sql, const @Type@ & obj)
+{
+	if(& sql != &(this->sql))
+		return;
+
+	bool want = queryFilter(obj);
+	if(dataSet.has(@For{KeyField@obj.@.Name@, @-@obj.@.Name@@}@)){
+		int row = dataSet.index(@For{KeyField@obj.@.Name@, @-@obj.@.Name@@}@);
+		if(want){
+			dataSet.queryAt(row) = obj;
+			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+		} else {
+			ModelRemoveGuard g(this, QModelIndex(), row, row);
+			dataSet.removeAt(row);
+		}
+	} else {
+		if(want){
+			ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+			dataSet.add(new @Type@(obj));
+		}
+	}
 }
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
 	@Type@ & orig = dataSet.queryAt(row);
-	db.update(orig, modified);
-	objChange(db, modified);
+	modified.toDb(sql, orig);
+	objChange(sql, orig, modified);
 }
 
-void @Type@Model::objRemoved(const @Type@Db & db, const @Type@ & r)
+void @Type@Model::objChange(SqlConnection & sql, const @Type@ & orig, const @Type@ & modified)
 {
 	for(auto & i : operationListeners)
-		i.objRemovedListener(db, r);
+		i.objChangeListener(sql, orig, modified);
 }
 
-void @Type@Model::objRemovedListener(const @Type@Db & db, const @Type@ & r)
+void @Type@Model::objChangeListener(SqlConnection & sql, const @Type@ & orig, const @Type@ & modified)
 {
-	if(& db != &(this->db))
-		return;
-
-	if(!dataSet.has(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@))
-		return;
-
-	int row = dataSet.index(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@);
-	ModelRemoveGuard g(this, QModelIndex(), row, row);
-	dataSet.removeAt(row);
-}
-
-void @Type@Model::objChange(const @Type@Db & db, const @Type@ & modified)
-{
-	for(auto & i : operationListeners)
-		i.objChangeListener(db, modified);
-}
-
-void @Type@Model::objChangeListener(const @Type@Db & db, const @Type@ & modified)
-{
-	if(& db != &(this->db))
+	if(& sql != &(this->sql))
 		return;
 
 	bool want = queryFilter(modified);
-	if(dataSet.has(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@)){
-		int row = dataSet.index(@For{KeyField@modified.@.Name@, @-@modified.@.Name@@}@);
+	if(dataSet.has(@For{KeyField@orig.@.Name@, @-@orig.@.Name@@}@)){
+		int row = dataSet.index(@For{KeyField@orig.@.Name@, @-@orig.@.Name@@}@);
 		if(want){
 			dataSet.queryAt(row) = modified;
 			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
@@ -252,5 +255,32 @@ void @Type@Model::objChangeListener(const @Type@Db & db, const @Type@ & modified
 			dataSet.add(new @Type@(modified));
 		}
 	}
+}
+
+void @Type@Model::del(int row)
+{
+	@Type@ & obj = dataSet.queryAt(row);
+	obj.deleted = true;
+	obj.toDb(sql);
+	objRemoved(sql, obj);
+}
+
+void @Type@Model::objRemoved(SqlConnection & sql, const @Type@ & r)
+{
+	for(auto & i : operationListeners)
+		i.objRemovedListener(sql, r);
+}
+
+void @Type@Model::objRemovedListener(SqlConnection & sql, const @Type@ & r)
+{
+	if(& sql != &(this->sql))
+		return;
+
+	if(!dataSet.has(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@))
+		return;
+
+	int row = dataSet.index(@For{KeyField@r.@.Name@, @-@r.@.Name@@}@);
+	ModelRemoveGuard g(this, QModelIndex(), row, row);
+	dataSet.removeAt(row);
 }
 

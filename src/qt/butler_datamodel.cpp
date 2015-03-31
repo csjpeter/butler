@@ -159,7 +159,6 @@ SCC TidQueryFieldDeleted		= QT_TRANSLATE_NOOP("QueryModel", "Is deleted");
 
 ItemModel::ItemModel(SqlConnection & sql, const WareModel & wmodel) :
 	sql(sql),
-	db(sql),
 	set(dataSet),
 	wmodel(wmodel)
 {
@@ -171,7 +170,7 @@ ItemModel::ItemModel(SqlConnection & sql, const WareModel & wmodel) :
 void ItemModel::query()
 {
 	ModelResetGuard g(this);
-	db.query(opts, stat, dataSet);
+	dataSet = @Type@Set::fromDb(sql, opts, stat);
 }
 
 bool ItemModel::queryFilter(const Item & modified)

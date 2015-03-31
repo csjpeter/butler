@@ -1,14 +1,14 @@
 @Type@Model::@Type@Model(SqlConnection & sql) :
-	sql(sql), db(sql), set(dataSet)
+	sql(sql), set(dataSet)
 {
 	operationListeners.add(*this);
-	query();
+	dataSet = @Type@Set::fromDb(sql);
 }
 
 void @Type@Model::query()
 {
 	ModelResetGuard g(this);
-	db.query(dataSet);
+	dataSet = @Type@Set::fromDb(sql);
 }
 
 bool @Type@Model::queryFilter(const @Type@ & modified)
