@@ -287,7 +287,7 @@ public:
 			tpl.trimFront("\n\r");
 			String fieldList;
 			for(auto& field : declarations[declIdx].fields){
-				if(field.set || !field.name.length)
+				if(field.set || !field.name.length || field.derived)
 					continue;
 				if(fieldList.length)
 					fieldList << ", ";

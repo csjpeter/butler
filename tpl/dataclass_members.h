@@ -44,6 +44,19 @@ public:
 
 	~@Type@() {}
 
+	csjp::Json toJson() const
+	{
+		csjp::Json json;
+@For{TableField@
+	{
+		csjp::String s;
+		s <<= @.Name@;
+		json["@.Name@"] = move_cast(s);
+	}
+@}@
+		return json;
+	}
+
 	@Type@& operator=(@Type@ && temp)
 	{
 @For{Field@

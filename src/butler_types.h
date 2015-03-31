@@ -7,6 +7,8 @@
 #define BUTLER_TYPES_H
 
 #include <csjp_string_chunk.h>
+#include <csjp_json.h>
+
 #include <QString>
 #include <QVariant>
 
@@ -102,6 +104,25 @@ inline enum SqlDriver & operator<<=(enum SqlDriver & lhs, const QVariant & rhs)
 				lhs = SqlDriver::MySQL;
 		else
 			throw csjp::InvalidArgument(EXCLI);
+	return lhs;
+}
+
+inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs)
+{
+	switch(rhs)
+	{
+		case SqlDriver::PSql :
+			lhs = "PSql";
+			break;
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
+			break;
+		case SqlDriver::MySQL :
+			lhs = "MySQL";
+			break;
+		default:
+			throw csjp::InvalidArgument(EXCLI);
+	}
 	return lhs;
 }
 
@@ -239,5 +260,10 @@ inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & lhs, const QVar
 		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
+
+inline csjp::String & operator<<=(csjp::String & lhs, const csjp::String & rhs)
+				{ lhs.cutAt(0); lhs << rhs; return lhs; }
+inline csjp::String & operator<<=(csjp::String & lhs, const csjp::Json & rhs)
+				{ lhs = rhs.toString(); return lhs; }
 
 #endif

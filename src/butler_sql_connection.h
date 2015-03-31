@@ -67,12 +67,12 @@ public:
 		SqlResult & res;
 		bool valid;
 	};
-	iterator begin() { return iterator(*this); }
+	iterator begin() { return iterator(*this, (row == 0) ? true : false); }
 	iterator end() { return iterator(*this, false); }
 public:
 	~SqlResult();
 	SqlResult(PGresult * res) : driver(SqlDriver::PSql), row(0) { this->res.pg = res; }
-	SqlResult(sqlite3_stmt * res) : driver(SqlDriver::SQLite), row(0) { this->res.lite = res; }
+	SqlResult(sqlite3_stmt * result);
 
 	const char * value(int col);
 	bool nextRow();
@@ -124,6 +124,7 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
+		//LOG("params capacity: %, length: %", params.capacity, params.length);
 		if(params.capacity == params.length)
 			params.setCapacity(params.length + 1);
 		params.add(move_cast(str));
@@ -133,6 +134,7 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
+		//LOG("params capacity: %, length: %", params.capacity, params.length);
 		if(params.capacity == params.length)
 			params.setCapacity(params.length * 2);
 		params.add(move_cast(str));

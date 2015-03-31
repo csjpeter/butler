@@ -12,6 +12,17 @@
 
 #include "butler_sql_connection.h"
 
+SqlResult::SqlResult(sqlite3_stmt * result) : driver(SqlDriver::SQLite), row(0)
+{
+	this->res.lite = result;
+
+	int res = sqlite3_step(result);
+	if(res != SQLITE_DONE && res != SQLITE_ROW)
+		throw DbError("Error: %\n%", res, sqlite3_errstr(res));
+	if(res == SQLITE_DONE)
+		row = -1;
+}
+
 const char * SqlResult::value(int col)
 {
 	switch(driver){
@@ -199,17 +210,26 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 					paramValues.add(p.str);
 					//LOG("Param: %", p);
 				}
+
+				csjp::String cmd(query);
+				auto s = params.size();
+				for(size_t i = 0; i < s; i++){
+					csjp::String p("$");
+					p << i;
+					cmd.replace("?", p.str, 0, cmd.length, 1);
+				}
+
 				PGresult * res = PQexecParams(
-							conn.pg, query, paramValues.length, 0, paramValues.data, 0, 0, 0);
+							conn.pg, cmd.str, paramValues.length, 0, paramValues.data, 0, 0, 0);
 				/*if(!res)
-				  throw DbError("Fatal, the sql query result is null. Error message:\n%",
+				  throw DbError("Fatal, the sql cmd.str result is null. Error message:\n%",
 				  PQerrorMessage(conn.pg));*/
 				const char * errMsg = PQerrorMessage(conn.pg);
 				int status = PQresultStatus(res);
 				if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
 					PQclear(res);
 					throw DbError("Failed SQL command:\n%\n"
-							"Status:%\nError message:\n%", query, status, errMsg);
+							"Status:%\nError message:\n%", cmd.str, status, errMsg);
 				}
 				try {
 					return SqlResult(res);
@@ -230,26 +250,23 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 					throw e;
 				}
 				LOG("Query: %", query);
-				int i = 0;
+				int i = 1;
 				for(const auto & p : params){
-					LOG("Param: %", p);
+					LOG("Param %: '%'", i, p);
 					res = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
 					if(res != SQLITE_OK){
 						DbError e("Failed to bind parameter '%' to sqlite query:\n%"
-								"\nError:\n%", p, query, sqlite3_errstr(res));
+								"\nError: %\n%", p, query, res, sqlite3_errstr(res));
 						sqlite3_finalize(ppStmt);
 						throw e;
 					}
 				}
-				res = sqlite3_step(ppStmt);
-				if(res != SQLITE_OK && res != SQLITE_DONE && res != SQLITE_ROW){
-					DbError e("Failed to execute sqlite query:\n%\nError: %\n%",
-							query, res, sqlite3_errstr(res));
-					sqlite3_finalize(ppStmt);
-					throw e;
-				}
 				try {
 					return SqlResult(ppStmt);
+				} catch (csjp::Exception & e) {
+					sqlite3_finalize(ppStmt);
+					e.note("Failed to execute sqlite query:\n", query);
+					throw;
 				} catch (std::exception & e) {
 					sqlite3_finalize(ppStmt);
 					throw;
