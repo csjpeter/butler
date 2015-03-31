@@ -46,16 +46,11 @@ inline bool operator<(const DatabaseDescriptor & lhs, const char * rhs)
 
 
 
+
 DECL_EXCEPTION(csjp::Exception, DbError);
 DECL_EXCEPTION(DbError, DbIncompatibleTableError);
 DECL_EXCEPTION(DbError, DbLogicError);
 DECL_EXCEPTION(DbError, DbConnectError);
-
-/* FIXME :
- * - check if object has changed in database before
- *   insert/update/delete operations
- * - escaping required while assempling item queries
- */
 
 class SqlResult
 {
@@ -129,7 +124,7 @@ public:
 	template<typename Arg> void bind(csjp::Array<csjp::String> & params, const Arg & arg)
 	{
 		csjp::String str;
-		str << arg;
+		str <<= arg;
 		if(params.capacity == params.length)
 			params.setCapacity(params.length + 1);
 		params.add(move_cast(str));
@@ -138,7 +133,7 @@ public:
 		void bind(csjp::Array<csjp::String> & params, const Arg & arg, const Args & ... args)
 	{
 		csjp::String str;
-		str << arg;
+		str <<= arg;
 		if(params.capacity == params.length)
 			params.setCapacity(params.length * 2);
 		params.add(move_cast(str));
@@ -219,29 +214,29 @@ private:
 	bool prepared;
 };
 
-inline Text & operator<<= (Text & qstr, const SqlVariant & v)
+inline Text & operator<<=(Text & qstr, const SqlVariant & v)
 {
 	qstr = v.var.toString(); return qstr;
 }
 
-inline DateTime & operator<<= (DateTime & time, const SqlVariant & v)
+inline DateTime & operator<<=(DateTime & time, const SqlVariant & v)
 {
 	time = v.var.toDateTime();
 	time.setTimeSpec(Qt::UTC);
 	return time;
 }
 
-inline int & operator<<= (int & i, const SqlVariant & v)
+inline int & operator<<=(int & i, const SqlVariant & v)
 {
 	i = v.var.toInt(); return i;
 }
 
-inline double & operator<<= (double & d, const SqlVariant & v)
+inline double & operator<<=(double & d, const SqlVariant & v)
 {
 	d = v.var.toDouble(); return d;
 }
 /*
-inline YNBool & operator<<= (YNBool & b, const SqlVariant & v)
+inline YNBool & operator<<=(YNBool & b, const SqlVariant & v)
 {
 	QChar c = v.var.toChar();
 	if(c == 'Y')
@@ -251,7 +246,7 @@ inline YNBool & operator<<= (YNBool & b, const SqlVariant & v)
 	return b;
 }
 */
-inline bool & operator<<= (bool & b, const SqlVariant & v)
+inline bool & operator<<=(bool & b, const SqlVariant & v)
 {
 	QChar c = v.var.toChar();
 	if(c == 'Y')
@@ -261,12 +256,12 @@ inline bool & operator<<= (bool & b, const SqlVariant & v)
 	return b;
 }
 
-inline enum QueryStockOptions & operator<<= (enum QueryStockOptions & e, const SqlVariant & v)
+inline enum QueryStockOptions & operator<<=(enum QueryStockOptions & e, const SqlVariant & v)
 {
 	e = (enum QueryStockOptions)v.var.toInt(); return e;
 }
 
-inline enum QueryTagOptions & operator<<= (enum QueryTagOptions & e, const SqlVariant & v)
+inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & e, const SqlVariant & v)
 {
 	e = (enum QueryTagOptions)v.var.toInt(); return e;
 }

@@ -46,10 +46,9 @@ inline bool operator<(const Text & a, const QString & b) { return a.isLess(b); }
 inline bool operator<(const QString & a, const Text & b) { return b.isMore(a); }
 inline bool operator<(const Text & a, const Text & b) { return a.isLess(b); }
 
-inline Text & operator<<= (Text & str, const char * rhs) { str = rhs; return str; }
-inline Text & operator<<= (Text & str, const csjp::CString & rhs) { str = rhs.ptr; return str; }
+inline Text & operator<<=(Text & str, const char * rhs) { str = rhs; return str; }
+inline Text & operator<<=(Text & str, const csjp::CString & rhs) { str = rhs.ptr; return str; }
 
-inline csjp::String & operator<< (csjp::String & str, const Text & rhs)
-{ str.append(C_STR(rhs)); return str; }
+inline csjp::String & operator<<=(csjp::String & lhs, const Text & rhs){lhs=C_STR(rhs); return lhs;}
 
 #endif

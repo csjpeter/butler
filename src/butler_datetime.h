@@ -54,7 +54,12 @@ inline bool operator==(const DateTime & a, const DateTime & b) { return a.isEqua
 inline bool operator!=(const DateTime & a, const DateTime & b) { return !a.isEqual(b); }
 inline bool operator<(const DateTime & a, const DateTime & b) { return a.isLess(b); }
 
-inline DateTime & operator<<= (DateTime & lhs, const char * rhs) { lhs = rhs; return lhs; }
-inline DateTime & operator<<= (DateTime & lhs, const csjp::CString & rhs) { lhs = rhs.ptr; return lhs; }
+inline DateTime & operator<<=(DateTime & lhs, const char * rhs) { lhs = rhs; return lhs; }
+inline DateTime & operator<<=(DateTime & lhs, const csjp::CString & rhs){lhs = rhs.ptr; return lhs;}
+
+inline csjp::String & operator<<=(csjp::String & lhs, const DateTime & rhs)
+		{ lhs = C_STR(rhs.isoUtcString()); return lhs; }
+inline DateTime & operator<<=(DateTime & time, const QVariant & v)
+		{ time = v.toDateTime(); return time; }
 
 #endif

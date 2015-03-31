@@ -252,10 +252,82 @@ static @Type@Set fromDb(SqlConnection & sql@For{LinkField@, const @.Type@ & _@.N
 }
 @}Define@
 
+@Define{todb@
+static @Type@ fromDb(SqlConnection & sql@For{KeyField@, const @.Type@ & _@.Name@@}@)
+{
+	SqlResult result = sql.exec("SELECT @TableFieldList@ FROM @Type@"
+			" WHERE @For{KeyField@@.Name@ = ?, @-@@.Name@ = ?@}@"
+			@For{KeyField@, _@.Name@@}@
+			);
+
+	@Type@ ret;
+@For{TableField@
+	ret.@.Name@ <<= csjp::CString(result.value(@.Idx@));
+@}@
+
+@For{SetField@
+	ret.@.Name@ = @.SetSubType@Set::fromDb(sql@For{KeyField@, _@.Name@@}@);
+@}@
+
+	return ret;
+}
+
+void toDb(SqlConnection & sql)
+{
+	SqlTransaction tr(sql);
+/*	@Type@ orig;
+	try{
+		orig = @Type@::fromDb(SqlConnection & sql@For{KeyField@, const @.Type@ & _@.Name@@}@);
+	} catch(csjp::Exception & e) {
+	}
+	toDb(sql, orig);
+*/
+	sql.exec("INSERT INTO @Type@ (@TableFieldList@) VALUES ("
+		"@For{TableField@?, @-@?@}@)"
+		@For{TableField@, @.Name@@}@);
+@For{SetField@
+	for(auto& item : @.Name@)
+		item.toDb(sql);
+@}@
+	tr.commit();
+}
+
+void toDb(SqlConnection & sql, const @Type@ & orig)
+{
+	SqlTransaction tr(sql);
+	sql.exec("UPDATE @Type@ SET @For{TableField@@.Name@ = ?, @-@@.Name@ = ?@}@ "
+			"WHERE @For{KeyField@@.Name@ = ? AND @-@@.Name@ = ?@}@"
+			@For{TableField@, @.Name@@}@
+			@For{KeyField@, orig.@.Name@@}@);
+
+@For{SetField@
+	for(auto& item : @.Name@){
+		if(orig.@.Name@.has(item))
+			continue;
+		item.toDb(sql);
+	}
+	for(auto& item : orig.@.Name@){
+		if(@.Name@.has(item)){
+			auto & modified = @.Name@.query(item);
+			if(item == modified)
+					continue;
+			modified.toDb(sql, item);
+		}
+		@.SetSubType@ modified(item);
+		modified.deleted = true;
+		modified.toDb(sql, item);
+	}
+@}@
+
+	tr.commit();
+}
+@}Define@
+
 @ForTypes{Tag,WareType,WareTag@
 class @Type@
 {
 	@include@ dataclass_members.h
+	@include@ todb
 };
 @include@ dataclass_nonmembers.h
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
@@ -274,6 +346,7 @@ inline bool operator<(const WareTag & a, const Text & b) { return a.tag.isLess(b
 class Ware
 {
 	@include@ dataclass_members.h
+	@include@ todb
 
 	/* non-transactional */
 	void setAsTypes(const QString & str)
@@ -360,6 +433,7 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 class @Type@
 {
 	@include@ dataclass_members.h
+	@include@ todb
 };
 @include@ dataclass_nonmembers.h
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
@@ -379,6 +453,7 @@ inline bool operator<(const QueryWithoutTag & a, const Text & b) { return a.tag.
 class Query
 {
 	@include@ dataclass_members.h
+	@include@ todb
 
 	/* non-transactional */
 	void setAsWithTags(const StringSet & names)
@@ -417,6 +492,7 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 class @Type@
 {
 	@include@ dataclass_members.h
+	@include@ todb
 };
 @include@ dataclass_nonmembers.h
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
@@ -426,5 +502,168 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 };
 @}ForTypes@
 
+
+
+
+
+
+inline QStringList & operator<<=(QStringList & list, const WareTypeSet & wareTypes)
+{
+	list.clear();
+	for(auto & wareType : wareTypes)
+		list.append(wareType.type);
+	return list;
+}
+
+inline QString & operator<<=(QString & str, const WareTypeSet & wareTypes)
+{
+	str.clear();
+	for(auto & wareType : wareTypes){
+		if(str.length())
+			str.append(", ");
+		str.append(wareType.type);
+	}
+	return str;
+}
+
+inline StringSet & operator<<=(StringSet & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.add(new Text(wareTag.tag));
+	return list;
+}
+
+inline QStringList & operator<<=(QStringList & list, const WareTagSet & wareTags)
+{
+	list.clear();
+	for(auto & wareTag : wareTags)
+		list.append(wareTag.tag);
+	return list;
+}
+
+inline QString & operator<<=(QString & str, const WareTagSet & wareTags)
+{
+	str.clear();
+	for(auto & wareTag : wareTags){
+		if(str.length())
+			str.append(", ");
+		str.append(wareTag.tag);
+	}
+	return str;
+}
+
+inline QString & operator<<=(QString & str, const QueryWithTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+
+inline StringSet & operator<<=(StringSet & list, const QueryWithTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+
+inline QString & operator<<=(QString & str, const QueryWithoutTagSet & queryTags)
+{
+	str.clear();
+	for(auto & queryTag : queryTags){
+		if(str.size())
+			str.append(", ");
+		str.append(queryTag.tag);
+	}
+	return str;
+}
+
+inline StringSet & operator<<=(StringSet & list, const QueryWithoutTagSet & queryTags)
+{
+	list.clear();
+	for(auto & queryTag : queryTags)
+		list.add(new Text(queryTag.tag));
+	return list;
+}
+
+inline QString & operator<<=(QString & str, const QueryPartnerSet & partners)
+{
+	str.clear();
+	for(auto & partner : partners){
+		if(str.size())
+			str.append(", ");
+		str.append(partner.partner);
+	}
+	return str;
+}
+
+inline QString & operator<<=(QString & str, const QueryWareSet & wares)
+{
+	str.clear();
+	for(auto & ware : wares){
+		if(str.size())
+			str.append(", ");
+		str.append(ware.ware);
+	}
+	return str;
+}
+
+inline bool operator==(const WareTypeSet & a, const QString & b)
+{
+	QStringList sl;
+	sl = b.split(",", QString::SkipEmptyParts);
+	unsigned s = sl.size();
+	if(s != a.size())
+		return false;
+	unsigned i;
+	for(i=0; i<s; i++)
+		if(!a.has(Text(sl.at(i).trimmed())))
+			return false;
+	return true;
+}
+
+inline bool operator==(const WareTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const WareTagSet & a, const StringSet & b){ return !(a == b); }
+
+inline bool operator==(const QueryWithTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const QueryWithTagSet & a, const StringSet & b){ return !(a == b); }
+
+inline bool operator==(const QueryWithoutTagSet & a, const StringSet & b)
+{
+	if(a.size() != b.size())
+		return false;
+	unsigned s = a.size();
+	for(unsigned i = 0; i < s; i++)
+		if(a[i].tag != b[i])
+			return false;
+	return true;
+}
+
+inline bool operator!=(const QueryWithoutTagSet & a, const StringSet & b){ return !(a == b); }
 
 #endif
