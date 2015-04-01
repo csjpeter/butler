@@ -71,8 +71,8 @@ public:
 	iterator end() { return iterator(*this, false); }
 public:
 	~SqlResult();
-	SqlResult(PGresult * res) : driver(SqlDriver::PSql), row(0) { this->res.pg = res; }
-	SqlResult(sqlite3_stmt * result);
+	SqlResult(PGresult * result);
+	SqlResult(sqlite3_stmt * result, int status);
 
 	const char * value(int col);
 	bool nextRow();
@@ -124,7 +124,6 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
-		//LOG("params capacity: %, length: %", params.capacity, params.length);
 		if(params.capacity == params.length)
 			params.setCapacity(params.length + 1);
 		params.add(move_cast(str));
@@ -134,7 +133,6 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
-		//LOG("params capacity: %, length: %", params.capacity, params.length);
 		if(params.capacity == params.length)
 			params.setCapacity(params.length * 2);
 		params.add(move_cast(str));
@@ -166,66 +164,5 @@ private:
 	SqlConnection & sql;
 	bool committed;
 };
-
-class SqlVariant
-{
-public:
-	explicit SqlVariant(const QVariant & v) : var(v) {}
-
-	QVariant var;
-};
-
-
-inline Text & operator<<=(Text & qstr, const SqlVariant & v)
-{
-	qstr = v.var.toString(); return qstr;
-}
-
-inline DateTime & operator<<=(DateTime & time, const SqlVariant & v)
-{
-	time = v.var.toDateTime();
-	time.setTimeSpec(Qt::UTC);
-	return time;
-}
-
-inline int & operator<<=(int & i, const SqlVariant & v)
-{
-	i = v.var.toInt(); return i;
-}
-
-inline double & operator<<=(double & d, const SqlVariant & v)
-{
-	d = v.var.toDouble(); return d;
-}
-/*
-inline YNBool & operator<<=(YNBool & b, const SqlVariant & v)
-{
-	QChar c = v.var.toChar();
-	if(c == 'Y')
-		b = true;
-	else
-		b = false;
-	return b;
-}
-*/
-inline bool & operator<<=(bool & b, const SqlVariant & v)
-{
-	QChar c = v.var.toChar();
-	if(c == 'Y')
-		b = true;
-	else
-		b = false;
-	return b;
-}
-
-inline enum QueryStockOptions & operator<<=(enum QueryStockOptions & e, const SqlVariant & v)
-{
-	e = (enum QueryStockOptions)v.var.toInt(); return e;
-}
-
-inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & e, const SqlVariant & v)
-{
-	e = (enum QueryTagOptions)v.var.toInt(); return e;
-}
 
 #endif

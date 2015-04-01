@@ -15,16 +15,29 @@
 
 using namespace csjp;
 
-String & lower(String & str)
+String lowerNamingStyle(const StringChunk & str)
 {
+	String res;
 	unsigned s = str.length;
-	for(unsigned i = 0; i < s; i++){
-		char & c = str[i];
+	if(!s)
+		return res;
+	{
+		char c = str[0];
 		if('A' <= c && c <= 'Z')
 			c += 'a'-'A';
+		res << c;
 	}
-	return str;
+	for(unsigned i = 1; i < s; i++){
+		char c = str[i];
+		if('A' <= c && c <= 'Z'){
+			res << '_';
+			c += 'a'-'A';
+		}
+		res << c;
+	}
+	return res;
 }
+String lowerNamingStyle(const String & str) { return lowerNamingStyle(String(str.str, str.length));}
 
 class FieldDesc
 {
@@ -55,8 +68,7 @@ public:
 	{
 		if('a' <= enumName[0] && enumName[0] <= 'z')
 			enumName[0] += 'A'-'a';
-		nameLower <<= name;
-		lower(nameLower);
+		columnName = lowerNamingStyle(name);
 		if(set){
 			setSubType <<= type;
 			setSubType.chopBack(3);
@@ -64,7 +76,7 @@ public:
 	}
 
 	String name;
-	String nameLower;
+	String columnName;
 	String type;
 	String setSubType;
 	String enumName;
@@ -88,7 +100,7 @@ class Declaration
 	void (Declaration::*state)(const StringChunk &);
 public:
 	StringChunk typeName;
-	String typeNameLower;
+	String tableName;
 	Array<FieldDesc> fields;
 
 	Declaration() { clear(); }
@@ -97,7 +109,7 @@ public:
 	{
 		state = &Declaration::parseDeclaration;
 		typeName.clear();
-		typeNameLower.clear();
+		tableName.clear();
 		fields.clear();
 	}
 
@@ -184,8 +196,7 @@ public:
 		if(words[0] == "Class"){
 			typeName = words[1];
 			// cleanup field and constraint info
-			typeNameLower <<= words[1];
-			lower(typeNameLower);
+			tableName = lowerNamingStyle(words[1]);
 		} else if(words[0] == "Fields" && words[1] == "{"){
 			state = &Declaration::parseFieldList;
 		} else if(words[0] == "Constraints" && words[1] == "{"){
@@ -282,18 +293,14 @@ public:
 		} else if(tpl.chopFront("@type@")) {
 			tpl.trimFront("\n\r");
 			//code.trimBack("\t");
-			code << declarations[declIdx].typeNameLower;
-		} else if(tpl.chopFront("@TableFieldList@")) {
+			String str; str <<= declarations[declIdx].typeName;
+			if('A' <= str[0] && str[0] <= 'Z')
+				str[0] += 'a'-'A';
+			code << str;
+		} else if(tpl.chopFront("@TableName@")) {
 			tpl.trimFront("\n\r");
-			String fieldList;
-			for(auto& field : declarations[declIdx].fields){
-				if(field.set || !field.name.length || field.derived)
-					continue;
-				if(fieldList.length)
-					fieldList << ", ";
-				fieldList << field.name;
-			}
-			code << fieldList;
+			//code.trimBack("\t");
+			code << declarations[declIdx].tableName;
 		} else if(tpl.chopFront("@KeyFieldList@")) {
 			tpl.trimFront("\n\r");
 			String fieldList;
@@ -558,8 +565,8 @@ public:
 				code << idx;
 			} else if(block.chopFront("@.Name@")){
 				code << field.name;
-			} else if(block.chopFront("@.name@")){
-				code << field.nameLower;
+			} else if(block.chopFront("@.colName@")){
+				code << field.columnName;
 			} else if(block.chopFront("@.EnumName@")){
 				code << field.enumName;
 			} else if(block.chopFront("@.SqlDecl@")){

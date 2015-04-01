@@ -34,6 +34,7 @@ PKGCONFIG=@PKGCONFIG@
 #
 
 #cpp -dM /dev/null
+TIME=/usr/bin/time -f "\t%E real,\t%U user,\t%S sys,\t%M mem\t$<" -a -o time-stat.log
 COMPILE=$(CXX) -c $(CFLAGS) $(INCLUDES)
 LINK=$(CXX) $(LDFLAGS) $^ $(STATICS) $(LIBS) -o $@
 LINK_DYNAMIC=$(CXX) -shared -Wl,-as-needed -Bdynamic $(LDFLAGS) $^ $(STATICS) $(LIBS) \
@@ -43,31 +44,27 @@ LINK_STATIC=ar cqs $@ $^
 TESTDIR=tmp/@PKGNAME@/test/
 
 tmp/src/qt/moc/%.opp: tmp/src/qt/moc/%.cpp
-	$(TARGETINFO)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
-	$(TARGETFINISHED)
+	$(TIME) $(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
 
 tmp/src/qt/moc/%.cpp: src/qt/%.h
-	$(TARGETINFO)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(MOC) -o $@ $<
 	@touch $@
-	$(TARGETFINISHED)
 
 tmp/src/test/%.opp: src/test/%.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
+	$(TIME) $(COMPILE) $(SQL_INCLUDES) -DTESTDIR=\"$(TESTDIR)\" -o $@ $<
 
 tmp/src/qt/%.opp: src/qt/%.cpp \
 		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
+	$(TIME) $(COMPILE) $(SQL_INCLUDES) $(BUTLERQT_INCLUDES) -o $@ $<
 
 tmp/src/%.opp: src/%.cpp \
 		src/butler_dataclasses.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)
-	$(COMPILE) $(SQL_INCLUDES) -o $@ $<
+	$(TIME) $(COMPILE) $(SQL_INCLUDES) -o $@ $<
 
 @TCROOT@@PREFIX@include/@PKGNAME@/%.h: src/%.h
 	@test -d $(dir $@) || mkdir -p $(dir $@)

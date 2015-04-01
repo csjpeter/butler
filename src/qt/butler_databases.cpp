@@ -39,29 +39,27 @@ public:
 		const SqlTableNames & tables = sql.tables();
 		//for(auto & t : tables)
 		//	LOG("table ", t);
-		//throw csjp::NotImplemented(EXCLI);
-		@ForTypes{Tag,WareType,WareTag,Ware,Company,Brand,Inventory,Partner,Account,Payment
-				Item,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner,Query@
-		if(tables.has("@type@")){
-			cols = sql.columns("@type@");
-			//LOG("Table @Type@");
+		@ForTypes{Tag,Ware,WareType,WareTag,Company,Brand,Inventory,Partner,Account,Payment
+				Item,Query,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+		if(tables.has("@TableName@")){
+			cols = sql.columns("@TableName@");
+			//LOG("Table @TableName@");
 			//for(auto & c : cols)
 			//	LOG("column ", c);
-			if(@For{TableField@!cols.has("@.name@") ||@-@!cols.has("@.name@"))@}@
+			if(@For{TableField@!cols.has("@.colName@") ||@-@!cols.has("@.colName@"))@}@
 				throw DbIncompatibleTableError(
-					"Incompatible table @type@ in the openend database.");
-			return;
+					"Incompatible table @TableName@ in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE @TableName@ ("
+				@For{TableField@"@.colName@ @.SqlDecl@,"
+				@-@"@.colName@ @.SqlDecl@"@}@
+				@For{Constraint@", @Constraint@"@}@
+				")");
 		}
-		sql.exec("CREATE TABLE @type@ ("
-			@For{TableField@
-			"@.name@ @.SqlDecl@,"
-			@-@
-			"@.name@ @.SqlDecl@"
-			@}@
-			@For{Constraint@
-			", @Constraint@"
-			@}@
-			")");
+		@}ForTypes@
+
+		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+		@type@Model.query();
 		@}ForTypes@
 	}
 

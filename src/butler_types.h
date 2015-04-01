@@ -263,7 +263,7 @@ inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & lhs, const QVar
 
 inline csjp::String & operator<<=(csjp::String & lhs, const csjp::String & rhs)
 				{ lhs.cutAt(0); lhs << rhs; return lhs; }
-inline csjp::String & operator<<=(csjp::String & lhs, const csjp::Json & rhs)
-				{ lhs = rhs.toString(); return lhs; }
+inline csjp::String & operator<<=(csjp::String & lhs, const char * rhs)
+				{ lhs.cutAt(0); lhs << rhs; return lhs; }
 
 #endif

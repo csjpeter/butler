@@ -2,7 +2,7 @@
 	sql(sql), set(dataSet)
 {
 	operationListeners.add(*this);
-	dataSet = @Type@Set::fromDb(sql);
+	//dataSet = @Type@Set::fromDb(sql);
 }
 
 void @Type@Model::query()

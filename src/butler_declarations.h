@@ -158,24 +158,24 @@
 /*@BeginDecl@
 	Class Payment
 	Fields {
-		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < uploadDate)
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		Text account;				; TEXT
 		Text partner;				; TEXT
 		double amount;				; DECIMAL(15,3) NOT NULL
-		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < uploadDate)
-		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < uploadDate)
+		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
-		PRIMARY KEY (uploadDate)
+		PRIMARY KEY (upload_date)
 		}
 @EndDecl@*/
 
 /*@BeginDecl@
 	Class Item
 	Fields {
-		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < uploadDate)
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		Text name;					; TEXT
 		Text unit;					; TEXT
 		Text type;					; TEXT
@@ -194,7 +194,7 @@
 		double quantityWithUnit; derived	; TEXT
 		}
 	Constraints {
-		PRIMARY KEY (uploadDate)
+		PRIMARY KEY (upload_date)
 		}
 @EndDecl@*/
 
