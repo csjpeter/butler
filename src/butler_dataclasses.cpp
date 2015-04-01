@@ -185,7 +185,8 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	{
 		@Type@Set list;
 		SqlTransaction tr(sql);
-		SqlResult result=sql.exec("SELECT @For{TableField@@.colName@, @-@@.colName@@}@ FROM @Type@"
+		SqlResult result=sql.exec("SELECT @For{TableField@@.colName@, @-@@.colName@@}@ "
+				"FROM @TableName@ "
 				@IfHasLinkField{@
 				" WHERE @For{LinkField@@.colName@ = ?, @-@@.colName@ = ?@}@"
 				@For{LinkField@, _@.Name@@}@
@@ -217,8 +218,8 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 @Define{todb@
 	@Type@ @Type@::fromDb(SqlConnection & sql@For{KeyField@, const @.Type@ & _@.Name@@}@)
 	{
-		SqlResult result=sql.exec("SELECT @For{TableField@@.colName@, @-@@.colName@@}@ FROM @Type@"
-				" WHERE @For{KeyField@@.colName@ = ?, @-@@.colName@ = ?@}@"
+		SqlResult result=sql.exec("SELECT @For{TableField@@.colName@, @-@@.colName@@}@ "
+				"FROM @TableName@ WHERE @For{KeyField@@.colName@ = ?, @-@@.colName@ = ?@}@"
 				@For{KeyField@, _@.Name@@}@
 				);
 
@@ -257,7 +258,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	void @Type@::toDb(SqlConnection & sql, const @Type@ & orig)
 	{
 		SqlTransaction tr(sql);
-		sql.exec("UPDATE @Type@ SET @For{TableField@@.colName@ = ?, @-@@.colName@ = ?@}@ "
+		sql.exec("UPDATE @TableName@ SET @For{TableField@@.colName@ = ?, @-@@.colName@ = ?@}@ "
 				"WHERE @For{KeyField@@.colName@ = ? AND @-@@.colName@ = ?@}@"
 				@For{TableField@, @.Name@@}@
 				@For{KeyField@, orig.@.Name@@}@);

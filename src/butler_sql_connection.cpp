@@ -160,6 +160,13 @@ void SqlConnection::open()
 					throw DbError("Failed to connect to postgresql with connection string:\n"
 							"%\nError:\n%", str, PQerrorMessage(conn.pg));
 				}
+				int clientEncoding = PQclientEncoding(conn.pg);
+				LOG("PG client encoding: % - %",
+						clientEncoding, pg_encoding_to_char(clientEncoding));
+				//extern int PQsetClientEncoding(PGconn *conn, const char *encoding);
+				//int encoding = pg_char_to_encoding(const char *name);
+				int serverEncoding = pg_valid_server_encoding_id(clientEncoding);
+				LOG("ServerEncoding % - %", serverEncoding, pg_encoding_to_char(serverEncoding));
 			}
 			break;
 		case SqlDriver::SQLite :
