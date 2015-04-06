@@ -11,6 +11,8 @@
 
 #include <csjp_string.h>
 #include <csjp_object.h>
+#include <csjp_ref_array.h>
+#include <csjp_ptr_array.h>
 #include <csjp_pod_array.h>
 #include <csjp_array.h>
 #include <csjp_json.h>
@@ -53,7 +55,7 @@ class @Type@
 	@include@ todb
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 	@include@ dbquery
@@ -145,7 +147,7 @@ class Ware
 	}
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 	@include@ dbquery
@@ -159,7 +161,7 @@ class @Type@
 	@include@ todb
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 	@include@ dbquery
@@ -204,7 +206,7 @@ class Query
 	}
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 	@include@ dbquery
@@ -218,7 +220,7 @@ class @Type@
 	@include@ todb
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 	static ItemSet fromDb(SqlConnection & sql, const Query & q, QueryStat & stat);

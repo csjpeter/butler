@@ -29,7 +29,7 @@ class DatabaseDescriptor
 	@include@ dataclass_members.h
 };
 @include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+class @Type@Set : public csjp::PtrArray<@Type@>
 {
 	@include@ dataclass_set.h
 };

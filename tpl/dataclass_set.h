@@ -4,7 +4,7 @@ public:
 
 	const @Type@Set & operator=(@Type@Set && temp)
 	{
-		csjp::SorterOwnerContainer<@Type@>::operator=(move_cast(temp));
+		csjp::PtrArray<@Type@>::operator=(move_cast(temp));
 		return *this;
 	}
 
@@ -36,7 +36,7 @@ public:
 
 public:
 	@Type@Set() :
-		csjp::SorterOwnerContainer<@Type@>(),
+		csjp::PtrArray<@Type@>(),
 		ascending(true)
 	{
 @For{Field@
@@ -44,7 +44,7 @@ public:
 @}@
 	}
 	@Type@Set(const @Type@Set & ts) :
-		csjp::SorterOwnerContainer<@Type@>(ts),
+		csjp::PtrArray<@Type@>(ts),
 		ascending(true)
 	{
 @For{Field@

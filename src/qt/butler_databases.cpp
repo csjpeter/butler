@@ -7,8 +7,6 @@
 #include <csjp_logger.h>
 #undef DEBUG
 
-#include <csjp_map.h>
-
 #include "butler_databases.h"
 
 #include <QDir>
