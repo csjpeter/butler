@@ -53,10 +53,10 @@ void load()
 
 	csjp::File file(configFileName);
 	if(file.exists())
-		config <<= file.readAll();
+		config.parse(file.readAll());
 
 	if(config.properties.has("defaultDb"))
-		Config::defaultDbName = config["defaultDb"];
+		Config::defaultDbName <<= config["defaultDb"];
 }
 
 const QString & dateTimeFormat()

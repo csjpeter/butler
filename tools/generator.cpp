@@ -689,7 +689,7 @@ public:
 						parser.parse();
 					} else {
 						//LOG("Non file template included: ", file);
-						String & newTpl = templates[file];
+						String & newTpl = templates[file].value;
 						StringChunk newTplChunk(newTpl.str, newTpl.length);
 						TemplateParser parser(code, newTplChunk,
 							declarations, templates, tplDir, declIdx);

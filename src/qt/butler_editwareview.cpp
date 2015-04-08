@@ -228,15 +228,20 @@ void EditWareView::setCursor(const QModelIndex& index)
 void EditWareView::prevClickedSlot()
 {
 	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	unsigned row = cursor.row();
+	if(row == model.set.index(ware.name))
+		row = (0<cursor.row()) ? (cursor.row()-1) : 0;
 	setCursor(model.index(row, col));
 }
 
 void EditWareView::nextClickedSlot()
 {
 	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
+	unsigned row = cursor.row();
+	if(row == model.set.index(ware.name)){
+		row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	}
 	setCursor(model.index(row, col));
 }
 

@@ -125,22 +125,23 @@ void loadDatabaseConfigs()
 {
 	descriptorSet.clear();
 	csjp::Json & tree = config["database-connections"];
-	for(auto & dbt : tree.properties){
+	for(auto & j : tree.properties){
+		csjp::Json & db = const_cast<csjp::Json &>(j);
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
-		desc->name = dbt.key;
-		if(dbt["driver"] == "PSql")
+		desc->name = db.key;
+		if(db["driver"] == "PSql")
 			desc->driver = SqlDriver::PSql;
-		else if(dbt["driver"] == "SQLite")
+		else if(db["driver"] == "SQLite")
 			desc->driver = SqlDriver::SQLite;
-		else if(dbt["driver"] == "MySQL")
+		else if(db["driver"] == "MySQL")
 			desc->driver = SqlDriver::MySQL;
-		desc->databaseName = dbt["databaseName"];
-		desc->username = dbt["username"];
-		desc->password = dbt["password"];
+		desc->databaseName <<= db["databaseName"];
+		desc->username <<= db["username"];
+		desc->password <<= db["password"];
 		if(desc->password.length)
 			desc->savePassword = true;
-		desc->host = dbt["host"];
-		desc->port <<= dbt["port"];
+		desc->host <<= db["host"];
+		desc->port <<= db["port"];
 		descriptorSet.add(desc);
 	}
 
