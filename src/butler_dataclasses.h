@@ -42,8 +42,8 @@ public:
 
 @Define{todb@
 	static @Type@ fromDb(SqlConnection & sql@For{KeyField@, const @.Type@ & _@.Name@@}@);
-	void toDb(SqlConnection & sql);
-	void toDb(SqlConnection & sql, const @Type@ & orig);
+	void toDb(SqlConnection & sql) const;
+	void toDb(SqlConnection & sql, const @Type@ & orig) const;
 @}Define@
 
 @ForTypes{Tag,WareType,WareTag@
@@ -80,7 +80,7 @@ class Ware
 			s = s.trimmed();
 		for(auto & type : types)
 			if(!sl.contains(type.type))
-				type.deleted = true;
+				const_cast<WareType &>(type).deleted = true;
 		for(auto & s : sl){
 			Text type(s);
 			if(!types.has(type))
@@ -93,7 +93,7 @@ class Ware
 	{
 		for(auto & type : types)
 			if(!strings.contains(type.type))
-				type.deleted = true;
+				const_cast<WareType &>(type).deleted = true;
 		for(auto & string : strings){
 			Text type(string);
 			if(!types.has(type))
@@ -110,7 +110,7 @@ class Ware
 			s = s.trimmed();
 		for(auto & tag : tags)
 			if(!sl.contains(tag.tag))
-				tag.deleted = true;
+				const_cast<WareTag &>(tag).deleted = true;
 		for(auto & s : sl){
 			Text tag(s);
 			if(!tags.has(tag))
@@ -123,7 +123,7 @@ class Ware
 	{
 		for(auto & tag : tags)
 			if(!strings.contains(tag.tag))
-				tag.deleted = true;
+				const_cast<WareTag &>(tag).deleted = true;
 		for(auto & string : strings){
 			Text tag(string);
 			if(!tags.has(tag))
@@ -136,7 +136,7 @@ class Ware
 	{
 		for(auto & tag : tags)
 			if(!stringSet.has(tag.tag))
-				tag.deleted = true;
+				const_cast<WareTag &>(tag).deleted = true;
 		for(auto & string : stringSet){
 			Text tag(string);
 			if(!tags.has(tag))
@@ -183,7 +183,7 @@ class Query
 	{
 		for(auto & tag : withTags)
 			if(!names.has(tag.tag))
-				tag.deleted = true;
+				const_cast<QueryWithTag &>(tag).deleted = true;
 		for(auto & name : names){
 			Text tag(name);
 			if(!withTags.has(tag))
@@ -195,7 +195,7 @@ class Query
 	{
 		for(auto & tag : withoutTags)
 			if(!names.has(tag.tag))
-				tag.deleted = true;
+				const_cast<QueryWithoutTag &>(tag).deleted = true;
 		for(auto & name : names){
 			Text tag(name);
 			if(!withoutTags.has(tag))

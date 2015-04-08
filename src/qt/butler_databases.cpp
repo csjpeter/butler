@@ -7,8 +7,6 @@
 #include <csjp_logger.h>
 #undef DEBUG
 
-#include <csjp_map.h>
-
 #include "butler_databases.h"
 
 #include <QDir>
@@ -194,7 +192,7 @@ void saveDatabaseConfigs()
 
 csjp::OwnerContainer<Database> databases;
 
-Database & loadDatabase(const csjp::String & name)
+static Database & loadDatabase(const csjp::String & name)
 {
 	if(!databases.has(name)){
 		if(!descriptorSet.has(name))
@@ -203,7 +201,7 @@ Database & loadDatabase(const csjp::String & name)
 		databases.add(db);
 	}
 
-	return databases.query(name);
+	return const_cast<Database &>(databases.query(name));
 }
 
 DatabaseDescriptorModel & databasesModel()

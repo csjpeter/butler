@@ -42,7 +42,7 @@ void TagWidget::applyLayout()
 	/* With this the nth tag in tagset will be represented by the nth
 	 * button in the btnContainer. */
 	for(i = 0; i < s; i++){
-		QCheckBox & tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer[i];
 
 		int col = i / rows;
 		int row = i % rows;
@@ -91,7 +91,7 @@ int TagWidget::heightForWidth(int w) const
 	if((unsigned)(rows * cols) < btnContainer.size())
 		rows++;
 	if(rows){
-		QCheckBox & tagBox = btnContainer.queryAt(0);
+		auto & tagBox = btnContainer[0];
 		h += rows * tagBox.sizeHint().height();
 	}
 	DBG("Height: % For width: ", h, w);
@@ -129,7 +129,7 @@ void TagWidget::populate()
 
 	/* Update texts */
 	for(unsigned i = 0; i < tagSet.size(); i++){
-		QCheckBox & tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer[i];
 		const Tag & tag = tagSet.queryAt(i);
 		if(tagBox.text() != tag.name){
 			tagBox.setText(tag.name);
@@ -143,7 +143,7 @@ void TagWidget::populate()
 		/* Speculating appropriate column width */
 		maxTagCheckboxWidth = 1;
 		for(unsigned i = 0; i < tagSet.size(); i++){
-			QCheckBox & tagBox = btnContainer.queryAt(i);
+			QCheckBox & tagBox = btnContainer[i];
 			/* For guessing practical number of columns. */
 			int w = tagBox.sizeHint().width();
 			if(maxTagCheckboxWidth < w)
@@ -196,7 +196,7 @@ void TagWidget::setTags(const StringSet & tags)
 	unsigned i, s = tagSet.size();
 	for(i = 0; i < s; i++){
 		const Tag & tag = tagSet.queryAt(i);
-		QCheckBox & tagBox = btnContainer.queryAt(i);
+		QCheckBox & tagBox = btnContainer[i];
 		if(tags.has(tag.name))
 			tagBox.setChecked(true);
 		else

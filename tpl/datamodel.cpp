@@ -201,7 +201,13 @@ void @Type@Model::addNew(@Type@ & obj)
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
-	dataSet.queryAt(row) = modified;
-	dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
+	{
+		ModelRemoveGuard g(this, QModelIndex(), row, row);
+		dataSet.removeAt(row);
+	}
+	{
+		ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+		dataSet.add(new @Type@(modified));
+	}
 }
 

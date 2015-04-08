@@ -833,7 +833,7 @@ void ControlBar::applyLayout()
 
 	unsigned s = buttons.size();
 	for(unsigned i = 0; i < s; i++){
-		toolLayout->addWidget(buttons.queryAt(i).qwidget(),
+		toolLayout->addWidget(buttons[i].qwidget(),
 				-1, Qt::AlignVCenter | Qt::AlignLeft);
 		if(expanding && i != s-1)
 			toolLayout->addStretch(10000);
@@ -864,7 +864,7 @@ void ControlBar::updateButtons()
 	{
 		unsigned s = buttons.size();
 		for(unsigned i = 0; i < s; i++){
-			ToolWidget & tw = buttons.queryAt(i);
+			ToolWidget & tw = buttons[i];
 			tw.expanding();
 			tw.qwidget()->updateGeometry();
 			if(tw.qwidget()->isVisible())
@@ -874,17 +874,17 @@ void ControlBar::updateButtons()
 	if(width() < main.sizeHint().width()) {
 		unsigned s = buttons.size();
 		for(unsigned i = 0; i < s; i++)
-			buttons.queryAt(i).wide();
+			buttons[i].wide();
 	}
 	if(width() < main.sizeHint().width()) {
 		unsigned s = buttons.size();
 		for(unsigned i = 0; i < s; i++)
-			buttons.queryAt(i).medium();
+			buttons[i].medium();
 	}
 	if(width() < main.sizeHint().width()) {
 		unsigned s = buttons.size();
 		for(unsigned i = 0; i < s; i++)
-			buttons.queryAt(i).narrow();
+			buttons[i].narrow();
 	}
 
 	if(hideIfEmpty)

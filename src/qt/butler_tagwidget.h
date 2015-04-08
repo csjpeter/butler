@@ -8,7 +8,7 @@
 
 #include <QtGui>
 
-#include <csjp_sorter_owner_container.h>
+#include <csjp_ptr_array.h>
 
 #include <butler_dataclasses.h>
 #include <butler_widgets.h>
@@ -54,7 +54,7 @@ private slots:
 private:
 	const csjp::String & dbname;
 	const TagSet & tagSet;
-	csjp::SorterOwnerContainer<QCheckBox> btnContainer;
+	csjp::PtrArray<QCheckBox> btnContainer;
 
 	int columns;
 	int maxTagCheckboxWidth;

@@ -12,3 +12,5 @@
 - asztalváltáskor/ablakfrissítéskor az accounting view-ban a kiválasztott bolt semmis lesz, ismét ki kell választani
 - asztal visszaváltáskor két sql query fut le
 
+- A set adattagok és a deleted flag szerint nem szabad rendezni a listákat, mert ezek értéke változhat miután a rendezett container-be tettük az adatobjektumot.
+

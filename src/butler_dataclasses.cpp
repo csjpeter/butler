@@ -208,7 +208,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 
 		@For{SetField@
 		for(auto& item : list)
-			item.@.Name@ = @.SetSubType@Set::fromDb(sql@For{KeyField@, item.@.Name@@}@);
+			const_cast<@Type@ &>(item).@.Name@ = @.SetSubType@Set::fromDb(sql@For{KeyField@, item.@.Name@@}@);
 		@}@
 
 		return list;
@@ -235,7 +235,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 		return ret;
 	}
 
-	void @Type@::toDb(SqlConnection & sql)
+	void @Type@::toDb(SqlConnection & sql) const
 	{
 		SqlTransaction tr(sql);
 		/*	@Type@ orig;
@@ -255,7 +255,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 		tr.commit();
 	}
 
-	void @Type@::toDb(SqlConnection & sql, const @Type@ & orig)
+	void @Type@::toDb(SqlConnection & sql, const @Type@ & orig) const
 	{
 		SqlTransaction tr(sql);
 		sql.exec("UPDATE @TableName@ SET @For{TableField@@.colName@ = ?, @-@@.colName@ = ?@}@ "

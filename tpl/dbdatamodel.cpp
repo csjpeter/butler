@@ -1,4 +1,4 @@
-csjp::ReferenceContainer<@Type@Model> @Type@Model::operationListeners;
+csjp::RefArray<@Type@Model> @Type@Model::operationListeners;
 
 Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 {
@@ -203,27 +203,20 @@ void @Type@Model::objInsertListener(SqlConnection & sql, const @Type@ & obj)
 	if(& sql != &(this->sql))
 		return;
 
-	bool want = queryFilter(obj);
 	if(dataSet.has(@For{KeyField@obj.@.Name@, @-@obj.@.Name@@}@)){
 		int row = dataSet.index(@For{KeyField@obj.@.Name@, @-@obj.@.Name@@}@);
-		if(want){
-			dataSet.queryAt(row) = obj;
-			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
-		} else {
-			ModelRemoveGuard g(this, QModelIndex(), row, row);
-			dataSet.removeAt(row);
-		}
-	} else {
-		if(want){
-			ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
-			dataSet.add(new @Type@(obj));
-		}
+		ModelRemoveGuard g(this, QModelIndex(), row, row);
+		dataSet.removeAt(row);
+	}
+	if(queryFilter(obj)){
+		ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+		dataSet.add(new @Type@(obj));
 	}
 }
 
 void @Type@Model::update(int row, @Type@ & modified)
 {
-	@Type@ & orig = dataSet.queryAt(row);
+	auto & orig = dataSet.queryAt(row);
 	modified.toDb(sql, orig);
 	objChange(sql, orig, modified);
 }
@@ -239,29 +232,24 @@ void @Type@Model::objChangeListener(SqlConnection & sql, const @Type@ & orig, co
 	if(& sql != &(this->sql))
 		return;
 
-	bool want = queryFilter(modified);
 	if(dataSet.has(@For{KeyField@orig.@.Name@, @-@orig.@.Name@@}@)){
 		int row = dataSet.index(@For{KeyField@orig.@.Name@, @-@orig.@.Name@@}@);
-		if(want){
-			dataSet.queryAt(row) = modified;
-			dataChanged(index(row, 0), index(row, @Type@::NumOfFields-1));
-		} else {
-			ModelRemoveGuard g(this, QModelIndex(), row, row);
-			dataSet.removeAt(row);
-		}
-	} else {
-		if(want){
-			ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
-			dataSet.add(new @Type@(modified));
-		}
+		ModelRemoveGuard g(this, QModelIndex(), row, row);
+		dataSet.removeAt(row);
+	}
+	if(queryFilter(modified)) {
+		ModelInsertGuard g(this, QModelIndex(), dataSet.size(), dataSet.size());
+		dataSet.add(new @Type@(modified));
 	}
 }
 
 void @Type@Model::del(int row)
 {
-	@Type@ & obj = dataSet.queryAt(row);
-	obj.deleted = true;
-	obj.toDb(sql);
+	@Type@ modified(dataSet.queryAt(row));
+	modified.deleted = true;
+	modified.toDb(sql);
+
+	auto & obj = dataSet.queryAt(row);
 	objRemoved(sql, obj);
 }
 

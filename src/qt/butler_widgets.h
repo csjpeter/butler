@@ -419,7 +419,7 @@ private:
 	QWidget main;
 
 	KineticScroller scroller;
-	csjp::SorterReferenceContainer<ToolWidget> buttons;
+	csjp::RefArray<ToolWidget> buttons;
 };
 
 class ToolBar : public QWidget

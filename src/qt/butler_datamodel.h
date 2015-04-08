@@ -19,6 +19,7 @@ class @Type@Model : public AbstractTableModel
 @include@ dbdatamodel.h
 @include@ dbdatamodel_spec.h
 };
+inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
 @}ForTypes@
 
 
@@ -32,7 +33,7 @@ public:
 private:
 	QVariant dataUnitPrice(int row) const
 	{
-		Item & item = dataSet.queryAt(row);
+		auto & item = dataSet.queryAt(row);
 		double unitPrice = 0;
 		//if(isnormal(item.quantity)) /*FIXME*/
 		unitPrice = item.price / item.quantity;
@@ -40,7 +41,7 @@ private:
 	}
 	QVariant dataQuantityWithUnit(int row) const
 	{
-		Item & item = dataSet.queryAt(row);
+		auto & item = dataSet.queryAt(row);
 		int i = wmodel.index(item.name);
 		QString val;
 		val.setNum(item.quantity, 'g', 3);
@@ -55,6 +56,7 @@ public:
 	Query opts;
 	QueryStat stat;
 };
+inline bool operator==(const ItemModel & a, const ItemModel & b) { return &a == &b; }
 
 
 @ForTypes{DatabaseDescriptor,WareType,WareTag,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
@@ -62,6 +64,7 @@ class @Type@Model : public AbstractTableModel
 {
 @include@ datamodel.h
 };
+inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
 @}ForTypes@
 
 

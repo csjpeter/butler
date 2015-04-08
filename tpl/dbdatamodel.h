@@ -64,7 +64,7 @@ protected:
 	void objRemovedListener(SqlConnection & sql, const @Type@ & removed);
 
 private:
-	static csjp::ReferenceContainer<@Type@Model> operationListeners;
+	static csjp::RefArray<@Type@Model> operationListeners;
 
 private:
 
