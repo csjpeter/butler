@@ -76,7 +76,7 @@ class Ware
 	{
 		QStringList sl;
 		sl = str.split(",", QString::SkipEmptyParts);
-		for(auto & s :sl)
+		for(auto & s : sl)
 			s = s.trimmed();
 		for(auto & type : types)
 			if(!sl.contains(type.type))
@@ -87,7 +87,7 @@ class Ware
 				types.add(new WareType(name, type));
 		}
 	}
-
+#if 0
 	/* non-transactional */
 	void setAsTypes(const QStringList & strings)
 	{
@@ -130,7 +130,7 @@ class Ware
 				tags.add(new WareTag(name, tag));
 		}
 	}
-
+#endif
 	/* non-transactional */
 	void setAsTags(const StringSet & stringSet)
 	{
@@ -143,6 +143,7 @@ class Ware
 				tags.add(new WareTag(name, tag));
 		}
 	}
+
 };
 @include@ dataclass_nonmembers.h
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
