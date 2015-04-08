@@ -60,7 +60,7 @@ void TagWidget::applyLayout()
 void TagWidget::relayout()
 {
 	DBG("Width: % TagLabelWidth: %", width(), maxTagCheckboxWidth);
-	int newColumns = width() / maxTagCheckboxWidth;
+	unsigned newColumns = width() / maxTagCheckboxWidth;
 	if(!newColumns)
 		newColumns = 1;
 
@@ -83,12 +83,12 @@ QSize TagWidget::sizeHint() const
 
 int TagWidget::heightForWidth(int w) const
 {
-	int h = label.sizeHint().height();
-	int cols = w / maxTagCheckboxWidth;
+	unsigned h = label.sizeHint().height();
+	unsigned cols = w / maxTagCheckboxWidth;
 	if(!cols)
 		cols = 1;
-	int rows = btnContainer.size() / cols;
-	if((unsigned)(rows * cols) < btnContainer.size())
+	unsigned rows = btnContainer.size() / cols;
+	if(rows * cols < btnContainer.size())
 		rows++;
 	if(rows){
 		auto & tagBox = btnContainer[0];
@@ -145,7 +145,7 @@ void TagWidget::populate()
 		for(unsigned i = 0; i < tagSet.size(); i++){
 			QCheckBox & tagBox = btnContainer[i];
 			/* For guessing practical number of columns. */
-			int w = tagBox.sizeHint().width();
+			unsigned w = tagBox.sizeHint().width();
 			if(maxTagCheckboxWidth < w)
 				maxTagCheckboxWidth = w;
 		}

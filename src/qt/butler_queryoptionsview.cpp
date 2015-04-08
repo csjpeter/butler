@@ -533,10 +533,10 @@ void QueryOptionsView::updateToolButtonStates()
 			query.startDate == startDate.edit.dateTime() &&
 //			query.endDate == endDate.edit.dateTime() &&
 
-			((bool)(query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
-			((bool)(query.partners.size()) ==(partnerFilter.box.checkState()==Qt::Checked)) &&
-			((bool)(query.withTags.size()) ==(withTagFilter.box.checkState()==Qt::Checked)) &&
-			((bool)(query.withoutTags.size()) ==(withoutTagFilter.box.checkState()==Qt::Checked)) &&
+			((0<query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
+			((0<query.partners.size())==(partnerFilter.box.checkState()==Qt::Checked))&&
+			((0<query.withTags.size())==(withTagFilter.box.checkState()==Qt::Checked))&&
+			((0<query.withoutTags.size())==(withoutTagFilter.box.checkState()==Qt::Checked)) &&
 
 			query.withTags == tagsWidget.selectedTags() &&
 			query.withoutTags == withoutTagsWidget.selectedTags()

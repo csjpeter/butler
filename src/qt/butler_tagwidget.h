@@ -56,8 +56,8 @@ private:
 	const TagSet & tagSet;
 	csjp::PtrArray<QCheckBox> btnContainer;
 
-	int columns;
-	int maxTagCheckboxWidth;
+	unsigned columns;
+	unsigned maxTagCheckboxWidth;
 };
 
 bool operator<(const QCheckBox & a, const QCheckBox & b);

@@ -15,7 +15,7 @@ QString translationVariant(const QString & text, TextVariant variant)
 {
 	QStringList list = text.split(QChar(0x9c), QString::SkipEmptyParts);
 
-	int lengthVariantIdx = (int)(variant);
+	int lengthVariantIdx = static_cast<int>(variant);
 	if(list.size() <= lengthVariantIdx)
 		lengthVariantIdx = list.size() - 1;
 	ENSURE(0 <= lengthVariantIdx, csjp::LogicError);
