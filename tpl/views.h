@@ -1,26 +1,17 @@
-/** 
- * Author: Csaszar, Peter <csjpeter@gmail.com>
- * Copyright (C) 2009 Csaszar, Peter
- */
-
-#ifndef BUTLER_PARTNERSVIEW_H
-#define BUTLER_PARTNERSVIEW_H
-
-#include <butler_pannview.h>
-#include <butler_databases.h>
-
+@Define{simpleListViewDeclaration@
 /*forwards*/
-class EditPartnerView;
+class New@Type@View;
+class Edit@Type@View;
 
-class PartnersView : public PannView
+class @Type@sView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	PartnersView(const csjp::String & dbname, QWidget * parent = 0);
-	virtual ~PartnersView();
+	@Type@sView(const csjp::String & dbname, QWidget * parent = 0);
+	virtual ~@Type@sView();
 
 	virtual void loadState();
 	virtual void saveState();
@@ -39,9 +30,9 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void newPartner();
-	void editPartner();
-	void delPartner();
+	void new@Type@();
+	void edit@Type@();
+	void del@Type@();
 	void refresh();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
@@ -49,7 +40,7 @@ private slots:
 public:
 	const csjp::String dbname;
 private:
-	PartnerModel & model;
+	@Type@Model & model;
 
 	ToolButton addButton;
 	ToolButton delButton;
@@ -58,8 +49,7 @@ private:
 
 	TableView tableView;
 
-	EditPartnerView * newPartnerView;
-	EditPartnerView * editPartnerView;
+	Edit@Type@View * new@Type@View;
+	Edit@Type@View * edit@Type@View;
 };
-
-#endif
+@}Define@

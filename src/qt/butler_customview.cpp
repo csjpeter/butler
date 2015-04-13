@@ -225,22 +225,6 @@ void CustomView::saveState()
 	SAVE_VIEW_STATE(queryOptsView);
 }
 
-void CustomView::refreshItems()
-{
-	DateTime uploadDate;
-	if(tableView.currentIndex().isValid()){
-		const Item & item = model->data(tableView.currentIndex().row());
-		uploadDate = item.uploadDate;
-	}
-
-	model->query();
-
-	if(model->set.has(uploadDate))
-		tableView.setCurrentIndex(model->index(model->index(uploadDate), 0));
-
-	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
-}
-
 void CustomView::editItem()
 {
 	if(!tableView.currentIndex().isValid()){
@@ -275,6 +259,22 @@ void CustomView::delItem()
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
 		model->del(row);
+}
+
+void CustomView::refreshItems()
+{
+	DateTime uploadDate;
+	if(tableView.currentIndex().isValid()){
+		const Item & item = model->data(tableView.currentIndex().row());
+		uploadDate = item.uploadDate;
+	}
+
+	model->query();
+
+	if(model->set.has(uploadDate))
+		tableView.setCurrentIndex(model->index(model->index(uploadDate), 0));
+
+	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
 
 void CustomView::shoppingItem()

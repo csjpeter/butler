@@ -8,17 +8,19 @@
 
 #include <butler_pannview.h>
 
+#include <butler_listviews.h>
+
 /*forwards*/
 class ShoppingView;
 class EditItemView;
 class CustomView;
-class CompanyView;
-class PartnersView;
-class AccountsView;
-class WaresView;
-class TagsView;
-class BrandsView;
-class InventoriesView;
+//class CompanyView;
+//class PartnersView;
+//class AccountsView;
+//class WaresView;
+//class TagsView;
+//class BrandsView;
+//class InventoriesView;
 class DatabasesView;
 class QueryOptionsView;
 class InfoView;
@@ -87,13 +89,13 @@ private:
 	ShoppingView *shoppingView;
 	EditItemView *newItemView;
 	CustomView *customView;
-	CompanyView *companyView;
+	CompanysView *companyView;
 	PartnersView *partnersView;
 	AccountsView *accountsView;
 	WaresView *waresView;
 	TagsView *tagsView;
 	BrandsView *brandsView;
-	InventoriesView *inventoriesView;
+	InventorysView *inventoriesView;
 	DatabasesView *databasesView;
 	QueryOptionsView *queryOptionsView;
 	InfoView *infoView;

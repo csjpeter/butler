@@ -10,13 +10,6 @@
 #include "butler_databases.h"
 
 #include "butler_databasesview.h"
-#include "butler_tagsview.h"
-#include "butler_waresview.h"
-#include "butler_companyview.h"
-#include "butler_partnersview.h"
-#include "butler_accountsview.h"
-#include "butler_brandsview.h"
-#include "butler_inventoriesview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 #include "butler_edititemview.h"
@@ -413,12 +406,12 @@ void MainView::openCustomView()
 void MainView::openCompanyView()
 {
 	if(!companyView)
-		companyView = new CompanyView(Config::defaultDbName);
+		companyView = new CompanysView(Config::defaultDbName);
 	if(companyView->dbname == Config::defaultDbName){
 		companyView->activate();
 	} else {
-		CompanyView *anotherCompanyView;
-		anotherCompanyView = new CompanyView(Config::defaultDbName);
+		CompanysView *anotherCompanyView;
+		anotherCompanyView = new CompanysView(Config::defaultDbName);
 		anotherCompanyView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherCompanyView->activate();
 	}
@@ -506,12 +499,12 @@ void MainView::openBrandsView()
 void MainView::openInventoriesView()
 {
 	if(!inventoriesView)
-		inventoriesView = new InventoriesView(Config::defaultDbName);
+		inventoriesView = new InventorysView(Config::defaultDbName);
 	if(inventoriesView->dbname == Config::defaultDbName){
 		inventoriesView->activate();
 	} else {
-		InventoriesView *anotherInventoriesView;
-		anotherInventoriesView = new InventoriesView(Config::defaultDbName);
+		InventorysView *anotherInventoriesView;
+		anotherInventoriesView = new InventorysView(Config::defaultDbName);
 		anotherInventoriesView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherInventoriesView->activate();
 	}

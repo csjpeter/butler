@@ -139,41 +139,30 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/butler_kineticscroller.opp \
 	tmp/src/qt/moc/butler_kineticscroller.opp \
 	\
-	tmp/src/qt/butler_tagsview.opp \
 	tmp/src/qt/butler_edittagview.opp \
 	tmp/src/qt/butler_tagwidget.opp \
-	tmp/src/qt/moc/butler_tagsview.opp \
 	tmp/src/qt/moc/butler_edittagview.opp \
 	tmp/src/qt/moc/butler_tagwidget.opp \
 	\
-	tmp/src/qt/butler_waresview.opp \
 	tmp/src/qt/butler_editwareview.opp \
-	tmp/src/qt/moc/butler_waresview.opp \
 	tmp/src/qt/moc/butler_editwareview.opp \
 	\
-	tmp/src/qt/butler_companyview.opp \
+	tmp/src/qt/butler_listviews.opp \
+	tmp/src/qt/moc/butler_listviews.opp \
+	\
 	tmp/src/qt/butler_editcompanyview.opp \
-	tmp/src/qt/moc/butler_companyview.opp \
 	tmp/src/qt/moc/butler_editcompanyview.opp \
 	\
-	tmp/src/qt/butler_brandsview.opp \
 	tmp/src/qt/butler_editbrandview.opp \
-	tmp/src/qt/moc/butler_brandsview.opp \
 	tmp/src/qt/moc/butler_editbrandview.opp \
 	\
-	tmp/src/qt/butler_inventoriesview.opp \
 	tmp/src/qt/butler_editinventoryview.opp \
-	tmp/src/qt/moc/butler_inventoriesview.opp \
 	tmp/src/qt/moc/butler_editinventoryview.opp \
 	\
-	tmp/src/qt/butler_accountsview.opp \
 	tmp/src/qt/butler_editaccountview.opp \
-	tmp/src/qt/moc/butler_accountsview.opp \
 	tmp/src/qt/moc/butler_editaccountview.opp \
 	\
-	tmp/src/qt/butler_partnersview.opp \
 	tmp/src/qt/butler_editpartnerview.opp \
-	tmp/src/qt/moc/butler_partnersview.opp \
 	tmp/src/qt/moc/butler_editpartnerview.opp \
 	\
 	tmp/src/qt/butler_queryoptionsview.opp \

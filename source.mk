@@ -317,40 +317,29 @@ source: \
 	$(DIST_DIR)/src/butler_sql_connection.h \
 	$(DIST_DIR)/src/butler_sql_connection.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_tagsview.h \
-	$(DIST_DIR)/src/qt/butler_tagsview.cpp \
 	$(DIST_DIR)/src/qt/butler_edittagview.h \
 	$(DIST_DIR)/src/qt/butler_edittagview.cpp \
 	$(DIST_DIR)/src/qt/butler_tagwidget.h \
 	$(DIST_DIR)/src/qt/butler_tagwidget.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_waresview.h \
-	$(DIST_DIR)/src/qt/butler_waresview.cpp \
 	$(DIST_DIR)/src/qt/butler_editwareview.h \
 	$(DIST_DIR)/src/qt/butler_editwareview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_companyview.h \
-	$(DIST_DIR)/src/qt/butler_companyview.cpp \
+	$(DIST_DIR)/src/qt/butler_listviews.h \
+	$(DIST_DIR)/src/qt/butler_listviews.cpp \
+	\
 	$(DIST_DIR)/src/qt/butler_editcompanyview.h \
 	$(DIST_DIR)/src/qt/butler_editcompanyview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_brandsview.h \
-	$(DIST_DIR)/src/qt/butler_brandsview.cpp \
 	$(DIST_DIR)/src/qt/butler_editbrandview.h \
 	$(DIST_DIR)/src/qt/butler_editbrandview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_inventoriesview.h \
-	$(DIST_DIR)/src/qt/butler_inventoriesview.cpp \
 	$(DIST_DIR)/src/qt/butler_editinventoryview.h \
 	$(DIST_DIR)/src/qt/butler_editinventoryview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_accountsview.h \
-	$(DIST_DIR)/src/qt/butler_accountsview.cpp \
 	$(DIST_DIR)/src/qt/butler_editaccountview.h \
 	$(DIST_DIR)/src/qt/butler_editaccountview.cpp \
 	\
-	$(DIST_DIR)/src/qt/butler_partnersview.h \
-	$(DIST_DIR)/src/qt/butler_partnersview.cpp \
 	$(DIST_DIR)/src/qt/butler_editpartnerview.h \
 	$(DIST_DIR)/src/qt/butler_editpartnerview.cpp \
 	\
