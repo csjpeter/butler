@@ -8,6 +8,9 @@
 #include "butler_config.h"
 #include "butler_editaccountview.h"
 
+@include@ views.cpp
+@declare@ Account
+
 SCC TidContext = "EditAccountView";
 
 SCC TidNewAccountWindowTitle = QT_TRANSLATE_NOOP("EditAccountView", "Add new account");
@@ -51,8 +54,8 @@ EditAccountView::EditAccountView(const csjp::String & dbname, QWidget * parent) 
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -70,33 +73,7 @@ EditAccountView::EditAccountView(const csjp::String & dbname, QWidget * parent) 
 	loadState();
 }
 
-void EditAccountView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditAccountView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditAccountView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditAccountView" : "NewAccountView");
-	PannView::loadState(prefix);
-}
-
-void EditAccountView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditAccountView" : "NewAccountView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditAccountView::mapToGui()
 {
@@ -119,20 +96,6 @@ void EditAccountView::mapFromGui()
 	account.iban = ibanEditor.editor.text();
 	account.swiftCode = swiftCodeEditor.editor.text();
 	account.bankOffice = partnerEditor.text();
-}
-
-void EditAccountView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditAccountView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditAccountView::retranslate()
@@ -222,35 +185,8 @@ void EditAccountView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditAccountView::setCursor(const QModelIndex& index)
+void EditAccountView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditAccountWindowTitle));
-	mapToGui();
-}
-
-void EditAccountView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
-
-void EditAccountView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditAccountView::saveSlot()
-{
-	mapFromGui();
-
 	/* Add partner if not yet known. */
 	PartnerModel & pm = partnerModel(dbname);
 	int i = pm.index(partnerEditor.text());
@@ -259,23 +195,7 @@ void EditAccountView::saveSlot()
 		partner.name = partnerEditor.text();
 		pm.addNew(partner);
 	}
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != account)
-			model.update(cursor.row(), account);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(account);
-
-		account = Account();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
 }
 
-void EditAccountView::resetSlot()
-{
-	mapToGui();
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
+

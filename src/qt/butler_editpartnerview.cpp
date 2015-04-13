@@ -8,6 +8,9 @@
 #include "butler_config.h"
 #include "butler_editpartnerview.h"
 
+@include@ views.cpp
+@declare@ Partner
+
 SCC TidContext = "EditPartnerView";
 
 SCC TidNewPartnerWindowTitle = QT_TRANSLATE_NOOP("EditPartnerView", "Add new partner");
@@ -53,8 +56,8 @@ EditPartnerView::EditPartnerView(const csjp::String & dbname, QWidget * parent) 
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -76,33 +79,7 @@ EditPartnerView::EditPartnerView(const csjp::String & dbname, QWidget * parent) 
 	loadState();
 }
 
-void EditPartnerView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditPartnerView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditPartnerView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditPartnerView" : "NewPartnerView");
-	PannView::loadState(prefix);
-}
-
-void EditPartnerView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditPartnerView" : "NewPartnerView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditPartnerView::mapToGui()
 {
@@ -129,20 +106,6 @@ void EditPartnerView::mapFromGui()
 	partner.postalCode = postalCodeEditor.editor.text();
 	partner.address = addressEditor.editor.text();
 	partner.company = companyEditor.text();
-}
-
-void EditPartnerView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditPartnerView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditPartnerView::retranslate()
@@ -244,35 +207,8 @@ void EditPartnerView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditPartnerView::setCursor(const QModelIndex& index)
+void EditPartnerView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditPartnerWindowTitle));
-	mapToGui();
-}
-
-void EditPartnerView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
-
-void EditPartnerView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditPartnerView::saveSlot()
-{
-	mapFromGui();
-
 	/* Add company if not yet known. */
 	CompanyModel & cm = companyModel(dbname);
 	int i = cm.index(companyEditor.text());
@@ -281,23 +217,7 @@ void EditPartnerView::saveSlot()
 		company.name = companyEditor.text();
 		cm.addNew(company);
 	}
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != partner)
-			model.update(cursor.row(), partner);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(partner);
-
-		partner = Partner();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
 }
 
-void EditPartnerView::resetSlot()
-{
-	mapToGui();
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
+

@@ -8,6 +8,9 @@
 #include "butler_config.h"
 #include "butler_editinventoryview.h"
 
+@include@ views.cpp
+@declare@ Inventory
+
 SCC TidContext = "EditInventoryView";
 
 SCC TidNewInventoryWindowTitle = QT_TRANSLATE_NOOP("EditInventoryView", "Add new inventory");
@@ -47,8 +50,8 @@ EditInventoryView::EditInventoryView(const csjp::String & dbname, QWidget * pare
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -60,33 +63,7 @@ EditInventoryView::EditInventoryView(const csjp::String & dbname, QWidget * pare
 	loadState();
 }
 
-void EditInventoryView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditInventoryView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditInventoryView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditInventoryView" : "NewInventoryView");
-	PannView::loadState(prefix);
-}
-
-void EditInventoryView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditInventoryView" : "NewInventoryView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditInventoryView::mapToGui()
 {
@@ -103,20 +80,6 @@ void EditInventoryView::mapFromGui()
 {
 	inventory.name <<= nameEditor.editor.text();
 	inventory.comment <<= commentEditor.edit.toPlainText();
-}
-
-void EditInventoryView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditInventoryView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditInventoryView::retranslate()
@@ -188,51 +151,9 @@ void EditInventoryView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditInventoryView::setCursor(const QModelIndex& index)
+void EditInventoryView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditInventoryWindowTitle));
-	mapToGui();
 }
 
-void EditInventoryView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
 
-void EditInventoryView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditInventoryView::saveSlot()
-{
-	mapFromGui();
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != inventory)
-			model.update(cursor.row(), inventory);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(inventory);
-
-		inventory = Inventory();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
-}
-
-void EditInventoryView::resetSlot()
-{
-	mapToGui();
-}

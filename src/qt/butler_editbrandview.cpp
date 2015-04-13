@@ -8,6 +8,9 @@
 #include "butler_config.h"
 #include "butler_editbrandview.h"
 
+@include@ views.cpp
+@declare@ Brand
+
 SCC TidContext = "EditBrandView";
 
 SCC TidNewBrandWindowTitle = QT_TRANSLATE_NOOP("EditBrandView", "Add new brand");
@@ -48,8 +51,8 @@ EditBrandView::EditBrandView(const csjp::String & dbname, QWidget * parent) :
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -61,33 +64,7 @@ EditBrandView::EditBrandView(const csjp::String & dbname, QWidget * parent) :
 	loadState();
 }
 
-void EditBrandView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditBrandView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditBrandView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditBrandView" : "NewBrandView");
-	PannView::loadState(prefix);
-}
-
-void EditBrandView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditBrandView" : "NewBrandView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditBrandView::mapToGui()
 {
@@ -104,20 +81,6 @@ void EditBrandView::mapFromGui()
 {
 	brand.name <<= nameEditor.editor.text();
 	brand.company <<= companyEditor.text();
-}
-
-void EditBrandView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditBrandView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditBrandView::retranslate()
@@ -189,35 +152,8 @@ void EditBrandView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditBrandView::setCursor(const QModelIndex& index)
+void EditBrandView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditBrandWindowTitle));
-	mapToGui();
-}
-
-void EditBrandView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
-
-void EditBrandView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditBrandView::saveSlot()
-{
-	mapFromGui();
-
 	/* Add company if not yet known. */
 	CompanyModel & cm = companyModel(dbname);
 	int i = cm.index(companyEditor.text());
@@ -226,23 +162,7 @@ void EditBrandView::saveSlot()
 		company.name = companyEditor.text();
 		cm.addNew(company);
 	}
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != brand)
-			model.update(cursor.row(), brand);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(brand);
-
-		brand = Brand();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
 }
 
-void EditBrandView::resetSlot()
-{
-	mapToGui();
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
+

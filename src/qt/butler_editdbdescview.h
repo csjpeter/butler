@@ -3,20 +3,20 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
-#ifndef BUTLER_EDITCOMPANYVIEW_H
-#define BUTLER_EDITCOMPANYVIEW_H
+#ifndef BUTLER_EDITDATABASEDESCRIPTORVIEW_H
+#define BUTLER_EDITDATABASEDESCRIPTORVIEW_H
 
 #include <butler_pannview.h>
 
-class EditDbDescView : public PannView
+class EditDatabaseDescriptorView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent = 0);
-	virtual ~EditDbDescView() {}
+	EditDatabaseDescriptorView(DatabaseDescriptorModel & model, QWidget * parent = 0);
+	virtual ~EditDatabaseDescriptorView() {}
 
 	void setCursor(const QModelIndex& index);
 
@@ -39,15 +39,16 @@ private slots:
 	void relayout();
 	void passwordFieldModified();
 	void updateToolButtonStates();
-	void prevClickedSlot();
-	void nextClickedSlot();
+	void prevSlot();
+	void nextSlot();
+	void saveSlotSpec();
 	void saveSlot();
 	void resetSlot();
 
 private:
 	DatabaseDescriptorModel & model;
 	QModelIndex cursor;
-	DatabaseDescriptor dbdesc;
+	DatabaseDescriptor databaseDescriptor;
 
 	Button doneButton;
 	Button resetButton;

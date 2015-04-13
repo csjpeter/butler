@@ -54,8 +54,8 @@ EditWareView::EditWareView(const csjp::String & dbname, QWidget * parent) :
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -71,33 +71,7 @@ EditWareView::EditWareView(const csjp::String & dbname, QWidget * parent) :
 	loadState();
 }
 
-void EditWareView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditWareView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditWareView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
-	PannView::loadState(prefix);
-}
-
-void EditWareView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditWareView::mapToGui()
 {
@@ -120,20 +94,6 @@ void EditWareView::mapFromGui()
 	ware.unit = unitEditor.editor.text();
 	ware.setAsTypes(typesEditor.editor.text());
 	ware.setAsTags(tagsWidget.selectedTags());
-}
-
-void EditWareView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditWareView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditWareView::retranslate()
@@ -218,40 +178,9 @@ void EditWareView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditWareView::setCursor(const QModelIndex& index)
+void EditWareView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditWareWindowTitle));
-	mapToGui();
 }
 
-@include@ prevOrNextClicked
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
 
-void EditWareView::saveSlot()
-{
-	mapFromGui();
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != ware)
-			model.update(cursor.row(), ware);
-		auto row = model.set.index(ware.name);
-		setCursor(model.index(row, cursor.column()));
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(ware);
-
-		ware = Ware();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
-}
-
-void EditWareView::resetSlot()
-{
-	mapToGui();
-}

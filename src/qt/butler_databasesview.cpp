@@ -30,8 +30,8 @@ DatabasesView::DatabasesView(QWidget * parent) :
 			TidDelButton, TidContext, QKeySequence(Qt::Key_F2)),
 	useButton(QIcon(Path::icon("use.png")),
 			TidUseButton, TidContext, QKeySequence(Qt::Key_F4)),
-	newDbDescView(NULL),
-	editDbDescView(NULL)
+	newDatabaseDescriptorView(NULL),
+	editDatabaseDescriptorView(NULL)
 {
 	setWindowIcon(QIcon(Path::icon("databases.png")));
 
@@ -59,8 +59,8 @@ DatabasesView::DatabasesView(QWidget * parent) :
 
 DatabasesView::~DatabasesView()
 {
-	delete newDbDescView;
-	delete editDbDescView;
+	delete newDatabaseDescriptorView;
+	delete editDatabaseDescriptorView;
 }
 
 void DatabasesView::retranslate()
@@ -153,10 +153,10 @@ void DatabasesView::loadState()
 	if(model.set.has(dbname))
 		tableView.setCurrentIndex(model.index(model.index(dbname), col));
 
-	if(settings.value(prefix + "/newDbDescView", false).toBool())
+	if(settings.value(prefix + "/newDatabaseDescriptorView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(newDbDesc()));
 
-	if(settings.value(prefix + "/editDbDescView", false).toBool())
+	if(settings.value(prefix + "/editDatabaseDescriptorView", false).toBool())
 		QTimer::singleShot(0, this, SLOT(editDbDesc()));
 }
 
@@ -174,16 +174,16 @@ void DatabasesView::saveState()
 
 	tableView.saveState(prefix);
 
-	SAVE_VIEW_STATE(newDbDescView);
-	SAVE_VIEW_STATE(editDbDescView);
+	SAVE_VIEW_STATE(newDatabaseDescriptorView);
+	SAVE_VIEW_STATE(editDatabaseDescriptorView);
 }
 
 void DatabasesView::newDbDesc()
 {
-	if(!newDbDescView)
-		newDbDescView = new EditDbDescView(model);
+	if(!newDatabaseDescriptorView)
+		newDatabaseDescriptorView = new EditDatabaseDescriptorView(model);
 
-	newDbDescView->activate();
+	newDatabaseDescriptorView->activate();
 }
 
 void DatabasesView::editDbDesc()
@@ -194,11 +194,11 @@ void DatabasesView::editDbDesc()
 		return;
 	}
 
-	if(!editDbDescView)
-		editDbDescView = new EditDbDescView(model);
+	if(!editDatabaseDescriptorView)
+		editDatabaseDescriptorView = new EditDatabaseDescriptorView(model);
 
-	editDbDescView->setCursor(tableView.currentIndex());
-	editDbDescView->activate();
+	editDatabaseDescriptorView->setCursor(tableView.currentIndex());
+	editDatabaseDescriptorView->activate();
 }
 
 void DatabasesView::delDbDesc()

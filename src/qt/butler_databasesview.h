@@ -10,7 +10,7 @@
 #include <butler_databases.h>
 
 /*forwards*/
-class EditDbDescView;
+class EditDatabaseDescriptorView;
 
 class DatabasesView : public PannView
 {
@@ -59,8 +59,8 @@ private:
 
 	TableView tableView;
 
-	EditDbDescView * newDbDescView;
-	EditDbDescView * editDbDescView;
+	EditDatabaseDescriptorView * newDatabaseDescriptorView;
+	EditDatabaseDescriptorView * editDatabaseDescriptorView;
 };
 
 #endif

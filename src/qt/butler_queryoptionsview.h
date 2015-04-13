@@ -37,11 +37,12 @@ private slots:
 	void retranslate();
 	void applyLayout(LayoutState state, bool test = false);
 	void relayout();
-	void queryClickedSlot();
-	void saveClickedSlot();
-	void delClickedSlot();
-	void resetClickedSlot();
-	void backClickedSlot();
+	void querySlot();
+	void saveSlotSpec();
+	void saveSlot();
+	void delSlot();
+	void resetSlot();
+	void backSlot();
 	void querySelectedSlot();
 	void layoutContentChangeSlot();
 	void updateToolButtonStates();

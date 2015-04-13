@@ -15,6 +15,9 @@
 #include "butler_config.h"
 #include "butler_edititemview.h"
 
+@include@ views.cpp
+@declare@ Item
+
 SCC TidContext = "EditItemView";
 
 SCC TidNewItemWindowTitle = QT_TRANSLATE_NOOP("EditItemView", "Already bought new item");
@@ -87,8 +90,8 @@ EditItemView::EditItemView(const csjp::String & dbname, ItemModel & model, QWidg
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 	
 	connect(&wareEditor.box, SIGNAL(editTextChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -152,23 +155,7 @@ void EditItemView::showEvent(QShowEvent *event)
 	relayout();
 }
 
-void EditItemView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-	PannView::closeEvent(event);
-}
-
-void EditItemView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditItemView" : "EditItemView");
-	PannView::loadState(prefix);
-}
-
-void EditItemView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditItemView" : "EditItemView");
-	PannView::saveState(prefix);
-}
+@include@ closeEvent loadState saveState changeEvent resizeEvent
 
 void EditItemView::mapToGui()
 {
@@ -229,20 +216,6 @@ void EditItemView::mapFromGui()
 	ware.setAsTags(tagsWidget.selectedTags());
 	if(typeEditor.text().size() && !ware.types.has(item.type))
 		ware.types.add(new WareType(ware.name, typeEditor.text()));
-}
-
-void EditItemView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditItemView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditItemView::retranslate()
@@ -402,34 +375,8 @@ void EditItemView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditItemView::setCursor(const QModelIndex& index)
+void EditItemView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditItemWindowTitle));
-	mapToGui();
-}
-
-void EditItemView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
-
-void EditItemView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditItemView::saveSlot()
-{
-	mapFromGui();
 	int i;
 
 	/* Add partner if not yet known. */
@@ -493,23 +440,9 @@ void EditItemView::saveSlot()
 		wm.addNew(ware);
 	else if(wm.data(i) != ware)
 		wm.update(i, ware);
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != item)
-			model.update(cursor.row(), item);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(item);
-
-		item = Item();
-		item.uploadDate = QDateTime::currentDateTime();
-		ware = Ware();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		grossPriceEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
 }
+
+@include@ setCursor prevSlot nextSlot saveSlot
 
 void EditItemView::resetSlot()
 {

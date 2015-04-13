@@ -8,6 +8,9 @@
 #include "butler_config.h"
 #include "butler_edittagview.h"
 
+@include@ views.cpp
+@declare@ Tag
+
 SCC TidContext = "EditTagView";
 
 SCC TidNewTagWindowTitle = QT_TRANSLATE_NOOP("EditTagView", "Add new tag");
@@ -47,8 +50,8 @@ EditTagView::EditTagView(const csjp::String & dbname, QWidget * parent) :
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&nameEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
@@ -60,33 +63,7 @@ EditTagView::EditTagView(const csjp::String & dbname, QWidget * parent) :
 	loadState();
 }
 
-void EditTagView::showEvent(QShowEvent *event)
-{
-	mapToGui();
-
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditTagView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditTagView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditTagView" : "NewTagView");
-	PannView::loadState(prefix);
-}
-
-void EditTagView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditTagView" : "NewTagView");
-	PannView::saveState(prefix);
-}
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditTagView::mapToGui()
 {
@@ -103,20 +80,6 @@ void EditTagView::mapFromGui()
 {
 	tag.name <<= nameEditor.editor.text();
 	tag.description <<= descEditor.editor.text();
-}
-
-void EditTagView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditTagView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
 }
 
 void EditTagView::retranslate()
@@ -188,51 +151,9 @@ void EditTagView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditTagView::setCursor(const QModelIndex& index)
+void EditTagView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditTagWindowTitle));
-	mapToGui();
 }
 
-void EditTagView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
 
-void EditTagView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditTagView::saveSlot()
-{
-	mapFromGui();
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != tag)
-			model.update(cursor.row(), tag);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(tag);
-
-		tag = Tag();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
-}
-
-void EditTagView::resetSlot()
-{
-	mapToGui();
-}

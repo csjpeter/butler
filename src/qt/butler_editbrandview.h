@@ -39,8 +39,9 @@ private slots:
 	void applyLayout();
 	void relayout();
 	void updateToolButtonStates();
-	void prevClickedSlot();
-	void nextClickedSlot();
+	void prevSlot();
+	void nextSlot();
+	void saveSlotSpec();
 	void saveSlot();
 	void resetSlot();
 

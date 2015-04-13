@@ -72,10 +72,10 @@ QueryOptionsView::QueryOptionsView(const csjp::String & dbname, QWidget * parent
 	toolBar.addToolWidget(delButton);
 	toolBar.addToolWidget(resetButton);
 
-	connect(&queryButton, SIGNAL(clicked()), this, SLOT(queryClickedSlot()));
-	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveClickedSlot()));
-	connect(&delButton, SIGNAL(clicked()), this, SLOT(delClickedSlot()));
-	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetClickedSlot()));
+	connect(&queryButton, SIGNAL(clicked()), this, SLOT(querySlot()));
+	connect(&saveButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delSlot()));
+	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
 
 	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
 	connect(&partnerFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
@@ -144,6 +144,21 @@ void QueryOptionsView::saveState()
 {
 	QString prefix("QueryOptionsView");
 	PannView::saveState(prefix);
+}
+
+void QueryOptionsView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void QueryOptionsView::resizeEvent(QResizeEvent *event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	updateGeometry();
+	relayout();
 }
 
 void QueryOptionsView::mapToGui()
@@ -260,21 +275,6 @@ void QueryOptionsView::mapFromGui()
 	} else {
 		query.withoutTags.clear();
 	}
-}
-
-void QueryOptionsView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void QueryOptionsView::resizeEvent(QResizeEvent *event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	updateGeometry();
-	relayout();
 }
 
 void QueryOptionsView::retranslate()
@@ -455,7 +455,11 @@ void QueryOptionsView::relayout()
 	updateToolButtonStates();
 }
 
-void QueryOptionsView::saveClickedSlot()
+void QueryOptionsView::saveSlotSpec()
+{
+}
+
+void QueryOptionsView::saveSlot()
 {
 	mapFromGui();
 
@@ -469,7 +473,7 @@ void QueryOptionsView::saveClickedSlot()
 	updateToolButtonStates();
 }
 
-void QueryOptionsView::delClickedSlot()
+void QueryOptionsView::delSlot()
 {
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -487,7 +491,7 @@ void QueryOptionsView::delClickedSlot()
 	}
 }
 
-void QueryOptionsView::queryClickedSlot()
+void QueryOptionsView::querySlot()
 {
 	mapFromGui();
 
@@ -500,12 +504,12 @@ void QueryOptionsView::queryClickedSlot()
 	accept();
 }
 
-void QueryOptionsView::resetClickedSlot()
+void QueryOptionsView::resetSlot()
 {
 	mapToGui();
 }
 
-void QueryOptionsView::backClickedSlot()
+void QueryOptionsView::backSlot()
 {
 	reject();
 }

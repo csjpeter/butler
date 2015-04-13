@@ -8,34 +8,37 @@
 #include "butler_config.h"
 #include "butler_editdbdescview.h"
 
-SCC TidContext = "EditDbDescView";
+@include@ views.cpp
+@declare@ DatabaseDescriptor
 
-SCC TidNewCompanyWindowTitle = QT_TRANSLATE_NOOP("EditDbDescView", "Add new database connection");
-SCC TidEditCompanyWindowTitle = QT_TRANSLATE_NOOP("EditDbDescView", "Editing database connection");
+SCC TidContext = "EditDatabaseDescriptorView";
 
-SCC TidDriverOptions = QT_TRANSLATE_NOOP("EditDbDescView", "Driver:");
-SCC TidSqliteDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "SQLite");
-SCC TidPsqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "Postgre SQL");
-SCC TidMysqlDriverOption = QT_TRANSLATE_NOOP("EditDbDescView", "My SQL");
+SCC TidNewDatabaseDescriptorWindowTitle = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Add new database connection");
+SCC TidEditDatabaseDescriptorWindowTitle = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Editing database connection");
 
-SCC TidDoneButton = QT_TRANSLATE_NOOP("EditDbDescView", "Done");
-SCC TidResetButton = QT_TRANSLATE_NOOP("EditDbDescView", "Reset");
-SCC TidPrevButton = QT_TRANSLATE_NOOP("EditDbDescView", "Previous database connection");
-SCC TidNextButton = QT_TRANSLATE_NOOP("EditDbDescView", "Next database connection");
+SCC TidDriverOptions = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Driver:");
+SCC TidSqliteDriverOption = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "SQLite");
+SCC TidPsqlDriverOption = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Postgre SQL");
+SCC TidMysqlDriverOption = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "My SQL");
 
-SCC TidDbConnName = QT_TRANSLATE_NOOP("EditDbDescView", "Name for database connection:");
-SCC TidDbName = QT_TRANSLATE_NOOP("EditDbDescView", "Database name:");
-SCC TidUsername = QT_TRANSLATE_NOOP("EditDbDescView", "Username:");
-SCC TidPassword = QT_TRANSLATE_NOOP("EditDbDescView", "Password:");
-SCC TidSavePassword = QT_TRANSLATE_NOOP("EditDbDescView", "Save plain password :");
-SCC TidHost = QT_TRANSLATE_NOOP("EditDbDescView", "Host:");
-SCC TidPort = QT_TRANSLATE_NOOP("EditDbDescView", "Port:");
+SCC TidDoneButton = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Done");
+SCC TidResetButton = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Reset");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Previous database connection");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Next database connection");
 
-SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditDbDescView", "Please fill the name field.");
-SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditDbDescView", "Database connection is saved, you may add another.");
-SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditDbDescView", "Database connection is updated.");
+SCC TidDbConnName = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Name for database connection:");
+SCC TidDbName = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Database name:");
+SCC TidUsername = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Username:");
+SCC TidPassword = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Password:");
+SCC TidSavePassword = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Save plain password :");
+SCC TidHost = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Host:");
+SCC TidPort = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Port:");
 
-EditDbDescView::EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent) :
+SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Please fill the name field.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Database connection is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Database connection is updated.");
+
+EditDatabaseDescriptorView::EditDatabaseDescriptorView(DatabaseDescriptorModel & model, QWidget * parent) :
 	PannView(parent),
 	model(model),
 	doneButton(TidDoneButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Return)),
@@ -59,8 +62,8 @@ EditDbDescView::EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent
 
 	connect(&doneButton, SIGNAL(clicked()), this, SLOT(saveSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
-	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevClickedSlot()));
-	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextClickedSlot()));
+	connect(&prevButton, SIGNAL(clicked()), this, SLOT(prevSlot()));
+	connect(&nextButton, SIGNAL(clicked()), this, SLOT(nextSlot()));
 
 	connect(&passwordEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(passwordFieldModified()));
@@ -90,99 +93,59 @@ EditDbDescView::EditDbDescView(DatabaseDescriptorModel & model, QWidget * parent
 	loadState();
 }
 
-void EditDbDescView::showEvent(QShowEvent *event)
-{
-	mapToGui();
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
-	PannView::showEvent(event);
-	nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	relayout();
-}
-
-void EditDbDescView::closeEvent(QCloseEvent *event)
-{
-	saveState();
-
-	PannView::closeEvent(event);
-}
-
-void EditDbDescView::loadState()
-{
-	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewDbDescView");
-	PannView::loadState(prefix);
-}
-
-void EditDbDescView::saveState()
-{
-	QString prefix(cursor.isValid() ? "EditDbDescView" : "NewDbDescView");
-	PannView::saveState(prefix);
-}
-
-void EditDbDescView::mapToGui()
+void EditDatabaseDescriptorView::mapToGui()
 {
 	if(cursor.isValid())
-		dbdesc = DatabaseDescriptor(model.data(cursor.row()));
+		databaseDescriptor = DatabaseDescriptor(model.data(cursor.row()));
 
-	nameEditor.editor.setText(dbdesc.name);
-	databaseNameEditor.editor.setText(dbdesc.databaseName);
-	usernameEditor.editor.setText(dbdesc.username);
-	passwordEditor.editor.setText(dbdesc.password);
+	nameEditor.editor.setText(databaseDescriptor.name);
+	databaseNameEditor.editor.setText(databaseDescriptor.databaseName);
+	usernameEditor.editor.setText(databaseDescriptor.username);
+	passwordEditor.editor.setText(databaseDescriptor.password);
 	savePasswordCheckBox.box.setCheckState(
-			dbdesc.savePassword ? Qt::Checked : Qt::Unchecked);
-	hostEditor.editor.setText(dbdesc.host);
-	portEditor.setValue(dbdesc.port);
+			databaseDescriptor.savePassword ? Qt::Checked : Qt::Unchecked);
+	hostEditor.editor.setText(databaseDescriptor.host);
+	portEditor.setValue(databaseDescriptor.port);
 
 	sqliteDriverOption.setChecked(false);
 	psqlDriverOption.setChecked(false);
 	mysqlDriverOption.setChecked(false);
-	if(dbdesc.driver == "SQLite")
+	if(databaseDescriptor.driver == "SQLite")
 		sqliteDriverOption.setChecked(true);
-	else if(dbdesc.driver == "PSql")
+	else if(databaseDescriptor.driver == "PSql")
 		psqlDriverOption.setChecked(true);
-	else if(dbdesc.driver == "MySQL")
+	else if(databaseDescriptor.driver == "MySQL")
 		mysqlDriverOption.setChecked(true);
 
 	updateToolButtonStates();
 }
 
-void EditDbDescView::mapFromGui()
+void EditDatabaseDescriptorView::mapFromGui()
 {
-	dbdesc.name <<= nameEditor.editor.text();
-	dbdesc.databaseName <<= databaseNameEditor.editor.text();
-	dbdesc.username <<= usernameEditor.editor.text();
-	dbdesc.password <<= passwordEditor.editor.text();
-	dbdesc.savePassword = savePasswordCheckBox.box.checkState() == Qt::Checked;
-	dbdesc.host <<= hostEditor.editor.text();
-	dbdesc.port = portEditor.value();
+	databaseDescriptor.name <<= nameEditor.editor.text();
+	databaseDescriptor.databaseName <<= databaseNameEditor.editor.text();
+	databaseDescriptor.username <<= usernameEditor.editor.text();
+	databaseDescriptor.password <<= passwordEditor.editor.text();
+	databaseDescriptor.savePassword = savePasswordCheckBox.box.checkState() == Qt::Checked;
+	databaseDescriptor.host <<= hostEditor.editor.text();
+	databaseDescriptor.port = portEditor.value();
 
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
-		dbdesc.driver = SqlDriver::SQLite;
+		databaseDescriptor.driver = SqlDriver::SQLite;
 	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
-		dbdesc.driver = SqlDriver::PSql;
+		databaseDescriptor.driver = SqlDriver::PSql;
 	else if(driverOptions.group.checkedButton() == &mysqlDriverOption)
-		dbdesc.driver = SqlDriver::MySQL;
+		databaseDescriptor.driver = SqlDriver::MySQL;
 }
 
-void EditDbDescView::changeEvent(QEvent * event)
-{
-	PannView::changeEvent(event);
-	if(event->type() == QEvent::LanguageChange)
-		retranslate();
-}
-
-void EditDbDescView::resizeEvent(QResizeEvent * event)
-{
-	if(layout() && (event->size() == event->oldSize()))
-		return;
-	relayout();
-}
-
-void EditDbDescView::retranslate()
+void EditDatabaseDescriptorView::retranslate()
 {
 	if(cursor.isValid())
-		setWindowTitle(tr(TidEditCompanyWindowTitle));
+		setWindowTitle(tr(TidEditDatabaseDescriptorWindowTitle));
 	else
-		setWindowTitle(tr(TidNewCompanyWindowTitle));
+		setWindowTitle(tr(TidNewDatabaseDescriptorWindowTitle));
 
 	driverOptions.label.setText(tr(TidDriverOptions));
 	sqliteDriverOption.setText(tr(TidSqliteDriverOption));
@@ -200,7 +163,7 @@ void EditDbDescView::retranslate()
 	relayout();
 }
 
-void EditDbDescView::applyLayout(LayoutState state)
+void EditDatabaseDescriptorView::applyLayout(LayoutState state)
 {
 	QBoxLayout * driverOptionsLayout = 0;
 
@@ -242,7 +205,7 @@ void EditDbDescView::applyLayout(LayoutState state)
 	updateGeometry();
 }
 
-void EditDbDescView::relayout()
+void EditDatabaseDescriptorView::relayout()
 {
 	LayoutState newState = LayoutState::Wide;
 	{
@@ -268,7 +231,7 @@ void EditDbDescView::relayout()
 	updateToolButtonStates();
 }
 
-void EditDbDescView::passwordFieldModified()
+void EditDatabaseDescriptorView::passwordFieldModified()
 {
 	/* Use case to avoid:
 	 * - user dont want to save his password
@@ -276,31 +239,31 @@ void EditDbDescView::passwordFieldModified()
 	 * - user can not login so needs to set his real password
 	 * - now, if desc.savePassword remains true, password gets saved and cracker can read it
 	 */
-//	if(dbdesc.password != passwordEditor.editor.text())
+//	if(databaseDescriptor.password != passwordEditor.editor.text())
 		savePasswordCheckBox.box.setCheckState(Qt::Unchecked);
 }
 
-void EditDbDescView::updateToolButtonStates()
+void EditDatabaseDescriptorView::updateToolButtonStates()
 {
 	bool modified = !(
-			Text(dbdesc.name) == nameEditor.editor.text() &&
-			Text(dbdesc.databaseName) == databaseNameEditor.editor.text() &&
-			Text(dbdesc.username) == usernameEditor.editor.text() &&
-			Text(dbdesc.password) == passwordEditor.editor.text() &&
-			dbdesc.savePassword == (
+			Text(databaseDescriptor.name) == nameEditor.editor.text() &&
+			Text(databaseDescriptor.databaseName) == databaseNameEditor.editor.text() &&
+			Text(databaseDescriptor.username) == usernameEditor.editor.text() &&
+			Text(databaseDescriptor.password) == passwordEditor.editor.text() &&
+			databaseDescriptor.savePassword == (
 					savePasswordCheckBox.box.checkState() == Qt::Checked) &&
-			Text(dbdesc.host) == hostEditor.editor.text() &&
-			dbdesc.port == portEditor.value()
+			Text(databaseDescriptor.host) == hostEditor.editor.text() &&
+			databaseDescriptor.port == portEditor.value()
 			);
 
 	if(!modified){
-		if(dbdesc.driver == "SQLite" &&
+		if(databaseDescriptor.driver == "SQLite" &&
 				driverOptions.group.checkedButton() != &sqliteDriverOption)
 			modified = true;
-		else if(dbdesc.driver == "PSql" &&
+		else if(databaseDescriptor.driver == "PSql" &&
 				driverOptions.group.checkedButton() != &psqlDriverOption)
 			modified = true;
-		else if(dbdesc.driver == "MySQL" &&
+		else if(databaseDescriptor.driver == "MySQL" &&
 				driverOptions.group.checkedButton() != &mysqlDriverOption)
 			modified = true;
 	}
@@ -339,51 +302,9 @@ void EditDbDescView::updateToolButtonStates()
 	footerBar.updateButtons();
 }
 
-void EditDbDescView::setCursor(const QModelIndex& index)
+void EditDatabaseDescriptorView::saveSlotSpec()
 {
-	ENSURE(index.isValid(), csjp::LogicError);
-	ENSURE(index.model() == &model, csjp::LogicError);
-
-	cursor = index;
-	setWindowTitle(tr(TidEditCompanyWindowTitle));
-	mapToGui();
 }
 
-void EditDbDescView::prevClickedSlot()
-{
-	int col = cursor.column();
-	int row = (0<cursor.row()) ? (cursor.row()-1) : 0;
-	setCursor(model.index(row, col));
-}
+@include@ setCursor prevSlot nextSlot saveSlot resetSlot
 
-void EditDbDescView::nextClickedSlot()
-{
-	int col = cursor.column();
-	int row = (cursor.row() < model.rowCount() - 1) ?
-		(cursor.row() + 1) : (model.rowCount() - 1);
-	setCursor(model.index(row, col));
-}
-
-void EditDbDescView::saveSlot()
-{
-	mapFromGui();
-
-	if(cursor.isValid()){
-		if(model.data(cursor.row()) != dbdesc)
-			model.update(cursor.row(), dbdesc);
-		updateToolButtonStates();
-		toolBar.setInfo(tr(TidInfoEditSaved));
-	} else {
-		model.addNew(dbdesc);
-
-		dbdesc = DatabaseDescriptor();
-		mapToGui();
-		toolBar.setInfo(tr(TidInfoNewSaved));
-		nameEditor.editor.setFocus(Qt::OtherFocusReason);
-	}
-}
-
-void EditDbDescView::resetSlot()
-{
-	mapToGui();
-}
