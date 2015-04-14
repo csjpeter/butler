@@ -9,6 +9,8 @@
 
 #include <config.h>
 
+#include <csjp_file.h>
+
 #include <butler_databases.h>
 #include <butler_config.h>
 #include <butler_kineticscroller.h>
@@ -96,11 +98,7 @@ void Application::pixelPerMM()
 void Application::loadCSS()
 {
 	/* Load css file containing sizes in milimeters */
-	QString cssFileName(Path::css("application.css"));
-	QFile cssFile(cssFileName);
-	if(!cssFile.open(QIODevice::ReadOnly))
-		throw csjp::FileError("Cant open css file: %", cssFileName);
-	QString data(cssFile.readAll());
+	QString data(csjp::File::readAll(C_STR(Path::css("application.css"))).str);
 
 	/* creating new css code with calculated sizes in px for the current device */
 	QString newCSS;

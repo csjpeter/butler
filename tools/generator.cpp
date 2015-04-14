@@ -772,8 +772,7 @@ int main(int argc, char *args[])
 	Json templates;
 	String code;
 
-	File declFile(declFileName);
-	String declBuf = declFile.readAll();
+	String declBuf(File::readAll(declFileName));
 	declBuf.replace("\r", "");
 	Declaration::parseAllDeclaration(declarations, declBuf);
 
@@ -782,8 +781,7 @@ int main(int argc, char *args[])
 		LOG(" - % : %", i.typeName, declarations.has(i.typeName) ? "true" : "false");
 	}
 	
-	File inputFile(inputFileName);
-	String inputBuf = inputFile.readAll();
+	String inputBuf(File::readAll(inputFileName));
 	inputBuf.replace("\r", "");
 	StringChunk inputChunk(inputBuf.str, inputBuf.length);
 
