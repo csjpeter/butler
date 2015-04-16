@@ -106,7 +106,7 @@ case "${CMD}" in
 		exec_in_dir ${DIST} make -j${JOBS} $@ || exit $?
 
 		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
-		for f in $(echo "libcrypto.so libpq.so libqsqlpsql.so libssl.so"); do
+		for f in $(echo "libcrypto.so libpq.so libssl.so libsqlite3.so"); do
 			cp /opt/${ANDROID_SDK_API}-${ARCH}/lib/$f \
 				${DIST}/android/libs/${ARM_CPU}/ || exit $?
 		done

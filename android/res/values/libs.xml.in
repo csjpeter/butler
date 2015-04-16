@@ -7,16 +7,17 @@
 		<item>ssl</item>
 		<item>crypto</item>
 		<item>pq</item>
-		<item>qsqlpsql</item>
+		<item>sqlite3</item>
 	</array>
 	<array name="qt_libs">
 		<item>gnustl_shared</item>
 		<item>Qt5Core</item>
 		<item>Qt5Gui</item>
 		<item>Qt5Widgets</item>
-		<item>Qt5Sql</item>
 	</array>
 	<array name="bundled_in_lib">
+		<item>libpq.so:libpq.so</item>
+		<item>libsqlite3.so:libsqlite3.so</item>
 		<item>libplugins_platforms_android_libqtforandroid.so:plugins/platforms/android/libqtforandroid.so</item>
 		<item>libplugins_platforms_libqeglfs.so:plugins/platforms/libqeglfs.so</item>
 		<item>libplugins_platforms_libqminimal.so:plugins/platforms/libqminimal.so</item>

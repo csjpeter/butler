@@ -126,11 +126,6 @@ $(DIST_DIR)/android/libs/$(ARM_CPU)/libplugins_platforms_%: \
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $+ $@
 
-$(DIST_DIR)/android/libs/$(ARM_CPU)/libqsqlite.so: \
-		$(QT_HOME)/5.4/$(ANDROID_ARMV)/plugins/sqldrivers/libqsqlite.so
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	cp $+ $@
-
 
 # http://developer.android.com/guide/topics/manifest/manifest-intro.html
 # $(DIST_DIR)/android/build-apk.sh.in
@@ -147,12 +142,10 @@ android: \
 		$(DIST_DIR)/android/local.properties \
 		$(DIST_DIR)/android/libs/QtAndroidAccessibility-bundled.jar \
 		$(DIST_DIR)/android/libs/QtAndroid-bundled.jar \
-		$(DIST_DIR)/android/libs/$(ARM_CPU)/libqsqlite.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libgnustl_shared.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libQt5Core.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libQt5Gui.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libQt5Widgets.so \
-		$(DIST_DIR)/android/libs/$(ARM_CPU)/libQt5Sql.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libplugins_platforms_android_libqtforandroid.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libplugins_generic_libqevdevkeyboardplugin.so \
 		$(DIST_DIR)/android/libs/$(ARM_CPU)/libplugins_generic_libqevdevmouseplugin.so \
