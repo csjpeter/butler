@@ -3,7 +3,7 @@
 	<array name="qt_sources">
 		<item>https://download.qt-project.org/ministro/android/qt5/qt-5.4</item>
 	</array>
-	<array name="bundled_libs">
+	<array name="butler_libs">
 		<item>ssl</item>
 		<item>crypto</item>
 		<item>pq</item>
