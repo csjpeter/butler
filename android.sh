@@ -64,7 +64,7 @@ function config ()
 	exec_in_dir ${DIST} ./configure || exit $?
 }
 
-export ANDROID_SDK_API=android-21
+export ANDROID_SDK_API=android-14
 ARCH=arm
 export ARM_CPU=armeabi-v7a
 export ANDROID_ARMV=android_armv7

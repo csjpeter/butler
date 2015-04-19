@@ -1,0 +1,14 @@
+{
+   "description": "to be processed by androiddeployqt",
+   "qt": "/home/csjpeter/devtools/Qt5.4/5.4/android_armv7",
+   "sdk": "/home/csjpeter/devtools/android-sdk-linux",
+   "sdkBuildToolsRevision": "14",
+   "ndk": "/home/csjpeter/devtools/android-ndk-r10d",
+   "toolchain-prefix": "arm-linux-androideabi",
+   "tool-prefix": "arm-linux-androideabi",
+   "toolchain-version": "4.9",
+   "ndk-host": "linux-x86_64",
+   "target-architecture": "armeabi-v7a",
+   "android-extra-libs": "/opt/android-14-arm/lib/libpq.so",
+   "application-binary": "/home/csjpeter/src/butler/android-14-arm/android/libs/armeabi/libbutler0.1.so"
+}
