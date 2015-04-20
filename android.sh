@@ -114,6 +114,10 @@ case "${CMD}" in
 				${DIST} ln -s android ${APKGNAME} || exit $?
 		exec_in_dir ${DIST} tar -chzf ${APKGNAME}.tgz ${APKGNAME} || exit $?
 
+		#/home/csjpeter/devtools/Qt5.4/5.4/${ANDROID_ARMV}/bin/androiddeployqt \
+		#	--input ${ANDROID_SDK_API}-${ARCH}/android/deployment-settings.json \
+		#	--output ${ANDROID_SDK_API}-${ARCH}/android/ \
+		#	--android-platform ${ANDROID_SDK_API} --verbose
 		exec_in_dir ${DIST}/android ant debug || exit $?
 	;;
 	(install-apk)

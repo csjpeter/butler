@@ -9,6 +9,6 @@
    "toolchain-version": "4.9",
    "ndk-host": "linux-x86_64",
    "target-architecture": "armeabi-v7a",
-   "android-extra-libs": "/opt/android-14-arm/lib/libpq.so",
-   "application-binary": "/home/csjpeter/src/butler/android-14-arm/android/libs/armeabi/libbutler0.1.so"
+   "android-extra-libs": "/opt/android-14-arm/lib/libpq.so,/opt/android-14-arm/lib/libsqlite3.so,/opt/android-14-arm/lib/libcrypto.so,/opt/android-14-arm/lib/libssl.so",
+   "application-binary": "/home/csjpeter/src/butler/android-14-arm/android/libs/armeabi-v7a/lib@PKGNAME_BASE@.so"
 }

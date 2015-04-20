@@ -85,6 +85,10 @@ $(DIST_DIR)/android/%.xml: android/%.xml.in
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	./generator.$(PACKAGING).sh android/$*.xml.in > $@
 
+$(DIST_DIR)/android/%.json: android/%.json.in
+	@test -d $(dir $@) || mkdir -p $(dir $@)
+	./generator.$(PACKAGING).sh android/$*.json.in > $@
+
 $(DIST_DIR)/android/debug.keystore: android/debug.keystore
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	cp $+ $@
@@ -130,6 +134,7 @@ $(DIST_DIR)/android/libs/$(ARM_CPU)/libplugins_platforms_%: \
 # http://developer.android.com/guide/topics/manifest/manifest-intro.html
 # $(DIST_DIR)/android/build-apk.sh.in
 android: \
+		$(DIST_DIR)/android/deployment-settings.json \
 		$(DIST_DIR)/android/AndroidManifest.xml \
 		$(DIST_DIR)/android/res/values/strings.xml \
 		$(DIST_DIR)/android/build.xml \

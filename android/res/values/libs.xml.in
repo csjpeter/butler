@@ -4,9 +4,9 @@
 		<item>https://download.qt-project.org/ministro/android/qt5/qt-5.4</item>
 	</array>
 	<array name="bundled_libs">
+		<item>pq</item>
 		<item>ssl</item>
 		<item>crypto</item>
-		<item>pq</item>
 		<item>sqlite3</item>
 	</array>
 	<array name="qt_libs">
