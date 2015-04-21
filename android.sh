@@ -49,6 +49,7 @@ function config ()
 		--fpic \
 		--non-gnu-source \
 		--cflags=-Wno-psabi \
+		--cflags=\\\"-DPGSQL\\\" \
 		--cflags=\\\"-DQ_OS_ANDROID\\\" \
 		--cflags=\\\"-D__STDC_INT64__ -DSTDC_INT64 -DSTDC_VERSION -DSTRICT_ANSI\\\" \
 		--cflags=\\\"-I${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}/usr/include\\\" \
@@ -58,6 +59,9 @@ function config ()
 		--ldflags=\\\"--sysroot ${ANDROID_NDK_HOME}/platforms/${API}/arch-${ARCH}\\\" \
 		--libs=\\\"${ANDROID_NDK_HOME}/sources/cxx-stl/gnu-libstdc++/4.6/libs/${ARM_CPU}/libsupc++.a\\\" \
 		--libs=\\\"-llog\\\" \
+		--libs=\\\"-lpq\\\" \
+		--libs=\\\"-lcrypto\\\" \
+		--libs=\\\"-lssl\\\" \
 		--libs=\\\"/${TCROOT}/lib/libcsjp0.3.a\\\" \
 		|| exit $?
 

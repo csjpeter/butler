@@ -96,7 +96,7 @@ function process_args ()
 				CFLAGS="${CFLAGS} -D_GNU_SOURCE"
 			;;
 			(--non-gnu-source)
-				CFLAGS="-U_GNU_SOURCE"
+				CFLAGS="${CFLAGS} -U_GNU_SOURCE"
 			;;
 			(--fpic)
 				CFLAGS="${CFLAGS} -fPIC"
