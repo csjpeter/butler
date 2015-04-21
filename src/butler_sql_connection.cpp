@@ -12,6 +12,7 @@
 
 #include "butler_sql_connection.h"
 
+#ifdef PGSQL
 SqlResult::SqlResult(PGresult * result) : driver(SqlDriver::PSql), row(0)
 {
 	this->res.pg = result;
@@ -19,6 +20,7 @@ SqlResult::SqlResult(PGresult * result) : driver(SqlDriver::PSql), row(0)
 	if(rows <= 0)
 		row = -1;
 }
+#endif
 
 SqlResult::SqlResult(sqlite3_stmt * result, int status) : driver(SqlDriver::SQLite), row(0)
 {
@@ -30,12 +32,16 @@ SqlResult::SqlResult(sqlite3_stmt * result, int status) : driver(SqlDriver::SQLi
 const char * SqlResult::value(int col)
 {
 	switch(driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			return PQgetvalue(res.pg, row, col);
+#endif
 		case SqlDriver::SQLite :
 			return (const char*)sqlite3_column_text(res.lite, col);
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			return 0;
+#endif
 	}
 	throw csjp::ShouldNeverReached(EXCLI);
 }
@@ -43,6 +49,7 @@ const char * SqlResult::value(int col)
 bool SqlResult::nextRow()
 {
 	switch(driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				int rows = PQntuples(res.pg);
@@ -53,6 +60,7 @@ bool SqlResult::nextRow()
 					return false;
 				return true;
 			}
+#endif
 		case SqlDriver::SQLite :
 			{
 				int err = sqlite3_step(res.lite);
@@ -62,8 +70,10 @@ bool SqlResult::nextRow()
 				}
 				return false;
 			}
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			return false;
+#endif
 	}
 	throw csjp::ShouldNeverReached(EXCLI);
 }
@@ -71,15 +81,19 @@ bool SqlResult::nextRow()
 SqlResult::~SqlResult()
 {
 	switch(driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			PQclear(res.pg);
 			break;
+#endif
 		case SqlDriver::SQLite :
 			sqlite3_finalize(res.lite);
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			res.mysql = 0;
 			break;
+#endif
 	}
 }
 
@@ -89,15 +103,19 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & _dbDesc) :
 	desc(dbDesc)
 {
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			conn.pg = 0;
 			break;
+#endif
 		case SqlDriver::SQLite :
 			conn.lite = 0;
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			conn.mysql = 0;
 			break;
+#endif
 	}
 	open();
 }
@@ -116,6 +134,7 @@ SqlConnection::~SqlConnection()
 bool SqlConnection::isOpen()
 {
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				if(!conn.pg)
@@ -133,12 +152,15 @@ bool SqlConnection::isOpen()
 				}
 			}
 			break;
+#endif
 		case SqlDriver::SQLite :
 			return conn.lite != 0;
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	return false;
 }
@@ -146,6 +168,7 @@ bool SqlConnection::isOpen()
 void SqlConnection::open()
 {
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				csjp::String connStr;
@@ -169,6 +192,7 @@ void SqlConnection::open()
 				LOG("ServerEncoding % - %", serverEncoding, pg_encoding_to_char(serverEncoding));
 			}
 			break;
+#endif
 		case SqlDriver::SQLite :
 			{
 				int res = sqlite3_open_v2(desc.databaseName.str, &(conn.lite),
@@ -180,9 +204,11 @@ void SqlConnection::open()
 				//exec("PRAGMA foreign_keys"); // query the value
 			}
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	ENSURE(isOpen(), csjp::LogicError);
 }
@@ -190,10 +216,12 @@ void SqlConnection::open()
 void SqlConnection::close()
 {
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			PQfinish(conn.pg);
 			conn.pg = 0;
 			break;
+#endif
 		case SqlDriver::SQLite :
 			{
 				int res = sqlite3_close(conn.lite);
@@ -202,9 +230,11 @@ void SqlConnection::close()
 				conn.lite = 0;
 			}
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	ENSURE(!isOpen(), csjp::LogicError);
 }
@@ -213,6 +243,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 {
 	if(!isOpen()) open();
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				csjp::String cmd(query);
@@ -251,6 +282,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				}
 			}
 			break;
+#endif
 		case SqlDriver::SQLite :
 			{
 				sqlite3_stmt *ppStmt = 0;
@@ -288,9 +320,11 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				}
 			}
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	throw csjp::ShouldNeverReached(EXCLI);
 }
@@ -299,6 +333,7 @@ SqlTableNames SqlConnection::tables()
 {
 	SqlTableNames tableNames;
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				SqlResult result = exec("SELECT table_name FROM information_schema.tables "
@@ -307,6 +342,7 @@ SqlTableNames SqlConnection::tables()
 					tableNames.add(new csjp::String(row.value(0)));
 			}
 			break;
+#endif
 		case SqlDriver::SQLite :
 			{
 				SqlResult result = exec("SELECT name FROM sqlite_master WHERE type='table'");
@@ -314,9 +350,11 @@ SqlTableNames SqlConnection::tables()
 					tableNames.add(new csjp::String(row.value(0)));
 			}
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	return tableNames;
 }
@@ -325,6 +363,7 @@ SqlColumns SqlConnection::columns(const char * tablename)
 {
 	SqlColumns cols;
 	switch(desc.driver){
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			{
 				SqlResult result = exec("SELECT column_name "
@@ -334,6 +373,7 @@ SqlColumns SqlConnection::columns(const char * tablename)
 					cols.add(new csjp::String(row.value(0)));
 			}
 			break;
+#endif
 		case SqlDriver::SQLite :
 			{
 				csjp::String query;
@@ -343,9 +383,11 @@ SqlColumns SqlConnection::columns(const char * tablename)
 					cols.add(new csjp::String(row.value(1)));
 			}
 			break;
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
+#endif
 	}
 	return cols;
 }

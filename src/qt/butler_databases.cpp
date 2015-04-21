@@ -129,12 +129,18 @@ void loadDatabaseConfigs()
 		csjp::Json & db = const_cast<csjp::Json &>(j);
 		csjp::Object<DatabaseDescriptor> desc(new DatabaseDescriptor);
 		desc->name = db.key;
+#ifdef PGSQL
 		if(db["driver"] == "PSql")
 			desc->driver = SqlDriver::PSql;
-		else if(db["driver"] == "SQLite")
-			desc->driver = SqlDriver::SQLite;
-		else if(db["driver"] == "MySQL")
+		else
+#endif
+#ifdef MYSQL
+			if(db["driver"] == "MySQL")
 			desc->driver = SqlDriver::MySQL;
+		else
+#endif
+			if(db["driver"] == "SQLite")
+			desc->driver = SqlDriver::SQLite;
 		desc->databaseName <<= db["databaseName"];
 		desc->username <<= db["username"];
 		desc->password <<= db["password"];
@@ -176,9 +182,13 @@ void saveDatabaseConfigs()
 	for(const auto & desc : descriptorSet){
 		auto & db = tree[desc.name];
 		switch(desc.driver){
+#ifdef PGSQL
 			case SqlDriver::PSql: db["driver"] = "PSql"; break;
-			case SqlDriver::SQLite: db["driver"] = "SQLite"; break;
+#endif
+#ifdef MYSQL
 			case SqlDriver::MySQL: db["driver"] = "MySQL"; break;
+#endif
+			case SqlDriver::SQLite: db["driver"] = "SQLite"; break;
 		}
 		db["databaseName"] = desc.databaseName; //file name in case of sqlite
 		db["username"] = desc.username;

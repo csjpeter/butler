@@ -6,7 +6,9 @@
 #ifndef BUTLER_SQL_CONNECTION_H
 #define BUTLER_SQL_CONNECTION_H
 
+#ifdef PGSQL
 #include <postgresql/libpq-fe.h>
+#endif
 #include <sqlite3.h>
 //#include <sqlite3ext.h>
 
@@ -71,7 +73,9 @@ public:
 	iterator end() { return iterator(*this, false); }
 public:
 	~SqlResult();
+#ifdef PGSQL
 	SqlResult(PGresult * result);
+#endif
 	SqlResult(sqlite3_stmt * result, int status);
 
 	const char * value(int col);
@@ -81,9 +85,13 @@ private:
 private:
 	SqlDriver driver;
 	union {
+#ifdef PGSQL
 		PGresult * pg;
+#endif
 		sqlite3_stmt *lite;
+#ifdef MYSQL
 		void * mysql;
+#endif
 	} res;
 	int row;
 };
@@ -115,9 +123,13 @@ private:
 public:
 	const DatabaseDescriptor & desc;
 	union {
+#ifdef PGSQL
 		PGconn * pg;
+#endif
 		sqlite3 * lite;
+#ifdef MYSQL
 		void * mysql;
+#endif
 	} conn;
 
 	template<typename Arg> void bind(csjp::Array<csjp::String> & params, const Arg & arg)

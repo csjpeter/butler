@@ -50,23 +50,31 @@ inline csjp::String & operator<<=(csjp::String & lhs, const bool rhs)
 
 enum class SqlDriver
 {
+#ifdef PGSQL
 	PSql,
-	SQLite,
-	MySQL
+#endif
+#ifdef MYSQL
+	MySQL,
+#endif
+	SQLite
 };
 
 inline bool operator==(const SqlDriver & lhs, const char * rhs)
 {
 	switch(lhs)
 	{
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			return csjp::CString(rhs) == "PSql";
 			break;
-		case SqlDriver::SQLite :
-			return csjp::CString(rhs) == "SQLite";
-			break;
+#endif
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			return csjp::CString(rhs) == "MySQL";
+			break;
+#endif
+		case SqlDriver::SQLite :
+			return csjp::CString(rhs) == "SQLite";
 			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);
@@ -78,14 +86,18 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 {
 	switch(rhs)
 	{
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			lhs = "PSql";
 			break;
-		case SqlDriver::SQLite :
-			lhs = "SQLite";
-			break;
+#endif
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			lhs = "MySQL";
+			break;
+#endif
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
 			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);
@@ -96,12 +108,18 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 inline enum SqlDriver & operator<<=(enum SqlDriver & lhs, const QVariant & rhs)
 {
 		QString s = rhs.toString();
+#ifdef PGSQL
 		if(s == "PSql")
 				lhs = SqlDriver::PSql;
-		else if(s == "SQLite")
-				lhs = SqlDriver::SQLite;
-		else if(s == "MySQL")
+		else
+#endif
+#ifdef MYSQL
+			if(s == "MySQL")
 				lhs = SqlDriver::MySQL;
+		else
+#endif
+			if(s == "SQLite")
+				lhs = SqlDriver::SQLite;
 		else
 			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
@@ -111,14 +129,18 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs
 {
 	switch(rhs)
 	{
+#ifdef PGSQL
 		case SqlDriver::PSql :
 			lhs = "PSql";
 			break;
-		case SqlDriver::SQLite :
-			lhs = "SQLite";
-			break;
+#endif
+#ifdef MYSQL
 		case SqlDriver::MySQL :
 			lhs = "MySQL";
+			break;
+#endif
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
 			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);

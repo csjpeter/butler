@@ -58,38 +58,6 @@ int main(int argc, char *args[])
 		return 1;
 	}
 
-#ifdef Q_OS_ANDROID
-	QDir filesDir("/data/data/com." PRJNAME "/files");
-	filesDir.mkpath("qt/plugins/platform/android");
-	filesDir.mkpath("qt/plugins/sqldrivers");
-/*
-	const char * libandroid = "/data/data/com." PRJNAME "/files/"
-			"qt/plugins/platform/android/libandroid-9.so";
-	if(!QFile::remove(libandroid))
-		LOG("Failed to remove ", libandroid);
-	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libandroid-9.so", libandroid))
-		LOG("Failed to create ", libandroid);
-*/
-
-	const char * libqsqlpsql = "/data/data/com." PRJNAME
-					"/files/qt/plugins/sqldrivers/libqsqlpsql.so";
-	if(!QFile::remove(libqsqlpsql))
-		LOG("Failed to remove ", libqsqlpsql);
-	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlpsql.so", libqsqlpsql))
-		LOG("Failed to create ", libqsqlpsql);
-
-	const char * libqsqlite = "/data/data/com." PRJNAME
-					"/files/qt/plugins/sqldrivers/libqsqlite.so";
-	if(!QFile::remove(libqsqlite))
-		LOG("Failed to remove ", libqsqlite);
-	if(!QFile::copy("/data/data/com." PRJNAME "/lib/libqsqlite.so", libqsqlite))
-		LOG("Failed to create ", libqsqlite);
-
-	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/qt/plugins");
-	//app.addLibraryPath("/data/data/org.kde.necessitas.ministro/files/dl/0/stable//plugins");
-	app.addLibraryPath("/data/data/com." PRJNAME "/files/qt/plugins");
-#endif
-
 	try {
 		LOG("Environment variables:\n",
 			QProcessEnvironment::systemEnvironment().toStringList().join("\n"));

@@ -40,6 +40,7 @@ function config ()
 		--target=${DIST} \
 		--version-postfix=${VERSION_POSTFIX} \
 		-- \
+		--cflags=\\\"-DPQSQL\\\" \
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=usr \
 		--cflags=\\\"-fno-candidate-functions\\\" \
