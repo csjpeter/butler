@@ -72,13 +72,13 @@ void StatsView::resizeEvent(QResizeEvent * event)
 
 void StatsView::mapToGui()
 {
-	itemCountValueLabel.setText(Config::locale.toString(stat.itemCount));
-	itemSumQuantityValueLabel.setText(Config::locale.toString(stat.sumQuantity, 'f', 3));
-	itemSumPriceValueLabel.setText(Config::locale.toString(stat.sumPrice, 'f', 2));
-	avgUnitPriceValueLabel.setText(Config::locale.toString(stat.avgPrice, 'f', 2));
-	minUnitPriceValueLabel.setText(Config::locale.toString(stat.cheapestUnitPrice, 'f', 2));
-	maxUnitPriceValueLabel.setText(Config::locale.toString(stat.mostExpUnitPrice, 'f', 2));
-	timeTakenBySqlQueryValueLabel.setText(Config::locale.toString(stat.queryTime, 'f', 3));
+	itemCountValueLabel.setText(Config::locale.toString(stat.itemCount.val));
+	itemSumQuantityValueLabel.setText(Config::locale.toString(stat.sumQuantity.val, 'f', 3));
+	itemSumPriceValueLabel.setText(Config::locale.toString(stat.sumPrice.val, 'f', 2));
+	avgUnitPriceValueLabel.setText(Config::locale.toString(stat.avgPrice.val, 'f', 2));
+	minUnitPriceValueLabel.setText(Config::locale.toString(stat.cheapestUnitPrice.val, 'f', 2));
+	maxUnitPriceValueLabel.setText(Config::locale.toString(stat.mostExpUnitPrice.val, 'f', 2));
+	timeTakenBySqlQueryValueLabel.setText(Config::locale.toString(stat.queryTime.val, 'f', 3));
 }
 
 void StatsView::retranslate()

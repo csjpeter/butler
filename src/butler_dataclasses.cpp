@@ -132,13 +132,9 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	SqlResult result = sql.exec(params, cmd);
 
 	/* statistics */
-	stat.itemCount = 0;
-	stat.sumQuantity = 0;
-	stat.sumPrice = 0;
-	stat.cheapestUnitPrice = DBL_MAX;
-	stat.mostExpUnitPrice = 0;
-	double sumPrice = 0;
-	double sumQuantity = 0;
+	stat = QueryStat();
+	Double sumPrice;
+	Double sumQuantity;
 
 	DBG("----- Reading all @Type@ from db:");
 	for(auto & row : result){
@@ -156,7 +152,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 			sumQuantity += record->quantity;
 			sumPrice += record->price;
 
-			double unitPrice = record->price / record->quantity;
+			Double unitPrice(record->price / record->quantity);
 			if(unitPrice < stat.cheapestUnitPrice)
 				stat.cheapestUnitPrice = unitPrice;
 			if(stat.mostExpUnitPrice < unitPrice)
@@ -168,9 +164,9 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	DBG("-----");
 
 	stat.avgPrice = sumPrice / sumQuantity;
-	if(!stat.itemCount){
-		stat.cheapestUnitPrice = NAN;
-		stat.mostExpUnitPrice = NAN;
+	if(stat.itemCount == 0){
+		stat.cheapestUnitPrice.nan();
+		stat.mostExpUnitPrice.nan();
 	}
 
 	tr.commit();

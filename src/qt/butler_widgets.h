@@ -238,6 +238,7 @@ public slots:
 	void setSuffix(const QString & newSuffix = "");
 	const QString getSuffix();
 	void setValue(double v);
+	void setValue(Double v) { setValue(v.val); }
 
 public:
 	double value();

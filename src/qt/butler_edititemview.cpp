@@ -346,9 +346,9 @@ void EditItemView::updateToolButtonStates()
 			item.name == wareEditor.text() &&
 			item.type == typeEditor.text() &&
 			item.brand == brandEditor.text() &&
-			fabs(item.quantity - quantityEditor.value()) < 0.001 &&
+			(item.quantity - quantityEditor.value()).abs() < 0.001 &&
 			item.comment == commentEditor.edit.toPlainText() &&
-			fabs(item.price - grossPriceEditor.value()) < 0.01 &&
+			(item.price - grossPriceEditor.value()).abs() < 0.01 &&
 			item.invChangeDate == invChangeDateTime.edit.dateTime()
 			);
 

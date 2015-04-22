@@ -161,7 +161,7 @@
 		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		Text account;				; TEXT
 		Text partner;				; TEXT
-		double amount;				; DECIMAL(15,3) NOT NULL
+		Double amount;				; DECIMAL(15,3) NOT NULL
 		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -180,8 +180,8 @@
 		Text unit;					; TEXT
 		Text type;					; TEXT
 		Text brand;					; TEXT
-		double quantity;			; DECIMAL(15,3) NOT NULL // amoutn to buy or not
-		double price;				; DECIMAL(15,2) NOT NULL // price of gross piece/amount quantity
+		Double quantity;			; DECIMAL(15,3) NOT NULL // amoutn to buy or not
+		Double price;				; DECIMAL(15,2) NOT NULL // price of gross piece/amount quantity
 		Text currency;				; TEXT
 		Text account;				; TEXT
 		Text partner;				; TEXT
@@ -190,8 +190,8 @@
 		DateTime invChangeDate;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
-		double unitPrice; derived	; DECIMAL(15,3) NOT NULL
-		double quantityWithUnit; derived	; TEXT
+		Double unitPrice; derived	; DECIMAL(15,3) NOT NULL
+		Double quantityWithUnit; derived	; TEXT
 		}
 	Constraints {
 		PRIMARY KEY (upload_date)

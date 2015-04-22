@@ -27,13 +27,14 @@ typedef csjp::OwnerContainer<Text> StringSet;
 
 class QueryStat{
 public:
-	unsigned itemCount;
-	double sumQuantity;
-	double sumPrice;
-	double avgPrice;
-	double cheapestUnitPrice;
-	double mostExpUnitPrice;
-	double queryTime; /** How much time the query took. */
+	QueryStat() : cheapestUnitPrice(DBL_MAX) {}
+	Unsigned itemCount;
+	Double sumQuantity;
+	Double sumPrice;
+	Double avgPrice;
+	Double cheapestUnitPrice;
+	Double mostExpUnitPrice;
+	Double queryTime; /** How much time the query took. */
 };
 
 @Define{dbquery@

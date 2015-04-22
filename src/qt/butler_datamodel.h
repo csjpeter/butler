@@ -34,24 +34,22 @@ private:
 	QVariant dataUnitPrice(int row) const
 	{
 		auto & item = dataSet.queryAt(row);
-		double unitPrice = 0;
-		//if(isnormal(item.quantity)) /*FIXME*/
-		unitPrice = item.price / item.quantity;
-		return QVariant(unitPrice);
+		Double unitPrice(item.price / item.quantity);
+		return QVariant(unitPrice.val);
 	}
-	QVariant dataQuantityWithUnit(int row) const
+/*	QVariant dataQuantityWithUnit(int row) const
 	{
 		auto & item = dataSet.queryAt(row);
 		int i = wmodel.index(item.name);
 		QString val;
-		val.setNum(item.quantity, 'g', 3);
+		val.setNum(item.quantity.val, 'g', 3);
 		if(i != -1) {
 			const Ware & w = wmodel.data(i);
 			val += " ";
 			val += w.unit;
 		}
 		return QVariant(val);
-	}
+	}*/
 public:
 	Query opts;
 	QueryStat stat;
