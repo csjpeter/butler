@@ -17,6 +17,7 @@ class YNBool
 {
 	public:
 	bool val;
+	YNBool() : val(false) {}
 	YNBool & operator=(bool b) { val = b; return *this; }
 	YNBool & operator=(const char * s)
 	{
@@ -36,15 +37,41 @@ inline bool operator==(bool lhs, const YNBool & rhs) { return lhs == rhs.val; }
 inline bool operator!=(bool lhs, const YNBool & rhs) { return lhs != rhs.val; }
 inline bool operator<(const YNBool & lhs, const YNBool & rhs)
 		{ return (lhs.val == false) && (rhs.val == true); }
-inline YNBool & operator<<=(YNBool & lhs, const QVariant & rhs)
-		{ lhs.val = rhs.toBool(); return lhs; }
-inline QVariant & operator<<=(QVariant & lhs, const YNBool & rhs)
-		{ if(rhs.val) lhs = "Y"; else lhs = "N"; return lhs; }
 inline YNBool & operator<<=(YNBool & lhs, const char * rhs) { lhs = rhs; return lhs; }
 //inline YNBool & operator<<=(YNBool & lhs, const csjp::CString & rhs){lhs = rhs.ptr; return lhs;}
 inline csjp::String & operator<<=(csjp::String & lhs, const YNBool & rhs)
 		{ if(rhs.val) lhs <<= "Y"; else lhs <<= "N"; return lhs; }
+inline YNBool & operator<<=(YNBool & lhs, const QVariant & rhs)
+		{ lhs.val = rhs.toBool(); return lhs; }
+inline QVariant & operator<<=(QVariant & lhs, const YNBool & rhs)
+		{ if(rhs.val) lhs = "Y"; else lhs = "N"; return lhs; }
 
+class Unsigned
+{
+	public:
+	unsigned val;
+	Unsigned() : val(0) {}
+	Unsigned & operator=(unsigned u) { val = u; return *this; }
+	Unsigned & operator=(const char * s) { val <<= csjp::CString(s); return *this; }
+	explicit operator unsigned() const { return val; }
+};
+
+inline bool operator==(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val == rhs.val; }
+inline bool operator!=(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val != rhs.val; }
+inline bool operator==(const Unsigned & lhs, bool rhs) { return lhs.val == rhs; }
+inline bool operator!=(const Unsigned & lhs, bool rhs) { return lhs.val != rhs; }
+inline bool operator==(bool lhs, const Unsigned & rhs) { return lhs == rhs.val; }
+inline bool operator!=(bool lhs, const Unsigned & rhs) { return lhs != rhs.val; }
+inline bool operator<(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val < rhs.val; }
+inline csjp::String & operator<<(csjp::String & lhs, const Unsigned & rhs)
+		{ lhs << rhs.val; return lhs; }
+inline csjp::String & operator<<=(csjp::String & lhs, const Unsigned & rhs)
+		{ lhs <<= rhs.val; return lhs; }
+inline Unsigned & operator<<=(Unsigned & lhs, const QVariant & rhs)
+		{ lhs.val = rhs.toUInt(); return lhs; }
+inline QVariant & operator<<=(QVariant & lhs, const Unsigned & rhs) { lhs = rhs.val; return lhs; }
+inline Unsigned & operator<<=(Unsigned & lhs, const csjp::Json & rhs){lhs.val <<= rhs; return lhs; }
+inline csjp::Json & operator<<=(csjp::Json & lhs, const Unsigned rhs){ lhs <<= rhs.val; return lhs;}
 
 
 

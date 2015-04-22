@@ -16,7 +16,7 @@
 		csjp::String password;
 		YNBool savePassword;
 		csjp::String host;			// host name or ip
-		unsigned port;
+		Unsigned port;
 		}
 @EndDecl@*/
 
