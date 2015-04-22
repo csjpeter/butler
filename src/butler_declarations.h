@@ -14,7 +14,7 @@
 		csjp::String databaseName;	// file name in case of sqlite
 		csjp::String username;
 		csjp::String password;
-		bool savePassword;
+		YNBool savePassword;
 		csjp::String host;			// host name or ip
 		unsigned port;
 		}
@@ -26,7 +26,7 @@
 		Text name; key			; TEXT
 		Text description;		; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -42,7 +42,7 @@
 		WareTypeSet types; set,spec	;
 		WareTagSet tags; set,spec	;
 		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -55,7 +55,7 @@
 		Text ware; key,link		; TEXT
 		Text tag; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (ware, tag)
@@ -70,7 +70,7 @@
 		Text ware; key,link		; TEXT
 		Text type; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (ware, type)
@@ -88,7 +88,7 @@
 		Text taxId;				; TEXT					// 10307078-2-44
 		Text icon;				; TEXT					// base64 repr of an image
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -101,7 +101,7 @@
 		Text name; key			; TEXT
 		Text company;			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -114,7 +114,7 @@
 		Text name; key			; TEXT
 		Text comment;			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -132,7 +132,7 @@
 		Text company;			; TEXT	// Tesco Global Áruházak Zrt.
 		Text storeName;			; TEXT	// 41052 számú bolt
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -148,7 +148,7 @@
 		Text iban;				; TEXT
 		Text swiftCode;			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -165,7 +165,7 @@
 		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (upload_date)
@@ -189,7 +189,7 @@
 		Text comment;				; TEXT
 		DateTime invChangeDate;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
 		double unitPrice; derived	; DECIMAL(15,3) NOT NULL
 		double quantityWithUnit; derived	; TEXT
 		}
@@ -211,7 +211,7 @@
 		QueryWareSet wares; set,spec			;
 		QueryPartnerSet partners; set,spec		;
 		DateTime lastModified;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -224,7 +224,7 @@
 		Text query; key,link	; TEXT
 		Text tag; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
@@ -239,7 +239,7 @@
 		Text query; key,link	; TEXT
 		Text tag; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
@@ -254,7 +254,7 @@
 		Text query; key,link	; TEXT
 		Text ware; key			; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (query, ware)
@@ -269,7 +269,7 @@
 		Text query; key,link	; TEXT
 		Text partner; key		; TEXT
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		bool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (query, partner)

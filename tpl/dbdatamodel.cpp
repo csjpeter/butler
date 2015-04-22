@@ -12,23 +12,25 @@ Qt::ItemFlags @Type@Model::flags(const QModelIndex & index) const
 
 QVariant @Type@Model::data(const QModelIndex & index, int role) const 
 {
+	QVariant v;
+
 	if(!index.isValid())
-		return QVariant();
+		return v;
 
 	if(index.parent().isValid())
-		return QVariant();
+		return v;
 
 	if(role != Qt::DisplayRole && role != Qt::EditRole)
-		return QVariant();
+		return v;
 
 	if((int)dataSet.size() <= index.row())
-		return QVariant();
+		return v;
 
 	switch(index.column()){
 @For{Field@
 	@IfNotSpec{@
 		case @Type@::@.EnumName@ :
-				return dataSet.queryAt(index.row()).@.Name@;
+				v <<= dataSet.queryAt(index.row()).@.Name@;
 				break;
 	@IfNotSpec}@@IfIsSpec{@
 		/*case @Type@::@.EnumName@ :
@@ -42,14 +44,14 @@ QVariant @Type@Model::data(const QModelIndex & index, int role) const
 @}@
 @For{DerivedField@
 		case @Type@::@.EnumName@ :
-			return QVariant();
+			return v;
 			break;
 @}@
 		default :
-			return QVariant();
+			return v;
 	}
 
-	return QVariant();
+	return v;
 }
 
 QVariant @Type@Model::headerData(int section, Qt::Orientation orientation, int role) const
