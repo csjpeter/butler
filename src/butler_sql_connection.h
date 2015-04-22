@@ -85,10 +85,10 @@ private:
 private:
 	SqlDriver driver;
 	union {
+		sqlite3_stmt *lite;
 #ifdef PGSQL
 		PGresult * pg;
 #endif
-		sqlite3_stmt *lite;
 #ifdef MYSQL
 		void * mysql;
 #endif
@@ -123,10 +123,10 @@ private:
 public:
 	const DatabaseDescriptor & desc;
 	union {
+		sqlite3 * lite;
 #ifdef PGSQL
 		PGconn * pg;
 #endif
-		sqlite3 * lite;
 #ifdef MYSQL
 		void * mysql;
 #endif

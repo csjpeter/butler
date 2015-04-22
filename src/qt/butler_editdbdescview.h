@@ -56,13 +56,13 @@ private:
 	Button nextButton;
 	
 	ButtonGroup driverOptions;
+	QRadioButton sqliteDriverOption;
 #ifdef PGSQL
 	QRadioButton psqlDriverOption;
 #endif
 #ifdef MYSQL
 	QRadioButton mysqlDriverOption;
 #endif
-	QRadioButton sqliteDriverOption;
 
 	InputEditor nameEditor;
 	InputEditor databaseNameEditor;

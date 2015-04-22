@@ -50,19 +50,22 @@ inline csjp::String & operator<<=(csjp::String & lhs, const bool rhs)
 
 enum class SqlDriver
 {
+	SQLite,
 #ifdef PGSQL
 	PSql,
 #endif
 #ifdef MYSQL
-	MySQL,
+	MySQL
 #endif
-	SQLite
 };
 
 inline bool operator==(const SqlDriver & lhs, const char * rhs)
 {
 	switch(lhs)
 	{
+		case SqlDriver::SQLite :
+			return csjp::CString(rhs) == "SQLite";
+			break;
 #ifdef PGSQL
 		case SqlDriver::PSql :
 			return csjp::CString(rhs) == "PSql";
@@ -73,9 +76,6 @@ inline bool operator==(const SqlDriver & lhs, const char * rhs)
 			return csjp::CString(rhs) == "MySQL";
 			break;
 #endif
-		case SqlDriver::SQLite :
-			return csjp::CString(rhs) == "SQLite";
-			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);
 	}
@@ -86,6 +86,9 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 {
 	switch(rhs)
 	{
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
+			break;
 #ifdef PGSQL
 		case SqlDriver::PSql :
 			lhs = "PSql";
@@ -96,9 +99,6 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 			lhs = "MySQL";
 			break;
 #endif
-		case SqlDriver::SQLite :
-			lhs = "SQLite";
-			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);
 	}
@@ -108,18 +108,16 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 inline enum SqlDriver & operator<<=(enum SqlDriver & lhs, const QVariant & rhs)
 {
 		QString s = rhs.toString();
+		if(s == "SQLite")
+				lhs = SqlDriver::SQLite;
 #ifdef PGSQL
-		if(s == "PSql")
+		else if(s == "PSql")
 				lhs = SqlDriver::PSql;
-		else
 #endif
 #ifdef MYSQL
-			if(s == "MySQL")
+		else if(s == "MySQL")
 				lhs = SqlDriver::MySQL;
-		else
 #endif
-			if(s == "SQLite")
-				lhs = SqlDriver::SQLite;
 		else
 			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
@@ -129,6 +127,9 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs
 {
 	switch(rhs)
 	{
+		case SqlDriver::SQLite :
+			lhs = "SQLite";
+			break;
 #ifdef PGSQL
 		case SqlDriver::PSql :
 			lhs = "PSql";
@@ -139,9 +140,6 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs
 			lhs = "MySQL";
 			break;
 #endif
-		case SqlDriver::SQLite :
-			lhs = "SQLite";
-			break;
 		default:
 			throw csjp::InvalidArgument(EXCLI);
 	}

@@ -50,6 +50,7 @@ EditDatabaseDescriptorView::EditDatabaseDescriptorView(DatabaseDescriptorModel &
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 
+	driverOptions.group.addButton(&sqliteDriverOption);
 	(void)TidPsqlDriverOption;
 	(void)TidMysqlDriverOption;
 #ifdef PGSQL
@@ -58,7 +59,6 @@ EditDatabaseDescriptorView::EditDatabaseDescriptorView(DatabaseDescriptorModel &
 #ifdef MYSQL
 	driverOptions.group.addButton(&mysqlDriverOption);
 #endif
-	driverOptions.group.addButton(&sqliteDriverOption);
 
 	toolBar.addToolWidget(doneButton);
 	toolBar.addToolWidget(resetButton);
@@ -89,13 +89,13 @@ EditDatabaseDescriptorView::EditDatabaseDescriptorView(DatabaseDescriptorModel &
 			this, SLOT(updateToolButtonStates()));
 	connect(&portEditor.editor, SIGNAL(textChanged(const QString &)),
 			this, SLOT(updateToolButtonStates()));
+	connect(&sqliteDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 #ifdef PGSQL
 	connect(&psqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 #endif
 #ifdef MYSQL
 	connect(&mysqlDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 #endif
-	connect(&sqliteDriverOption, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
 
 	passwordEditor.editor.setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
@@ -120,25 +120,24 @@ void EditDatabaseDescriptorView::mapToGui()
 	hostEditor.editor.setText(databaseDescriptor.host);
 	portEditor.setValue(databaseDescriptor.port);
 
+	sqliteDriverOption.setChecked(false);
 #ifdef PGSQL
 	psqlDriverOption.setChecked(false);
 #endif
 #ifdef MYSQL
 	mysqlDriverOption.setChecked(false);
 #endif
-	sqliteDriverOption.setChecked(false);
-#ifdef PGSQL
-	if(databaseDescriptor.driver == "PSql")
-		psqlDriverOption.setChecked(true);
-	else
-#endif
-#ifdef MYSQL
-	if(databaseDescriptor.driver == "MySQL")
-		mysqlDriverOption.setChecked(true);
-	else
-#endif
+
 	if(databaseDescriptor.driver == "SQLite")
 		sqliteDriverOption.setChecked(true);
+#ifdef PGSQL
+	else if(databaseDescriptor.driver == "PSql")
+		psqlDriverOption.setChecked(true);
+#endif
+#ifdef MYSQL
+	else if(databaseDescriptor.driver == "MySQL")
+		mysqlDriverOption.setChecked(true);
+#endif
 
 	updateToolButtonStates();
 }
@@ -153,18 +152,16 @@ void EditDatabaseDescriptorView::mapFromGui()
 	databaseDescriptor.host <<= hostEditor.editor.text();
 	databaseDescriptor.port = portEditor.value();
 
-#ifdef PGSQL
-	if(driverOptions.group.checkedButton() == &psqlDriverOption)
-		databaseDescriptor.driver = SqlDriver::PSql;
-	else
-#endif
-#ifdef MYSQL
-	if(driverOptions.group.checkedButton() == &mysqlDriverOption)
-		databaseDescriptor.driver = SqlDriver::MySQL;
-	else
-#endif
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
 		databaseDescriptor.driver = SqlDriver::SQLite;
+#ifdef PGSQL
+	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
+		databaseDescriptor.driver = SqlDriver::PSql;
+#endif
+#ifdef MYSQL
+	else if(driverOptions.group.checkedButton() == &mysqlDriverOption)
+		databaseDescriptor.driver = SqlDriver::MySQL;
+#endif
 }
 
 void EditDatabaseDescriptorView::retranslate()
@@ -175,13 +172,14 @@ void EditDatabaseDescriptorView::retranslate()
 		setWindowTitle(tr(TidNewDatabaseDescriptorWindowTitle));
 
 	driverOptions.label.setText(tr(TidDriverOptions));
+
+	sqliteDriverOption.setText(tr(TidSqliteDriverOption));
 #ifdef PGSQL
 	psqlDriverOption.setText(tr(TidPsqlDriverOption));
 #endif
 #ifdef MYSQL
 	mysqlDriverOption.setText(tr(TidMysqlDriverOption));
 #endif
-	sqliteDriverOption.setText(tr(TidSqliteDriverOption));
 
 	nameEditor.label.setText(tr(TidDbConnName));
 	databaseNameEditor.label.setText(tr(TidDbName));
@@ -205,6 +203,8 @@ void EditDatabaseDescriptorView::applyLayout(LayoutState state)
 
 	driverOptionsLayout->addWidget(&driverOptions);
 	driverOptionsLayout->addStretch(0);
+	driverOptionsLayout->addWidget(&sqliteDriverOption);
+	driverOptionsLayout->addStretch(0);
 #ifdef PGSQL
 	driverOptionsLayout->addWidget(&psqlDriverOption);
 	driverOptionsLayout->addStretch(0);
@@ -213,8 +213,6 @@ void EditDatabaseDescriptorView::applyLayout(LayoutState state)
 	driverOptionsLayout->addWidget(&mysqlDriverOption);
 	driverOptionsLayout->addStretch(0);
 #endif
-	driverOptionsLayout->addWidget(&sqliteDriverOption);
-	driverOptionsLayout->addStretch(0);
 
 	VLayout * mainLayout = new VLayout;
 	mainLayout->addStretch(0);
@@ -292,21 +290,19 @@ void EditDatabaseDescriptorView::updateToolButtonStates()
 			);
 
 	if(!modified){
-#ifdef PGSQL
-		if(databaseDescriptor.driver == "PSql" &&
-				driverOptions.group.checkedButton() != &psqlDriverOption)
-			modified = true;
-		else
-#endif
-#ifdef MYSQL
-			if(databaseDescriptor.driver == "MySQL" &&
-				driverOptions.group.checkedButton() != &mysqlDriverOption)
-			modified = true;
-		else
-#endif
 		if(databaseDescriptor.driver == "SQLite" &&
 				driverOptions.group.checkedButton() != &sqliteDriverOption)
 			modified = true;
+#ifdef PGSQL
+		else if(databaseDescriptor.driver == "PSql" &&
+				driverOptions.group.checkedButton() != &psqlDriverOption)
+			modified = true;
+#endif
+#ifdef MYSQL
+		else if(databaseDescriptor.driver == "MySQL" &&
+				driverOptions.group.checkedButton() != &mysqlDriverOption)
+			modified = true;
+#endif
 	}
 
 	bool mandatoriesGiven = nameEditor.editor.text().size();
@@ -324,24 +320,6 @@ void EditDatabaseDescriptorView::updateToolButtonStates()
 			toolBar.clearInfo();
 	}
 
-#ifdef PGSQL
-	if(driverOptions.group.checkedButton() == &psqlDriverOption){
-		usernameEditor.setVisible(true);
-		passwordEditor.setVisible(true);
-		savePasswordCheckBox.setVisible(true);
-		hostEditor.setVisible(true);
-		portEditor.setVisible(true);
-	} else
-#endif
-#ifdef MYSQL
-	if(driverOptions.group.checkedButton() == &mysqlDriverOption){
-		usernameEditor.setVisible(true);
-		passwordEditor.setVisible(true);
-		savePasswordCheckBox.setVisible(true);
-		hostEditor.setVisible(true);
-		portEditor.setVisible(true);
-	} else
-#endif
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption){
 		usernameEditor.setVisible(false);
 		passwordEditor.setVisible(false);
@@ -349,6 +327,24 @@ void EditDatabaseDescriptorView::updateToolButtonStates()
 		hostEditor.setVisible(false);
 		portEditor.setVisible(false);
 	}
+#ifdef PGSQL
+	else if(driverOptions.group.checkedButton() == &psqlDriverOption){
+		usernameEditor.setVisible(true);
+		passwordEditor.setVisible(true);
+		savePasswordCheckBox.setVisible(true);
+		hostEditor.setVisible(true);
+		portEditor.setVisible(true);
+	}
+#endif
+#ifdef MYSQL
+	else if(driverOptions.group.checkedButton() == &mysqlDriverOption){
+		usernameEditor.setVisible(true);
+		passwordEditor.setVisible(true);
+		savePasswordCheckBox.setVisible(true);
+		hostEditor.setVisible(true);
+		portEditor.setVisible(true);
+	}
+#endif
 
 	toolBar.updateButtons();
 	footerBar.updateButtons();
