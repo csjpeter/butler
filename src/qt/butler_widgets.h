@@ -204,7 +204,7 @@ signals:
 public slots:
 	void textChangedSlot(const QString & str);
 	void setValue(unsigned v);
-	void setValue(Unsigned v) { setValue(v.val); }
+	void setValue(UInt v) { setValue(v.val); }
 
 public:
 	unsigned value();

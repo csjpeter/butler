@@ -248,12 +248,11 @@ void LineEditor::inputMethodEvent(QInputMethodEvent * event)
 	if(!event)
 		return;
 
-	QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
-	if(!event->commitString().isEmpty())
-		e->setCommitString(event->commitString());
+//	QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
+//	if(!event->commitString().isEmpty())
+//		e->setCommitString(event->commitString());
 
-	/*
-	LOG("InputMethod event type: %", e->type());
+	LOG("InputMethod event type: %", event->type());
 
 	LOG("InputMethodAttribute list:");
 	QList<QInputMethodEvent::Attribute> al = event->attributes();
@@ -261,28 +260,29 @@ void LineEditor::inputMethodEvent(QInputMethodEvent * event)
 		QInputMethodEvent::Attribute a = al.at(i);
 		LOG("InputMethodAttribute: type % start % length % variant string: %",
 				a.type, a.start, a.length, a.value.toString());
-	}*/
+	}
 
-	/*QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
-	if(event->commitString().isEmpty())
-		e->setCommitString(event->preeditString());
-	else
-		e->setCommitString(event->commitString());*/
+	LOG("pre-edit string: ", event->preeditString());
+	LOG("commit string: ", event->commitString());
+	//QScopedPointer<QInputMethodEvent> e(new QInputMethodEvent("", event->attributes()));
+	//if(event->commitString().isEmpty())
+	//	e->setCommitString(event->preeditString());
+	//else
+	//	e->setCommitString(event->commitString());
 	//QInputMethodEvent * e = event;
-
-	/*
+	
 	LOG(		"Replacement start: %\n"
 			"Replacement length: %\n"
 			"Preedit string: %\n"
 			"Commit string: %",
-			e->replacementStart(),
-			e->replacementLength(),
-			e->preeditString(),
-			e->commitString());
-			*/
+			event->replacementStart(),
+			event->replacementLength(),
+			event->preeditString(),
+			event->commitString());
 
-	QLineEdit::inputMethodEvent(e.data());
-	//LOG("Entry text after QLineEdit::inputMethodEvent(): %\n", text());
+	//QLineEdit::inputMethodEvent(e.data());
+	QLineEdit::inputMethodEvent(event);
+	LOG("Entry text after QLineEdit::inputMethodEvent(): %\n", text());
 }
 
 InputEditor::InputEditor(QWidget * parent) :

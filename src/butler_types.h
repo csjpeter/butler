@@ -8,114 +8,27 @@
 
 #include <csjp_string_chunk.h>
 #include <csjp_json.h>
+#include <csjp_ctypes.h>
 
 #include <QString>
 #include <QVariant>
 
+using namespace csjp;
 
-class YNBool
-{
-	public:
-	bool val;
-	YNBool() : val(false) {}
-	YNBool & operator=(bool b) { val = b; return *this; }
-	YNBool & operator=(const char * s)
-	{
-		val = false;
-		if(csjp::StringChunk(s) == "Y")
-			val = true;
-		return *this;
-	}
-	explicit operator bool() const { return val; }
-};
-
-inline bool operator==(const YNBool & lhs, const YNBool & rhs) { return lhs.val == rhs.val; }
-inline bool operator!=(const YNBool & lhs, const YNBool & rhs) { return lhs.val != rhs.val; }
-inline bool operator==(const YNBool & lhs, bool rhs) { return lhs.val == rhs; }
-inline bool operator!=(const YNBool & lhs, bool rhs) { return lhs.val != rhs; }
-inline bool operator==(bool lhs, const YNBool & rhs) { return lhs == rhs.val; }
-inline bool operator!=(bool lhs, const YNBool & rhs) { return lhs != rhs.val; }
-inline bool operator<(const YNBool & lhs, const YNBool & rhs)
-		{ return (lhs.val == false) && (rhs.val == true); }
-inline YNBool & operator<<=(YNBool & lhs, const char * rhs) { lhs = rhs; return lhs; }
-//inline YNBool & operator<<=(YNBool & lhs, const csjp::CString & rhs){lhs = rhs.ptr; return lhs;}
-inline csjp::String & operator<<=(csjp::String & lhs, const YNBool & rhs)
-		{ if(rhs.val) lhs <<= "Y"; else lhs <<= "N"; return lhs; }
 inline YNBool & operator<<=(YNBool & lhs, const QVariant & rhs)
 		{ lhs.val = rhs.toBool(); return lhs; }
 inline QVariant & operator<<=(QVariant & lhs, const YNBool & rhs)
 		{ if(rhs.val) lhs = "Y"; else lhs = "N"; return lhs; }
 
-class Unsigned
-{
-	public:
-	unsigned val;
-	Unsigned() : val(0) {}
-	Unsigned(unsigned u) : val(u) {}
-	Unsigned & operator=(unsigned u) { val = u; return *this; }
-	Unsigned & operator=(const char * s) { val <<= csjp::CString(s); return *this; }
-	Unsigned operator++(int) { Unsigned u(val); ++val; return u; }
-	explicit operator unsigned() const { return val; }
-};
-
-inline bool operator==(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val == rhs.val; }
-inline bool operator!=(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val != rhs.val; }
-inline bool operator==(const Unsigned & lhs, unsigned rhs) { return lhs.val == rhs; }
-inline bool operator!=(const Unsigned & lhs, unsigned rhs) { return lhs.val != rhs; }
-inline bool operator==(unsigned lhs, const Unsigned & rhs) { return lhs == rhs.val; }
-inline bool operator!=(unsigned lhs, const Unsigned & rhs) { return lhs != rhs.val; }
-inline bool operator<(const Unsigned & lhs, const Unsigned & rhs) { return lhs.val < rhs.val; }
-inline csjp::String & operator<<(csjp::String & lhs, const Unsigned & rhs)
-		{ lhs << rhs.val; return lhs; }
-inline csjp::String & operator<<=(csjp::String & lhs, const Unsigned & rhs)
-		{ lhs <<= rhs.val; return lhs; }
-inline Unsigned & operator<<=(Unsigned & lhs, const QVariant & rhs)
+inline UInt & operator<<=(UInt & lhs, const QVariant & rhs)
 		{ lhs.val = rhs.toUInt(); return lhs; }
-inline QVariant & operator<<=(QVariant & lhs, const Unsigned & rhs) { lhs = rhs.val; return lhs; }
-inline Unsigned & operator<<=(Unsigned & lhs, const csjp::Json & rhs){lhs.val <<= rhs; return lhs; }
-inline csjp::Json & operator<<=(csjp::Json & lhs, const Unsigned rhs){ lhs <<= rhs.val; return lhs;}
+inline QVariant & operator<<=(QVariant & lhs, const UInt & rhs) { lhs = rhs.val; return lhs; }
 
-class Double
-{
-	public:
-	double val;
-	Double() : val(0) {}
-	Double(double d) : val(d) {}
-	Double(const Double & d) : val(d.val) {}
-	Double & operator=(unsigned u) { val = u; return *this; }
-	Double & operator=(const char * s) { val <<= csjp::CString(s); return *this; }
-	const Double & operator+=(const Double & rhs) { val += rhs.val; return *this; }
-	const Double & operator-=(const Double & rhs) { val -= rhs.val; return *this; }
-	const Double & operator-=(const double & rhs) { val -= rhs; return *this; }
-	const Double & operator/=(const Double & rhs) { val /= rhs.val; return *this; }
-	explicit operator unsigned() const { return val; }
-	Double & abs() { val = fabs(val); return *this; }
-	void nan() { val = NAN; }
-};
-
-inline Double operator/(const Double & lhs, const Double & rhs) { Double d(lhs); d/=rhs; return d; }
-inline Double operator-(const Double & lhs, const Double & rhs) { Double d(lhs); d-=rhs; return d; }
-inline Double operator-(const Double & lhs, const double rhs) { Double d(lhs); d-=rhs; return d; }
-inline bool operator==(const Double & lhs, const Double & rhs) { return lhs.val == rhs.val; }
-inline bool operator!=(const Double & lhs, const Double & rhs) { return lhs.val != rhs.val; }
-inline bool operator==(const Double & lhs, double rhs) { return lhs.val == rhs; }
-inline bool operator!=(const Double & lhs, double rhs) { return lhs.val != rhs; }
-inline bool operator==(double lhs, const Double & rhs) { return lhs == rhs.val; }
-inline bool operator!=(double lhs, const Double & rhs) { return lhs != rhs.val; }
-inline bool operator<(const Double & lhs, const Double & rhs) { return lhs.val < rhs.val; }
-inline bool operator<(const Double & lhs, double rhs) { return lhs.val < rhs; }
-inline bool operator<=(const double & lhs, const Double & rhs) { return lhs <= rhs.val; }
-inline csjp::String & operator<<(csjp::String & lhs, const Double & rhs)
-		{ lhs << rhs.val; return lhs; }
-inline csjp::String & operator<<=(csjp::String & lhs, const Double & rhs)
-		{ lhs <<= rhs.val; return lhs; }
 inline Double & operator<<=(Double & lhs, const QVariant & rhs)
 		{ lhs.val = rhs.toUInt(); return lhs; }
 inline QVariant & operator<<=(QVariant & lhs, const Double & rhs) { lhs = rhs.val; return lhs; }
-inline Double & operator<<=(Double & lhs, const csjp::Json & rhs){lhs.val <<= rhs; return lhs; }
-inline csjp::Json & operator<<=(csjp::Json & lhs, const Double rhs){ lhs <<= rhs.val; return lhs;}
-inline Double & operator<<=(Double & lhs, const csjp::CString & rhs)
-		{ lhs.val <<= rhs; return lhs; }
+//inline Double & operator<<=(Double & lhs, const csjp::CString & rhs)
+//		{ lhs.val <<= rhs; return lhs; }
 
 
 

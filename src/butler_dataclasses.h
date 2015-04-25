@@ -28,7 +28,7 @@ typedef csjp::OwnerContainer<Text> StringSet;
 class QueryStat{
 public:
 	QueryStat() : cheapestUnitPrice(DBL_MAX) {}
-	Unsigned itemCount;
+	UInt itemCount;
 	Double sumQuantity;
 	Double sumPrice;
 	Double avgPrice;
