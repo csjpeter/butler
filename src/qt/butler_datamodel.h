@@ -13,7 +13,7 @@
 #include <butler_config.h>
 
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,ItemQuery,PaymentQuery@
 class @Type@Model : public AbstractTableModel
 {
 @include@ dbdatamodel.h
@@ -51,13 +51,14 @@ private:
 		return QVariant(val);
 	}*/
 public:
-	Query opts;
-	QueryStat stat;
+	ItemQuery opts;
+	ItemQueryStat stat;
 };
 inline bool operator==(const ItemModel & a, const ItemModel & b) { return &a == &b; }
 
 
-@ForTypes{DatabaseDescriptor,WareType,WareTag,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+@ForTypes{DatabaseDescriptor,WareType,WareTag,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
+				ItemQueryPartner,PaymentQueryPartner@
 class @Type@Model : public AbstractTableModel
 {
 @include@ datamodel.h

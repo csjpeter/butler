@@ -17,8 +17,9 @@ void saveDatabaseConfigs();
 DatabaseDescriptorModel & databasesModel();
 
 csjp::Object<ItemModel> itemModel(const csjp::String & dbname);
+csjp::Object<PaymentModel> paymentModel(const csjp::String & dbname);
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 @Type@Model & @type@Model(const csjp::String & dbname);
 @}ForTypes@
 

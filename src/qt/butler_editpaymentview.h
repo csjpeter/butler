@@ -16,10 +16,10 @@ private:
 	MY_Q_OBJECT
 
 public:
-	EditPaymentView(const csjp::String & dbname, ItemModel & model, QWidget * parent = 0);
+	EditPaymentView(const csjp::String & dbname, PaymentModel & model, QWidget * parent = 0);
 	virtual ~EditPaymentView();
 
-	static EditPaymentView * newItemViewFactory(const csjp::String & dbname);
+	static EditPaymentView * newPaymentViewFactory(const csjp::String & dbname);
 
 	void setCursor(const QModelIndex& index);
 
@@ -57,10 +57,10 @@ private slots:
 public:
 	const csjp::String dbname;
 private:
-	ItemModel & model;
-	ItemModel * ownModel;
+	PaymentModel & model;
+	PaymentModel * ownModel;
 	QModelIndex cursor;
-	Item item;
+	Payment payment;
 	Ware ware;
 
 	Button doneButton;

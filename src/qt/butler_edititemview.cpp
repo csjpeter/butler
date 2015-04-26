@@ -15,9 +15,6 @@
 #include "butler_config.h"
 #include "butler_edititemview.h"
 
-@include@ views.cpp
-@declare@ Item
-
 SCC TidContext = "EditItemView";
 
 SCC TidNewItemWindowTitle = QT_TRANSLATE_NOOP("EditItemView", "Already bought new item");
@@ -154,8 +151,6 @@ void EditItemView::showEvent(QShowEvent *event)
 	grossPriceEditor.editor.setFocus(Qt::OtherFocusReason);
 	relayout();
 }
-
-@include@ closeEvent loadState saveState changeEvent resizeEvent
 
 void EditItemView::mapToGui()
 {
@@ -442,8 +437,6 @@ void EditItemView::saveSlotSpec()
 		wm.update(i, ware);
 }
 
-@include@ setCursor prevSlot nextSlot saveSlot
-
 void EditItemView::resetSlot()
 {
 	mapToGui();
@@ -582,3 +575,10 @@ void EditItemView::accountNameEditFinishedSlot(int)
 {
 	accountNameEditFinishedSlot();
 }
+
+@include@ views.cpp
+@declare@ Item
+
+@include@ closeEvent loadState saveState changeEvent resizeEvent
+@include@ setCursor prevSlot nextSlot saveSlot
+

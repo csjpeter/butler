@@ -6,7 +6,7 @@
 #include <butler_dataclasses.h>
 
 @ForTypes{Item@
-ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
+@Type@Set @Type@Set::fromDb(SqlConnection & sql, const @Type@Query & q, @Type@QueryStat & stat)
 {
 	@Type@Set list;
 	SqlTransaction tr(sql);
@@ -132,7 +132,7 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	SqlResult result = sql.exec(params, cmd);
 
 	/* statistics */
-	stat = QueryStat();
+	stat = @Type@QueryStat();
 	Double sumPrice;
 	Double sumQuantity;
 
@@ -167,6 +167,104 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 	if(stat.itemCount == 0){
 		stat.cheapestUnitPrice.nan();
 		stat.mostExpUnitPrice.nan();
+	}
+
+	tr.commit();
+
+	return list;
+}
+@}ForTypes@
+
+@ForTypes{Payment@
+@Type@Set @Type@Set::fromDb(SqlConnection & sql, const @Type@Query & q, @Type@QueryStat & stat)
+{
+	@Type@Set list;
+	SqlTransaction tr(sql);
+	/* assemble command */
+	csjp::Array<csjp::String> params(128); // FIXME lets make it autoresizing
+	csjp::String cmd("SELECT"
+			" MAX(payment.upload_date) AS upload_date,"
+			" MAX(payment.name) AS name,"
+			" MAX(payment.price) AS price,"
+			" MAX(payment.currency) AS currency,"
+			" MAX(payment.account) AS account,"
+			" MAX(payment.partner) AS partner,"
+			" MAX(payment.comment) AS comment,"
+			" MAX(payment.inv_change_date) AS inv_change_date"
+			" FROM payment"
+			" LEFT JOIN ware_tag ON payment.name = ware_tag.ware"
+			" LEFT JOIN partner ON payment.partner = partner.name");
+
+	csjp::String filter;
+
+	if(filter.length)
+		filter += " AND";
+	filter += "? < inv_change_date";
+	params.add(C_STR(q.startDate.isoUtcString()));
+
+	if(filter.length)
+		filter += " AND";
+	filter += " inv_change_date < ?";
+	params.add(C_STR(q.endDate.isoUtcString()));
+
+	{
+		unsigned i, s = q.partners.size();
+		csjp::String scmd;
+		if(filter.length)
+			scmd += " AND ( ";
+		for(i=0; i<s; i++){
+			if(0 < i)
+				scmd += " OR";
+			scmd += " partners.name = ?";
+			params.add(C_STR(q.partners.queryAt(i).partner));
+		}
+		scmd.append(")");
+		if(0 < s)
+			filter.append(scmd);
+	}
+
+	if(filter.length){
+		cmd += " WHERE ";
+		cmd += filter;
+	}
+
+	cmd += " GROUP BY payment.upload_date";
+
+	SqlResult result = sql.exec(params, cmd);
+
+	/* statistics */
+	stat = @Type@QueryStat();
+	Double sumPrice;
+	Double sumQuantity;
+
+	DBG("----- Reading all @Type@ from db:");
+	for(auto & row : result){
+		DBG("Next row");
+		csjp::Object<@Type@> record;
+		@For{TableField@
+		record->@.Name@ <<= csjp::CString(row.value(@.Idx@));
+		@}@
+
+		/* statistics */
+		stat.paymentCount++;
+		stat.sumPrice += record->amount;
+		if(DBL_EPSILON <= record->amount){
+			sumPrice += record->amount;
+
+			if(record->amount < stat.cheapestPrice)
+				stat.cheapestPrice = record->amount;
+			if(stat.mostExpPrice < record->amount)
+				stat.mostExpPrice = record->amount;
+		}
+
+		list.add(record);
+	}
+	DBG("-----");
+
+	stat.avgPrice = sumPrice / sumQuantity;
+	if(stat.paymentCount == 0){
+		stat.cheapestPrice.nan();
+		stat.mostExpPrice.nan();
 	}
 
 	tr.commit();
@@ -283,15 +381,15 @@ ItemSet ItemSet::fromDb(SqlConnection & sql, const Query & q, QueryStat & stat)
 @}Define@
 
 @ForTypes{Tag,WareType,WareTag,Ware
-		Company,Brand,Inventory,Partner,Account,Payment,
-		QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner
-		Query@
+		Company,Brand,Inventory,Partner,Account,
+		ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare,ItemQueryPartner
+		ItemQuery,PaymentQueryPartner,PaymentQuery@
 @include@ todb
 
 @include@ dbquery
 @}ForTypes@
 
-@ForTypes{Item@
+@ForTypes{Item,Payment@
 @include@ todb
 @}ForTypes@
 

@@ -175,14 +175,14 @@ void TagWidget::setTags(const WareTagSet & tags)
 	setTags(ss);
 }
 
-void TagWidget::setTags(const QueryWithTagSet & tags)
+void TagWidget::setTags(const ItemQueryWithTagSet & tags)
 {
 	StringSet ss;
 	ss <<= tags;
 	setTags(ss);
 }
 
-void TagWidget::setTags(const QueryWithoutTagSet & tags)
+void TagWidget::setTags(const ItemQueryWithoutTagSet & tags)
 {
 	StringSet ss;
 	ss <<= tags;

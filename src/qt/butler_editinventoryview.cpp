@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editinventoryview.h"
 
-@include@ views.cpp
-@declare@ Inventory
-
 SCC TidContext = "EditInventoryView";
 
 SCC TidNewInventoryWindowTitle = QT_TRANSLATE_NOOP("EditInventoryView", "Add new inventory");
@@ -62,8 +59,6 @@ EditInventoryView::EditInventoryView(const csjp::String & dbname, QWidget * pare
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditInventoryView::mapToGui()
 {
@@ -155,5 +150,9 @@ void EditInventoryView::saveSlotSpec()
 {
 }
 
+@include@ views.cpp
+@declare@ Inventory
+
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 

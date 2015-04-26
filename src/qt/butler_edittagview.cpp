@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_edittagview.h"
 
-@include@ views.cpp
-@declare@ Tag
-
 SCC TidContext = "EditTagView";
 
 SCC TidNewTagWindowTitle = QT_TRANSLATE_NOOP("EditTagView", "Add new tag");
@@ -62,8 +59,6 @@ EditTagView::EditTagView(const csjp::String & dbname, QWidget * parent) :
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditTagView::mapToGui()
 {
@@ -155,5 +150,9 @@ void EditTagView::saveSlotSpec()
 {
 }
 
+@include@ views.cpp
+@declare@ Tag
+
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 

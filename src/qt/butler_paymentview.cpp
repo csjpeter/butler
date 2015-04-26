@@ -16,38 +16,37 @@
 SCC TidContext = "PaymentView";
 
 SCC TidAnaliticsWindowTitle = QT_TRANSLATE_NOOP("PaymentView", "Analitics");
-SCC TidEditItemButton = QT_TRANSLATE_NOOP("PaymentView", "Edit item");
-SCC TidDeleteItemButton = QT_TRANSLATE_NOOP("PaymentView", "Delete item");
-SCC TidRefreshItemsButton = QT_TRANSLATE_NOOP("PaymentView", "Refresh items");
-SCC TidShoppingItemButton = QT_TRANSLATE_NOOP("PaymentView", "Add item to shopping list");
-SCC TidFilterItemButton = QT_TRANSLATE_NOOP("PaymentView", "Filter items");
-SCC TidStatsItemButton = QT_TRANSLATE_NOOP("PaymentView", "Statistics");
+SCC TidEditPaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Edit item");
+SCC TidDeletePaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Delete item");
+SCC TidRefreshPaymentsButton = QT_TRANSLATE_NOOP("PaymentView", "Refresh items");
+SCC TidShoppingPaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Add item to shopping list");
+SCC TidFilterPaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Filter items");
+SCC TidStatsPaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Statistics");
 
 PaymentView::PaymentView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
-	model(itemModel(dbname)),
+	model(paymentModel(dbname)),
 	editButton(QIcon(Path::icon("edit.png")),
-			TidEditItemButton, TidContext, QKeySequence(Qt::Key_F1)),
+			TidEditPaymentButton, TidContext, QKeySequence(Qt::Key_F1)),
 	delButton(QIcon(Path::icon("delete.png")),
-			TidDeleteItemButton, TidContext, QKeySequence(Qt::Key_F2)),
+			TidDeletePaymentButton, TidContext, QKeySequence(Qt::Key_F2)),
 	shoppingButton(QIcon(Path::icon("shopping.png")),
-			TidShoppingItemButton, TidContext, QKeySequence(Qt::Key_F3)),
+			TidShoppingPaymentButton, TidContext, QKeySequence(Qt::Key_F3)),
 	statsButton(QIcon(Path::icon("statistics.png")),
-			TidStatsItemButton, TidContext, QKeySequence(Qt::Key_F4)),
+			TidStatsPaymentButton, TidContext, QKeySequence(Qt::Key_F4)),
 	refreshButton(QIcon(Path::icon("refresh.png")),
-			TidRefreshItemsButton, TidContext, QKeySequence(QKeySequence::Refresh)),/*F5*/
+			TidRefreshPaymentsButton, TidContext, QKeySequence(QKeySequence::Refresh)),/*F5*/
 	filterButton(QIcon(Path::icon("query.png")),
-			TidFilterItemButton, TidContext, QKeySequence(Qt::Key_F6)),
-	editItemView(NULL),
+			TidFilterPaymentButton, TidContext, QKeySequence(Qt::Key_F6)),
+	editPaymentView(NULL),
 	queryOptsView(NULL),
-	editWareView(NULL),
 	statsView(NULL)
 {
 	setWindowIcon(QIcon(Path::icon("list.png")));
 
 	tableView.setModel(&model);
-	tableView.hideColumn(Item::LastModified);
+	tableView.hideColumn(Payment::LastModified);
 
 	toolBar.addToolWidget(editButton);
 	toolBar.addToolWidget(delButton);
@@ -56,13 +55,12 @@ PaymentView::PaymentView(const csjp::String & dbname, QWidget * parent) :
 	toolBar.addToolWidget(refreshButton);
 	toolBar.addToolWidget(filterButton);
 
-	connect(&editButton, SIGNAL(clicked()), this, SLOT(editItem()));
-	connect(&delButton, SIGNAL(clicked()), this, SLOT(delItem()));
-	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(shoppingItem()));
-	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refreshItems()));
-	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterItems()));
-	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsItems()));
-//	connect(&editWareButton, SIGNAL(clicked()), this, SLOT(editWare()));
+	connect(&editButton, SIGNAL(clicked()), this, SLOT(editPayment()));
+	connect(&delButton, SIGNAL(clicked()), this, SLOT(delPayment()));
+	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(shoppingPayment()));
+	connect(&refreshButton, SIGNAL(clicked()), this, SLOT(refreshPayments()));
+	connect(&filterButton, SIGNAL(clicked()), this, SLOT(filterPayments()));
+	connect(&statsButton, SIGNAL(clicked()), this, SLOT(statsPayments()));
 
 	connect(&tableView, SIGNAL(currentIndexChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(currentIndexChanged(const QModelIndex &, const QModelIndex &)));
@@ -74,9 +72,8 @@ PaymentView::PaymentView(const csjp::String & dbname, QWidget * parent) :
 
 PaymentView::~PaymentView()
 {
-	delete editItemView;
+	delete editPaymentView;
 	delete queryOptsView;
-	delete editWareView;
 	delete statsView;
 }
 
@@ -103,13 +100,13 @@ void PaymentView::applyLayout()
 
 void PaymentView::relayout()
 {
-	if(tableView.horizontalHeader()->width() < width())
+/*	if(tableView.horizontalHeader()->width() < width())
 		tableView.horizontalHeader()->setSectionResizeMode(
-				Item::Comment, QHeaderView::Stretch);
+				Payment::Comment, QHeaderView::Stretch);
 	else
 		tableView.horizontalHeader()->setSectionResizeMode(
-				Item::Comment, QHeaderView::ResizeToContents);
-
+				Payment::Comment, QHeaderView::ResizeToContents);
+*/
 //	LayoutState newState = LayoutState::Wide;
 //	newState = LayoutState::Expanding;
 //	newState = LayoutState::Wide;
@@ -193,11 +190,11 @@ void PaymentView::loadState()
 	if(model->set.has(uploadDate))
 		tableView.setCurrentIndex(model->index(model->index(uploadDate), col));
 
-	if(settings.value(prefix + "/editItemView", false).toBool())
-		QTimer::singleShot(0, this, SLOT(editItem()));
+	if(settings.value(prefix + "/editPaymentView", false).toBool())
+		QTimer::singleShot(0, this, SLOT(editPayment()));
 
 	if(settings.value(prefix + "/queryOptsView", false).toBool())
-		QTimer::singleShot(0, this, SLOT(filterItems()));
+		QTimer::singleShot(0, this, SLOT(filterPayments()));
 
 	updateToolButtonStates();
 }
@@ -212,7 +209,7 @@ void PaymentView::saveState()
 
 	QString uploadDate;
 	if(tableView.currentIndex().isValid()){
-		const Item & item = model->data(tableView.currentIndex().row());
+		const Payment & item = model->data(tableView.currentIndex().row());
 		uploadDate = item.uploadDate.toString(Qt::ISODate);
 	}
 	settings.setValue(prefix + "/currentitem", uploadDate);
@@ -220,11 +217,11 @@ void PaymentView::saveState()
 
 	tableView.saveState(prefix);
 
-	SAVE_VIEW_STATE(editItemView);
+	SAVE_VIEW_STATE(editPaymentView);
 	SAVE_VIEW_STATE(queryOptsView);
 }
 
-void PaymentView::editItem()
+void PaymentView::editPayment()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -232,14 +229,14 @@ void PaymentView::editItem()
 		return;
 	}
 
-	if(!editItemView)
-		editItemView = new EditItemView(dbname, *model);
+	if(!editPaymentView)
+		editPaymentView = new EditPaymentView(dbname, *model);
 
-	editItemView->setCursor(tableView.currentIndex());
-	editItemView->activate();
+	editPaymentView->setCursor(tableView.currentIndex());
+	editPaymentView->activate();
 }
 
-void PaymentView::delItem()
+void PaymentView::delPayment()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -248,7 +245,7 @@ void PaymentView::delItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item & item = model->data(row);
+	const Payment & item = model->data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an item"),
@@ -260,11 +257,11 @@ void PaymentView::delItem()
 		model->del(row);
 }
 
-void PaymentView::refreshItems()
+void PaymentView::refreshPayments()
 {
 	DateTime uploadDate;
 	if(tableView.currentIndex().isValid()){
-		const Item & item = model->data(tableView.currentIndex().row());
+		const Payment & item = model->data(tableView.currentIndex().row());
 		uploadDate = item.uploadDate;
 	}
 
@@ -276,7 +273,7 @@ void PaymentView::refreshItems()
 	tableView.horizontalScrollBar()->setValue(tableView.horizontalScrollBar()->minimum());
 }
 
-void PaymentView::shoppingItem()
+void PaymentView::shoppingPayment()
 {
 	if(!tableView.currentIndex().isValid()){
 		QMessageBox::information(this, tr("Information"),
@@ -285,7 +282,7 @@ void PaymentView::shoppingItem()
 	}
 
 	int row = tableView.currentIndex().row();
-	const Item & item = model->data(row);
+	const Payment & item = model->data(row);
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Adding to shopping list"),
@@ -294,29 +291,11 @@ void PaymentView::shoppingItem()
 			QMessageBox::Yes | QMessageBox::No, 0, Qt::Dialog));
 	int res = msg->exec();
 	if(res == QMessageBox::Yes){
-		//model->addShoppingItem(row);
+		//model->addShoppingPayment(row);
 	}
 }
 
-void PaymentView::editWare()
-{
-	if(!tableView.currentIndex().isValid()){
-		QMessageBox::information(this, tr("Information"),
-				tr("Please select an item first."));
-		return;
-	}
-
-	WareModel & wm = wareModel(dbname);
-	if(!editWareView)
-		editWareView = new EditWareView(dbname);
-
-	const Item & item = model->data(tableView.currentIndex().row());
-
-	editWareView->setCursor(wm.index(wm.index(item.name), 0));
-	editWareView->activate();
-}
-
-void PaymentView::filterItems()
+void PaymentView::filterPayments()
 {
 	if(!queryOptsView){
 		queryOptsView = new QueryOptionsView(dbname);
@@ -335,7 +314,7 @@ void PaymentView::applyNewFilter()
 	relayout();
 }
 
-void PaymentView::statsItems()
+void PaymentView::statsPayments()
 {
 	if(!statsView)
 		statsView = new StatsView(model->stat);

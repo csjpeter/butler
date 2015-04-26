@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editbrandview.h"
 
-@include@ views.cpp
-@declare@ Brand
-
 SCC TidContext = "EditBrandView";
 
 SCC TidNewBrandWindowTitle = QT_TRANSLATE_NOOP("EditBrandView", "Add new brand");
@@ -63,8 +60,6 @@ EditBrandView::EditBrandView(const csjp::String & dbname, QWidget * parent) :
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditBrandView::mapToGui()
 {
@@ -164,5 +159,9 @@ void EditBrandView::saveSlotSpec()
 	}
 }
 
+@include@ views.cpp
+@declare@ Brand
+
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 

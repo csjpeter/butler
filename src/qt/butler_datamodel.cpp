@@ -107,37 +107,49 @@ SCC TidItemFieldDeleted			= QT_TRANSLATE_NOOP("ItemModel", "Is deleted");
 SCC TidItemFieldUnitPrice		= QT_TRANSLATE_NOOP("ItemModel", "Unit price");
 SCC TidItemFieldQuantityWithUnit= QT_TRANSLATE_NOOP("ItemModel", "Quantity");
 
-SCC TidQueryWithTagFieldQuery		= QT_TRANSLATE_NOOP("QueryWithTagModel", "Query");
-SCC TidQueryWithTagFieldTag			= QT_TRANSLATE_NOOP("QueryWithTagModel", "Tag");
-SCC TidQueryWithTagFieldLastModified= QT_TRANSLATE_NOOP("QueryWithTagModel", "Last modification date");
-SCC TidQueryWithTagFieldDeleted		= QT_TRANSLATE_NOOP("QueryWithTagModel", "Is deleted");
+SCC TidItemQueryWithTagFieldQuery		= QT_TRANSLATE_NOOP("ItemQueryWithTagModel", "Query");
+SCC TidItemQueryWithTagFieldTag			= QT_TRANSLATE_NOOP("ItemQueryWithTagModel", "Tag");
+SCC TidItemQueryWithTagFieldLastModified= QT_TRANSLATE_NOOP("ItemQueryWithTagModel", "Last modification date");
+SCC TidItemQueryWithTagFieldDeleted		= QT_TRANSLATE_NOOP("ItemQueryWithTagModel", "Is deleted");
 
-SCC TidQueryWithoutTagFieldQuery		= QT_TRANSLATE_NOOP("QueryWithoutTagModel", "Query");
-SCC TidQueryWithoutTagFieldTag			= QT_TRANSLATE_NOOP("QueryWithoutTagModel", "Tag");
-SCC TidQueryWithoutTagFieldLastModified	= QT_TRANSLATE_NOOP("QueryWithoutTagModel", "Last modification date");
-SCC TidQueryWithoutTagFieldDeleted		= QT_TRANSLATE_NOOP("QueryWithoutTagModel", "Is deleted");
+SCC TidItemQueryWithoutTagFieldQuery		= QT_TRANSLATE_NOOP("ItemQueryWithoutTagModel", "Query");
+SCC TidItemQueryWithoutTagFieldTag			= QT_TRANSLATE_NOOP("ItemQueryWithoutTagModel", "Tag");
+SCC TidItemQueryWithoutTagFieldLastModified	= QT_TRANSLATE_NOOP("ItemQueryWithoutTagModel", "Last modification date");
+SCC TidItemQueryWithoutTagFieldDeleted		= QT_TRANSLATE_NOOP("ItemQueryWithoutTagModel", "Is deleted");
 
-SCC TidQueryWareFieldQuery			= QT_TRANSLATE_NOOP("QueryWareModel", "Query");
-SCC TidQueryWareFieldWare			= QT_TRANSLATE_NOOP("QueryWareModel", "Ware");
-SCC TidQueryWareFieldLastModified	= QT_TRANSLATE_NOOP("QueryWareModel", "Last modification date");
-SCC TidQueryWareFieldDeleted		= QT_TRANSLATE_NOOP("QueryWareModel", "Is deleted");
+SCC TidItemQueryWareFieldQuery			= QT_TRANSLATE_NOOP("ItemQueryWareModel", "Query");
+SCC TidItemQueryWareFieldWare			= QT_TRANSLATE_NOOP("ItemQueryWareModel", "Ware");
+SCC TidItemQueryWareFieldLastModified	= QT_TRANSLATE_NOOP("ItemQueryWareModel", "Last modification date");
+SCC TidItemQueryWareFieldDeleted		= QT_TRANSLATE_NOOP("ItemQueryWareModel", "Is deleted");
 
-SCC TidQueryPartnerFieldQuery		= QT_TRANSLATE_NOOP("QueryPartnerModel", "Query");
-SCC TidQueryPartnerFieldPartner		= QT_TRANSLATE_NOOP("QueryPartnerModel", "Partner");
-SCC TidQueryPartnerFieldLastModified= QT_TRANSLATE_NOOP("QueryPartnerModel", "Last modification date");
-SCC TidQueryPartnerFieldDeleted		= QT_TRANSLATE_NOOP("QueryPartnerModel", "Is deleted");
+SCC TidItemQueryPartnerFieldQuery		= QT_TRANSLATE_NOOP("ItemQueryPartnerModel", "Query");
+SCC TidItemQueryPartnerFieldPartner		= QT_TRANSLATE_NOOP("ItemQueryPartnerModel", "Partner");
+SCC TidItemQueryPartnerFieldLastModified= QT_TRANSLATE_NOOP("ItemQueryPartnerModel", "Last modification date");
+SCC TidItemQueryPartnerFieldDeleted		= QT_TRANSLATE_NOOP("ItemQueryPartnerModel", "Is deleted");
 
-SCC TidQueryFieldName			= QT_TRANSLATE_NOOP("QueryModel", "Name");
-SCC TidQueryFieldStartDate		= QT_TRANSLATE_NOOP("QueryModel", "From date");
-SCC TidQueryFieldEndDate		= QT_TRANSLATE_NOOP("QueryModel", "Till date");
-SCC TidQueryFieldStockOption	= QT_TRANSLATE_NOOP("QueryModel", "Stock option");
-SCC TidQueryFieldTagOption		= QT_TRANSLATE_NOOP("QueryModel", "Tag option");
-SCC TidQueryFieldWithTags		= QT_TRANSLATE_NOOP("QueryModel", "With tags");
-SCC TidQueryFieldWithoutTags	= QT_TRANSLATE_NOOP("QueryModel", "Without tags");
-SCC TidQueryFieldWares			= QT_TRANSLATE_NOOP("QueryModel", "Wares");
-SCC TidQueryFieldPartners		= QT_TRANSLATE_NOOP("QueryModel", "Partners");
-SCC TidQueryFieldLastModified	= QT_TRANSLATE_NOOP("QueryModel", "Last modification date");
-SCC TidQueryFieldDeleted		= QT_TRANSLATE_NOOP("QueryModel", "Is deleted");
+SCC TidItemQueryFieldName			= QT_TRANSLATE_NOOP("ItemQueryModel", "Name");
+SCC TidItemQueryFieldStartDate		= QT_TRANSLATE_NOOP("ItemQueryModel", "From date");
+SCC TidItemQueryFieldEndDate		= QT_TRANSLATE_NOOP("ItemQueryModel", "Till date");
+SCC TidItemQueryFieldStockOption	= QT_TRANSLATE_NOOP("ItemQueryModel", "Stock option");
+SCC TidItemQueryFieldTagOption		= QT_TRANSLATE_NOOP("ItemQueryModel", "Tag option");
+SCC TidItemQueryFieldWithTags		= QT_TRANSLATE_NOOP("ItemQueryModel", "With tags");
+SCC TidItemQueryFieldWithoutTags	= QT_TRANSLATE_NOOP("ItemQueryModel", "Without tags");
+SCC TidItemQueryFieldWares			= QT_TRANSLATE_NOOP("ItemQueryModel", "Wares");
+SCC TidItemQueryFieldPartners		= QT_TRANSLATE_NOOP("ItemQueryModel", "Partners");
+SCC TidItemQueryFieldLastModified	= QT_TRANSLATE_NOOP("ItemQueryModel", "Last modification date");
+SCC TidItemQueryFieldDeleted		= QT_TRANSLATE_NOOP("ItemQueryModel", "Is deleted");
+
+SCC TidPaymentQueryFieldName			= QT_TRANSLATE_NOOP("PaymentQueryModel", "Name");
+SCC TidPaymentQueryFieldStartDate		= QT_TRANSLATE_NOOP("PaymentQueryModel", "From date");
+SCC TidPaymentQueryFieldEndDate		= QT_TRANSLATE_NOOP("PaymentQueryModel", "Till date");
+SCC TidPaymentQueryFieldPartners		= QT_TRANSLATE_NOOP("PaymentQueryModel", "Partners");
+SCC TidPaymentQueryFieldLastModified	= QT_TRANSLATE_NOOP("PaymentQueryModel", "Last modification date");
+SCC TidPaymentQueryFieldDeleted		= QT_TRANSLATE_NOOP("PaymentQueryModel", "Is deleted");
+
+SCC TidPaymentQueryPartnerFieldQuery		= QT_TRANSLATE_NOOP("PaymentQueryPartnerModel", "Query");
+SCC TidPaymentQueryPartnerFieldPartner		= QT_TRANSLATE_NOOP("PaymentQueryPartnerModel", "Partner");
+SCC TidPaymentQueryPartnerFieldLastModified= QT_TRANSLATE_NOOP("PaymentQueryPartnerModel", "Last modification date");
+SCC TidPaymentQueryPartnerFieldDeleted		= QT_TRANSLATE_NOOP("PaymentQueryPartnerModel", "Is deleted");
 
 
 
@@ -145,15 +157,17 @@ SCC TidQueryFieldDeleted		= QT_TRANSLATE_NOOP("QueryModel", "Is deleted");
 
 
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 @include@ dbdatamodel_spec.cpp
 @include@ dbdatamodel.cpp
 @}ForTypes@
 
-@declare@ Item
+@ForTypes{Item,Payment@
 @include@ dbdatamodel.cpp
+@}ForTypes@
 
-@ForTypes{DatabaseDescriptor,WareType,WareTag,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+@ForTypes{DatabaseDescriptor,WareType,WareTag,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
+			ItemQueryPartner,PaymentQueryPartner@
 @include@ datamodel.cpp
 @}ForTypes@
 

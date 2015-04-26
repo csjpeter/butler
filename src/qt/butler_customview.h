@@ -9,7 +9,6 @@
 #include <butler_pannview.h>
 
 class EditItemView;
-class EditItemView;
 class QueryOptionsView;
 class EditWareView;
 class StatsView;

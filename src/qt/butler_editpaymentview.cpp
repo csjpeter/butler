@@ -15,18 +15,15 @@
 #include "butler_config.h"
 #include "butler_editpaymentview.h"
 
-@include@ views.cpp
-@declare@ Item
-
 SCC TidContext = "EditPaymentView";
 
-SCC TidNewItemWindowTitle = QT_TRANSLATE_NOOP("EditPaymentView", "Already bought new item");
-SCC TidEditItemWindowTitle = QT_TRANSLATE_NOOP("EditPaymentView", "Editing an existing item");
+SCC TidNewPaymentWindowTitle = QT_TRANSLATE_NOOP("EditPaymentView", "Already bought new payment");
+SCC TidEditPaymentWindowTitle = QT_TRANSLATE_NOOP("EditPaymentView", "Editing an existing payment");
 
 SCC TidDoneButton = QT_TRANSLATE_NOOP("EditPaymentView", "Done");
 SCC TidResetButton = QT_TRANSLATE_NOOP("EditPaymentView", "Reset");
-SCC TidPrevButton = QT_TRANSLATE_NOOP("EditPaymentView", "Previous item");
-SCC TidNextButton = QT_TRANSLATE_NOOP("EditPaymentView", "Next item");
+SCC TidPrevButton = QT_TRANSLATE_NOOP("EditPaymentView", "Previous payment");
+SCC TidNextButton = QT_TRANSLATE_NOOP("EditPaymentView", "Next payment");
 
 SCC TidTypeEditor = QT_TRANSLATE_NOOP("EditPaymentView", "Type of ware:");
 SCC TidBrandSelector = QT_TRANSLATE_NOOP("EditPaymentView", "Brand of ware:");
@@ -44,18 +41,18 @@ SCC TidWareTags = QT_TRANSLATE_NOOP("EditPaymentView", "Tags for <i>%1</i> :");
 
 SCC TidMandatoryField = QT_TRANSLATE_NOOP("EditPaymentView", "mandatory field");
 SCC TidInfoMandatoryFields = QT_TRANSLATE_NOOP("EditPaymentView", "Please fill at least the mandatory fields.");
-SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditPaymentView", "Item is saved, you may add another.");
-SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditPaymentView", "Item is updated.");
+SCC TidInfoNewSaved = QT_TRANSLATE_NOOP("EditPaymentView", "Payment is saved, you may add another.");
+SCC TidInfoEditSaved = QT_TRANSLATE_NOOP("EditPaymentView", "Payment is updated.");
 
-EditPaymentView * EditPaymentView::newItemViewFactory(const csjp::String & dbname)
+EditPaymentView * EditPaymentView::newPaymentViewFactory(const csjp::String & dbname)
 {
-	csjp::Object<ItemModel> ownModel = itemModel(dbname);
+	csjp::Object<PaymentModel> ownModel = paymentModel(dbname);
 	EditPaymentView * view = new EditPaymentView(dbname, *ownModel);
 	view->ownModel = ownModel.release();
 	return view;
 }
 
-EditPaymentView::EditPaymentView(const csjp::String & dbname, ItemModel & model, QWidget * parent) :
+EditPaymentView::EditPaymentView(const csjp::String & dbname, PaymentModel & model, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	model(model),
@@ -77,7 +74,7 @@ EditPaymentView::EditPaymentView(const csjp::String & dbname, ItemModel & model,
 
 	ENSURE(!cursor.isValid(), csjp::LogicError);
 	
-	item.invChangeDate = QDateTime::currentDateTime();
+	payment.invChangeDate = QDateTime::currentDateTime();
 	uploadDateTime.setEnabled(false);
 	tagsWidget.label.setWordWrap(true);
 
@@ -155,40 +152,38 @@ void EditPaymentView::showEvent(QShowEvent *event)
 	relayout();
 }
 
-@include@ closeEvent loadState saveState changeEvent resizeEvent
-
 void EditPaymentView::mapToGui()
 {
 	if(cursor.isValid()){
-		item = Item(model.data(cursor.row()));
-		accountEditor.setText(item.partner);
+		payment = Payment(model.data(cursor.row()));
+		accountEditor.setText(payment.partner);
 		accountNameEditFinishedSlot();
-		partnerEditor.setText(item.partner);
-		inventoryEditor.setText(item.partner);
+		partnerEditor.setText(payment.partner);
+		inventoryEditor.setText(payment.partner);
 	}
 
-	uploadDateTime.edit.setDateTime(item.uploadDate);
+	uploadDateTime.edit.setDateTime(payment.uploadDate);
 
-	wareEditor.setText(item.name);
+	wareEditor.setText(payment.name);
 	wareNameEditFinishedSlot();
 
-	typeEditor.setText(item.type);
-	brandEditor.setText(item.brand);
+	typeEditor.setText(payment.type);
+	brandEditor.setText(payment.brand);
 
 	quantityEditor.blockSignals(true);
-	quantityEditor.setValue(item.quantity);
+	quantityEditor.setValue(payment.quantity);
 	quantityEditor.blockSignals(false);
 
-	commentEditor.edit.setText(item.comment);
+	commentEditor.edit.setText(payment.comment);
 
-	invChangeDateTime.edit.setDateTime(item.invChangeDate);
+	invChangeDateTime.edit.setDateTime(payment.invChangeDate);
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue((0.001 <= item.quantity) ? item.price / item.quantity : 0);
+	unitPriceEditor.setValue((0.001 <= payment.quantity) ? payment.price / payment.quantity : 0);
 	unitPriceEditor.blockSignals(false);
 
 	grossPriceEditor.blockSignals(true);
-	grossPriceEditor.setValue(item.price);
+	grossPriceEditor.setValue(payment.price);
 	grossPriceEditor.blockSignals(false);
 
 	updateToolButtonStates();
@@ -196,34 +191,34 @@ void EditPaymentView::mapToGui()
 
 void EditPaymentView::mapFromGui()
 {
-	item.uploadDate = uploadDateTime.edit.dateTime();
+	payment.uploadDate = uploadDateTime.edit.dateTime();
 
-	item.account = accountEditor.text();
-	item.partner = partnerEditor.text();
-	item.inventory = inventoryEditor.text();
-	item.name = wareEditor.text();
-	item.unit <<= quantityEditor.getSuffix();
-	item.type = typeEditor.text();
-	item.brand = brandEditor.text();
-	item.quantity = quantityEditor.value();
-	item.comment = commentEditor.edit.toPlainText();
+	payment.account = accountEditor.text();
+	payment.partner = partnerEditor.text();
+	payment.inventory = inventoryEditor.text();
+	payment.name = wareEditor.text();
+	payment.unit <<= quantityEditor.getSuffix();
+	payment.type = typeEditor.text();
+	payment.brand = brandEditor.text();
+	payment.quantity = quantityEditor.value();
+	payment.comment = commentEditor.edit.toPlainText();
 
-	item.price = grossPriceEditor.value();
-	item.currency <<= grossPriceEditor.getSuffix();
-	item.invChangeDate = invChangeDateTime.edit.dateTime();
+	payment.price = grossPriceEditor.value();
+	payment.currency <<= grossPriceEditor.getSuffix();
+	payment.invChangeDate = invChangeDateTime.edit.dateTime();
 
-	ware.name = item.name;
+	ware.name = payment.name;
 	ware.setAsTags(tagsWidget.selectedTags());
-	if(typeEditor.text().size() && !ware.types.has(item.type))
+	if(typeEditor.text().size() && !ware.types.has(payment.type))
 		ware.types.add(new WareType(ware.name, typeEditor.text()));
 }
 
 void EditPaymentView::retranslate()
 {
 	if(cursor.isValid())
-		setWindowTitle(tr(TidEditItemWindowTitle));
+		setWindowTitle(tr(TidEditPaymentWindowTitle));
 	else
-		setWindowTitle(tr(TidNewItemWindowTitle));
+		setWindowTitle(tr(TidNewPaymentWindowTitle));
 
 	wareEditor.label.setText(tr(TidWareSelector));
 	wareEditor.editor.setPlaceholderText(tr(TidMandatoryField));
@@ -340,16 +335,16 @@ void EditPaymentView::relayout()
 void EditPaymentView::updateToolButtonStates()
 {
 	bool modified = !(
-			item.account == accountEditor.text() &&
-			item.partner == partnerEditor.text() &&
-			item.inventory == inventoryEditor.text() &&
-			item.name == wareEditor.text() &&
-			item.type == typeEditor.text() &&
-			item.brand == brandEditor.text() &&
-			(item.quantity - quantityEditor.value()).abs() < 0.001 &&
-			item.comment == commentEditor.edit.toPlainText() &&
-			(item.price - grossPriceEditor.value()).abs() < 0.01 &&
-			item.invChangeDate == invChangeDateTime.edit.dateTime()
+			payment.account == accountEditor.text() &&
+			payment.partner == partnerEditor.text() &&
+			payment.inventory == inventoryEditor.text() &&
+			payment.name == wareEditor.text() &&
+			payment.type == typeEditor.text() &&
+			payment.brand == brandEditor.text() &&
+			(payment.quantity - quantityEditor.value()).abs() < 0.001 &&
+			payment.comment == commentEditor.edit.toPlainText() &&
+			(payment.price - grossPriceEditor.value()).abs() < 0.01 &&
+			payment.invChangeDate == invChangeDateTime.edit.dateTime()
 			);
 
 	/* tag states might have changed for ware */
@@ -441,8 +436,6 @@ void EditPaymentView::saveSlotSpec()
 	else if(wm.data(i) != ware)
 		wm.update(i, ware);
 }
-
-@include@ setCursor prevSlot nextSlot saveSlot
 
 void EditPaymentView::resetSlot()
 {
@@ -548,8 +541,8 @@ void EditPaymentView::wareNameEditFinishedSlot()
 
 	QStringList cats;
 	cats <<= ware.types;
-	typeEditor.box.addItem(lastCat);
-	typeEditor.box.addItems(cats);
+	typeEditor.box.addPayment(lastCat);
+	typeEditor.box.addPayments(cats);
 	tagsWidget.label.setText(tr(TidWareTags).arg(Config::locale.quoteString(ware.name)));
 }
 
@@ -582,3 +575,10 @@ void EditPaymentView::accountNameEditFinishedSlot(int)
 {
 	accountNameEditFinishedSlot();
 }
+
+@include@ views.cpp
+@declare@ Payment
+
+@include@ setCursor prevSlot nextSlot saveSlot
+@include@ closeEvent loadState saveState changeEvent resizeEvent
+

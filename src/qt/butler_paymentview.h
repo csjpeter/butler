@@ -8,11 +8,10 @@
 
 #include <butler_pannview.h>
 
-class EditItemView;
-class EditItemView;
-class QueryOptionsView;
+class EditPaymentView;
+class PaymentQueryOptionsView;
 class EditWareView;
-class StatsView;
+class PaymentStatsView;
 
 class PaymentView : public PannView
 {
@@ -40,21 +39,20 @@ private:
 	virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
-	void editItem();
-	void delItem();
-	void shoppingItem();
-	void refreshItems();
-	void editWare();
-	void filterItems();
+	void editPayment();
+	void delPayment();
+	void shoppingPayment();
+	void refreshPayments();
+	void filterPayments();
 	void applyNewFilter();
-	void statsItems();
+	void statsPayments();
 	void sortIndicatorChangedSlot(int logicalIndex, Qt::SortOrder order);
 	void currentIndexChanged(const QModelIndex & current, const QModelIndex & previous);
 
 public:
 	const csjp::String dbname;
 private:
-	csjp::Object<ItemModel> model;
+	csjp::Object<PaymentModel> model;
 
 	ToolButton editButton;
 	ToolButton delButton;
@@ -65,10 +63,9 @@ private:
 
 	TableView tableView;
 
-	EditItemView *editItemView;
-	QueryOptionsView *queryOptsView;
-	EditWareView *editWareView;
-	StatsView *statsView;
+	EditPaymentView *editPaymentView;
+	PaymentQueryOptionsView *queryOptsView;
+	PaymentStatsView *statsView;
 };
 
 #endif

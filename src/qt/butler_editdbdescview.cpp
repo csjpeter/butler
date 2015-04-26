@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editdbdescview.h"
 
-@include@ views.cpp
-@declare@ DatabaseDescriptor
-
 SCC TidContext = "EditDatabaseDescriptorView";
 
 SCC TidNewDatabaseDescriptorWindowTitle = QT_TRANSLATE_NOOP("EditDatabaseDescriptorView", "Add new database connection");
@@ -103,8 +100,6 @@ EditDatabaseDescriptorView::EditDatabaseDescriptorView(DatabaseDescriptorModel &
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditDatabaseDescriptorView::mapToGui()
 {
@@ -354,5 +349,9 @@ void EditDatabaseDescriptorView::saveSlotSpec()
 {
 }
 
+@include@ views.cpp
+@declare@ DatabaseDescriptor
+
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 

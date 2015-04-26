@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editpartnerview.h"
 
-@include@ views.cpp
-@declare@ Partner
-
 SCC TidContext = "EditPartnerView";
 
 SCC TidNewPartnerWindowTitle = QT_TRANSLATE_NOOP("EditPartnerView", "Add new partner");
@@ -78,8 +75,6 @@ EditPartnerView::EditPartnerView(const csjp::String & dbname, QWidget * parent) 
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditPartnerView::mapToGui()
 {
@@ -219,5 +214,9 @@ void EditPartnerView::saveSlotSpec()
 	}
 }
 
+@include@ views.cpp
+@declare@ Partner
+
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
 

@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editcompanyview.h"
 
-@include@ views.cpp
-@declare@ Company
-
 SCC TidContext = "EditCompanyView";
 
 SCC TidNewCompanyWindowTitle = QT_TRANSLATE_NOOP("EditCompanyView", "Add new company");
@@ -74,8 +71,6 @@ EditCompanyView::EditCompanyView(const csjp::String & dbname, QWidget * parent) 
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditCompanyView::mapToGui()
 {
@@ -199,5 +194,9 @@ void EditCompanyView::saveSlotSpec()
 {
 }
 
+@include@ views.cpp
+@declare@ Company
+
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 

@@ -19,7 +19,7 @@ class Database
 private:
 	SqlConnection sql;
 public:
-	@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+	@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 	@Type@Model @type@Model;
 	@}ForTypes@
 private:
@@ -28,7 +28,7 @@ private:
 public:
 	Database(const csjp::String & dbname) :
 		sql(descriptorSet.query(dbname)),
-		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 		@type@Model(sql),
 		@}ForTypes@
 		dbname(dbname)
@@ -38,7 +38,8 @@ public:
 		//for(auto & t : tables)
 		//	LOG("table ", t);
 		@ForTypes{Tag,Ware,WareType,WareTag,Company,Brand,Inventory,Partner,Account,Payment
-				Item,Query,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+				Item,ItemQuery,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
+				ItemQueryPartner,PaymentQueryPartner,PaymentQuery@
 		if(tables.has("@TableName@")){
 			cols = sql.columns("@TableName@");
 			//LOG("Table @TableName@");
@@ -56,7 +57,7 @@ public:
 		}
 		@}ForTypes@
 
-		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 		@type@Model.query();
 		@}ForTypes@
 	}
@@ -225,7 +226,12 @@ csjp::Object<ItemModel> itemModel(const csjp::String & dbname)
 	return loadDatabase(dbname).items();
 }
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,Query@
+csjp::Object<PaymentModel> paymentModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).payments();
+}
+
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 @Type@Model & @type@Model(const csjp::String & dbname)
 {
 	return loadDatabase(dbname).@type@Model;

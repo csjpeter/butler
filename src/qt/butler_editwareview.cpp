@@ -9,9 +9,6 @@
 #include "butler_editwareview.h"
 #include "butler_tagwidget.h"
 
-@include@ views.cpp
-@declare@ Ware
-
 SCC TidContext = "EditWareView";
 
 SCC TidNewWareWindowTitle = QT_TRANSLATE_NOOP("EditWareView", "Add new ware");
@@ -70,8 +67,6 @@ EditWareView::EditWareView(const csjp::String & dbname, QWidget * parent) :
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditWareView::mapToGui()
 {
@@ -182,5 +177,9 @@ void EditWareView::saveSlotSpec()
 {
 }
 
+@include@ views.cpp
+@declare@ Ware
+
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
 

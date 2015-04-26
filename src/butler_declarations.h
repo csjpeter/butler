@@ -212,17 +212,17 @@
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class Query
+	Class ItemQuery
 	Fields {
 		Text name; key							; TEXT
 		DateTime startDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime endDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		enum QueryStockOptions stockOption;spec	; INTEGER NOT NULL
 		enum QueryTagOptions tagOption; spec	; INTEGER NOT NULL
-		QueryWithTagSet withTags; set,spec		;
-		QueryWithoutTagSet withoutTags; set,spec;
-		QueryWareSet wares; set,spec			;
-		QueryPartnerSet partners; set,spec		;
+		ItemQueryWithTagSet withTags; set,spec		;
+		ItemQueryWithoutTagSet withoutTags; set,spec;
+		ItemQueryWareSet wares; set,spec			;
+		ItemQueryPartnerSet partners; set,spec		;
 		DateTime lastModified;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		YNBool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
 		}
@@ -232,7 +232,7 @@
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class QueryWithTag
+	Class ItemQueryWithTag
 	Fields {
 		Text query; key,link	; TEXT
 		Text tag; key			; TEXT
@@ -241,13 +241,13 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
-		FOREIGN KEY (query) REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
 		FOREIGN KEY (tag) REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class QueryWithoutTag
+	Class ItemQueryWithoutTag
 	Fields {
 		Text query; key,link	; TEXT
 		Text tag; key			; TEXT
@@ -256,13 +256,13 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
-		FOREIGN KEY (query) REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
 		FOREIGN KEY (tag) REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class QueryWare
+	Class ItemQueryWare
 	Fields {
 		Text query; key,link	; TEXT
 		Text ware; key			; TEXT
@@ -271,13 +271,13 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, ware)
-		FOREIGN KEY (query) REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
 		FOREIGN KEY (ware) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class QueryPartner
+	Class ItemQueryPartner
 	Fields {
 		Text query; key,link	; TEXT
 		Text partner; key		; TEXT
@@ -286,7 +286,37 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, partner)
-		FOREIGN KEY (query) REFERENCES Query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class PaymentQuery
+	Fields {
+		Text name; key							; TEXT
+		DateTime startDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime endDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		PaymentQueryPartnerSet partners; set,spec		;
+		DateTime lastModified;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (name)
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class PaymentQueryPartner
+	Fields {
+		Text query; key,link	; TEXT
+		Text partner; key		; TEXT
+		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (query, partner)
+		FOREIGN KEY (query) REFERENCES PaymentQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
 		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/

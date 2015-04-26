@@ -8,9 +8,6 @@
 #include "butler_config.h"
 #include "butler_editaccountview.h"
 
-@include@ views.cpp
-@declare@ Account
-
 SCC TidContext = "EditAccountView";
 
 SCC TidNewAccountWindowTitle = QT_TRANSLATE_NOOP("EditAccountView", "Add new account");
@@ -72,8 +69,6 @@ EditAccountView::EditAccountView(const csjp::String & dbname, QWidget * parent) 
 	retranslate();
 	loadState();
 }
-
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 
 void EditAccountView::mapToGui()
 {
@@ -197,5 +192,9 @@ void EditAccountView::saveSlotSpec()
 	}
 }
 
+@include@ views.cpp
+@declare@ Account
+
+@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
 @include@ setCursor prevSlot nextSlot saveSlot resetSlot
 

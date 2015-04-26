@@ -25,15 +25,26 @@
 
 typedef csjp::OwnerContainer<Text> StringSet;
 
-class QueryStat{
+class ItemQueryStat{
 public:
-	QueryStat() : cheapestUnitPrice(DBL_MAX) {}
+	ItemQueryStat() : cheapestUnitPrice(DBL_MAX) {}
 	UInt itemCount;
 	Double sumQuantity;
 	Double sumPrice;
 	Double avgPrice;
 	Double cheapestUnitPrice;
 	Double mostExpUnitPrice;
+	Double queryTime; /** How much time the query took. */
+};
+
+class PaymentQueryStat{
+public:
+	PaymentQueryStat() : cheapestPrice(DBL_MAX) {}
+	UInt paymentCount;
+	Double sumPrice;
+	Double avgPrice;
+	Double cheapestPrice;
+	Double mostExpPrice;
 	Double queryTime; /** How much time the query took. */
 };
 
@@ -154,7 +165,8 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 };
 
 
-@ForTypes{Company,Brand,Inventory,Partner,Account,Payment,QueryWithTag,QueryWithoutTag,QueryWare,QueryPartner@
+@ForTypes{Company,Brand,Inventory,Partner,Account,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
+				ItemQueryPartner,PaymentQueryPartner,PaymentQuery@
 class @Type@
 {
 	@include@ dataclass_members.h
@@ -168,14 +180,14 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 };
 @}ForTypes@
 
-inline bool operator<(const Text & a, const QueryWithTag & b) { return b.tag.isMore(a); }
-inline bool operator<(const QueryWithTag & a, const Text & b) { return a.tag.isLess(b); }
-inline bool operator<(const Text & a, const QueryWithoutTag & b) { return b.tag.isMore(a); }
-inline bool operator<(const QueryWithoutTag & a, const Text & b) { return a.tag.isLess(b); }
+inline bool operator<(const Text & a, const ItemQueryWithTag & b) { return b.tag.isMore(a); }
+inline bool operator<(const ItemQueryWithTag & a, const Text & b) { return a.tag.isLess(b); }
+inline bool operator<(const Text & a, const ItemQueryWithoutTag & b) { return b.tag.isMore(a); }
+inline bool operator<(const ItemQueryWithoutTag & a, const Text & b) { return a.tag.isLess(b); }
 
 
-@declare@ Query
-class Query
+@declare@ ItemQuery
+class ItemQuery
 {
 	@include@ dataclass_members.h
 	@include@ todb
@@ -185,11 +197,11 @@ class Query
 	{
 		for(auto & tag : withTags)
 			if(!names.has(tag.tag))
-				const_cast<QueryWithTag &>(tag).deleted = true;
+				const_cast<ItemQueryWithTag &>(tag).deleted = true;
 		for(auto & name : names){
 			Text tag(name);
 			if(!withTags.has(tag))
-				withTags.add(new QueryWithTag(name, tag));
+				withTags.add(new ItemQueryWithTag(name, tag));
 		}
 	}
 	/* non-transactional */
@@ -197,11 +209,11 @@ class Query
 	{
 		for(auto & tag : withoutTags)
 			if(!names.has(tag.tag))
-				const_cast<QueryWithoutTag &>(tag).deleted = true;
+				const_cast<ItemQueryWithoutTag &>(tag).deleted = true;
 		for(auto & name : names){
 			Text tag(name);
 			if(!withoutTags.has(tag))
-				withoutTags.add(new QueryWithoutTag(name, tag));
+				withoutTags.add(new ItemQueryWithoutTag(name, tag));
 		}
 	}
 };
@@ -213,7 +225,7 @@ class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 };
 
 
-@ForTypes{Item@
+@ForTypes{Item,Payment@
 class @Type@
 {
 	@include@ dataclass_members.h
@@ -223,7 +235,7 @@ class @Type@
 class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
 {
 	@include@ dataclass_set.h
-	static ItemSet fromDb(SqlConnection & sql, const Query & q, QueryStat & stat);
+	static @Type@Set fromDb(SqlConnection & sql, const @Type@Query & q, @Type@QueryStat & stat);
 };
 @}ForTypes@
 
@@ -278,7 +290,7 @@ inline QString & operator<<=(QString & str, const WareTagSet & wareTags)
 	return str;
 }
 
-inline QString & operator<<=(QString & str, const QueryWithTagSet & queryTags)
+inline QString & operator<<=(QString & str, const ItemQueryWithTagSet & queryTags)
 {
 	str.clear();
 	for(auto & queryTag : queryTags){
@@ -289,7 +301,7 @@ inline QString & operator<<=(QString & str, const QueryWithTagSet & queryTags)
 	return str;
 }
 
-inline StringSet & operator<<=(StringSet & list, const QueryWithTagSet & queryTags)
+inline StringSet & operator<<=(StringSet & list, const ItemQueryWithTagSet & queryTags)
 {
 	list.clear();
 	for(auto & queryTag : queryTags)
@@ -297,7 +309,7 @@ inline StringSet & operator<<=(StringSet & list, const QueryWithTagSet & queryTa
 	return list;
 }
 
-inline QString & operator<<=(QString & str, const QueryWithoutTagSet & queryTags)
+inline QString & operator<<=(QString & str, const ItemQueryWithoutTagSet & queryTags)
 {
 	str.clear();
 	for(auto & queryTag : queryTags){
@@ -308,7 +320,7 @@ inline QString & operator<<=(QString & str, const QueryWithoutTagSet & queryTags
 	return str;
 }
 
-inline StringSet & operator<<=(StringSet & list, const QueryWithoutTagSet & queryTags)
+inline StringSet & operator<<=(StringSet & list, const ItemQueryWithoutTagSet & queryTags)
 {
 	list.clear();
 	for(auto & queryTag : queryTags)
@@ -316,7 +328,7 @@ inline StringSet & operator<<=(StringSet & list, const QueryWithoutTagSet & quer
 	return list;
 }
 
-inline QString & operator<<=(QString & str, const QueryPartnerSet & partners)
+inline QString & operator<<=(QString & str, const ItemQueryPartnerSet & partners)
 {
 	str.clear();
 	for(auto & partner : partners){
@@ -327,7 +339,18 @@ inline QString & operator<<=(QString & str, const QueryPartnerSet & partners)
 	return str;
 }
 
-inline QString & operator<<=(QString & str, const QueryWareSet & wares)
+inline QString & operator<<=(QString & str, const PaymentQueryPartnerSet & partners)
+{
+	str.clear();
+	for(auto & partner : partners){
+		if(str.size())
+			str.append(", ");
+		str.append(partner.partner);
+	}
+	return str;
+}
+
+inline QString & operator<<=(QString & str, const ItemQueryWareSet & wares)
 {
 	str.clear();
 	for(auto & ware : wares){
@@ -365,7 +388,7 @@ inline bool operator==(const WareTagSet & a, const StringSet & b)
 
 inline bool operator!=(const WareTagSet & a, const StringSet & b){ return !(a == b); }
 
-inline bool operator==(const QueryWithTagSet & a, const StringSet & b)
+inline bool operator==(const ItemQueryWithTagSet & a, const StringSet & b)
 {
 	if(a.size() != b.size())
 		return false;
@@ -376,9 +399,9 @@ inline bool operator==(const QueryWithTagSet & a, const StringSet & b)
 	return true;
 }
 
-inline bool operator!=(const QueryWithTagSet & a, const StringSet & b){ return !(a == b); }
+inline bool operator!=(const ItemQueryWithTagSet & a, const StringSet & b){ return !(a == b); }
 
-inline bool operator==(const QueryWithoutTagSet & a, const StringSet & b)
+inline bool operator==(const ItemQueryWithoutTagSet & a, const StringSet & b)
 {
 	if(a.size() != b.size())
 		return false;
@@ -389,6 +412,6 @@ inline bool operator==(const QueryWithoutTagSet & a, const StringSet & b)
 	return true;
 }
 
-inline bool operator!=(const QueryWithoutTagSet & a, const StringSet & b){ return !(a == b); }
+inline bool operator!=(const ItemQueryWithoutTagSet & a, const StringSet & b){ return !(a == b); }
 
 #endif

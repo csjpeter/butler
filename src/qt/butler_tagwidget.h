@@ -25,8 +25,8 @@ public:
 	TagWidget(const csjp::String & dbname, QWidget * parent = 0);
 
 public:
-	void setTags(const QueryWithTagSet & tags);
-	void setTags(const QueryWithoutTagSet & tags);
+	void setTags(const ItemQueryWithTagSet & tags);
+	void setTags(const ItemQueryWithoutTagSet & tags);
 	void setTags(const WareTagSet & tags);
 	StringSet selectedTags();
 	void selectAll();
