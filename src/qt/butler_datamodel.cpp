@@ -41,18 +41,19 @@ SCC TidWareFieldTags			= QT_TRANSLATE_NOOP("WareModel", "Tags");
 SCC TidWareFieldLastModified	= QT_TRANSLATE_NOOP("WareModel", "Last modification date");
 SCC TidWareFieldDeleted			= QT_TRANSLATE_NOOP("WareModel", "Is deleted");
 
-SCC TidCompanyFieldName			= QT_TRANSLATE_NOOP("CompaniesModel", "Name");
-SCC TidCompanyFieldCountry		= QT_TRANSLATE_NOOP("CompaniesModel", "Country");
-SCC TidCompanyFieldCity			= QT_TRANSLATE_NOOP("CompaniesModel", "City");
-SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompaniesModel", "Postal code");
-SCC TidCompanyFieldAddress		= QT_TRANSLATE_NOOP("CompaniesModel", "Address");
-SCC TidCompanyFieldTaxId		= QT_TRANSLATE_NOOP("CompaniesModel", "Tax Id");
-SCC TidCompanyFieldIcon			= QT_TRANSLATE_NOOP("CompaniesModel", "Icon");
-SCC TidCompanyFieldLastModified	= QT_TRANSLATE_NOOP("CompaniesModel", "Last modification date");
-SCC TidCompanyFieldDeleted		= QT_TRANSLATE_NOOP("CompaniesModel", "Is deleted");
+SCC TidCompanyFieldName			= QT_TRANSLATE_NOOP("CompanyModel", "Name");
+SCC TidCompanyFieldCountry		= QT_TRANSLATE_NOOP("CompanyModel", "Country");
+SCC TidCompanyFieldCity			= QT_TRANSLATE_NOOP("CompanyModel", "City");
+SCC TidCompanyFieldPostalCode	= QT_TRANSLATE_NOOP("CompanyModel", "Postal code");
+SCC TidCompanyFieldAddress		= QT_TRANSLATE_NOOP("CompanyModel", "Address");
+SCC TidCompanyFieldTaxId		= QT_TRANSLATE_NOOP("CompanyModel", "Tax Id");
+SCC TidCompanyFieldIcon			= QT_TRANSLATE_NOOP("CompanyModel", "Icon");
+SCC TidCompanyFieldLastModified	= QT_TRANSLATE_NOOP("CompanyModel", "Last modification date");
+SCC TidCompanyFieldDeleted		= QT_TRANSLATE_NOOP("CompanyModel", "Is deleted");
 
 SCC TidBrandFieldName			= QT_TRANSLATE_NOOP("BrandModel", "Name");
 SCC TidBrandFieldCompany		= QT_TRANSLATE_NOOP("BrandModel", "Company");
+SCC TidBrandFieldIcon			= QT_TRANSLATE_NOOP("BrandModel", "Icon");
 SCC TidBrandFieldLastModified	= QT_TRANSLATE_NOOP("BrandModel", "Last modification date");
 SCC TidBrandFieldDeleted		= QT_TRANSLATE_NOOP("BrandModel", "Is deleted");
 

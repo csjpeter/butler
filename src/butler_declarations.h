@@ -74,6 +74,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (ware, type)
+		FOREIGN KEY (ware) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -100,11 +101,13 @@
 	Fields {
 		Text name; key			; TEXT
 		Text company;			; TEXT
+		Text icon;				; TEXT					// base64 repr of an image
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
+		FOREIGN KEY (company) REFERENCES Company(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -136,6 +139,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (name)
+		FOREIGN KEY (company) REFERENCES Company(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -152,6 +156,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (name)
+		FOREIGN KEY (bankOffice) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -169,6 +174,9 @@
 		}
 	Constraints {
 		PRIMARY KEY (upload_date)
+		FOREIGN KEY (account) REFERENCES Account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (subject) REFERENCES Item(uploadDate) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -195,6 +203,11 @@
 		}
 	Constraints {
 		PRIMARY KEY (upload_date)
+		FOREIGN KEY (name) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (brand) REFERENCES Brand(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (account) REFERENCES Account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (inventory) REFERENCES Inventory(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
