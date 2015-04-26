@@ -344,11 +344,26 @@ source: \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.h \
 	$(DIST_DIR)/src/qt/butler_queryoptionsview.cpp \
 	\
+	$(DIST_DIR)/src/qt/butler_statsview.h \
+	$(DIST_DIR)/src/qt/butler_statsview.cpp \
+	\
 	$(DIST_DIR)/src/qt/butler_edititemview.h \
 	$(DIST_DIR)/src/qt/butler_edititemview.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_customview.h \
 	$(DIST_DIR)/src/qt/butler_customview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_paymentqueryoptionsview.h \
+	$(DIST_DIR)/src/qt/butler_paymentqueryoptionsview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_paymentstatsview.h \
+	$(DIST_DIR)/src/qt/butler_paymentstatsview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_editpaymentview.h \
+	$(DIST_DIR)/src/qt/butler_editpaymentview.cpp \
+	\
+	$(DIST_DIR)/src/qt/butler_paymentview.h \
+	$(DIST_DIR)/src/qt/butler_paymentview.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_databases.h \
 	$(DIST_DIR)/src/qt/butler_databases.cpp \
@@ -357,9 +372,6 @@ source: \
 	\
 	$(DIST_DIR)/src/qt/butler_editdbdescview.h \
 	$(DIST_DIR)/src/qt/butler_editdbdescview.cpp \
-	\
-	$(DIST_DIR)/src/qt/butler_statsview.h \
-	$(DIST_DIR)/src/qt/butler_statsview.cpp \
 	\
 	$(DIST_DIR)/src/qt/butler_infoview.h \
 	$(DIST_DIR)/src/qt/butler_infoview.cpp \

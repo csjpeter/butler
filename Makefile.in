@@ -168,11 +168,26 @@ BUTLERQT_OBJECTS+= \
 	tmp/src/qt/butler_queryoptionsview.opp \
 	tmp/src/qt/moc/butler_queryoptionsview.opp \
 	\
+	tmp/src/qt/butler_statsview.opp \
+	tmp/src/qt/moc/butler_statsview.opp \
+	\
 	tmp/src/qt/butler_edititemview.opp \
 	tmp/src/qt/moc/butler_edititemview.opp \
 	\
 	tmp/src/qt/butler_customview.opp \
 	tmp/src/qt/moc/butler_customview.opp \
+	\
+	tmp/src/qt/butler_paymentqueryoptionsview.opp \
+	tmp/src/qt/moc/butler_paymentqueryoptionsview.opp \
+	\
+	tmp/src/qt/butler_paymentstatsview.opp \
+	tmp/src/qt/moc/butler_paymentstatsview.opp \
+	\
+	tmp/src/qt/butler_editpaymentview.opp \
+	tmp/src/qt/moc/butler_editpaymentview.opp \
+	\
+	tmp/src/qt/butler_paymentview.opp \
+	tmp/src/qt/moc/butler_paymentview.opp \
 	\
 	tmp/src/qt/butler_databases.opp \
 	tmp/src/qt/butler_databasesview.opp \
@@ -181,9 +196,6 @@ BUTLERQT_OBJECTS+= \
 	\
 	tmp/src/qt/butler_editdbdescview.opp \
 	tmp/src/qt/moc/butler_editdbdescview.opp \
-	\
-	tmp/src/qt/butler_statsview.opp \
-	tmp/src/qt/moc/butler_statsview.opp \
 	\
 	tmp/src/qt/butler_infoview.opp \
 	tmp/src/qt/moc/butler_infoview.opp \
