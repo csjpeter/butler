@@ -156,10 +156,10 @@ void EditItemView::mapToGui()
 {
 	if(cursor.isValid()){
 		item = Item(model.data(cursor.row()));
-		accountEditor.setText(item.partner);
+		accountEditor.setText(item.account);
 		accountNameEditFinishedSlot();
 		partnerEditor.setText(item.partner);
-		inventoryEditor.setText(item.partner);
+		inventoryEditor.setText(item.inventory);
 	}
 
 	uploadDateTime.edit.setDateTime(item.uploadDate);
