@@ -234,8 +234,8 @@ void DatabasesView::useDbDesc()
 		partnerModel(dbname);
 		accountModel(dbname);
 		brandModel(dbname);
-		paymentQueryModel(dbname);
 		itemQueryModel(dbname);
+		paymentQueryModel(dbname);
 		//shoppingModel(dbname);
 		csjp::Object<ItemModel> tmpModel(itemModel(dbname));
 

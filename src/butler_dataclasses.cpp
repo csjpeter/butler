@@ -184,27 +184,24 @@
 	csjp::Array<csjp::String> params(128); // FIXME lets make it autoresizing
 	csjp::String cmd("SELECT"
 			" MAX(payment.upload_date) AS upload_date,"
-			" MAX(payment.name) AS name,"
-			" MAX(payment.price) AS price,"
-			" MAX(payment.currency) AS currency,"
+			" MAX(payment.amount) AS price,"
 			" MAX(payment.account) AS account,"
 			" MAX(payment.partner) AS partner,"
 			" MAX(payment.comment) AS comment,"
-			" MAX(payment.inv_change_date) AS inv_change_date"
+			" MAX(payment.pay_date) AS pay_date"
 			" FROM payment"
-			" LEFT JOIN ware_tag ON payment.name = ware_tag.ware"
 			" LEFT JOIN partner ON payment.partner = partner.name");
 
 	csjp::String filter;
 
 	if(filter.length)
 		filter += " AND";
-	filter += "? < inv_change_date";
+	filter += "? < pay_date";
 	params.add(C_STR(q.startDate.isoUtcString()));
 
 	if(filter.length)
 		filter += " AND";
-	filter += " inv_change_date < ?";
+	filter += " pay_date < ?";
 	params.add(C_STR(q.endDate.isoUtcString()));
 
 	{
@@ -383,7 +380,7 @@
 @ForTypes{Tag,WareType,WareTag,Ware
 		Company,Brand,Inventory,Partner,Account,
 		ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare,ItemQueryPartner
-		ItemQuery,PaymentQueryPartner,PaymentQuery@
+		ItemQuery,PaymentQuery,PaymentQueryPartner@
 @include@ todb
 
 @include@ dbquery

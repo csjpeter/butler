@@ -375,8 +375,8 @@ void EditItemView::saveSlotSpec()
 	int i;
 
 	/* Add partner if not yet known. */
-	PartnerModel & sm = partnerModel(dbname);
-	i = sm.index(partnerEditor.text());
+	PartnerModel & pm = partnerModel(dbname);
+	i = pm.index(partnerEditor.text());
 	if(i == -1){
 		Partner partner;
 		partner.name = partnerEditor.text();
@@ -389,7 +389,7 @@ void EditItemView::saveSlotSpec()
 			company.name = partner.company;
 			cm.addNew(company);
 		}
-		sm.addNew(partner);
+		pm.addNew(partner);
 	}
 
 	/* Add brand if not yet known. */
@@ -416,6 +416,22 @@ void EditItemView::saveSlotSpec()
 	if(i == -1){
 		Account account;
 		account.name = accountEditor.text();
+		/* Add bankOffice as partner if not yet known. */
+		PartnerModel & pm = partnerModel(dbname);
+		int i = pm.index(account.bankOffice);
+		if(i == -1){
+			Partner partner;
+			partner.name = account.bankOffice;
+			/* Add company if not yet known. */
+			CompanyModel & cm = companyModel(dbname);
+			int i = cm.index(partner.company);
+			if(i == -1){
+				Company company;
+				company.name = partner.company;
+				cm.addNew(company);
+			}
+			pm.addNew(partner);
+		}
 		am.addNew(account);
 	}
 

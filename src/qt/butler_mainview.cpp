@@ -14,6 +14,7 @@
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 #include "butler_edititemview.h"
+#include "butler_paymentview.h"
 #include "butler_customview.h"
 
 #include "butler_config.h"
@@ -27,6 +28,7 @@ SCC TidTodoButton = QT_TRANSLATE_NOOP("MainView", "Todo notes");
 SCC TidShoppingButton = QT_TRANSLATE_NOOP("MainView", "Shopping list");
 SCC TidNewItemButton = QT_TRANSLATE_NOOP("MainView", "Expense/Income");
 SCC TidAnaliticsButton = QT_TRANSLATE_NOOP("MainView", "Analitics / History");
+SCC TidPaymentButton = QT_TRANSLATE_NOOP("MainView", "Payment / History");
 SCC TidCompanyButton = QT_TRANSLATE_NOOP("MainView", "Companies");
 SCC TidPartnersButton = QT_TRANSLATE_NOOP("MainView", "Partners");
 SCC TidAccountsButton = QT_TRANSLATE_NOOP("MainView", "Accounts");
@@ -52,30 +54,33 @@ MainView::MainView(QWidget *parent) :
 	newItemButton(QIcon(Path::icon("accounting.png")),
 			TidNewItemButton, TidContext, QKeySequence(Qt::Key_F3)),
 	analiticsButton(QIcon(Path::icon("analitics.png")),
-			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F4)),
+			TidAnaliticsButton, TidContext, QKeySequence(Qt::Key_F5)),
+	paymentButton(QIcon(Path::icon("analitics.png")),
+			TidPaymentButton, TidContext, QKeySequence(Qt::Key_F4)),
 	companyButton(QIcon(Path::icon("company.png")),
-			TidCompanyButton, TidContext, QKeySequence(Qt::Key_F5)),
+			TidCompanyButton, TidContext, QKeySequence(Qt::Key_F6)),
 	partnersButton(QIcon(Path::icon("partner.png")),
-			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F5)),
+			TidPartnersButton, TidContext, QKeySequence(Qt::Key_F7)),
 	accountsButton(QIcon(Path::icon("account.png")),
-			TidAccountsButton, TidContext, QKeySequence(Qt::Key_F5)),
+			TidAccountsButton, TidContext, QKeySequence(Qt::Key_F8)),
 	wareButton(QIcon(Path::icon("ware.png")),
-			TidWareButton, TidContext, QKeySequence(Qt::Key_F6)),
+			TidWareButton, TidContext, QKeySequence(Qt::Key_F9)),
 	tagButton(QIcon(Path::icon("tag.png")),
-			TidTagButton, TidContext, QKeySequence(Qt::Key_F7)),
+			TidTagButton, TidContext, QKeySequence(Qt::Key_F10)),
 	brandButton(QIcon(Path::icon("brand.png")),
-			TidBrandButton, TidContext, QKeySequence(Qt::Key_F8)),
+			TidBrandButton, TidContext, QKeySequence(Qt::Key_F11)),
 	inventoryButton(QIcon(Path::icon("inventory.png")),
-			TidInventoryButton, TidContext, QKeySequence(Qt::Key_F9)),
+			TidInventoryButton, TidContext, QKeySequence(Qt::Key_F12)),
 	databasesButton(QIcon(Path::icon("databases.png")),
-			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F10)),
+			TidDatabasesButton, TidContext, QKeySequence(Qt::Key_F13)),
 	infoButton(QIcon(Path::icon("info.png")),
-			TidInfoButton, TidContext, QKeySequence(Qt::Key_F11)),
+			TidInfoButton, TidContext, QKeySequence(Qt::Key_F14)),
 	quitButton(QIcon(Path::icon("delete.png")),
-			TidQuitButton, TidContext, QKeySequence(Qt::Key_F12)),
+			TidQuitButton, TidContext, QKeySequence(Qt::Key_F15)),
 	//shoppingView(NULL),
 	newItemView(NULL),
 	customView(NULL),
+	paymentView(NULL),
 	companyView(NULL),
 	partnersView(NULL),
 	accountsView(NULL),
@@ -97,6 +102,7 @@ MainView::MainView(QWidget *parent) :
 //	connect(&shoppingButton, SIGNAL(clicked()), this, SLOT(openShoppingView()));
 	connect(&newItemButton, SIGNAL(clicked()), this, SLOT(openEditItemView()));
 	connect(&analiticsButton, SIGNAL(clicked()), this, SLOT(openCustomView()));
+	connect(&paymentButton, SIGNAL(clicked()), this, SLOT(openPaymentView()));
 	connect(&companyButton, SIGNAL(clicked()), this, SLOT(openCompanyView()));
 	connect(&partnersButton, SIGNAL(clicked()), this, SLOT(openPartnersView()));
 	connect(&accountsButton, SIGNAL(clicked()), this, SLOT(openAccountsView()));
@@ -118,6 +124,7 @@ MainView::~MainView()
 	//delete shoppingView;
 	delete newItemView;
 	delete customView;
+	delete paymentView;
 	delete accountsView;
 	delete partnersView;
 	delete companyView;
@@ -153,6 +160,7 @@ void MainView::applyLayout()
 //	layout->addWidget(&shoppingButton);
 	layout->addWidget(&newItemButton);
 	layout->addWidget(&analiticsButton);
+	layout->addWidget(&paymentButton);
 	layout->addWidget(&wareButton);
 	layout->addWidget(&tagButton);
 	layout->addWidget(&brandButton);
@@ -179,6 +187,7 @@ void MainView::relayout()
 	shoppingButton.expanding();
 	newItemButton.expanding();
 	analiticsButton.expanding();
+	paymentButton.expanding();
 	companyButton.expanding();
 	partnersButton.expanding();
 	accountsButton.expanding();
@@ -235,6 +244,8 @@ void MainView::loadState()
 		//	openShoppingView();
 		if(settings.value(prefix + "/newitemview", false).toBool())
 			openEditItemView();
+		if(settings.value(prefix + "/paymentview", false).toBool())
+			openPaymentView();
 		if(settings.value(prefix + "/customview", false).toBool())
 			openCustomView();
 		if(settings.value(prefix + "/partnersview", false).toBool())
@@ -277,6 +288,8 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = newItemView;
 	else if(activeWindowName == "customView")
 		activeWindow = customView;
+	else if(activeWindowName == "paymentView")
+		activeWindow = paymentView;
 	else if(activeWindowName == "partnersView")
 		activeWindow = partnersView;
 	else if(activeWindowName == "companyView")
@@ -311,6 +324,7 @@ void MainView::saveState()
 	//SAVE_VIEW_STATE(shoppingView);
 	SAVE_VIEW_STATE(newItemView);
 	SAVE_VIEW_STATE(customView);
+	SAVE_VIEW_STATE(paymentView);
 	SAVE_VIEW_STATE(partnersView);
 	SAVE_VIEW_STATE(companyView);
 	SAVE_VIEW_STATE(tagsView);
@@ -332,6 +346,8 @@ void MainView::saveState()
 		activeWindowName = "newItemView";
 	else if(activeWindow == customView)
 		activeWindowName = "customView";
+	else if(activeWindow == paymentView)
+		activeWindowName = "paymentView";
 	else if(activeWindow == partnersView)
 		activeWindowName = "partnersView";
 	else if(activeWindow == companyView)
@@ -410,6 +426,21 @@ void MainView::openCustomView()
 		anotherCustomView = new CustomView(Config::defaultDbName);
 		anotherCustomView->setAttribute(Qt::WA_DeleteOnClose, true);
 		anotherCustomView->activate();
+	}
+}
+
+void MainView::openPaymentView()
+{
+	if(!paymentView)
+		paymentView = new PaymentView(Config::defaultDbName);
+
+	if(!paymentView->isVisible() && paymentView->dbname == Config::defaultDbName){
+		paymentView->activate();
+	} else {
+		PaymentView *anotherPaymentView;
+		anotherPaymentView = new PaymentView(Config::defaultDbName);
+		anotherPaymentView->setAttribute(Qt::WA_DeleteOnClose, true);
+		anotherPaymentView->activate();
 	}
 }
 

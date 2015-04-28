@@ -23,18 +23,6 @@ inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a
 @}ForTypes@
 
 
-@declare@ Payment
-class @Type@Model : public AbstractTableModel
-{
-@include@ dbdatamodel.h
-public:
-	@Type@Model(SqlConnection & sql);
-public:
-	@Type@Query opts;
-	@Type@QueryStat stat;
-};
-inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
-
 @declare@ Item
 class @Type@Model : public AbstractTableModel
 {
@@ -62,6 +50,18 @@ private:
 		}
 		return QVariant(val);
 	}*/
+public:
+	@Type@Query opts;
+	@Type@QueryStat stat;
+};
+inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
+
+@declare@ Payment
+class @Type@Model : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+public:
+	@Type@Model(SqlConnection & sql);
 public:
 	@Type@Query opts;
 	@Type@QueryStat stat;

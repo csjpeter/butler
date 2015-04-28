@@ -37,9 +37,9 @@ public:
 		const SqlTableNames & tables = sql.tables();
 		//for(auto & t : tables)
 		//	LOG("table ", t);
-		@ForTypes{Tag,Ware,WareType,WareTag,Company,Brand,Inventory,Partner,Account,Payment
+		@ForTypes{Tag,Ware,WareType,WareTag,Company,Brand,Inventory,Partner,Account
 				Item,ItemQuery,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
-				ItemQueryPartner,PaymentQueryPartner,PaymentQuery@
+				ItemQueryPartner,Payment,PaymentQuery,PaymentQueryPartner@
 		if(tables.has("@TableName@")){
 			cols = sql.columns("@TableName@");
 			//LOG("Table @TableName@");

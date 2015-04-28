@@ -15,7 +15,7 @@
 
 SCC TidContext = "PaymentView";
 
-SCC TidAnaliticsWindowTitle = QT_TRANSLATE_NOOP("PaymentView", "Analitics");
+SCC TidPaymentWindowTitle = QT_TRANSLATE_NOOP("PaymentView", "Payments");
 SCC TidEditPaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Edit payment");
 SCC TidDeletePaymentButton = QT_TRANSLATE_NOOP("PaymentView", "Delete payment");
 SCC TidRefreshPaymentsButton = QT_TRANSLATE_NOOP("PaymentView", "Refresh payments");
@@ -79,7 +79,7 @@ void PaymentView::retranslate()
 		titlePrefix = dbname.str;
 		titlePrefix += " :: ";
 	}
-	setWindowTitle(titlePrefix + tr(TidAnaliticsWindowTitle));
+	setWindowTitle(titlePrefix + tr(TidPaymentWindowTitle));
 	relayout();
 }
 

@@ -59,8 +59,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (ware, tag)
-		FOREIGN KEY (ware) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (tag) REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -74,7 +74,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (ware, type)
-		FOREIGN KEY (ware) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -107,7 +107,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (name)
-		FOREIGN KEY (company) REFERENCES Company(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (company) REFERENCES company(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -139,7 +139,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (name)
-		FOREIGN KEY (company) REFERENCES Company(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (company) REFERENCES company(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -156,28 +156,7 @@
 		}
 	Constraints {
 		PRIMARY KEY (name)
-		FOREIGN KEY (bankOffice) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
-		}
-@EndDecl@*/
-
-/*@BeginDecl@
-	Class Payment
-	Fields {
-		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		Text account;				; TEXT
-		Text partner;				; TEXT
-		Double amount;				; DECIMAL(15,3) NOT NULL
-		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		Text comment;			; TEXT
-		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
-		}
-	Constraints {
-		PRIMARY KEY (upload_date)
-		FOREIGN KEY (account) REFERENCES Account(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (subject) REFERENCES Item(uploadDate) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (bank_office) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -204,28 +183,49 @@
 		}
 	Constraints {
 		PRIMARY KEY (upload_date)
-		FOREIGN KEY (name) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (brand) REFERENCES Brand(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (account) REFERENCES Account(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (inventory) REFERENCES Inventory(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (name) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (brand) REFERENCES brand(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (inventory) REFERENCES inventory(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class Payment
+	Fields {
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text account;				; TEXT
+		Text partner;				; TEXT
+		Double amount;				; DECIMAL(15,3) NOT NULL
+		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text comment;				; TEXT
+		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (upload_date)
+		FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (subject) REFERENCES item(upload_date) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
 /*@BeginDecl@
 	Class ItemQuery
 	Fields {
-		Text name; key							; TEXT
-		DateTime startDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		DateTime endDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		Text name; key								; TEXT
+		DateTime startDate;							; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime endDate;							; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		enum ItemQueryStockOptions stockOption;spec	; INTEGER NOT NULL
 		enum ItemQueryTagOptions tagOption; spec	; INTEGER NOT NULL
 		ItemQueryWithTagSet withTags; set,spec		;
 		ItemQueryWithoutTagSet withoutTags; set,spec;
 		ItemQueryWareSet wares; set,spec			;
 		ItemQueryPartnerSet partners; set,spec		;
-		DateTime lastModified;					; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		YNBool deleted;							; CHAR(1) NOT NULL DEFAULT 'N'
+		DateTime lastModified;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;								; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
 		PRIMARY KEY (name)
@@ -242,8 +242,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
-		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (tag) REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -257,8 +257,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, tag)
-		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (tag) REFERENCES Tag(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -272,8 +272,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, ware)
-		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (ware) REFERENCES Ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -287,8 +287,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, partner)
-		FOREIGN KEY (query) REFERENCES ItemQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
@@ -317,8 +317,8 @@
 		}
 	Constraints {
 		PRIMARY KEY (query, partner)
-		FOREIGN KEY (query) REFERENCES PaymentQuery(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (partner) REFERENCES Partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (query) REFERENCES payment_query(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 
