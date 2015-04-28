@@ -9,7 +9,7 @@
 #include <butler_pannview.h>
 
 class EditItemView;
-class QueryOptionsView;
+class ItemQueryOptionsView;
 class EditWareView;
 class StatsView;
 
@@ -65,7 +65,7 @@ private:
 	TableView tableView;
 
 	EditItemView *editItemView;
-	QueryOptionsView *queryOptsView;
+	ItemQueryOptionsView *queryOptsView;
 	EditWareView *editWareView;
 	StatsView *statsView;
 };

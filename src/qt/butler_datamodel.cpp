@@ -85,6 +85,7 @@ SCC TidPaymentFieldAccount		= QT_TRANSLATE_NOOP("PaymentModel", "Account");
 SCC TidPaymentFieldPartner		= QT_TRANSLATE_NOOP("PaymentModel", "Partner");
 SCC TidPaymentFieldAmount		= QT_TRANSLATE_NOOP("PaymentModel", "Amount");
 SCC TidPaymentFieldSubject		= QT_TRANSLATE_NOOP("PaymentModel", "Subject");
+SCC TidPaymentFieldComment		= QT_TRANSLATE_NOOP("PaymentModel", "Comment");
 SCC TidPaymentFieldPayDate		= QT_TRANSLATE_NOOP("PaymentModel", "Payment date");
 SCC TidPaymentFieldLastModified	= QT_TRANSLATE_NOOP("PaymentModel", "Last modification date");
 SCC TidPaymentFieldDeleted		= QT_TRANSLATE_NOOP("PaymentModel", "Is deleted");
@@ -179,16 +180,36 @@ ItemModel::ItemModel(SqlConnection & sql, const WareModel & wmodel) :
 {
 	operationListeners.add(*this);
 	opts.endDate = DateTime::now();
-	opts.tagOption = QueryTagOptions::MatchAny;
+	opts.tagOption = ItemQueryTagOptions::MatchAny;
 }
 
 void ItemModel::query()
 {
 	ModelResetGuard g(this);
-	dataSet = @Type@Set::fromDb(sql, opts, stat);
+	dataSet = ItemSet::fromDb(sql, opts, stat);
 }
 
 bool ItemModel::queryFilter(const Item & modified)
+{
+	(void)(modified);
+	return true;
+}
+
+PaymentModel::PaymentModel(SqlConnection & sql) :
+	sql(sql),
+	set(dataSet)
+{
+	operationListeners.add(*this);
+	opts.endDate = DateTime::now();
+}
+
+void PaymentModel::query()
+{
+	ModelResetGuard g(this);
+	dataSet = PaymentSet::fromDb(sql, opts, stat);
+}
+
+bool PaymentModel::queryFilter(const Payment & modified)
 {
 	(void)(modified);
 	return true;

@@ -9,48 +9,48 @@
 #include "butler_queryoptionsview.h"
 #include "butler_tagwidget.h"
 
-SCC TidContext = "QueryOptionsView";
+SCC TidContext = "ItemQueryOptionsView";
 
-SCC TidEditQueryWindowTitle = QT_TRANSLATE_NOOP("QueryOptionsView", "Select and edit query");
+SCC TidEditQueryWindowTitle = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Select and edit query");
 
-SCC TidQueryButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Query");
-SCC TidSaveButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Save");
-SCC TidResetButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Reset");
-SCC TidDelButton = QT_TRANSLATE_NOOP("QueryOptionsView", "Delete");
+SCC TidQueryButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Query");
+SCC TidSaveButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Save");
+SCC TidResetButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Reset");
+SCC TidDelButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Delete");
 
-SCC TidQuerySelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Query name:");
-SCC TidPartnerFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by partner:");
-SCC TidPartnerSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Business partner:");
-SCC TidWareFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by ware:");
-SCC TidWareSelector = QT_TRANSLATE_NOOP("QueryOptionsView", "Common ware name:");
+SCC TidQuerySelector = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Query name:");
+SCC TidPartnerFilter = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Filter by partner:");
+SCC TidPartnerSelector = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Business partner:");
+SCC TidWareFilter = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Filter by ware:");
+SCC TidWareSelector = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Common ware name:");
 
-SCC TidFromDateTimeEditor = QT_TRANSLATE_NOOP("QueryOptionsView", "From:");
-SCC TidTillDateTimeEditor = QT_TRANSLATE_NOOP("QueryOptionsView", "Till:");
+SCC TidFromDateTimeEditor = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "From:");
+SCC TidTillDateTimeEditor = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Till:");
 
-SCC TidWithTagFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by tags to have");
-//SCC TidWithTags = QT_TRANSLATE_NOOP("QueryOptionsView", "With some or all of these tags:");
-SCC TidWithoutTagFilter = QT_TRANSLATE_NOOP("QueryOptionsView", "Filter by tags not to have");
-SCC TidWithoutTags = QT_TRANSLATE_NOOP("QueryOptionsView", "Without any of these tags:");
+SCC TidWithTagFilter = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Filter by tags to have");
+//SCC TidWithTags = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "With some or all of these tags:");
+SCC TidWithoutTagFilter = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Filter by tags not to have");
+SCC TidWithoutTags = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Without any of these tags:");
 
-SCC TidStockOptions = QT_TRANSLATE_NOOP("QueryOptionsView", "Stock option:");
-SCC TidStockOptAllRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all items");
-SCC TidStockOptOnStockRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items on stock");
-SCC TidStockOptUsedUpRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "items used up");
+SCC TidStockOptions = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Stock option:");
+SCC TidStockOptAllRadioButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "all items");
+SCC TidStockOptOnStockRadioButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "items on stock");
+SCC TidStockOptUsedUpRadioButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "items used up");
 
-SCC TidTagOptions = QT_TRANSLATE_NOOP("QueryOptionsView", "Tags need to match with");
-SCC TidTagOptAllMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "all selected tags");
-SCC TidTagOptAnyMatchRadioButton = QT_TRANSLATE_NOOP("QueryOptionsView", "any selected tags");
+SCC TidTagOptions = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Tags need to match with");
+SCC TidTagOptAllMatchRadioButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "all selected tags");
+SCC TidTagOptAnyMatchRadioButton = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "any selected tags");
 
-SCC TidQuerySavedInfo = QT_TRANSLATE_NOOP("QueryOptionsView", "Query is saved.");
+SCC TidQuerySavedInfo = QT_TRANSLATE_NOOP("ItemQueryOptionsView", "Query is saved.");
 
-QueryOptionsView::QueryOptionsView(const csjp::String & dbname, QWidget * parent) :
+ItemQueryOptionsView::ItemQueryOptionsView(const csjp::String & dbname, QWidget * parent) :
 	PannView(parent),
 	dbname(dbname),
 	queryButton(TidQueryButton, TidContext, QKeySequence(Qt::ALT + Qt::Key_Enter)),
 	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
 	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	nameEditor(&queryModel(dbname), Query::Name),
+	nameEditor(&itemQueryModel(dbname), ItemQuery::Name),
 	wareSelector(&wareModel(dbname), Ware::Name),
 	partnerSelector(&partnerModel(dbname), Partner::Name),
 	tagsWidget(dbname),
@@ -117,43 +117,43 @@ QueryOptionsView::QueryOptionsView(const csjp::String & dbname, QWidget * parent
 	loadState();
 }
 
-QueryOptionsView::~QueryOptionsView()
+ItemQueryOptionsView::~ItemQueryOptionsView()
 {
 }
 
-void QueryOptionsView::showEvent(QShowEvent *event)
+void ItemQueryOptionsView::showEvent(QShowEvent *event)
 {
 	mapToGui();
 	PannView::showEvent(event);
 	relayout();
 }
 
-void QueryOptionsView::closeEvent(QCloseEvent *event)
+void ItemQueryOptionsView::closeEvent(QCloseEvent *event)
 {
 	saveState();
 	PannView::closeEvent(event);
 }
 
-void QueryOptionsView::loadState()
+void ItemQueryOptionsView::loadState()
 {
-	QString prefix("QueryOptionsView");
+	QString prefix("ItemQueryOptionsView");
 	PannView::loadState(prefix);
 }
 
-void QueryOptionsView::saveState()
+void ItemQueryOptionsView::saveState()
 {
-	QString prefix("QueryOptionsView");
+	QString prefix("ItemQueryOptionsView");
 	PannView::saveState(prefix);
 }
 
-void QueryOptionsView::changeEvent(QEvent * event)
+void ItemQueryOptionsView::changeEvent(QEvent * event)
 {
 	PannView::changeEvent(event);
 	if(event->type() == QEvent::LanguageChange)
 		retranslate();
 }
 
-void QueryOptionsView::resizeEvent(QResizeEvent *event)
+void ItemQueryOptionsView::resizeEvent(QResizeEvent *event)
 {
 	if(layout() && (event->size() == event->oldSize()))
 		return;
@@ -161,7 +161,7 @@ void QueryOptionsView::resizeEvent(QResizeEvent *event)
 	relayout();
 }
 
-void QueryOptionsView::mapToGui()
+void ItemQueryOptionsView::mapToGui()
 {
 	nameEditor.setText(query.name);
 	startDate.edit.setDateTime(query.startDate);
@@ -194,11 +194,11 @@ void QueryOptionsView::mapToGui()
 		partnerFilter.box.blockSignals(false);
 	}
 
-	if(query.stockOption == QueryStockOptions::AllItemChanges)
+	if(query.stockOption == ItemQueryStockOptions::AllItemChanges)
 		stockOptAll.setChecked(true);
-	else if(query.stockOption == QueryStockOptions::Gains)
+	else if(query.stockOption == ItemQueryStockOptions::Gains)
 		stockOptOnStock.setChecked(true);
-	else if(query.stockOption == QueryStockOptions::Looses)
+	else if(query.stockOption == ItemQueryStockOptions::Looses)
 		stockOptUsedUp.setChecked(true);
 
 	if(query.withTags.size()){
@@ -210,9 +210,9 @@ void QueryOptionsView::mapToGui()
 		withTagFilter.box.setChecked(false);
 		withTagFilter.box.blockSignals(false);
 	}
-	if(query.tagOption == QueryTagOptions::MatchAll)
+	if(query.tagOption == ItemQueryTagOptions::MatchAll)
 		tagOptAllMatch.setChecked(true);
-	else if(query.tagOption == QueryTagOptions::MatchAny)
+	else if(query.tagOption == ItemQueryTagOptions::MatchAny)
 		tagOptAnyMatch.setChecked(true);
 	tagsWidget.setTags(query.withTags);
 
@@ -230,7 +230,7 @@ void QueryOptionsView::mapToGui()
 	updateToolButtonStates();
 }
 
-void QueryOptionsView::mapFromGui()
+void ItemQueryOptionsView::mapFromGui()
 {
 	query.name = nameEditor.text();
 	query.startDate = startDate.edit.dateTime();
@@ -241,7 +241,7 @@ void QueryOptionsView::mapFromGui()
 		int i = wareSelector.box.currentIndex();
 		WareModel & wm = wareModel(dbname);
 		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new QueryWare(query.name, wm.data(i).name.trimmed()));
+			query.wares.add(new ItemQueryWare(query.name, wm.data(i).name.trimmed()));
 	}
 	
 	query.partners.clear();
@@ -249,24 +249,24 @@ void QueryOptionsView::mapFromGui()
 		int i = partnerSelector.box.currentIndex();
 		PartnerModel & sm = partnerModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.partners.add(new QueryPartner(query.name, sm.data(i).name.trimmed()));
+			query.partners.add(new ItemQueryPartner(query.name, sm.data(i).name.trimmed()));
 	}
 
 	if(stockOptions.group.checkedButton() == &stockOptAll)
-		query.stockOption = QueryStockOptions::AllItemChanges;
+		query.stockOption = ItemQueryStockOptions::AllItemChanges;
 	else if(stockOptions.group.checkedButton() == &stockOptOnStock)
-		query.stockOption = QueryStockOptions::Gains;
+		query.stockOption = ItemQueryStockOptions::Gains;
 	else if(stockOptions.group.checkedButton() == &stockOptUsedUp)
-		query.stockOption = QueryStockOptions::Looses;
+		query.stockOption = ItemQueryStockOptions::Looses;
 
 	if(withTagFilter.box.isChecked()){
 		if(tagOptions.group.checkedButton() == &tagOptAllMatch)
-			query.tagOption = QueryTagOptions::MatchAll;
+			query.tagOption = ItemQueryTagOptions::MatchAll;
 		else if(tagOptions.group.checkedButton() == &tagOptAnyMatch)
-			query.tagOption = QueryTagOptions::MatchAny;
+			query.tagOption = ItemQueryTagOptions::MatchAny;
 		query.setAsWithTags(tagsWidget.selectedTags());
 	} else {
-		query.tagOption = QueryTagOptions::MatchAny;
+		query.tagOption = ItemQueryTagOptions::MatchAny;
 		query.withTags.clear();
 	}
 
@@ -277,7 +277,7 @@ void QueryOptionsView::mapFromGui()
 	}
 }
 
-void QueryOptionsView::retranslate()
+void ItemQueryOptionsView::retranslate()
 {
 	setWindowTitle(tr(TidEditQueryWindowTitle));
 
@@ -309,7 +309,7 @@ void QueryOptionsView::retranslate()
 	relayout();
 }
 
-void QueryOptionsView::applyLayout(LayoutState state, bool test)
+void ItemQueryOptionsView::applyLayout(LayoutState state, bool test)
 {
 	delete layout();
 
@@ -413,7 +413,7 @@ void QueryOptionsView::applyLayout(LayoutState state, bool test)
 	updateGeometry();
 }
 
-void QueryOptionsView::relayout()
+void ItemQueryOptionsView::relayout()
 {
 	LayoutState newState = LayoutState::Wide;
 	nameEditor.wideLayout();
@@ -455,15 +455,15 @@ void QueryOptionsView::relayout()
 	updateToolButtonStates();
 }
 
-void QueryOptionsView::saveSlotSpec()
+void ItemQueryOptionsView::saveSlotSpec()
 {
 }
 
-void QueryOptionsView::saveSlot()
+void ItemQueryOptionsView::saveSlot()
 {
 	mapFromGui();
 
-	QueryModel & qm = queryModel(dbname);
+	ItemQueryModel & qm = itemQueryModel(dbname);
 	if(qm.set.has(query.name)) {
 		if(qm.set.query(query.name) != query)
 			qm.update(qm.index(query.name), query);
@@ -473,7 +473,7 @@ void QueryOptionsView::saveSlot()
 	updateToolButtonStates();
 }
 
-void QueryOptionsView::delSlot()
+void ItemQueryOptionsView::delSlot()
 {
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
@@ -482,20 +482,20 @@ void QueryOptionsView::delSlot()
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		QueryModel & qm = queryModel(dbname);
+		ItemQueryModel & qm = itemQueryModel(dbname);
 		if(qm.set.has(query.name))
 			qm.del(qm.index(query.name));
-		query = Query();
+		query = ItemQuery();
 		query.endDate = DateTime::now();
 		mapToGui();
 	}
 }
 
-void QueryOptionsView::querySlot()
+void ItemQueryOptionsView::querySlot()
 {
 	mapFromGui();
 
-	QueryModel & qm = queryModel(dbname);
+	ItemQueryModel & qm = itemQueryModel(dbname);
 	if(!qm.set.has(query.name))
 		query.name = "";
 	else if(qm.set.query(query.name) != query)
@@ -504,19 +504,19 @@ void QueryOptionsView::querySlot()
 	accept();
 }
 
-void QueryOptionsView::resetSlot()
+void ItemQueryOptionsView::resetSlot()
 {
 	mapToGui();
 }
 
-void QueryOptionsView::backSlot()
+void ItemQueryOptionsView::backSlot()
 {
 	reject();
 }
 
-void QueryOptionsView::querySelectedSlot()
+void ItemQueryOptionsView::querySelectedSlot()
 {
-	QueryModel & qm = queryModel(dbname);
+	ItemQueryModel & qm = itemQueryModel(dbname);
 	Text name(nameEditor.text());
 	if(!qm.set.has(name))
 		return;
@@ -524,13 +524,13 @@ void QueryOptionsView::querySelectedSlot()
 	mapToGui();
 }
 
-void QueryOptionsView::layoutContentChangeSlot()
+void ItemQueryOptionsView::layoutContentChangeSlot()
 {
 	updateToolButtonStates();
 	relayout();
 }
 
-void QueryOptionsView::updateToolButtonStates()
+void ItemQueryOptionsView::updateToolButtonStates()
 {
 	bool modified = !(
 			query.name == nameEditor.text() &&
@@ -564,15 +564,15 @@ void QueryOptionsView::updateToolButtonStates()
 
 	if(!modified){
 		switch(query.stockOption) {
-			case QueryStockOptions::AllItemChanges :
+			case ItemQueryStockOptions::AllItemChanges :
 				if(stockOptions.group.checkedButton() != &stockOptAll)
 					modified = true;
 				break;
-			case QueryStockOptions::Gains :
+			case ItemQueryStockOptions::Gains :
 				if(stockOptions.group.checkedButton() != &stockOptOnStock)
 					modified = true;
 				break;
-			case QueryStockOptions::Looses :
+			case ItemQueryStockOptions::Looses :
 				if(stockOptions.group.checkedButton() != &stockOptUsedUp)
 					modified = true;
 				break;
@@ -585,11 +585,11 @@ void QueryOptionsView::updateToolButtonStates()
 	if(!modified){
 		if(withoutTagFilter.box.checkState()==Qt::Checked){
 			switch(query.tagOption) {
-				case (QueryTagOptions::MatchAll) :
+				case (ItemQueryTagOptions::MatchAll) :
 					if(tagOptions.group.checkedButton() != &tagOptAllMatch)
 					modified = true;
 					break;
-				case QueryTagOptions::MatchAny :
+				case ItemQueryTagOptions::MatchAny :
 					if(tagOptions.group.checkedButton() != &tagOptAnyMatch)
 						modified = true;
 					break;
@@ -597,7 +597,7 @@ void QueryOptionsView::updateToolButtonStates()
 					modified = true;
 					break;
 			}
-		} else if(query.tagOption != QueryTagOptions::MatchAny)
+		} else if(query.tagOption != ItemQueryTagOptions::MatchAny)
 			modified = true;
 	}
 

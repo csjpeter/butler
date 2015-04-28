@@ -144,24 +144,24 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs
 	return lhs;
 }
 
-enum class QueryStockOptions
+enum class ItemQueryStockOptions
 {
 	AllItemChanges,
 	Gains,
 	Looses
 };
 
-inline csjp::String & operator<<=(csjp::String & lhs, const enum QueryStockOptions & rhs)
+inline csjp::String & operator<<=(csjp::String & lhs, const enum ItemQueryStockOptions & rhs)
 {
 	switch(rhs)
 	{
-		case QueryStockOptions::AllItemChanges :
+		case ItemQueryStockOptions::AllItemChanges :
 			lhs = "AllItemChanges";
 			break;
-		case QueryStockOptions::Gains :
+		case ItemQueryStockOptions::Gains :
 			lhs = "Gains";
 			break;
-		case QueryStockOptions::Looses :
+		case ItemQueryStockOptions::Looses :
 			lhs = "Looses";
 			break;
 		default:
@@ -170,17 +170,17 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum QueryStockOptio
 	return lhs;
 }
 
-inline QString & operator<<=(QString & lhs, const enum QueryStockOptions & rhs)
+inline QString & operator<<=(QString & lhs, const enum ItemQueryStockOptions & rhs)
 {
 	switch(rhs)
 	{
-		case QueryStockOptions::AllItemChanges :
+		case ItemQueryStockOptions::AllItemChanges :
 			lhs = "AllItemChanges";
 			break;
-		case QueryStockOptions::Gains :
+		case ItemQueryStockOptions::Gains :
 			lhs = "Gains";
 			break;
-		case QueryStockOptions::Looses :
+		case ItemQueryStockOptions::Looses :
 			lhs = "Looses";
 			break;
 		default:
@@ -189,60 +189,60 @@ inline QString & operator<<=(QString & lhs, const enum QueryStockOptions & rhs)
 	return lhs;
 }
 
-inline enum QueryStockOptions & operator<<=(enum QueryStockOptions & lhs, const QVariant & rhs)
+inline enum ItemQueryStockOptions & operator<<=(enum ItemQueryStockOptions & lhs, const QVariant & rhs)
 {
 	QString s = rhs.toString();
 	if(s == "AllItemChanges")
-		lhs = QueryStockOptions::AllItemChanges;
+		lhs = ItemQueryStockOptions::AllItemChanges;
 	else if(s == "Gains")
-		lhs = QueryStockOptions::Gains;
+		lhs = ItemQueryStockOptions::Gains;
 	else if(s == "Looses")
-		lhs = QueryStockOptions::Looses;
+		lhs = ItemQueryStockOptions::Looses;
 	else
 		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
-inline enum QueryStockOptions & operator<<=(enum QueryStockOptions & lhs, const csjp::CString & rhs)
+inline enum ItemQueryStockOptions & operator<<=(enum ItemQueryStockOptions & lhs, const csjp::CString & rhs)
 {
 	csjp::StringChunk s(rhs.ptr);
 	if(s == "AllItemChanges")
-		lhs = QueryStockOptions::AllItemChanges;
+		lhs = ItemQueryStockOptions::AllItemChanges;
 	else if(s == "Gains")
-		lhs = QueryStockOptions::Gains;
+		lhs = ItemQueryStockOptions::Gains;
 	else if(s == "Looses")
-		lhs = QueryStockOptions::Looses;
+		lhs = ItemQueryStockOptions::Looses;
 	else
 		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
-enum class QueryTagOptions
+enum class ItemQueryTagOptions
 {
 	MatchAll,
 	MatchAny
 };
 
-inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & lhs, const csjp::CString & rhs)
+inline enum ItemQueryTagOptions & operator<<=(enum ItemQueryTagOptions & lhs, const csjp::CString & rhs)
 {
 	csjp::StringChunk s(rhs.ptr);
 	if(s == "MatchAll")
-		lhs = QueryTagOptions::MatchAll;
+		lhs = ItemQueryTagOptions::MatchAll;
 	else if(s == "MatchAny")
-		lhs = QueryTagOptions::MatchAny;
+		lhs = ItemQueryTagOptions::MatchAny;
 	else
 		throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
-inline QString & operator<<=(QString & lhs, const enum QueryTagOptions & rhs)
+inline QString & operator<<=(QString & lhs, const enum ItemQueryTagOptions & rhs)
 {
 	switch(rhs)
 	{
-		case QueryTagOptions::MatchAll :
+		case ItemQueryTagOptions::MatchAll :
 			lhs = "MatchAll";
 			break;
-		case QueryTagOptions::MatchAny :
+		case ItemQueryTagOptions::MatchAny :
 			lhs = "MatchAny";
 			break;
 		default:
@@ -251,14 +251,14 @@ inline QString & operator<<=(QString & lhs, const enum QueryTagOptions & rhs)
 	return lhs;
 }
 
-inline csjp::String & operator<<=(csjp::String & lhs, const enum QueryTagOptions & rhs)
+inline csjp::String & operator<<=(csjp::String & lhs, const enum ItemQueryTagOptions & rhs)
 {
 	switch(rhs)
 	{
-		case QueryTagOptions::MatchAll :
+		case ItemQueryTagOptions::MatchAll :
 			lhs = "MatchAll";
 			break;
-		case QueryTagOptions::MatchAny :
+		case ItemQueryTagOptions::MatchAny :
 			lhs = "MatchAny";
 			break;
 		default:
@@ -267,13 +267,13 @@ inline csjp::String & operator<<=(csjp::String & lhs, const enum QueryTagOptions
 	return lhs;
 }
 
-inline enum QueryTagOptions & operator<<=(enum QueryTagOptions & lhs, const QVariant & rhs)
+inline enum ItemQueryTagOptions & operator<<=(enum ItemQueryTagOptions & lhs, const QVariant & rhs)
 {
 	QString s = rhs.toString();
 	if(s == "MatchAll")
-		lhs = QueryTagOptions::MatchAll;
+		lhs = ItemQueryTagOptions::MatchAll;
 	else if(s == "MatchAny")
-		lhs = QueryTagOptions::MatchAny;
+		lhs = ItemQueryTagOptions::MatchAny;
 	else
 		throw csjp::InvalidArgument(EXCLI);
 	return lhs;

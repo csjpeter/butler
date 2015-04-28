@@ -22,7 +22,8 @@ class CustomView;
 //class BrandsView;
 //class InventoriesView;
 class DatabasesView;
-class QueryOptionsView;
+class PaymentQueryOptionsView;
+class ItemQueryOptionsView;
 class InfoView;
 
 class MainView : public PannView
@@ -64,7 +65,8 @@ private slots:
 	void openBrandsView();
 	void openInventoriesView();
 	void openDatabasesView();
-	void openQueryOptionsView();
+	void openPaymentQueryOptionsView();
+	void openItemQueryOptionsView();
 	void openInfoView();
 
 private:
@@ -97,7 +99,8 @@ private:
 	BrandsView *brandsView;
 	InventorysView *inventoriesView;
 	DatabasesView *databasesView;
-	QueryOptionsView *queryOptionsView;
+	PaymentQueryOptionsView *paymentQueryOptionsView;
+	ItemQueryOptionsView *itemQueryOptionsView;
 	InfoView *infoView;
 };
 

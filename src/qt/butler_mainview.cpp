@@ -10,6 +10,7 @@
 #include "butler_databases.h"
 
 #include "butler_databasesview.h"
+#include "butler_paymentqueryoptionsview.h"
 #include "butler_queryoptionsview.h"
 #include "butler_infoview.h"
 #include "butler_edititemview.h"
@@ -83,7 +84,8 @@ MainView::MainView(QWidget *parent) :
 	brandsView(NULL),
 	inventoriesView(NULL),
 	databasesView(NULL),
-	queryOptionsView(NULL),
+	paymentQueryOptionsView(NULL),
+	itemQueryOptionsView(NULL),
 	infoView(NULL)
 {
 	setWindowIcon(QIcon(Path::icon("butler.png")));
@@ -124,7 +126,8 @@ MainView::~MainView()
 	delete brandsView;
 	delete databasesView;
 	delete waresView;
-	delete queryOptionsView;
+	delete paymentQueryOptionsView;
+	delete itemQueryOptionsView;
 	delete infoView;
 }
 
@@ -246,8 +249,10 @@ void MainView::loadState()
 			openBrandsView();
 		if(settings.value(prefix + "/databasesview", false).toBool())
 			openDatabasesView();
-		if(settings.value(prefix + "/queryoptionsview", false).toBool())
-			openQueryOptionsView();
+		if(settings.value(prefix + "/paymentqueryoptionsview", false).toBool())
+			openPaymentQueryOptionsView();
+		if(settings.value(prefix + "/itemqueryoptionsview", false).toBool())
+			openItemQueryOptionsView();
 		if(settings.value(prefix + "/infoview", false).toBool())
 			openInfoView();
 
@@ -286,8 +291,10 @@ void MainView::activateSavedActiveWindow()
 		activeWindow = inventoriesView;
 	else if(activeWindowName == "databasesView")
 		activeWindow = databasesView;
-	else if(activeWindowName == "queryOptionsView")
-		activeWindow = queryOptionsView;
+	else if(activeWindowName == "paymentQueryOptionsView")
+		activeWindow = paymentQueryOptionsView;
+	else if(activeWindowName == "itemQueryOptionsView")
+		activeWindow = itemQueryOptionsView;
 	else if(activeWindowName == "infoView")
 		activeWindow = infoView;
 	if(activeWindow)
@@ -311,7 +318,8 @@ void MainView::saveState()
 	SAVE_VIEW_STATE(inventoriesView);
 	SAVE_VIEW_STATE(waresView);
 	SAVE_VIEW_STATE(databasesView);
-	SAVE_VIEW_STATE(queryOptionsView);
+	SAVE_VIEW_STATE(paymentQueryOptionsView);
+	SAVE_VIEW_STATE(itemQueryOptionsView);
 	SAVE_VIEW_STATE(infoView);
 
 	QWidget * activeWindow = QApplication::activeWindow();
@@ -338,8 +346,10 @@ void MainView::saveState()
 		activeWindowName = "inventoriesView";
 	else if(activeWindow == databasesView)
 		activeWindowName = "databasesView";
-	else if(activeWindow == queryOptionsView)
-		activeWindowName = "queryOptionsView";
+	else if(activeWindow == paymentQueryOptionsView)
+		activeWindowName = "paymentQueryOptionsView";
+	else if(activeWindow == itemQueryOptionsView)
+		activeWindowName = "itemQueryOptionsView";
 	else if(activeWindow == infoView)
 		activeWindowName = "infoView";
 	settings.setValue(prefix + "/activeWindow", activeWindowName);
@@ -510,12 +520,21 @@ void MainView::openInventoriesView()
 	}
 }
 
-void MainView::openQueryOptionsView()
+void MainView::openPaymentQueryOptionsView()
 {
 #if 0
-	if(!queryOptionsView)
-		queryOptionsView = new QueryOptionsView;
-	queryOptionsView->activate();
+	if(!paymentQueryOptionsView)
+		paymentQueryOptionsView = new QueryOptionsView;
+	paymentQueryOptionsView->activate();
+#endif
+}
+
+void MainView::openItemQueryOptionsView()
+{
+#if 0
+	if(!itemQueryOptionsView)
+		itemQueryOptionsView = new QueryOptionsView;
+	itemQueryOptionsView->activate();
 #endif
 }
 

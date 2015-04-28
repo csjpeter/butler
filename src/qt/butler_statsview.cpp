@@ -20,7 +20,7 @@ SCC TidMinUnitPrice	= QT_TRANSLATE_NOOP("StatsView", "Minimal unit price : ");
 SCC TidMaxUnitPrice	= QT_TRANSLATE_NOOP("StatsView", "Maximal unit price : ");
 SCC TidSqlQueryTime	= QT_TRANSLATE_NOOP("StatsView", "Time taken by the SQL query : ");
 
-StatsView::StatsView(const QueryStat & stat, QWidget * parent) :
+StatsView::StatsView(const ItemQueryStat & stat, QWidget * parent) :
 	PannView(parent),
 	stat(stat)
 {

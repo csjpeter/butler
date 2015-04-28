@@ -182,7 +182,7 @@ void CustomView::loadState()
 	QSettings settings;
 
 	Text queryName(settings.value(prefix + "/query", ""));
-	QueryModel & qm = queryModel(dbname);
+	ItemQueryModel & qm = itemQueryModel(dbname);
 	if(qm.set.has(queryName))
 		model->opts = qm.set.query(queryName);
 	model->query();
@@ -320,7 +320,7 @@ void CustomView::editWare()
 void CustomView::filterItems()
 {
 	if(!queryOptsView){
-		queryOptsView = new QueryOptionsView(dbname);
+		queryOptsView = new ItemQueryOptionsView(dbname);
 		connect(queryOptsView, SIGNAL(accepted()), this, SLOT(applyNewFilter()));
 	}
 	queryOptsView->query = model->opts;

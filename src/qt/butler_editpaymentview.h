@@ -46,11 +46,6 @@ private slots:
 	void saveSlotSpec();
 	void saveSlot();
 	void resetSlot();
-	void quantityValueChangedSlot(double q);
-	void unitPriceValueChangedSlot(double q);
-	void grossPriceValueChangedSlot(double q);
-	void wareNameEditFinishedSlot();
-	void wareNameEditFinishedSlot(int);
 	void accountNameEditFinishedSlot();
 	void accountNameEditFinishedSlot(int);
 
@@ -61,30 +56,19 @@ private:
 	PaymentModel * ownModel;
 	QModelIndex cursor;
 	Payment payment;
-	Ware ware;
 
 	Button doneButton;
 	Button resetButton;
 	Button prevButton;
 	Button nextButton;
 
-	ComboSelector wareEditor;
-	ComboSelector typeEditor;
-	ComboSelector brandEditor;
-	QuantityEditor quantityEditor;
-	PriceEditor unitPriceEditor;
-	PriceEditor grossPriceEditor;
+	PriceEditor amountEditor;
 	ComboSelector accountEditor;
 	ComboSelector partnerEditor;
-	ComboSelector inventoryEditor;
-	DateTimeEditor invChangeDateTime;
+	DateTimeEditor payDateTime;
 	DateTimeEditor uploadDateTime;
 	CommentEditor commentEditor;
-	TagWidget tagsWidget;
 
-	QWidget * lastNumEdited;
-	QWidget * lastLastNumEdited;
-	Text lastWareName;
 	Text lastAccountName;
 };
 

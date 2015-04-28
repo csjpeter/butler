@@ -80,6 +80,11 @@ public:
 		/* Each item view shall have its own special item model. */
 		return csjp::Object<ItemModel>(new ItemModel(sql, wareModel));
 	}
+	csjp::Object<PaymentModel> payments()
+	{
+		/* Each payment view shall have its own special payment model. */
+		return csjp::Object<PaymentModel>(new PaymentModel(sql));
+	}
 
 private:
 	void equal(const Database & tag);

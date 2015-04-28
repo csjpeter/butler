@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	PaymentStatsView(const QueryStat & stat, QWidget * parent = 0);
+	PaymentStatsView(const PaymentQueryStat & stat, QWidget * parent = 0);
 	virtual ~PaymentStatsView() {}
 
 private:
@@ -37,20 +37,18 @@ private slots:
 	void relayout();
 
 private:
-	const QueryStat & stat;
+	const PaymentQueryStat & stat;
 
-	Label itemCountLabel;
-	Label itemCountValueLabel;
-	Label itemSumQuantityLabel;
-	Label itemSumQuantityValueLabel;
+	Label paymentCountLabel;
+	Label paymentCountValueLabel;
 	Label itemSumPriceLabel;
 	Label itemSumPriceValueLabel;
-	Label avgUnitPriceLabel;
-	Label avgUnitPriceValueLabel;
-	Label minUnitPriceLabel;
-	Label minUnitPriceValueLabel;
-	Label maxUnitPriceLabel;
-	Label maxUnitPriceValueLabel;
+	Label avgPriceLabel;
+	Label avgPriceValueLabel;
+	Label minPriceLabel;
+	Label minPriceValueLabel;
+	Label maxPriceLabel;
+	Label maxPriceValueLabel;
 	Label timeTakenBySqlQueryLabel;
 	Label timeTakenBySqlQueryValueLabel;
 };

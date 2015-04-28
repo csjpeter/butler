@@ -16,7 +16,7 @@ private:
 	MY_Q_OBJECT
 
 public:
-	StatsView(const QueryStat & stat, QWidget * parent = 0);
+	StatsView(const ItemQueryStat & stat, QWidget * parent = 0);
 	virtual ~StatsView() {}
 
 private:
@@ -37,7 +37,7 @@ private slots:
 	void relayout();
 
 private:
-	const QueryStat & stat;
+	const ItemQueryStat & stat;
 
 	Label itemCountLabel;
 	Label itemCountValueLabel;

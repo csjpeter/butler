@@ -32,11 +32,11 @@
 
 	csjp::String filter;
 
-	if(q.stockOption == QueryStockOptions::Gains){
+	if(q.stockOption == ItemQueryStockOptions::Gains){
 		if(filter.length)
 			filter += " AND";
 		filter += " 0 < quantity";
-	} else if(q.stockOption == QueryStockOptions::Looses){
+	} else if(q.stockOption == ItemQueryStockOptions::Looses){
 		if(filter.length)
 			filter += " AND";
 		filter += " quantity < 0";
@@ -124,7 +124,7 @@
 
 	cmd += " GROUP BY item.upload_date";
 
-	if(q.tagOption == QueryTagOptions::MatchAll){
+	if(q.tagOption == ItemQueryTagOptions::MatchAll){
 		cmd += " HAVING COUNT(*) = ";
 		cmd << q.withTags.size();
 	}

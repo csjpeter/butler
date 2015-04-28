@@ -13,7 +13,7 @@
 #include <butler_config.h>
 
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,Payment,ItemQuery,PaymentQuery@
+@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
 class @Type@Model : public AbstractTableModel
 {
 @include@ dbdatamodel.h
@@ -23,21 +23,33 @@ inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a
 @}ForTypes@
 
 
-@declare@ Item
-class ItemModel : public AbstractTableModel
+@declare@ Payment
+class @Type@Model : public AbstractTableModel
 {
 @include@ dbdatamodel.h
 public:
-	ItemModel(SqlConnection & sql, const WareModel & wmodel);
+	@Type@Model(SqlConnection & sql);
+public:
+	@Type@Query opts;
+	@Type@QueryStat stat;
+};
+inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
+
+@declare@ Item
+class @Type@Model : public AbstractTableModel
+{
+@include@ dbdatamodel.h
+public:
+	@Type@Model(SqlConnection & sql, const WareModel & wmodel);
 	const WareModel & wmodel;
 private:
-	QVariant dataUnitPrice(int row) const
+/*	QVariant dataUnitPrice(int row) const
 	{
 		auto & item = dataSet.queryAt(row);
 		Double unitPrice(item.price / item.quantity);
 		return QVariant(unitPrice.val);
 	}
-/*	QVariant dataQuantityWithUnit(int row) const
+	QVariant dataQuantityWithUnit(int row) const
 	{
 		auto & item = dataSet.queryAt(row);
 		int i = wmodel.index(item.name);
@@ -51,10 +63,10 @@ private:
 		return QVariant(val);
 	}*/
 public:
-	ItemQuery opts;
-	ItemQueryStat stat;
+	@Type@Query opts;
+	@Type@QueryStat stat;
 };
-inline bool operator==(const ItemModel & a, const ItemModel & b) { return &a == &b; }
+inline bool operator==(const @Type@Model & a, const @Type@Model & b) { return &a == &b; }
 
 
 @ForTypes{DatabaseDescriptor,WareType,WareTag,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare

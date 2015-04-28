@@ -10,15 +10,15 @@
 #include <butler_tagwidget.h>
 #include <butler_pannview.h>
 
-class QueryOptionsView : public PannView
+class ItemQueryOptionsView : public PannView
 {
 private:
 	Q_OBJECT
 	MY_Q_OBJECT
 
 public:
-	QueryOptionsView(const csjp::String & dbname, QWidget * parent = 0);
-	virtual ~QueryOptionsView();
+	ItemQueryOptionsView(const csjp::String & dbname, QWidget * parent = 0);
+	virtual ~ItemQueryOptionsView();
 
 	void loadState();
 	void saveState();
@@ -51,7 +51,7 @@ private:
 	const csjp::String & dbname;
 
 public:
-	Query query;
+	ItemQuery query;
 
 private:
 	Button queryButton;

@@ -170,6 +170,7 @@
 		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
 		DateTime lastModified;	; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		Text comment;			; TEXT
 		YNBool deleted;			; CHAR(1) NOT NULL DEFAULT 'N'
 		}
 	Constraints {
@@ -217,8 +218,8 @@
 		Text name; key							; TEXT
 		DateTime startDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		DateTime endDate;						; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		enum QueryStockOptions stockOption;spec	; INTEGER NOT NULL
-		enum QueryTagOptions tagOption; spec	; INTEGER NOT NULL
+		enum ItemQueryStockOptions stockOption;spec	; INTEGER NOT NULL
+		enum ItemQueryTagOptions tagOption; spec	; INTEGER NOT NULL
 		ItemQueryWithTagSet withTags; set,spec		;
 		ItemQueryWithoutTagSet withoutTags; set,spec;
 		ItemQueryWareSet wares; set,spec			;

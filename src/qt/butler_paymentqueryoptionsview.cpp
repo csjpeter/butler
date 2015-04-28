@@ -7,7 +7,6 @@
 
 #include "butler_config.h"
 #include "butler_paymentqueryoptionsview.h"
-#include "butler_tagwidget.h"
 
 SCC TidContext = "PaymentQueryOptionsView";
 
@@ -21,25 +20,9 @@ SCC TidDelButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Delete");
 SCC TidQuerySelector = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Query name:");
 SCC TidPartnerFilter = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Filter by partner:");
 SCC TidPartnerSelector = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Business partner:");
-SCC TidWareFilter = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Filter by ware:");
-SCC TidWareSelector = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Common ware name:");
 
 SCC TidFromDateTimeEditor = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "From:");
 SCC TidTillDateTimeEditor = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Till:");
-
-SCC TidWithTagFilter = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Filter by tags to have");
-//SCC TidWithTags = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "With some or all of these tags:");
-SCC TidWithoutTagFilter = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Filter by tags not to have");
-SCC TidWithoutTags = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Without any of these tags:");
-
-SCC TidStockOptions = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Stock option:");
-SCC TidStockOptAllRadioButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "all items");
-SCC TidStockOptOnStockRadioButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "items on stock");
-SCC TidStockOptUsedUpRadioButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "items used up");
-
-SCC TidTagOptions = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Tags need to match with");
-SCC TidTagOptAllMatchRadioButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "all selected tags");
-SCC TidTagOptAnyMatchRadioButton = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "any selected tags");
 
 SCC TidQuerySavedInfo = QT_TRANSLATE_NOOP("PaymentQueryOptionsView", "Query is saved.");
 
@@ -50,22 +33,12 @@ PaymentQueryOptionsView::PaymentQueryOptionsView(const csjp::String & dbname, QW
 	saveButton(TidSaveButton, TidContext, QKeySequence(QKeySequence::Save)),
 	delButton(TidDelButton, TidContext, QKeySequence(QKeySequence::Delete)),
 	resetButton(TidResetButton, TidContext, QKeySequence(QKeySequence::Refresh)),
-	nameEditor(&queryModel(dbname), Query::Name),
-	wareSelector(&wareModel(dbname), Ware::Name),
-	partnerSelector(&partnerModel(dbname), Partner::Name),
-	tagsWidget(dbname),
-	withoutTagsWidget(dbname)
+	nameEditor(&paymentQueryModel(dbname), PaymentQuery::Name),
+	partnerSelector(&partnerModel(dbname), Partner::Name)
 {
 	setWindowModality(Qt::ApplicationModal);
 
 	query.endDate = DateTime::now();
-
-	stockOptions.group.addButton(&stockOptAll);
-	stockOptions.group.addButton(&stockOptOnStock);
-	stockOptions.group.addButton(&stockOptUsedUp);
-
-	tagOptions.group.addButton(&tagOptAllMatch);
-	tagOptions.group.addButton(&tagOptAnyMatch);
 
 	toolBar.addToolWidget(queryButton);
 	toolBar.addToolWidget(saveButton);
@@ -77,12 +50,7 @@ PaymentQueryOptionsView::PaymentQueryOptionsView(const csjp::String & dbname, QW
 	connect(&delButton, SIGNAL(clicked()), this, SLOT(delSlot()));
 	connect(&resetButton, SIGNAL(clicked()), this, SLOT(resetSlot()));
 
-	connect(&wareFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
 	connect(&partnerFilter.box, SIGNAL(stateChanged(int)), this, SLOT(layoutContentChangeSlot()));
-	connect(&withTagFilter.box, SIGNAL(stateChanged(int)),
-			this, SLOT(layoutContentChangeSlot()));
-	connect(&withoutTagFilter.box, SIGNAL(stateChanged(int)),
-			this, SLOT(layoutContentChangeSlot()));
 
 	connect(&nameEditor.box, SIGNAL(activated(const QString &)),
 			this, SLOT(querySelectedSlot()));
@@ -94,22 +62,7 @@ PaymentQueryOptionsView::PaymentQueryOptionsView(const csjp::String & dbname, QW
 			this, SLOT(updateToolButtonStates()));
 	connect(&endDate.edit, SIGNAL(dateTimeChanged(const QDateTime &)),
 			this, SLOT(updateToolButtonStates()));
-	connect(&wareSelector.box, SIGNAL(currentIndexChanged(const QString &)),
-			this, SLOT(updateToolButtonStates()));
 	connect(&partnerSelector.box, SIGNAL(currentIndexChanged(const QString &)),
-			this, SLOT(updateToolButtonStates()));
-	connect(&stockOptAll, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
-	connect(&stockOptOnStock, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
-	connect(&stockOptUsedUp, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
-/*	connect(&stockOptions, SIGNAL(buttonClicked(int)),
-			this, SLOT(updateToolButtonStates()));
-	connect(&tagOptions, SIGNAL(buttonClicked(int)),
-			this, SLOT(updateToolButtonStates()));*/
-	connect(&tagOptAllMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
-	connect(&tagOptAnyMatch, SIGNAL(toggled(bool)), this, SLOT(updateToolButtonStates()));
-	connect(&tagsWidget, SIGNAL(selectionChanged()),
-			this, SLOT(updateToolButtonStates()));
-	connect(&withoutTagsWidget, SIGNAL(selectionChanged()),
 			this, SLOT(updateToolButtonStates()));
 
 	setupView();
@@ -167,18 +120,6 @@ void PaymentQueryOptionsView::mapToGui()
 	startDate.edit.setDateTime(query.startDate);
 	endDate.edit.setDateTime(query.endDate);
 
-	if(query.wares.size()){
-		WareModel & wm = wareModel(dbname);
-		int row = wm.index(query.wares.queryAt(0).ware);
-		if(0 <= row){
-			wareFilter.box.blockSignals(true);
-			wareFilter.box.setChecked(true);
-			wareFilter.box.blockSignals(false);
-			wareSelector.box.setCurrentIndex(row);
-		}
-	} else
-		wareFilter.box.setChecked(false);
-
 	if(query.partners.size()){
 		PartnerModel & sm = partnerModel(dbname);
 		int row = sm.index(query.partners.queryAt(0).partner);
@@ -194,39 +135,6 @@ void PaymentQueryOptionsView::mapToGui()
 		partnerFilter.box.blockSignals(false);
 	}
 
-	if(query.stockOption == QueryStockOptions::AllItemChanges)
-		stockOptAll.setChecked(true);
-	else if(query.stockOption == QueryStockOptions::Gains)
-		stockOptOnStock.setChecked(true);
-	else if(query.stockOption == QueryStockOptions::Looses)
-		stockOptUsedUp.setChecked(true);
-
-	if(query.withTags.size()){
-		withTagFilter.box.blockSignals(true);
-		withTagFilter.box.setChecked(true);
-		withTagFilter.box.blockSignals(false);
-	} else {
-		withTagFilter.box.blockSignals(true);
-		withTagFilter.box.setChecked(false);
-		withTagFilter.box.blockSignals(false);
-	}
-	if(query.tagOption == QueryTagOptions::MatchAll)
-		tagOptAllMatch.setChecked(true);
-	else if(query.tagOption == QueryTagOptions::MatchAny)
-		tagOptAnyMatch.setChecked(true);
-	tagsWidget.setTags(query.withTags);
-
-	if(query.withoutTags.size()){
-		withoutTagFilter.box.blockSignals(true);
-		withoutTagFilter.box.setChecked(true);
-		withoutTagFilter.box.blockSignals(false);
-	} else {
-		withoutTagFilter.box.blockSignals(true);
-		withoutTagFilter.box.setChecked(false);
-		withoutTagFilter.box.blockSignals(false);
-	}
-	withoutTagsWidget.setTags(query.withoutTags);
-
 	updateToolButtonStates();
 }
 
@@ -235,45 +143,13 @@ void PaymentQueryOptionsView::mapFromGui()
 	query.name = nameEditor.text();
 	query.startDate = startDate.edit.dateTime();
 	query.endDate = endDate.edit.dateTime();
-
-	query.wares.clear();
-	if(wareFilter.box.isChecked()){
-		int i = wareSelector.box.currentIndex();
-		WareModel & wm = wareModel(dbname);
-		if(0 <= i && i < wm.rowCount())
-			query.wares.add(new QueryWare(query.name, wm.data(i).name.trimmed()));
-	}
 	
 	query.partners.clear();
 	if(partnerFilter.box.isChecked()){
 		int i = partnerSelector.box.currentIndex();
 		PartnerModel & sm = partnerModel(dbname);
 		if(0 <= i && i < sm.rowCount())
-			query.partners.add(new QueryPartner(query.name, sm.data(i).name.trimmed()));
-	}
-
-	if(stockOptions.group.checkedButton() == &stockOptAll)
-		query.stockOption = QueryStockOptions::AllItemChanges;
-	else if(stockOptions.group.checkedButton() == &stockOptOnStock)
-		query.stockOption = QueryStockOptions::Gains;
-	else if(stockOptions.group.checkedButton() == &stockOptUsedUp)
-		query.stockOption = QueryStockOptions::Looses;
-
-	if(withTagFilter.box.isChecked()){
-		if(tagOptions.group.checkedButton() == &tagOptAllMatch)
-			query.tagOption = QueryTagOptions::MatchAll;
-		else if(tagOptions.group.checkedButton() == &tagOptAnyMatch)
-			query.tagOption = QueryTagOptions::MatchAny;
-		query.setAsWithTags(tagsWidget.selectedTags());
-	} else {
-		query.tagOption = QueryTagOptions::MatchAny;
-		query.withTags.clear();
-	}
-
-	if(withoutTagFilter.box.isChecked()){
-		query.setAsWithoutTags(withoutTagsWidget.selectedTags());
-	} else {
-		query.withoutTags.clear();
+			query.partners.add(new PaymentQueryPartner(query.name, sm.data(i).name.trimmed()));
 	}
 }
 
@@ -286,62 +162,30 @@ void PaymentQueryOptionsView::retranslate()
 	startDate.label.setText(tr(TidFromDateTimeEditor));
 	endDate.label.setText(tr(TidTillDateTimeEditor));
 
-	wareSelector.label.setText(tr(TidWareSelector));
-
 	partnerFilter.label.setText(tr(TidPartnerFilter));
 	partnerSelector.label.setText(tr(TidPartnerSelector));
-
-	withTagFilter.label.setText(tr(TidWithTagFilter));
-	tagsWidget.label.setText("");//tr(TidWithTags));
-
-	withoutTagFilter.label.setText(tr(TidWithoutTagFilter));
-	withoutTagsWidget.label.setText(tr(TidWithoutTags));
-
-	stockOptions.label.setText(tr(TidStockOptions));
-	stockOptAll.setText(tr(TidStockOptAllRadioButton));
-	stockOptOnStock.setText(tr(TidStockOptOnStockRadioButton));
-	stockOptUsedUp.setText(tr(TidStockOptUsedUpRadioButton));
-
-	tagOptions.label.setText(tr(TidTagOptions));
-	tagOptAllMatch.setText(tr(TidTagOptAllMatchRadioButton));
-	tagOptAnyMatch.setText(tr(TidTagOptAnyMatchRadioButton));
 
 	relayout();
 }
 
 void PaymentQueryOptionsView::applyLayout(LayoutState state, bool test)
 {
+	(void)test;
 	delete layout();
 
 	HLayout * filterLayout = 0;
 	if(state == LayoutState::Wide){
 		filterLayout = new HLayout;
-		filterLayout->addWidget(&wareFilter);
-		filterLayout->addStretch(0);
 		filterLayout->addWidget(&partnerFilter);
-		filterLayout->addStretch(0);
-		filterLayout->addWidget(&withTagFilter);
-		filterLayout->addStretch(0);
-		filterLayout->addWidget(&withoutTagFilter);
 		filterLayout->addStretch(0);
 	}
 
 	HLayout * filter1Layout = 0;
 	if(state == LayoutState::Medium){
 		filter1Layout = new HLayout;
-		filter1Layout->addWidget(&wareFilter);
 		filter1Layout->addStretch(0);
 		filter1Layout->addWidget(&partnerFilter);
 		filter1Layout->addStretch(0);
-	}
-
-	HLayout * filter2Layout = 0;
-	if(state == LayoutState::Medium){
-		filter2Layout = new HLayout;
-		filter2Layout->addWidget(&withTagFilter);
-		filter2Layout->addStretch(0);
-		filter2Layout->addWidget(&withoutTagFilter);
-		filter2Layout->addStretch(0);
 	}
 
 	HLayout * dateLayout = 0;
@@ -364,8 +208,6 @@ void PaymentQueryOptionsView::applyLayout(LayoutState state, bool test)
 		mainLayout->addStretch(0);
 		mainLayout->addWidget(&endDate);
 	}
-	mainLayout->addStretch(0);
-	mainLayout->addWidget(&stockOptions);
 	if(state == LayoutState::Wide){
 		mainLayout->addStretch(0);
 		mainLayout->addLayout(filterLayout);
@@ -376,38 +218,10 @@ void PaymentQueryOptionsView::applyLayout(LayoutState state, bool test)
 	}
 	if(state == LayoutState::Narrow){
 		mainLayout->addStretch(0);
-		mainLayout->addWidget(&wareFilter);
-	}
-	mainLayout->addStretch(0);
-	mainLayout->addWidget(&wareSelector);
-	if(state == LayoutState::Narrow){
-		mainLayout->addStretch(0);
 		mainLayout->addWidget(&partnerFilter);
 	}
 	mainLayout->addStretch(0);
 	mainLayout->addWidget(&partnerSelector);
-	if(state == LayoutState::Medium){
-		mainLayout->addStretch(0);
-		mainLayout->addLayout(filter2Layout);
-	}
-	if(state == LayoutState::Narrow){
-		mainLayout->addStretch(0);
-		mainLayout->addWidget(&withTagFilter);
-	}
-	mainLayout->addStretch(0);
-	mainLayout->addWidget(&tagOptions);
-	if(!test){
-		mainLayout->addWidget(&tagsWidget);
-		mainLayout->addStretch(0);
-	}
-	if(state == LayoutState::Narrow){
-		mainLayout->addStretch(0);
-		mainLayout->addWidget(&withoutTagFilter);
-	}
-	if(!test){
-		mainLayout->addWidget(&withoutTagsWidget);
-		mainLayout->addStretch(0);
-	}
 
 	setLayout(mainLayout);
 	updateGeometry();
@@ -419,11 +233,7 @@ void PaymentQueryOptionsView::relayout()
 	nameEditor.wideLayout();
 	startDate.wideLayout();
 	endDate.wideLayout();
-	wareSelector.wideLayout();
 	partnerSelector.wideLayout();
-	stockOptions.wideLayout();
-	tagOptions.wideLayout();
-	wareFilter.label.setText(tr(TidWareFilter));
 	applyLayout(newState, true);
 
 	if(width() < sizeHint().width()){
@@ -431,11 +241,7 @@ void PaymentQueryOptionsView::relayout()
 		nameEditor.wideLayout();
 		startDate.wideLayout();
 		endDate.wideLayout();
-		wareSelector.wideLayout();
 		partnerSelector.wideLayout();
-		stockOptions.mediumLayout();
-		tagOptions.mediumLayout();
-		wareFilter.label.setText(trShort(TidWareFilter));
 		applyLayout(newState, true);
 	}
 	if(width() < sizeHint().width()){
@@ -443,11 +249,7 @@ void PaymentQueryOptionsView::relayout()
 		nameEditor.narrowLayout();
 		startDate.narrowLayout();
 		endDate.narrowLayout();
-		wareSelector.narrowLayout();
 		partnerSelector.narrowLayout();
-		stockOptions.narrowLayout();
-		tagOptions.narrowLayout();
-		wareFilter.label.setText(trShort(TidWareFilter));
 		applyLayout(newState, true);
 	}
 
@@ -463,7 +265,7 @@ void PaymentQueryOptionsView::saveSlot()
 {
 	mapFromGui();
 
-	QueryModel & qm = queryModel(dbname);
+	PaymentQueryModel & qm = paymentQueryModel(dbname);
 	if(qm.set.has(query.name)) {
 		if(qm.set.query(query.name) != query)
 			qm.update(qm.index(query.name), query);
@@ -482,10 +284,10 @@ void PaymentQueryOptionsView::delSlot()
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes){
-		QueryModel & qm = queryModel(dbname);
+		PaymentQueryModel & qm = paymentQueryModel(dbname);
 		if(qm.set.has(query.name))
 			qm.del(qm.index(query.name));
-		query = Query();
+		query = PaymentQuery();
 		query.endDate = DateTime::now();
 		mapToGui();
 	}
@@ -495,7 +297,7 @@ void PaymentQueryOptionsView::querySlot()
 {
 	mapFromGui();
 
-	QueryModel & qm = queryModel(dbname);
+	PaymentQueryModel & qm = paymentQueryModel(dbname);
 	if(!qm.set.has(query.name))
 		query.name = "";
 	else if(qm.set.query(query.name) != query)
@@ -516,7 +318,7 @@ void PaymentQueryOptionsView::backSlot()
 
 void PaymentQueryOptionsView::querySelectedSlot()
 {
-	QueryModel & qm = queryModel(dbname);
+	PaymentQueryModel & qm = paymentQueryModel(dbname);
 	Text name(nameEditor.text());
 	if(!qm.set.has(name))
 		return;
@@ -537,69 +339,12 @@ void PaymentQueryOptionsView::updateToolButtonStates()
 			query.startDate == startDate.edit.dateTime() &&
 //			query.endDate == endDate.edit.dateTime() &&
 
-			((0<query.wares.size()) ==(wareFilter.box.checkState()==Qt::Checked)) &&
-			((0<query.partners.size())==(partnerFilter.box.checkState()==Qt::Checked))&&
-			((0<query.withTags.size())==(withTagFilter.box.checkState()==Qt::Checked))&&
-			((0<query.withoutTags.size())==(withoutTagFilter.box.checkState()==Qt::Checked)) &&
-
-			query.withTags == tagsWidget.selectedTags() &&
-			query.withoutTags == withoutTagsWidget.selectedTags()
+			((0<query.partners.size())==(partnerFilter.box.checkState()==Qt::Checked))
 			);
-	if(!modified)
-		if(query.wares.size() && (wareFilter.box.checkState()==Qt::Checked))
-			if(query.wares.queryAt(0).ware != wareSelector.box.currentText())
-				modified = true;
 	if(!modified)
 		if(query.partners.size() && (partnerFilter.box.checkState()==Qt::Checked))
 			if(query.partners.queryAt(0).partner != partnerSelector.box.currentText())
 				modified = true;
-	if(!modified)
-		if(query.withTags.size() && (withTagFilter.box.checkState()==Qt::Checked))
-			if(query.withTags != tagsWidget.selectedTags())
-				modified = true;
-	if(!modified)
-		if(query.withoutTags.size() && (withoutTagFilter.box.checkState()==Qt::Checked))
-			if(query.withoutTags != withoutTagsWidget.selectedTags())
-				modified = true;
-
-	if(!modified){
-		switch(query.stockOption) {
-			case QueryStockOptions::AllItemChanges :
-				if(stockOptions.group.checkedButton() != &stockOptAll)
-					modified = true;
-				break;
-			case QueryStockOptions::Gains :
-				if(stockOptions.group.checkedButton() != &stockOptOnStock)
-					modified = true;
-				break;
-			case QueryStockOptions::Looses :
-				if(stockOptions.group.checkedButton() != &stockOptUsedUp)
-					modified = true;
-				break;
-			default:
-				modified = true;
-				break;
-		}
-	}
-
-	if(!modified){
-		if(withoutTagFilter.box.checkState()==Qt::Checked){
-			switch(query.tagOption) {
-				case (QueryTagOptions::MatchAll) :
-					if(tagOptions.group.checkedButton() != &tagOptAllMatch)
-					modified = true;
-					break;
-				case QueryTagOptions::MatchAny :
-					if(tagOptions.group.checkedButton() != &tagOptAnyMatch)
-						modified = true;
-					break;
-				default:
-					modified = true;
-					break;
-			}
-		} else if(query.tagOption != QueryTagOptions::MatchAny)
-			modified = true;
-	}
 
 	bool hasName(nameEditor.text().size());
 
@@ -609,11 +354,7 @@ void PaymentQueryOptionsView::updateToolButtonStates()
 	delButton.setVisible(!modified && hasName);
 	resetButton.setVisible(modified);
 
-	wareSelector.setVisible(wareFilter.box.checkState()==Qt::Checked);
 	partnerSelector.setVisible(partnerFilter.box.checkState()==Qt::Checked);
-	tagOptions.setVisible(withTagFilter.box.checkState()==Qt::Checked);
-	tagsWidget.setVisible(withTagFilter.box.checkState()==Qt::Checked);
-	withoutTagsWidget.setVisible(withoutTagFilter.box.checkState()==Qt::Checked);
 
 	if(modified)
 		toolBar.clearInfo();

@@ -51,7 +51,7 @@ private:
 	const csjp::String & dbname;
 
 public:
-	Query query;
+	PaymentQuery query;
 
 private:
 	Button queryButton;
@@ -62,24 +62,8 @@ private:
 	ComboSelector nameEditor;
 	DateTimeEditor startDate;
 	DateTimeEditor endDate;
-	Selector wareSelector;
-	FormCheckBox wareFilter;
 	Selector partnerSelector;
 	FormCheckBox partnerFilter;
-
-	ButtonGroup stockOptions;
-	QRadioButton stockOptAll;
-	QRadioButton stockOptOnStock;
-	QRadioButton stockOptUsedUp;
-	
-	ButtonGroup tagOptions;
-	QRadioButton tagOptAllMatch;
-	QRadioButton tagOptAnyMatch;
-
-	FormCheckBox withTagFilter;
-	TagWidget tagsWidget;
-	FormCheckBox withoutTagFilter;
-	TagWidget withoutTagsWidget;
 };
 
 #endif

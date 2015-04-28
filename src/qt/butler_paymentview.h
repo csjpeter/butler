@@ -41,7 +41,6 @@ private:
 private slots:
 	void editPayment();
 	void delPayment();
-	void shoppingPayment();
 	void refreshPayments();
 	void filterPayments();
 	void applyNewFilter();
@@ -56,7 +55,6 @@ private:
 
 	ToolButton editButton;
 	ToolButton delButton;
-	ToolButton shoppingButton;
 	ToolButton statsButton;
 	ToolButton refreshButton;
 	ToolButton filterButton;
