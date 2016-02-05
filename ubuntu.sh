@@ -19,6 +19,8 @@ etch=4.0
 source /etc/lsb-release
 source config
 
+export QT_SELECT=qt5
+
 function exec_in_dir ()
 {
 	pushd $1 > /dev/null || exit $?
@@ -43,7 +45,6 @@ function config ()
 		--pkg-config-path=/opt/extras.ubuntu.com/csjp/lib/pkgconfig \
 		--prefix=usr \
 		--cflags=\\\"-DPGSQL\\\" \
-		--cflags=\\\"-fno-candidate-functions\\\" \
 		--libs=\\\"-lpq\\\" \
 		--appsdir=usr/share/applications \
 		--fpic \
@@ -52,6 +53,7 @@ function config ()
 		--relative-path \
 		|| exit $?
 
+		#--cflags=\\\"-fno-candidate-functions\\\" \
 		#--prefix=opt/${PKGNAME_BASE}
 
 	exec_in_dir ${DIST} ./configure || exit $?

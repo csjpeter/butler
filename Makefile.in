@@ -214,7 +214,7 @@ BUTLERQT_INCLUDES=-Isrc/qt
 
 .SECONDARY: $(BUTLERQT_OBJECTS)
 
-BUTLER_IMAGES+=\
+IMAGES+=\
 	$(ICONS_DIR)/copyright \
 	$(ICONS_DIR)/accounting.png \
 	$(ICONS_DIR)/analitics.png \
@@ -255,7 +255,7 @@ BUTLER_IMAGES+=\
 
 build: \
 	$(STATIC_LIBSQL) \
-	$(BUTLER_IMAGES) \
+	$(IMAGES) \
 	$(BUILD_DEPS) \
 	$(CSS_DIR)/application.css \
 	$(TRANSLATIONS_DIR)/en.qm \

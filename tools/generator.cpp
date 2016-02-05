@@ -322,6 +322,8 @@ public:
 
 	bool parseForEachField(StringChunk & tpl, bool skipMode = false)
 	{
+		if(declarations.size() <= declIdx)
+			return false;
 		const Array<FieldDesc> & fields = declarations[declIdx].fields;
 		const char * what = 0;
 
@@ -608,6 +610,7 @@ public:
 					throw ParseError("Missing @}Define@");
 				templates[tplName] = String(tpl.str, pos);
 				tpl.chopFront(pos);
+				tplLineNo += templates[tplName].value.count("\n");
 				tpl.chopFront("@}Define@");
 			} else if(tpl.chopFront("@ForTypes{")){
 				size_t pos;
@@ -615,6 +618,7 @@ public:
 					pos = tpl.length;
 				StringChunk typeList(tpl.str, pos);
 				tpl.chopFront(pos+1);
+				tplLineNo += typeList.count("\n");
 				auto types = typeList.split(" \t,\n\r");
 				size_t origDeclIdx = declIdx;
 				StringChunk origTpl(tpl);
@@ -624,12 +628,14 @@ public:
 				for(auto & type : types){
 					type.trim(" \t\r\n");
 					if(!declarations.has(type))
-						throw ParseError("Unknown class %", type);
+						throw ParseError("Unknown class % in type list "
+								"near line %", type, tplLineNo);
 					declIdx = declarations.index(type);
 					TemplateParser parser(code, tpl,
 							declarations, templates, tplDir, declIdx);
 					parser.parse();
 				}
+				tplLineNo += tpl.count("\n");
 				declIdx = origDeclIdx;
 				tpl = origTpl;
 				tpl.findFirst(pos, "@}ForTypes@");
@@ -667,7 +673,8 @@ public:
 				tpl.chopFront(pos);
 				declaredClass.trim(" \t\n\r");
 				if(!declarations.has(declaredClass))
-					throw ParseError("Unknown class %", declaredClass);
+					throw ParseError("Unknown declared class % near line %",
+							declaredClass, tplLineNo);
 				declIdx = declarations.index(declaredClass);
 			} else if(tpl.chopFront("@include@")){
 				size_t pos;
@@ -680,9 +687,11 @@ public:
 					LOG("Include: ", file);
 					String tplFileName(tplDir.str, tplDir.length);
 					tplFileName << file;
+					LOG("Template file name: ", tplFileName);
 					File tplFile(tplFileName);
 					if(tplFile.exists()) {
 						String newTpl = tplFile.readAll();
+						LOG("Template from file:\n", newTpl);
 						StringChunk newTplChunk(newTpl.str, newTpl.length);
 						TemplateParser parser(code, newTplChunk,
 							declarations, templates, tplDir, declIdx);
@@ -690,6 +699,7 @@ public:
 					} else {
 						//LOG("Non file template included: ", file);
 						String & newTpl = templates[file].value;
+						LOG("Template definition:\n", newTpl);
 						StringChunk newTplChunk(newTpl.str, newTpl.length);
 						TemplateParser parser(code, newTplChunk,
 							declarations, templates, tplDir, declIdx);
@@ -772,9 +782,12 @@ int main(int argc, char *args[])
 	Json templates;
 	String code;
 
-	String declBuf(File::readAll(declFileName));
-	declBuf.replace("\r", "");
-	Declaration::parseAllDeclaration(declarations, declBuf);
+	String declBuf; // If block must not release this string, becuase declarations references it
+	if(declFileName.length){
+		declBuf = File::readAll(declFileName);
+		declBuf.replace("\r", "");
+		Declaration::parseAllDeclaration(declarations, declBuf);
+	}
 
 	LOG("Declared classes:");
 	for(auto & i : declarations){

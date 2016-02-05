@@ -192,27 +192,6 @@
 @EndDecl@*/
 
 /*@BeginDecl@
-	Class Payment
-	Fields {
-		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		Text account;				; TEXT
-		Text partner;				; TEXT
-		Double amount;				; DECIMAL(15,3) NOT NULL
-		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
-		Text comment;				; TEXT
-		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
-		}
-	Constraints {
-		PRIMARY KEY (upload_date)
-		FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
-		FOREIGN KEY (subject) REFERENCES item(upload_date) ON DELETE CASCADE ON UPDATE CASCADE
-		}
-@EndDecl@*/
-
-/*@BeginDecl@
 	Class ItemQuery
 	Fields {
 		Text name; key								; TEXT
@@ -289,6 +268,58 @@
 		PRIMARY KEY (query, partner)
 		FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE
 		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class InvEntry
+	Fields {
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text name;					; TEXT
+		Text unit;					; TEXT
+		Text type;					; TEXT
+		Text brand;					; TEXT
+		Double quantity;			; DECIMAL(15,3) NOT NULL // amoutn to buy or not
+		Double price;				; DECIMAL(15,2) NOT NULL // price of gross piece/amount quantity
+		Text currency;				; TEXT
+		Text account;				; TEXT
+		Text partner;				; TEXT
+		Text inventory;				; TEXT
+		Text comment;				; TEXT
+		DateTime invChangeDate;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		Double unitPrice; derived	; DECIMAL(15,3) NOT NULL
+		Double quantityWithUnit; derived	; TEXT
+		}
+	Constraints {
+		PRIMARY KEY (upload_date)
+		FOREIGN KEY (name) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (brand) REFERENCES brand(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (inventory) REFERENCES inventory(name) ON DELETE CASCADE ON UPDATE CASCADE
+		}
+@EndDecl@*/
+
+/*@BeginDecl@
+	Class Payment
+	Fields {
+		DateTime uploadDate; key	; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text account;				; TEXT
+		Text partner;				; TEXT
+		Double amount;				; DECIMAL(15,3) NOT NULL
+		DateTime subject;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		DateTime payDate;			; TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date)
+		Text comment;				; TEXT
+		DateTime lastModified;		; TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		YNBool deleted;				; CHAR(1) NOT NULL DEFAULT 'N'
+		}
+	Constraints {
+		PRIMARY KEY (upload_date)
+		FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (subject) REFERENCES item(upload_date) ON DELETE CASCADE ON UPDATE CASCADE
 		}
 @EndDecl@*/
 

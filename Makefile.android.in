@@ -3,7 +3,7 @@ ICONS_DIR=android/assets/share/@PKGNAME_BASE@/icons
 CSS_DIR=android/assets/share/@PKGNAME_BASE@/css
 TRANSLATIONS_DIR=android/assets/share/@PKGNAME_BASE@/translations
 
-BUTLER_IMAGES+=\
+IMAGES+=\
 	android/res/drawable/icon.png
 
 BUILD_DEPS+=\
