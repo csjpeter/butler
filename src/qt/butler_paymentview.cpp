@@ -76,7 +76,7 @@ void PaymentView::retranslate()
 {
 	QString titlePrefix;
 	if(dbname != "localdb"){
-		titlePrefix = dbname.str;
+		titlePrefix <<= dbname;
 		titlePrefix += " :: ";
 	}
 	setWindowTitle(titlePrefix + tr(TidPaymentWindowTitle));

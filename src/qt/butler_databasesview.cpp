@@ -66,7 +66,7 @@ DatabasesView::~DatabasesView()
 void DatabasesView::retranslate()
 {
 	setWindowTitle(tr(TidDatabasesWindowTitle));
-	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
+	toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.c_str()));
 	relayout();
 }
 
@@ -168,7 +168,7 @@ void DatabasesView::saveState()
 
 	QString name;
 	if(tableView.currentIndex().isValid())
-		name = model.data(tableView.currentIndex().row()).name.str;
+		name <<= model.data(tableView.currentIndex().row()).name;
 	settings.setValue(prefix + "/currentitem", name);
 	settings.setValue(prefix + "/currentitemCol", tableView.currentIndex().column());
 
@@ -214,7 +214,7 @@ void DatabasesView::delDbDesc()
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an database connection"),
-			tr("Shall we delete this database connection: ") + dbdesc.name.str,
+			tr("Shall we delete this database connection: ") + dbdesc.name,
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
@@ -240,7 +240,7 @@ void DatabasesView::useDbDesc()
 		csjp::Object<ItemModel> tmpModel(itemModel(dbname));
 
 		Config::defaultDbName = dbname;
-		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.str));
+		toolBar.setInfo(tr(TidCurrentDbInfo).arg(Config::defaultDbName.c_str()));
 		activeDbChanged();
 	} catch (DbConnectError & e) {
 		QString info;

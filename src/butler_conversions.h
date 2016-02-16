@@ -35,7 +35,7 @@ inline QVariant & operator<<=(QVariant & lhs, const double & rhs) { lhs.setValue
 inline QVariant & operator<<=(QVariant & lhs, const QDateTime & rhs){lhs.setValue(rhs); return lhs;}
 inline QVariant & operator<<=(QVariant & lhs, const QString & rhs) {lhs.setValue(rhs); return lhs;}
 inline QVariant & operator<<=(QVariant & lhs, const csjp::String & rhs)
-		{ QVariant v(QString(rhs.str)); lhs = v; return lhs; }
+		{ QVariant v(QString(rhs.c_str())); lhs = v; return lhs; }
 
 
 inline bool & operator<<=(bool & lhs, const QVariant & rhs) { lhs = rhs.toBool(); return lhs; }

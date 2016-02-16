@@ -37,7 +37,6 @@ String lowerNamingStyle(const StringChunk & str)
 	}
 	return res;
 }
-String lowerNamingStyle(const String & str) { return lowerNamingStyle(String(str.str, str.length));}
 
 class FieldDesc
 {
@@ -690,7 +689,7 @@ public:
 					if(tplFile.exists()) {
 						String newTpl = tplFile.readAll();
 						LOG("Template from file:\n", newTpl);
-						StringChunk newTplChunk(newTpl.str, newTpl.length);
+						StringChunk newTplChunk(newTpl, newTpl.length);
 						TemplateParser parser(code, newTplChunk,
 							declarations, templates, tplDir, declIdx);
 						parser.parse();
@@ -698,7 +697,7 @@ public:
 						//LOG("Non file template included: ", file);
 						String & newTpl = templates[file].value;
 						LOG("Template definition:\n", newTpl);
-						StringChunk newTplChunk(newTpl.str, newTpl.length);
+						StringChunk newTplChunk(newTpl, newTpl.length);
 						TemplateParser parser(code, newTplChunk,
 							declarations, templates, tplDir, declIdx);
 						parser.parse();
@@ -794,7 +793,7 @@ int main(int argc, char *args[])
 	
 	String inputBuf(File::readAll(inputFileName));
 	inputBuf.replace("\r", "");
-	StringChunk inputChunk(inputBuf.str, inputBuf.length);
+	StringChunk inputChunk(inputBuf, inputBuf.length);
 
 	TemplateParser parser(code, inputChunk, declarations, templates, tplDir);
 	try {
@@ -803,5 +802,5 @@ int main(int argc, char *args[])
 		EXCEPTION(e);
 		return -1;
 	}
-	puts(code.str);
+	puts(code);
 }

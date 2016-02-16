@@ -135,7 +135,7 @@ void initRootPath(const char * args0)
 		path << "/" << prefix << "bin/" << cmd;
 	else
 		path << current << "/" << cmd;
-	path <<= QDir::cleanPath(QString(path.str));
+	path <<= QDir::cleanPath(QString(path.c_str()));
 	size_t pos;
 	path.findLastOf(pos, "/");
 	path.chopBack(path.length - pos);
@@ -148,13 +148,13 @@ void initRootPath(const char * args0)
 	root.chopBack(root.length - pos);
 	root << "/";
 
-	rootDir = root.str;
+	rootDir <<= root;
 /*
 	int rootDepth = path.count("/");
 
 	for(int i = 0; i < rootDepth; i++)
 		rootDir.append("../");
-	rootDir.append(path.str);
+	rootDir.append(path);
 	rootDir.append("/");
 */
 	LOG("rootDir: %", rootDir);

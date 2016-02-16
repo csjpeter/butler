@@ -113,7 +113,7 @@ public:
 	void close();
 	SqlTableNames tables();
 	SqlColumns columns(const char * tablename);
-	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.str); }
+	SqlColumns columns(const csjp::String & tablename) { return columns(tablename.c_str()); }
 
 private:
 	friend class SqlTransaction;
@@ -149,10 +149,10 @@ public:
 public:
 	SqlResult exec(const csjp::Array<csjp::String> & params, const char * query);
 	SqlResult exec(const csjp::Array<csjp::String> & params, const csjp::String & query)
-			{ return exec(params, query.str); }
+			{ return exec(params, query.c_str()); }
 	SqlResult exec(const char * query)
 			{ csjp::Array<csjp::String> params; return exec(params, query); }
-	SqlResult exec(const csjp::String & query) { return exec(query.str); }
+	SqlResult exec(const csjp::String & query) { return exec(query.c_str()); }
 	template<typename... Args> SqlResult exec(const char * query, const Args & ... args)
 	{
 		csjp::Array<csjp::String> params;

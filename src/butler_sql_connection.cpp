@@ -183,7 +183,7 @@ void SqlConnection::open()
 	switch(desc.driver){
 		case SqlDriver::SQLite :
 			{
-				int res = sqlite3_open_v2(desc.databaseName.str, &(conn.lite),
+				int res = sqlite3_open_v2(desc.databaseName, &(conn.lite),
 						SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
 				if(res != SQLITE_OK || conn.lite == 0)
 					throw DbError("Failed to open sqlite database/file '%'\nError:\n%",
@@ -201,7 +201,7 @@ void SqlConnection::open()
 							  " user=",quote(desc.username),
 							  " password=",quote(desc.password),
 							  " port='",desc.port,"'");
-				conn.pg = PQconnectdb(connStr.str);
+				conn.pg = PQconnectdb(connStr);
 				if(PQstatus(conn.pg) != CONNECTION_OK){
 					PQfinish(conn.pg);
 					csjp::String str;
@@ -276,7 +276,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				int i = 1;
 				for(const auto & p : params){
 					//LOG("Param %: '%'", i, p);
-					status = sqlite3_bind_text(ppStmt, i++, p.str, p.length, SQLITE_TRANSIENT);
+					status = sqlite3_bind_text(ppStmt, i++, p, p.length, SQLITE_TRANSIENT);
 					if(status != SQLITE_OK){
 						DbError e("Failed to bind parameter '%' to sqlite query:\n%"
 								"\nError: %\n%", p, query, status, sqlite3_errstr(status));
@@ -307,28 +307,28 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				for(size_t i = 1; i <= s; i++){
 					csjp::String p("$");
 					p << i;
-					cmd.replace("?", p.str, 0, cmd.length, 1);
+					cmd.replace("?", p, 0, cmd.length, 1);
 				}
 
 				csjp::PodArray<const char *> paramValues;
 				//LOG("Query: ", cmd);
 				//int i = 1;
 				for(const auto & p : params){
-					paramValues.add(p.str);
+					paramValues.add(p);
 					//LOG("Param %: '%'", i++, p);
 				}
 
 				PGresult * res = PQexecParams(
-							conn.pg, cmd.str, paramValues.length, 0, paramValues.data, 0, 0, 0);
+							conn.pg, cmd, paramValues.length, 0, paramValues.data, 0, 0, 0);
 				/*if(!res)
-				  throw DbError("Fatal, the sql cmd.str result is null. Error message:\n%",
+				  throw DbError("Fatal, the sql cmd result is null. Error message:\n%",
 				  PQerrorMessage(conn.pg));*/
 				const char * errMsg = PQerrorMessage(conn.pg);
 				int status = PQresultStatus(res);
 				if(status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
 					PQclear(res);
 					throw DbError("Failed PgSql query:\n%\n"
-							"Status:%\nError message:\n%", cmd.str, status, errMsg);
+							"Status:%\nError message:\n%", cmd, status, errMsg);
 				}
 				try {
 					return SqlResult(res);
