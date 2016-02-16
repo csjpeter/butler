@@ -8,7 +8,7 @@
 
 #include <QtGui>
 
-#include <csjp_ptr_array.h>
+#include <csjp_array.h>
 
 #include <butler_dataclasses.h>
 #include <butler_widgets.h>
@@ -54,7 +54,7 @@ private slots:
 private:
 	const csjp::String & dbname;
 	const TagSet & tagSet;
-	csjp::PtrArray<QCheckBox> btnContainer;
+	csjp::Array<QCheckBox> btnContainer;
 
 	unsigned columns;
 	unsigned maxTagCheckboxWidth;

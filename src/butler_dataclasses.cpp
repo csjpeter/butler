@@ -11,7 +11,7 @@
 	@Type@Set list;
 	SqlTransaction tr(sql);
 	/* assemble command */
-	csjp::Array<csjp::String> params(128); // FIXME lets make it autoresizing
+	csjp::Array<csjp::String> params;
 	csjp::String cmd("SELECT"
 			" MAX(item.upload_date) AS upload_date,"
 			" MAX(item.name) AS name,"
@@ -181,7 +181,7 @@
 	@Type@Set list;
 	SqlTransaction tr(sql);
 	/* assemble command */
-	csjp::Array<csjp::String> params(128); // FIXME lets make it autoresizing
+	csjp::Array<csjp::String> params;
 	csjp::String cmd("SELECT"
 			" MAX(payment.upload_date) AS upload_date,"
 			" MAX(payment.amount) AS price,"

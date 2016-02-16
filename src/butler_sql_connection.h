@@ -136,8 +136,6 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
-		if(params.capacity == params.length)
-			params.setCapacity(params.length + 1);
 		params.add(move_cast(str));
 	}
 	template<typename Arg, typename... Args>
@@ -145,8 +143,6 @@ public:
 	{
 		csjp::String str;
 		str <<= arg;
-		if(params.capacity == params.length)
-			params.setCapacity(params.length * 2);
 		params.add(move_cast(str));
 		bind(params, args...);
 	}
@@ -159,7 +155,7 @@ public:
 	SqlResult exec(const csjp::String & query) { return exec(query.str); }
 	template<typename... Args> SqlResult exec(const char * query, const Args & ... args)
 	{
-		csjp::Array<csjp::String> params(16);
+		csjp::Array<csjp::String> params;
 		bind(params, args...);
 		return exec(params, query);
 	}

@@ -168,7 +168,6 @@ public:
 		if(2 < words.length)
 			sql = words[2];
 
-		fields.setCapacity(fields.capacity+1);
 		fields.add(name, type, sql, comment, key, set, link, derived, spec);
 	}
 
@@ -186,7 +185,6 @@ public:
 		StringChunk l(line);
 		l.trim("\n\r \t");
 
-		fields.setCapacity(fields.capacity+1);
 		fields.add(l);
 	}
 
