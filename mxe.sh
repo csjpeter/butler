@@ -41,9 +41,9 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
 #--ldflags=-Wl,-subsystem,console
 
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe make -j${JOBS} $@ || exit $?
+exec_in_dir build-for-${DISTRIB_CODENAME}-x-mxe ./configure || exit $?
+exec_in_dir build-for-${DISTRIB_CODENAME}-x-mxe make -j${JOBS} $@ || exit $?
 
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe unix2dos nsis/license.txt || exit $?
-exec_in_dir ${DISTRIB_CODENAME}-x-mxe makensis nsis/$(basename $(ls -1 ${DISTRIB_CODENAME}-x-mxe/nsis/*.nsi))
+exec_in_dir build-for-${DISTRIB_CODENAME}-x-mxe unix2dos nsis/license.txt || exit $?
+exec_in_dir build-for-${DISTRIB_CODENAME}-x-mxe makensis nsis/$(basename $(ls -1 ${DISTRIB_CODENAME}-x-mxe/nsis/*.nsi))
 

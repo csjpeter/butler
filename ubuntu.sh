@@ -56,7 +56,7 @@ function config ()
 		#--cflags=\\\"-fno-candidate-functions\\\" \
 		#--prefix=opt/${PKGNAME_BASE}
 
-	exec_in_dir ${DIST} ./configure || exit $?
+	exec_in_dir build-for-${DIST} ./configure || exit $?
 }
 
 function release ()
@@ -86,7 +86,7 @@ EOF
 	}
 
 	config ${DIST} || exit $?
-	exec_in_dir ${DIST} debuild --no-tgz-check -S -us -uc || exit$?
+	exec_in_dir build-for-${DIST} debuild --no-tgz-check -S -us -uc || exit$?
 	pbuilder-dist ${DIST} ${ARCH} *.dsc --buildresult ${DIST}/ || exit $?
 #		--othermirror "deb http://ppa.launchpad.net/csjpeter/ppa/ubuntu precise main"
 }
@@ -108,12 +108,12 @@ case "${CMD}" in
 	(pump)
 		shift
 		config ${DISTRIB_CODENAME} || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} pump make CXX=distcc $@ || exit $?
+		exec_in_dir build-for-${DISTRIB_CODENAME} pump make CXX=distcc $@ || exit $?
 	;;
 	(debian)
 		shift
 		config ${DISTRIB_CODENAME} || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} debuild \
+		exec_in_dir build-for-${DISTRIB_CODENAME} debuild \
 			--no-tgz-check \
 			--preserve-envvar PATH \
 			--preserve-envvar PKG_CONFIG_LIBDIR \
@@ -124,11 +124,11 @@ case "${CMD}" in
 	(code)
 		shift
 		config ${DISTRIB_CODENAME} --debug || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} make -j1 $@ || exit $?
+		exec_in_dir build-for-${DISTRIB_CODENAME} make -j1 $@ || exit $?
 	;;
 	(*)
 		config ${DISTRIB_CODENAME} --debug || exit $?
-		exec_in_dir ${DISTRIB_CODENAME} make -j${JOBS} $@ || exit $?
+		exec_in_dir build-for-${DISTRIB_CODENAME} make -j${JOBS} $@ || exit $?
 	;;
 esac
 

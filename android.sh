@@ -65,7 +65,7 @@ function config ()
 		--libs=\\\"/${TCROOT}/lib/libcsjp0.3.a\\\" \
 		|| exit $?
 
-	exec_in_dir ${DIST} ./configure || exit $?
+	exec_in_dir build-for-${DIST} ./configure || exit $?
 }
 
 export ANDROID_SDK_API=android-14
@@ -87,7 +87,7 @@ case "${CMD}" in
 		config ${ANDROID_SDK_API} ${ARCH} ${DIST} \
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=debian || exit $?
-		exec_in_dir ${DIST} debuild \
+		exec_in_dir build-for-${DIST} debuild \
 			--no-tgz-check \
 			--preserve-envvar PATH \
 			--preserve-envvar QT_HOME \
@@ -107,7 +107,7 @@ case "${CMD}" in
 			--host=${ANDROID_SDK_API}-${ARCH} \
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} make -j${JOBS} $@ || exit $?
+		exec_in_dir build-for-${DIST} make -j${JOBS} $@ || exit $?
 
 		APKGNAME=${PRJNAME}-${VERSION}_${ANDROID_SDK_API}-${ARCH}
 		for f in $(echo "libcrypto.so libpq.so libssl.so libsqlite3.so"); do
@@ -116,17 +116,17 @@ case "${CMD}" in
 		done
 		test -h ${DIST}/${APKGNAME} || exec_in_dir \
 				${DIST} ln -s android ${APKGNAME} || exit $?
-		exec_in_dir ${DIST} tar -chzf ${APKGNAME}.tgz ${APKGNAME} || exit $?
+		exec_in_dir build-for-${DIST} tar -chzf ${APKGNAME}.tgz ${APKGNAME} || exit $?
 
 		#/home/csjpeter/devtools/Qt5.4/5.4/${ANDROID_ARMV}/bin/androiddeployqt \
 		#	--input ${ANDROID_SDK_API}-${ARCH}/android/deployment-settings.json \
 		#	--output ${ANDROID_SDK_API}-${ARCH}/android/ \
 		#	--android-platform ${ANDROID_SDK_API} --verbose
-		exec_in_dir ${DIST}/android ant debug || exit $?
+		exec_in_dir build-for-${DIST}/android ant debug || exit $?
 	;;
 	(install-apk)
 		DIST=${ANDROID_SDK_API}-${ARCH}
-		adb -d install -r ${DIST}/android/bin/${PKGNAME_BASE}-debug.apk
+		adb -d install -r build-for-${DIST}/android/bin/${PKGNAME_BASE}-debug.apk
 	;;
 	(*)
 		test "x$1" = "x" || { export ANDROID_SDK_API=$1 ; shift ; }
@@ -137,7 +137,7 @@ case "${CMD}" in
 			--host=${ANDROID_SDK_API}-${ARCH} \
 			--target=${ANDROID_SDK_API}-${ARCH} \
 			--packaging=android || exit $?
-		exec_in_dir ${DIST} make -j${JOBS} $@ || exit $?
+		exec_in_dir build-for-${DIST} make -j${JOBS} $@ || exit $?
 	;;
 esac
 
