@@ -24,6 +24,8 @@ TCROOT=opt/mxe
 export PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:/${TCROOT}/lib
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/${TCROOT}/lib/pkgconfig
 
+export QT_SELECT=qt5
+
 ./dist-config.sh \
 	--target=mxe \
 	--exec-postfix=.exe \
