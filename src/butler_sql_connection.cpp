@@ -183,7 +183,7 @@ void SqlConnection::open()
 	switch(desc.driver){
 		case SqlDriver::SQLite :
 			{
-				int res = sqlite3_open_v2(desc.databaseName, &(conn.lite),
+				int res = sqlite3_open_v2(desc.databaseName.c_str(), &(conn.lite),
 						SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
 				if(res != SQLITE_OK || conn.lite == 0)
 					throw DbError("Failed to open sqlite database/file '%'\nError:\n%",
@@ -201,7 +201,7 @@ void SqlConnection::open()
 							  " user=",quote(desc.username),
 							  " password=",quote(desc.password),
 							  " port='",desc.port,"'");
-				conn.pg = PQconnectdb(connStr);
+				conn.pg = PQconnectdb(connStr.c_str());
 				if(PQstatus(conn.pg) != CONNECTION_OK){
 					PQfinish(conn.pg);
 					csjp::String str;
@@ -276,7 +276,8 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				int i = 1;
 				for(const auto & p : params){
 					//LOG("Param %: '%'", i, p);
-					status = sqlite3_bind_text(ppStmt, i++, p, p.length, SQLITE_TRANSIENT);
+					status = sqlite3_bind_text(ppStmt, i++, p.c_str(), p.length,
+							SQLITE_TRANSIENT);
 					if(status != SQLITE_OK){
 						DbError e("Failed to bind parameter '%' to sqlite query:\n%"
 								"\nError: %\n%", p, query, status, sqlite3_errstr(status));
@@ -314,12 +315,12 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 				//LOG("Query: ", cmd);
 				//int i = 1;
 				for(const auto & p : params){
-					paramValues.add(p);
+					paramValues.add(p.c_str());
 					//LOG("Param %: '%'", i++, p);
 				}
 
-				PGresult * res = PQexecParams(
-							conn.pg, cmd, paramValues.length, 0, paramValues.data, 0, 0, 0);
+				PGresult * res = PQexecParams(conn.pg, cmd.c_str(), paramValues.length, 0,
+								paramValues.data, 0, 0, 0);
 				/*if(!res)
 				  throw DbError("Fatal, the sql cmd result is null. Error message:\n%",
 				  PQerrorMessage(conn.pg));*/

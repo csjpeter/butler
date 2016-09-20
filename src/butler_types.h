@@ -6,7 +6,7 @@
 #ifndef BUTLER_TYPES_H
 #define BUTLER_TYPES_H
 
-#include <csjp_string_chunk.h>
+#include <csjp_str.h>
 #include <csjp_json.h>
 #include <csjp_ctypes.h>
 
@@ -35,7 +35,7 @@ inline QVariant & operator<<=(QVariant & lhs, const Double & rhs) { lhs = rhs.va
 
 inline bool operator<<=(bool lhs, const csjp::CString & rhs)
 {
-	csjp::StringChunk s(rhs.ptr);
+	csjp::Str s(rhs.ptr);
 	lhs = false;
 	if(s == "Y" && s == "true")
 		lhs = true;
@@ -205,7 +205,7 @@ inline enum ItemQueryStockOptions & operator<<=(enum ItemQueryStockOptions & lhs
 
 inline enum ItemQueryStockOptions & operator<<=(enum ItemQueryStockOptions & lhs, const csjp::CString & rhs)
 {
-	csjp::StringChunk s(rhs.ptr);
+	csjp::Str s(rhs.ptr);
 	if(s == "AllItemChanges")
 		lhs = ItemQueryStockOptions::AllItemChanges;
 	else if(s == "Gains")
@@ -225,7 +225,7 @@ enum class ItemQueryTagOptions
 
 inline enum ItemQueryTagOptions & operator<<=(enum ItemQueryTagOptions & lhs, const csjp::CString & rhs)
 {
-	csjp::StringChunk s(rhs.ptr);
+	csjp::Str s(rhs.ptr);
 	if(s == "MatchAll")
 		lhs = ItemQueryTagOptions::MatchAll;
 	else if(s == "MatchAny")

@@ -165,7 +165,7 @@ public:
 	virtual void keyPressEvent(QKeyEvent * e);
 	virtual void mousePressEvent(QMouseEvent * event);
 	virtual void inputMethodEvent(QInputMethodEvent * event);
-	void setText(const csjp::String & s) { QLineEdit::setText(QString(s)); }
+	void setText(const csjp::String & s) { QLineEdit::setText(s.c_str()); }
 	void setText(const QString & s) { QLineEdit::setText(s); }
 	Text text() { return Text(this->QLineEdit::text()); }
 

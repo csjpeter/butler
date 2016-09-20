@@ -214,7 +214,7 @@ void DatabasesView::delDbDesc()
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting an database connection"),
-			tr("Shall we delete this database connection: ") + dbdesc.name,
+			tr("Shall we delete this database connection: ") + dbdesc.name.c_str(),
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));
 	if(msg->exec() == QMessageBox::Yes)
