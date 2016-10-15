@@ -179,7 +179,8 @@ void EditItemView::mapToGui()
 	invChangeDateTime.edit.setDateTime(item.invChangeDate);
 
 	unitPriceEditor.blockSignals(true);
-	unitPriceEditor.setValue((0.001 <= item.quantity) ? item.price / item.quantity : 0);
+	unitPriceEditor.setValue((0.001 <= item.quantity) ?
+				item.price / item.quantity : csjp::Double(0.0));
 	unitPriceEditor.blockSignals(false);
 
 	grossPriceEditor.blockSignals(true);

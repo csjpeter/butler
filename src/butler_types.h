@@ -32,7 +32,7 @@ inline QVariant & operator<<=(QVariant & lhs, const Double & rhs) { lhs = rhs.va
 
 
 
-
+/*
 inline bool operator<<=(bool lhs, const csjp::CString & rhs)
 {
 	csjp::Str s(rhs.ptr);
@@ -41,9 +41,16 @@ inline bool operator<<=(bool lhs, const csjp::CString & rhs)
 		lhs = true;
 	return lhs;
 }
+*/
 
 inline csjp::String & operator<<=(csjp::String & lhs, const bool rhs)
-		{ if(rhs) lhs = "Y"; else lhs = "N"; return lhs; }
+{
+	if(rhs)
+		lhs = "Y";
+	else
+		lhs = "N";
+	return lhs;
+}
 
 
 enum class SqlDriver
