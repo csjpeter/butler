@@ -53,31 +53,43 @@ inline csjp::String & operator<<=(csjp::String & lhs, const bool rhs)
 }
 
 
-enum class SqlDriver
+class SqlDriver
 {
-	SQLite,
+	public:
+		enum class Enum{
+			SQLite,
 #ifdef PGSQL
-	PSql,
+			PSql,
 #endif
 #ifdef MYSQL
-	MySQL
+			MySQL
 #endif
+		};
+	private:
+		Enum value;
+	public:
+		SqlDriver() : value((Enum)(0)) {}
+		SqlDriver(SqlDriver::Enum value) : value(value) {}
+		SqlDriver(const SqlDriver & orig) : value(orig.value) {}
+
+		SqlDriver &operator = (const SqlDriver & rhs) { value = rhs.value; return *this; }
+		operator enum Enum () const { return value; }
 };
 
 inline bool operator==(const SqlDriver & lhs, const char * rhs)
 {
 	switch(lhs)
 	{
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			return csjp::CString(rhs) == "SQLite";
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			return csjp::CString(rhs) == "PSql";
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			return csjp::CString(rhs) == "MySQL";
 			break;
 #endif
@@ -87,20 +99,20 @@ inline bool operator==(const SqlDriver & lhs, const char * rhs)
 	return false;
 }
 
-inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
+inline QVariant & operator<<=(QVariant & lhs, const SqlDriver & rhs)
 {
 	switch(rhs)
 	{
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			lhs = "SQLite";
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			lhs = "PSql";
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			lhs = "MySQL";
 			break;
 #endif
@@ -110,38 +122,38 @@ inline QVariant & operator<<=(QVariant & lhs, const enum SqlDriver & rhs)
 	return lhs;
 }
 
-inline enum SqlDriver & operator<<=(enum SqlDriver & lhs, const QVariant & rhs)
+inline SqlDriver & operator<<=(SqlDriver & lhs, const QVariant & rhs)
 {
 		QString s = rhs.toString();
 		if(s == "SQLite")
-				lhs = SqlDriver::SQLite;
+				lhs = SqlDriver::Enum::SQLite;
 #ifdef PGSQL
 		else if(s == "PSql")
-				lhs = SqlDriver::PSql;
+				lhs = SqlDriver::Enum::PSql;
 #endif
 #ifdef MYSQL
 		else if(s == "MySQL")
-				lhs = SqlDriver::MySQL;
+				lhs = SqlDriver::Enum::MySQL;
 #endif
 		else
 			throw csjp::InvalidArgument(EXCLI);
 	return lhs;
 }
 
-inline csjp::String & operator<<=(csjp::String & lhs, const enum SqlDriver & rhs)
+inline csjp::String & operator<<=(csjp::String & lhs, const SqlDriver & rhs)
 {
 	switch(rhs)
 	{
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			lhs = "SQLite";
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			lhs = "PSql";
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			lhs = "MySQL";
 			break;
 #endif

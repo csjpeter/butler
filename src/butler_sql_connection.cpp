@@ -26,7 +26,7 @@ static csjp::String quote(const csjp::String & str)
 }
 
 #ifdef PGSQL
-SqlResult::SqlResult(PGresult * result) : driver(SqlDriver::PSql), row(0)
+SqlResult::SqlResult(PGresult * result) : driver(SqlDriver::Enum::PSql), row(0)
 {
 	this->res.pg = result;
 	int rows = PQntuples(res.pg);
@@ -35,7 +35,7 @@ SqlResult::SqlResult(PGresult * result) : driver(SqlDriver::PSql), row(0)
 }
 #endif
 
-SqlResult::SqlResult(sqlite3_stmt * result, int status) : driver(SqlDriver::SQLite), row(0)
+SqlResult::SqlResult(sqlite3_stmt * result, int status) : driver(SqlDriver::Enum::SQLite), row(0)
 {
 	this->res.lite = result;
 	if(status == SQLITE_DONE)
@@ -45,14 +45,14 @@ SqlResult::SqlResult(sqlite3_stmt * result, int status) : driver(SqlDriver::SQLi
 const char * SqlResult::value(int col)
 {
 	switch(driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			return (const char*)sqlite3_column_text(res.lite, col);
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			return PQgetvalue(res.pg, row, col);
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			return 0;
 #endif
 	}
@@ -62,7 +62,7 @@ const char * SqlResult::value(int col)
 bool SqlResult::nextRow()
 {
 	switch(driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				int err = sqlite3_step(res.lite);
 				if(err == SQLITE_ROW){
@@ -72,7 +72,7 @@ bool SqlResult::nextRow()
 				return false;
 			}
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				int rows = PQntuples(res.pg);
 				if(rows <= row)
@@ -84,7 +84,7 @@ bool SqlResult::nextRow()
 			}
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			return false;
 #endif
 	}
@@ -94,16 +94,16 @@ bool SqlResult::nextRow()
 SqlResult::~SqlResult()
 {
 	switch(driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			sqlite3_finalize(res.lite);
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			PQclear(res.pg);
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			res.mysql = 0;
 			break;
 #endif
@@ -116,16 +116,16 @@ SqlConnection::SqlConnection(const DatabaseDescriptor & _dbDesc) :
 	desc(dbDesc)
 {
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			conn.lite = 0;
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			conn.pg = 0;
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			conn.mysql = 0;
 			break;
 #endif
@@ -147,11 +147,11 @@ SqlConnection::~SqlConnection()
 bool SqlConnection::isOpen()
 {
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			return conn.lite != 0;
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				if(!conn.pg)
 					return false;
@@ -170,7 +170,7 @@ bool SqlConnection::isOpen()
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif
@@ -181,7 +181,7 @@ bool SqlConnection::isOpen()
 void SqlConnection::open()
 {
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				int res = sqlite3_open_v2(desc.databaseName.c_str(), &(conn.lite),
 						SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
@@ -193,7 +193,7 @@ void SqlConnection::open()
 			}
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				csjp::String connStr;
 				connStr.cat(	"host=",quote(desc.host),
@@ -224,7 +224,7 @@ void SqlConnection::open()
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif
@@ -235,7 +235,7 @@ void SqlConnection::open()
 void SqlConnection::close()
 {
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				int res = sqlite3_close(conn.lite);
 				if(res < 0)
@@ -244,13 +244,13 @@ void SqlConnection::close()
 			}
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			PQfinish(conn.pg);
 			conn.pg = 0;
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif
@@ -262,7 +262,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 {
 	if(!isOpen()) open();
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				sqlite3_stmt *ppStmt = 0;
 				int status = sqlite3_prepare_v2(conn.lite, query, strlen(query), &ppStmt, 0);
@@ -301,7 +301,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 			}
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				csjp::String cmd(query);
 				auto s = params.size();
@@ -341,7 +341,7 @@ SqlResult SqlConnection::exec(const csjp::Array<csjp::String> & params, const ch
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif
@@ -353,7 +353,7 @@ SqlTableNames SqlConnection::tables()
 {
 	SqlTableNames tableNames;
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				SqlResult result = exec("SELECT name FROM sqlite_master WHERE type='table'");
 				for(auto & row : result)
@@ -361,7 +361,7 @@ SqlTableNames SqlConnection::tables()
 			}
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				SqlResult result = exec("SELECT table_name FROM information_schema.tables "
 						"WHERE table_schema = 'public' ORDER BY table_name;");
@@ -371,7 +371,7 @@ SqlTableNames SqlConnection::tables()
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif
@@ -383,7 +383,7 @@ SqlColumns SqlConnection::columns(const char * tablename)
 {
 	SqlColumns cols;
 	switch(desc.driver){
-		case SqlDriver::SQLite :
+		case SqlDriver::Enum::SQLite :
 			{
 				csjp::String query;
 				query.cat("PRAGMA table_info('", tablename, "')");
@@ -393,7 +393,7 @@ SqlColumns SqlConnection::columns(const char * tablename)
 			}
 			break;
 #ifdef PGSQL
-		case SqlDriver::PSql :
+		case SqlDriver::Enum::PSql :
 			{
 				SqlResult result = exec("SELECT column_name "
 						"FROM information_schema.columns "
@@ -404,7 +404,7 @@ SqlColumns SqlConnection::columns(const char * tablename)
 			break;
 #endif
 #ifdef MYSQL
-		case SqlDriver::MySQL :
+		case SqlDriver::Enum::MySQL :
 			throw csjp::NotImplemented(EXCLI);
 			break;
 #endif

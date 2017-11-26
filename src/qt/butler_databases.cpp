@@ -137,16 +137,16 @@ void loadDatabaseConfigs()
 		desc->name = db.key;
 #ifdef PGSQL
 		if(db["driver"] == "PSql")
-			desc->driver = SqlDriver::PSql;
+			desc->driver = SqlDriver::Enum::PSql;
 		else
 #endif
 #ifdef MYSQL
 			if(db["driver"] == "MySQL")
-			desc->driver = SqlDriver::MySQL;
+			desc->driver = SqlDriver::Enum::MySQL;
 		else
 #endif
 			if(db["driver"] == "SQLite")
-			desc->driver = SqlDriver::SQLite;
+			desc->driver = SqlDriver::Enum::SQLite;
 		desc->databaseName <<= db["databaseName"];
 		desc->username <<= db["username"];
 		desc->password <<= db["password"];
@@ -161,7 +161,7 @@ void loadDatabaseConfigs()
 	if(!descriptorSet.has("localdb")){
 		csjp::Object<DatabaseDescriptor> sqlitedb(new DatabaseDescriptor);
 		sqlitedb->name = "localdb";
-		sqlitedb->driver = SqlDriver::SQLite;
+		sqlitedb->driver = SqlDriver::Enum::SQLite;
 		sqlitedb->databaseName <<= defaultSQLiteDbFileName();
 		LOG("Sqlite db file path: ", sqlitedb->databaseName);
 		descriptorSet.add(sqlitedb);
@@ -189,12 +189,12 @@ void saveDatabaseConfigs()
 		auto & db = tree[desc.name];
 		switch(desc.driver){
 #ifdef PGSQL
-			case SqlDriver::PSql: db["driver"] = "PSql"; break;
+			case SqlDriver::Enum::PSql: db["driver"] = "PSql"; break;
 #endif
 #ifdef MYSQL
-			case SqlDriver::MySQL: db["driver"] = "MySQL"; break;
+			case SqlDriver::Enum::MySQL: db["driver"] = "MySQL"; break;
 #endif
-			case SqlDriver::SQLite: db["driver"] = "SQLite"; break;
+			case SqlDriver::Enum::SQLite: db["driver"] = "SQLite"; break;
 		}
 		db["databaseName"] = desc.databaseName; //file name in case of sqlite
 		db["username"] = desc.username;

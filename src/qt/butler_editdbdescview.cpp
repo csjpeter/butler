@@ -148,14 +148,14 @@ void EditDatabaseDescriptorView::mapFromGui()
 	databaseDescriptor.port = portEditor.value();
 
 	if(driverOptions.group.checkedButton() == &sqliteDriverOption)
-		databaseDescriptor.driver = SqlDriver::SQLite;
+		databaseDescriptor.driver = SqlDriver::Enum::SQLite;
 #ifdef PGSQL
 	else if(driverOptions.group.checkedButton() == &psqlDriverOption)
-		databaseDescriptor.driver = SqlDriver::PSql;
+		databaseDescriptor.driver = SqlDriver::Enum::PSql;
 #endif
 #ifdef MYSQL
 	else if(driverOptions.group.checkedButton() == &mysqlDriverOption)
-		databaseDescriptor.driver = SqlDriver::MySQL;
+		databaseDescriptor.driver = SqlDriver::Enum::MySQL;
 #endif
 }
 
