@@ -3,6 +3,8 @@
 JOBS=$(expr $(cat /proc/cpuinfo | grep processor | wc -l) + 1)
 
 # ubuntu ditributions
+focal=20.04
+xenial=16.04
 trusty=14.04
 raring=13.04
 quantal=12.10
