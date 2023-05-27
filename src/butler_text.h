@@ -52,3 +52,4 @@ inline Text & operator<<=(Text & str, const csjp::CString & rhs) { str = rhs.ptr
 inline csjp::String & operator<<=(csjp::String & lhs, const Text & rhs){lhs=C_STR(rhs); return lhs;}
 
 #endif
+

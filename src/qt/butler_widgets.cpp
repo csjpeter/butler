@@ -983,3 +983,4 @@ void ToolBar::clearInfo()
 	infoLabel.setText("");
 	infoLabel.hide();
 }
+

@@ -19,8 +19,25 @@ DatabaseDescriptorModel & databasesModel();
 csjp::Object<ItemModel> itemModel(const csjp::String & dbname);
 csjp::Object<PaymentModel> paymentModel(const csjp::String & dbname);
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
-@Type@Model & @type@Model(const csjp::String & dbname);
-@}ForTypes@
+
+TagModel & tagModel(const csjp::String & dbname);
+
+WareModel & wareModel(const csjp::String & dbname);
+
+CompanyModel & companyModel(const csjp::String & dbname);
+
+BrandModel & brandModel(const csjp::String & dbname);
+
+InventoryModel & inventoryModel(const csjp::String & dbname);
+
+PartnerModel & partnerModel(const csjp::String & dbname);
+
+AccountModel & accountModel(const csjp::String & dbname);
+
+ItemQueryModel & itemQueryModel(const csjp::String & dbname);
+
+PaymentQueryModel & paymentQueryModel(const csjp::String & dbname);
+
 
 #endif
+

@@ -286,3 +286,4 @@ void KineticScroller::onKineticTimerElapsed()
 
 /*	DBG("[scroll] speed %, %", speed.x(), speed.y());*/
 }
+

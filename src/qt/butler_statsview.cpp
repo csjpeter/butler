@@ -163,3 +163,4 @@ void StatsView::relayout()
 			break;
 	}
 }
+

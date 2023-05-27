@@ -15,3 +15,4 @@ enum class TextVariant {
 QString translationVariant(const QString & text, TextVariant variant);
 
 #endif
+

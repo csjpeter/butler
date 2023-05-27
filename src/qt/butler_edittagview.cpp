@@ -150,9 +150,131 @@ void EditTagView::saveSlotSpec()
 {
 }
 
-@include@ views.cpp
-@declare@ Tag
 
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditTagView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditTagWindowTitle));
+	mapToGui();
+}
+
+void EditTagView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditTagView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditTagView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != tag)
+			model.update(cursor.row(), tag);
+		auto row = model.set.index(tag.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(tag);
+
+		tag = Tag();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditTagView::resetSlot()
+{
+	mapToGui();
+}
+
+
+void EditTagView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditTagView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditTagView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditTagView" : "NewTagView");
+	PannView::loadState(prefix);
+}
+
+void EditTagView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditTagView" : "NewTagView");
+	PannView::saveState(prefix);
+}
+
+void EditTagView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditTagView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

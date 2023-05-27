@@ -354,3 +354,4 @@ void CustomView::currentIndexChanged(const QModelIndex & current, const QModelIn
 		return;
 	updateToolButtonStates();
 }
+

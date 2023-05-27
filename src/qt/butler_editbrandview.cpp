@@ -159,9 +159,131 @@ void EditBrandView::saveSlotSpec()
 	}
 }
 
-@include@ views.cpp
-@declare@ Brand
 
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditBrandView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditBrandWindowTitle));
+	mapToGui();
+}
+
+void EditBrandView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditBrandView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditBrandView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != brand)
+			model.update(cursor.row(), brand);
+		auto row = model.set.index(brand.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(brand);
+
+		brand = Brand();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditBrandView::resetSlot()
+{
+	mapToGui();
+}
+
+
+void EditBrandView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditBrandView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditBrandView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditBrandView" : "NewBrandView");
+	PannView::loadState(prefix);
+}
+
+void EditBrandView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditBrandView" : "NewBrandView");
+	PannView::saveState(prefix);
+}
+
+void EditBrandView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditBrandView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

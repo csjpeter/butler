@@ -22,3 +22,4 @@ QString translationVariant(const QString & text, TextVariant variant)
 
 	return list.at(lengthVariantIdx);
 }
+

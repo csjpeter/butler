@@ -349,9 +349,131 @@ void EditDatabaseDescriptorView::saveSlotSpec()
 {
 }
 
-@include@ views.cpp
-@declare@ DatabaseDescriptor
 
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditDatabaseDescriptorView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditDatabaseDescriptorWindowTitle));
+	mapToGui();
+}
+
+void EditDatabaseDescriptorView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditDatabaseDescriptorView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditDatabaseDescriptorView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != databaseDescriptor)
+			model.update(cursor.row(), databaseDescriptor);
+		auto row = model.set.index(databaseDescriptor.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(databaseDescriptor);
+
+		databaseDescriptor = DatabaseDescriptor();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditDatabaseDescriptorView::resetSlot()
+{
+	mapToGui();
+}
+
+
+void EditDatabaseDescriptorView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditDatabaseDescriptorView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditDatabaseDescriptorView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditDatabaseDescriptorView" : "NewDatabaseDescriptorView");
+	PannView::loadState(prefix);
+}
+
+void EditDatabaseDescriptorView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditDatabaseDescriptorView" : "NewDatabaseDescriptorView");
+	PannView::saveState(prefix);
+}
+
+void EditDatabaseDescriptorView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditDatabaseDescriptorView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

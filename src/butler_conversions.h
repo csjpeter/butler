@@ -48,3 +48,4 @@ inline csjp::String & operator<<=(csjp::String & lhs, const QVariant & rhs)
 		{ lhs = C_STR(rhs.toString()); return lhs; }
 
 #endif
+

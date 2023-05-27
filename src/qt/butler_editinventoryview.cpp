@@ -150,9 +150,131 @@ void EditInventoryView::saveSlotSpec()
 {
 }
 
-@include@ views.cpp
-@declare@ Inventory
 
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditInventoryView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditInventoryWindowTitle));
+	mapToGui();
+}
+
+void EditInventoryView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditInventoryView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditInventoryView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != inventory)
+			model.update(cursor.row(), inventory);
+		auto row = model.set.index(inventory.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(inventory);
+
+		inventory = Inventory();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditInventoryView::resetSlot()
+{
+	mapToGui();
+}
+
+
+void EditInventoryView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditInventoryView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditInventoryView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditInventoryView" : "NewInventoryView");
+	PannView::loadState(prefix);
+}
+
+void EditInventoryView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditInventoryView" : "NewInventoryView");
+	PannView::saveState(prefix);
+}
+
+void EditInventoryView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditInventoryView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

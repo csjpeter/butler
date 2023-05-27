@@ -60,3 +60,4 @@ void InfoView::saveState()
 	QString prefix("InfoView");
 	PannView::saveState(prefix);
 }
+

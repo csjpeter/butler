@@ -194,9 +194,131 @@ void EditCompanyView::saveSlotSpec()
 {
 }
 
-@include@ views.cpp
-@declare@ Company
 
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditCompanyView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditCompanyWindowTitle));
+	mapToGui();
+}
+
+void EditCompanyView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditCompanyView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditCompanyView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != company)
+			model.update(cursor.row(), company);
+		auto row = model.set.index(company.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(company);
+
+		company = Company();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditCompanyView::resetSlot()
+{
+	mapToGui();
+}
+
+
+void EditCompanyView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditCompanyView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditCompanyView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditCompanyView" : "NewCompanyView");
+	PannView::loadState(prefix);
+}
+
+void EditCompanyView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditCompanyView" : "NewCompanyView");
+	PannView::saveState(prefix);
+}
+
+void EditCompanyView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditCompanyView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

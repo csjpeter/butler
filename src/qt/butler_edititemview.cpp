@@ -593,9 +593,117 @@ void EditItemView::accountNameEditFinishedSlot(int)
 	accountNameEditFinishedSlot();
 }
 
-@include@ views.cpp
-@declare@ Item
 
-@include@ closeEvent loadState saveState changeEvent resizeEvent
-@include@ setCursor prevSlot nextSlot saveSlot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditItemView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditItemView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditItemView" : "NewItemView");
+	PannView::loadState(prefix);
+}
+
+void EditItemView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditItemView" : "NewItemView");
+	PannView::saveState(prefix);
+}
+
+void EditItemView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditItemView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
+void EditItemView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditItemWindowTitle));
+	mapToGui();
+}
+
+void EditItemView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditItemView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditItemView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != item)
+			model.update(cursor.row(), item);
+		auto row = model.set.index(item.uploadDate);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(item);
+
+		item = Item();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+
 

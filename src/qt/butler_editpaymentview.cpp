@@ -305,9 +305,117 @@ void EditPaymentView::accountNameEditFinishedSlot(int)
 	accountNameEditFinishedSlot();
 }
 
-@include@ views.cpp
-@declare@ Payment
 
-@include@ setCursor prevSlot nextSlot saveSlot
-@include@ closeEvent loadState saveState changeEvent resizeEvent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditPaymentView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditPaymentWindowTitle));
+	mapToGui();
+}
+
+void EditPaymentView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditPaymentView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditPaymentView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != payment)
+			model.update(cursor.row(), payment);
+		auto row = model.set.index(payment.uploadDate);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(payment);
+
+		payment = Payment();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+
+void EditPaymentView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditPaymentView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditPaymentView" : "NewPaymentView");
+	PannView::loadState(prefix);
+}
+
+void EditPaymentView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditPaymentView" : "NewPaymentView");
+	PannView::saveState(prefix);
+}
+
+void EditPaymentView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditPaymentView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
 

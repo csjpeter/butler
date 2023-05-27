@@ -361,3 +361,4 @@ void PaymentQueryOptionsView::updateToolButtonStates()
 
 	toolBar.updateButtons();
 }
+

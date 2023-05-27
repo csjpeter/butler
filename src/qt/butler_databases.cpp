@@ -19,47 +19,382 @@ class Database
 private:
 	SqlConnection sql;
 public:
-	@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
-	@Type@Model @type@Model;
-	@}ForTypes@
+	
+	TagModel tagModel;
+	
+	WareModel wareModel;
+	
+	CompanyModel companyModel;
+	
+	BrandModel brandModel;
+	
+	InventoryModel inventoryModel;
+	
+	PartnerModel partnerModel;
+	
+	AccountModel accountModel;
+	
+	ItemQueryModel itemQueryModel;
+	
+	PaymentQueryModel paymentQueryModel;
+	
 private:
 	csjp::String dbname;
 
 public:
 	Database(const csjp::String & dbname) :
 		sql(descriptorSet.query(dbname)),
-		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
-		@type@Model(sql),
-		@}ForTypes@
+		
+		tagModel(sql),
+		
+		wareModel(sql),
+		
+		companyModel(sql),
+		
+		brandModel(sql),
+		
+		inventoryModel(sql),
+		
+		partnerModel(sql),
+		
+		accountModel(sql),
+		
+		itemQueryModel(sql),
+		
+		paymentQueryModel(sql),
+		
 		dbname(dbname)
 	{
 		SqlColumns cols;
 		const SqlTableNames & tables = sql.tables();
 		//for(auto & t : tables)
 		//	LOG("table ", t);
-		@ForTypes{Tag,Ware,WareType,WareTag,Company,Brand,Inventory,Partner,Account
-				Item,ItemQuery,ItemQueryWithTag,ItemQueryWithoutTag,ItemQueryWare
-				ItemQueryPartner,Payment,PaymentQuery,PaymentQueryPartner@
-		if(tables.has("@TableName@")){
-			cols = sql.columns("@TableName@");
-			//LOG("Table @TableName@");
+		
+		if(tables.has("tag")){
+			cols = sql.columns("tag");
+			//LOG("Table tag");
 			//for(auto & c : cols)
 			//	LOG("column ", c);
-			if(@For{TableField@!cols.has("@.colName@") ||@-@!cols.has("@.colName@"))@}@
-				throw DbIncompatibleTableError(
-					"Incompatible table @TableName@ in the openend database.");
+			if(!cols.has("name") ||!cols.has("description") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table tag in the openend database.");
 		} else {
-			sql.exec("CREATE TABLE @TableName@ ("
-				@For{TableField@"@.colName@ @.SqlDecl@,"
-				@-@"@.colName@ @.SqlDecl@"@}@
-				@For{Constraint@", @Constraint@"@}@
-				")");
+			sql.exec("CREATE TABLE tag ("
+"name TEXT,"
+				"description TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
 		}
-		@}ForTypes@
+		
+		if(tables.has("ware")){
+			cols = sql.columns("ware");
+			//LOG("Table ware");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("unit") ||!cols.has("icon") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table ware in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE ware ("
+"name TEXT,"
+				"unit TEXT,"
+				"icon TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
+		}
+		
+		if(tables.has("ware_type")){
+			cols = sql.columns("ware_type");
+			//LOG("Table ware_type");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("ware") ||!cols.has("type") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table ware_type in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE ware_type ("
+"ware TEXT,"
+				"type TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (ware, type)"", FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("ware_tag")){
+			cols = sql.columns("ware_tag");
+			//LOG("Table ware_tag");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("ware") ||!cols.has("tag") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table ware_tag in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE ware_tag ("
+"ware TEXT,"
+				"tag TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (ware, tag)"", FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("company")){
+			cols = sql.columns("company");
+			//LOG("Table company");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("country") ||!cols.has("city") ||!cols.has("postal_code") ||!cols.has("address") ||!cols.has("tax_id") ||!cols.has("icon") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table company in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE company ("
+"name TEXT,"
+				"country TEXT,"
+				"city TEXT,"
+				"postal_code TEXT,"
+				"address TEXT,"
+				"tax_id TEXT,"
+				"icon TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
+		}
+		
+		if(tables.has("brand")){
+			cols = sql.columns("brand");
+			//LOG("Table brand");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("company") ||!cols.has("icon") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table brand in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE brand ("
+"name TEXT,"
+				"company TEXT,"
+				"icon TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"", FOREIGN KEY (company) REFERENCES company(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("inventory")){
+			cols = sql.columns("inventory");
+			//LOG("Table inventory");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("comment") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table inventory in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE inventory ("
+"name TEXT,"
+				"comment TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
+		}
+		
+		if(tables.has("partner")){
+			cols = sql.columns("partner");
+			//LOG("Table partner");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("country") ||!cols.has("city") ||!cols.has("postal_code") ||!cols.has("address") ||!cols.has("company") ||!cols.has("store_name") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table partner in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE partner ("
+"name TEXT,"
+				"country TEXT,"
+				"city TEXT,"
+				"postal_code TEXT,"
+				"address TEXT,"
+				"company TEXT,"
+				"store_name TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"", FOREIGN KEY (company) REFERENCES company(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("account")){
+			cols = sql.columns("account");
+			//LOG("Table account");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("currency") ||!cols.has("bank_office") ||!cols.has("iban") ||!cols.has("swift_code") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table account in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE account ("
+"name TEXT,"
+				"currency TEXT,"
+				"bank_office TEXT,"
+				"iban TEXT,"
+				"swift_code TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"", FOREIGN KEY (bank_office) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("item")){
+			cols = sql.columns("item");
+			//LOG("Table item");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("upload_date") ||!cols.has("name") ||!cols.has("unit") ||!cols.has("type") ||!cols.has("brand") ||!cols.has("quantity") ||!cols.has("price") ||!cols.has("currency") ||!cols.has("account") ||!cols.has("partner") ||!cols.has("inventory") ||!cols.has("comment") ||!cols.has("inv_change_date") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item ("
+"upload_date TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date),"
+				"name TEXT,"
+				"unit TEXT,"
+				"type TEXT,"
+				"brand TEXT,"
+				"quantity DECIMAL(15,3) NOT NULL,"
+				"price DECIMAL(15,2) NOT NULL,"
+				"currency TEXT,"
+				"account TEXT,"
+				"partner TEXT,"
+				"inventory TEXT,"
+				"comment TEXT,"
+				"inv_change_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (upload_date)"", FOREIGN KEY (name) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (brand) REFERENCES brand(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (inventory) REFERENCES inventory(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("item_query")){
+			cols = sql.columns("item_query");
+			//LOG("Table item_query");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("start_date") ||!cols.has("end_date") ||!cols.has("stock_option") ||!cols.has("tag_option") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item_query in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item_query ("
+"name TEXT,"
+				"start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"end_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"stock_option INTEGER NOT NULL,"
+				"tag_option INTEGER NOT NULL,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
+		}
+		
+		if(tables.has("item_query_with_tag")){
+			cols = sql.columns("item_query_with_tag");
+			//LOG("Table item_query_with_tag");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("query") ||!cols.has("tag") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item_query_with_tag in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item_query_with_tag ("
+"query TEXT,"
+				"tag TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (query, tag)"", FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("item_query_without_tag")){
+			cols = sql.columns("item_query_without_tag");
+			//LOG("Table item_query_without_tag");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("query") ||!cols.has("tag") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item_query_without_tag in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item_query_without_tag ("
+"query TEXT,"
+				"tag TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (query, tag)"", FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (tag) REFERENCES tag(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("item_query_ware")){
+			cols = sql.columns("item_query_ware");
+			//LOG("Table item_query_ware");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("query") ||!cols.has("ware") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item_query_ware in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item_query_ware ("
+"query TEXT,"
+				"ware TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (query, ware)"", FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (ware) REFERENCES ware(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("item_query_partner")){
+			cols = sql.columns("item_query_partner");
+			//LOG("Table item_query_partner");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("query") ||!cols.has("partner") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table item_query_partner in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE item_query_partner ("
+"query TEXT,"
+				"partner TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (query, partner)"", FOREIGN KEY (query) REFERENCES item_query(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("payment")){
+			cols = sql.columns("payment");
+			//LOG("Table payment");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("upload_date") ||!cols.has("account") ||!cols.has("partner") ||!cols.has("amount") ||!cols.has("subject") ||!cols.has("pay_date") ||!cols.has("comment") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table payment in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE payment ("
+"upload_date TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date),"
+				"account TEXT,"
+				"partner TEXT,"
+				"amount DECIMAL(15,3) NOT NULL,"
+				"subject TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date),"
+				"pay_date TIMESTAMP CHECK('1970-01-01T00:00:00' < upload_date),"
+				"comment TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (upload_date)"", FOREIGN KEY (account) REFERENCES account(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (subject) REFERENCES item(upload_date) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
+		if(tables.has("payment_query")){
+			cols = sql.columns("payment_query");
+			//LOG("Table payment_query");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("name") ||!cols.has("start_date") ||!cols.has("end_date") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table payment_query in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE payment_query ("
+"name TEXT,"
+				"start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"end_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (name)"				")");
+		}
+		
+		if(tables.has("payment_query_partner")){
+			cols = sql.columns("payment_query_partner");
+			//LOG("Table payment_query_partner");
+			//for(auto & c : cols)
+			//	LOG("column ", c);
+			if(!cols.has("query") ||!cols.has("partner") ||!cols.has("last_modified") ||!cols.has("deleted"))				throw DbIncompatibleTableError(
+					"Incompatible table payment_query_partner in the openend database.");
+		} else {
+			sql.exec("CREATE TABLE payment_query_partner ("
+"query TEXT,"
+				"partner TEXT,"
+				"last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+				"deleted CHAR(1) NOT NULL DEFAULT 'N'"", PRIMARY KEY (query, partner)"", FOREIGN KEY (query) REFERENCES payment_query(name) ON DELETE CASCADE ON UPDATE CASCADE"", FOREIGN KEY (partner) REFERENCES partner(name) ON DELETE CASCADE ON UPDATE CASCADE"				")");
+		}
+		
 
-		@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
-		@type@Model.query();
-		@}ForTypes@
+		
+		tagModel.query();
+		
+		wareModel.query();
+		
+		companyModel.query();
+		
+		brandModel.query();
+		
+		inventoryModel.query();
+		
+		partnerModel.query();
+		
+		accountModel.query();
+		
+		itemQueryModel.query();
+		
+		paymentQueryModel.query();
+		
 	}
 
 	explicit Database(const Database &) = delete;
@@ -236,9 +571,50 @@ csjp::Object<PaymentModel> paymentModel(const csjp::String & dbname)
 	return loadDatabase(dbname).payments();
 }
 
-@ForTypes{Tag,Ware,Company,Brand,Inventory,Partner,Account,ItemQuery,PaymentQuery@
-@Type@Model & @type@Model(const csjp::String & dbname)
+
+TagModel & tagModel(const csjp::String & dbname)
 {
-	return loadDatabase(dbname).@type@Model;
+	return loadDatabase(dbname).tagModel;
 }
-@}ForTypes@
+
+WareModel & wareModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).wareModel;
+}
+
+CompanyModel & companyModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).companyModel;
+}
+
+BrandModel & brandModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).brandModel;
+}
+
+InventoryModel & inventoryModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).inventoryModel;
+}
+
+PartnerModel & partnerModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).partnerModel;
+}
+
+AccountModel & accountModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).accountModel;
+}
+
+ItemQueryModel & itemQueryModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).itemQueryModel;
+}
+
+PaymentQueryModel & paymentQueryModel(const csjp::String & dbname)
+{
+	return loadDatabase(dbname).paymentQueryModel;
+}
+
+

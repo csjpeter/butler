@@ -168,3 +168,4 @@ void PannView::accept() { this->accepted(); this->finished(1); close(); }
 void PannView::reject() { this->rejected(); this->finished(0); close(); }
 void PannView::done(int result) { this->finished(result); close(); }
 
+

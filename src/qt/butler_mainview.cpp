@@ -575,3 +575,4 @@ void MainView::openInfoView()
 		infoView = new InfoView;
 	infoView->activate();
 }
+

@@ -192,9 +192,131 @@ void EditAccountView::saveSlotSpec()
 	}
 }
 
-@include@ views.cpp
-@declare@ Account
 
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditAccountView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditAccountView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditAccountView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditAccountView" : "NewAccountView");
+	PannView::loadState(prefix);
+}
+
+void EditAccountView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditAccountView" : "NewAccountView");
+	PannView::saveState(prefix);
+}
+
+void EditAccountView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditAccountView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
+void EditAccountView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditAccountWindowTitle));
+	mapToGui();
+}
+
+void EditAccountView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditAccountView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditAccountView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != account)
+			model.update(cursor.row(), account);
+		auto row = model.set.index(account.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(account);
+
+		account = Account();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditAccountView::resetSlot()
+{
+	mapToGui();
+}
+
+
 

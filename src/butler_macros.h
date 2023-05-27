@@ -45,3 +45,4 @@
 #define SCC static const char*
 
 #endif
+

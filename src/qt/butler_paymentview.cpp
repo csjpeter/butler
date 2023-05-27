@@ -303,3 +303,4 @@ void PaymentView::currentIndexChanged(const QModelIndex & current, const QModelI
 		return;
 	updateToolButtonStates();
 }
+

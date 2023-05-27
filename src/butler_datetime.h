@@ -63,3 +63,4 @@ inline DateTime & operator<<=(DateTime & time, const QVariant & v)
 		{ time = v.toDateTime(); return time; }
 
 #endif
+

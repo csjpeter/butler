@@ -232,3 +232,4 @@ bool Application::notify(QObject * receiver, QEvent * event)
 
 	return false; /* event was not handled */
 }
+

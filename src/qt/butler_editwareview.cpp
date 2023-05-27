@@ -177,9 +177,131 @@ void EditWareView::saveSlotSpec()
 {
 }
 
-@include@ views.cpp
-@declare@ Ware
 
-@include@ showEvent closeEvent loadState saveState changeEvent resizeEvent
-@include@ setCursor prevSlot nextSlot saveSlot resetSlot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void EditWareView::showEvent(QShowEvent *event)
+{
+	mapToGui();
+
+	PannView::showEvent(event);
+	nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	relayout();
+}
+
+void EditWareView::closeEvent(QCloseEvent *event)
+{
+	saveState();
+	PannView::closeEvent(event);
+}
+
+void EditWareView::loadState()
+{
+	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
+	PannView::loadState(prefix);
+}
+
+void EditWareView::saveState()
+{
+	QString prefix(cursor.isValid() ? "EditWareView" : "NewWareView");
+	PannView::saveState(prefix);
+}
+
+void EditWareView::changeEvent(QEvent * event)
+{
+	PannView::changeEvent(event);
+	if(event->type() == QEvent::LanguageChange)
+		retranslate();
+}
+
+void EditWareView::resizeEvent(QResizeEvent * event)
+{
+	if(layout() && (event->size() == event->oldSize()))
+		return;
+	relayout();
+}
+
+
+void EditWareView::setCursor(const QModelIndex& index)
+{
+	ENSURE(index.isValid(), csjp::LogicError);
+	ENSURE(index.model() == &model, csjp::LogicError);
+
+	cursor = index;
+	setWindowTitle(tr(TidEditWareWindowTitle));
+	mapToGui();
+}
+
+void EditWareView::prevSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (0<cursor.row()) ? (cursor.row()-1) : 0;
+	setCursor(model.index(row, col));
+}
+
+void EditWareView::nextSlot()
+{
+	int col = cursor.column();
+	unsigned row = cursor.row();
+	row = (cursor.row() < model.rowCount() - 1) ?
+			(cursor.row() + 1) : (model.rowCount() - 1);
+	setCursor(model.index(row, col));
+}
+
+void EditWareView::saveSlot()
+{
+	mapFromGui();
+
+	saveSlotSpec();
+
+	if(cursor.isValid()){
+		if(model.data(cursor.row()) != ware)
+			model.update(cursor.row(), ware);
+		auto row = model.set.index(ware.name);
+		setCursor(model.index(row, cursor.column()));
+		updateToolButtonStates();
+		toolBar.setInfo(tr(TidInfoEditSaved));
+	} else {
+		model.addNew(ware);
+
+		ware = Ware();
+		mapToGui();
+		toolBar.setInfo(tr(TidInfoNewSaved));
+		//nameEditor.editor.setFocus(Qt::OtherFocusReason);
+	}
+}
+
+void EditWareView::resetSlot()
+{
+	mapToGui();
+}
+
+
 

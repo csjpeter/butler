@@ -25,15 +25,257 @@
 
 #include <QVariant>
 
-@declare@ DatabaseDescriptor
+
 class DatabaseDescriptor
 {
-	@include@ dataclass_members.h
+	public:
+
+	csjp::String name;	// will be the connection name
+	SqlDriver driver;	// for example SQLite or PSql
+	csjp::String databaseName;	// file name in case of sqlite
+	csjp::String username;
+	csjp::String password;
+	YNBool savePassword;
+	csjp::String host;	// host name or ip
+	UInt port;
+	enum Fields {
+		Name,
+		Driver,
+		DatabaseName,
+		Username,
+		Password,
+		SavePassword,
+		Host,
+		Port,
+		NumOfFields
+
+		, NumOfAllFields
+	};
+
+public:
+	DatabaseDescriptor() {}
+
+	explicit DatabaseDescriptor(const csjp::String & name) :
+		name(name)
+	{}
+
+	explicit DatabaseDescriptor(const DatabaseDescriptor & orig) :
+		name(orig.name),
+		driver(orig.driver),
+		databaseName(orig.databaseName),
+		username(orig.username),
+		password(orig.password),
+		savePassword(orig.savePassword),
+		host(orig.host),
+		port(orig.port)
+	{}
+
+	DatabaseDescriptor(DatabaseDescriptor && temp) :
+		name(csjp::move_cast(temp.name)),
+		driver(csjp::move_cast(temp.driver)),
+		databaseName(csjp::move_cast(temp.databaseName)),
+		username(csjp::move_cast(temp.username)),
+		password(csjp::move_cast(temp.password)),
+		savePassword(csjp::move_cast(temp.savePassword)),
+		host(csjp::move_cast(temp.host)),
+		port(csjp::move_cast(temp.port))
+	{}
+
+	~DatabaseDescriptor() {}
+
+	csjp::Json toJson() const
+	{
+		csjp::Json json;
+	{
+		csjp::String s;
+		s <<= name;
+		json["name"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= driver;
+		json["driver"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= databaseName;
+		json["databaseName"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= username;
+		json["username"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= password;
+		json["password"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= savePassword;
+		json["savePassword"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= host;
+		json["host"] = move_cast(s);
+	}
+	{
+		csjp::String s;
+		s <<= port;
+		json["port"] = move_cast(s);
+	}
+		return json;
+	}
+
+	DatabaseDescriptor& operator=(DatabaseDescriptor && temp)
+	{
+		name = csjp::move_cast(temp.name);
+		driver = csjp::move_cast(temp.driver);
+		databaseName = csjp::move_cast(temp.databaseName);
+		username = csjp::move_cast(temp.username);
+		password = csjp::move_cast(temp.password);
+		savePassword = csjp::move_cast(temp.savePassword);
+		host = csjp::move_cast(temp.host);
+		port = csjp::move_cast(temp.port);
+		return *this;
+	}
+
+	DatabaseDescriptor& operator=(const DatabaseDescriptor & orig)
+	{
+		DatabaseDescriptor copy(orig);
+		csjp::swap(copy, *this);
+		return *this;
+	}
+
+	bool isEqual(const DatabaseDescriptor & other) const
+	{
+		if(
+				name != other.name ||
+				driver != other.driver ||
+				databaseName != other.databaseName ||
+				username != other.username ||
+				password != other.password ||
+				savePassword != other.savePassword ||
+				host != other.host ||
+				port != other.port
+			)
+			return false;
+		return true;
+	}
+
+	bool isLess(const DatabaseDescriptor & other) const
+	{
+		return name < other.name;	}
+
+	bool isMore(const DatabaseDescriptor & other) const
+	{
+		return other.name < name;	}
+
+	bool isLess(const csjp::String & othername) const
+	{
+		return name < othername;	}
+
+	bool isMore(const csjp::String & othername) const
+	{
+		return othername < name;	}
+
+
 };
-@include@ dataclass_nonmembers.h
-class @Type@Set : public csjp::SorterOwnerContainer<@Type@>
+inline bool operator==(const DatabaseDescriptor & a, const DatabaseDescriptor & b) { return a.isEqual(b); }
+inline bool operator!=(const DatabaseDescriptor & a, const DatabaseDescriptor & b) { return !a.isEqual(b); }
+inline bool operator<(const DatabaseDescriptor & a, const DatabaseDescriptor & b) { return a.isLess(b); }
+
+inline csjp::String & operator<<=(csjp::String & lhs, const DatabaseDescriptor & rhs)
+				{ lhs = rhs.toJson().toString(); return lhs; }
+
+inline bool operator<(const csjp::String & a, const DatabaseDescriptor & b) { return b.isMore(a); }
+inline bool operator<(const DatabaseDescriptor & a, const csjp::String & b) { return a.isLess(b); }
+
+class DatabaseDescriptorSet : public csjp::SorterOwnerContainer<DatabaseDescriptor>
 {
-	@include@ dataclass_set.h
+	public:
+	csjp::PodArray<DatabaseDescriptor::Fields> ordering;
+	bool ascending;
+
+	const DatabaseDescriptorSet & operator=(DatabaseDescriptorSet && temp)
+	{
+		csjp::SorterOwnerContainer<DatabaseDescriptor>::operator=(move_cast(temp));
+		return *this;
+	}
+
+	virtual int compare(const DatabaseDescriptor & a, const DatabaseDescriptor & b) const
+	{
+		bool ret;
+
+		switch(ordering[0]) {
+			case DatabaseDescriptor::Name :
+				ret = a.name < b.name;
+				break;
+			case DatabaseDescriptor::Driver :
+				ret = a.driver < b.driver;
+				break;
+			case DatabaseDescriptor::DatabaseName :
+				ret = a.databaseName < b.databaseName;
+				break;
+			case DatabaseDescriptor::Username :
+				ret = a.username < b.username;
+				break;
+			case DatabaseDescriptor::Password :
+				ret = a.password < b.password;
+				break;
+			case DatabaseDescriptor::SavePassword :
+				ret = a.savePassword < b.savePassword;
+				break;
+			case DatabaseDescriptor::Host :
+				ret = a.host < b.host;
+				break;
+			case DatabaseDescriptor::Port :
+				ret = a.port < b.port;
+				break;
+			default:
+				ret =
+					a.name < b.name;
+				break;
+		}
+
+		if(!ascending)
+			ret = !ret;
+
+		return ret ? -1 : 1;
+	}
+
+public:
+	DatabaseDescriptorSet() :
+		csjp::SorterOwnerContainer<DatabaseDescriptor>(),
+		ascending(true)
+	{
+		ordering.add(DatabaseDescriptor::Name);
+		ordering.add(DatabaseDescriptor::Driver);
+		ordering.add(DatabaseDescriptor::DatabaseName);
+		ordering.add(DatabaseDescriptor::Username);
+		ordering.add(DatabaseDescriptor::Password);
+		ordering.add(DatabaseDescriptor::SavePassword);
+		ordering.add(DatabaseDescriptor::Host);
+		ordering.add(DatabaseDescriptor::Port);
+	}
+	DatabaseDescriptorSet(const DatabaseDescriptorSet & ts) :
+		csjp::SorterOwnerContainer<DatabaseDescriptor>(ts),
+		ascending(true)
+	{
+		ordering.add(DatabaseDescriptor::Name);
+		ordering.add(DatabaseDescriptor::Driver);
+		ordering.add(DatabaseDescriptor::DatabaseName);
+		ordering.add(DatabaseDescriptor::Username);
+		ordering.add(DatabaseDescriptor::Password);
+		ordering.add(DatabaseDescriptor::SavePassword);
+		ordering.add(DatabaseDescriptor::Host);
+		ordering.add(DatabaseDescriptor::Port);
+	}
+	~DatabaseDescriptorSet() {}
+
+
 };
 
 inline bool operator<(const char * lhs, const DatabaseDescriptor & rhs)
@@ -174,3 +416,4 @@ private:
 };
 
 #endif
+

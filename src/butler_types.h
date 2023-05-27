@@ -304,3 +304,4 @@ inline csjp::String & operator<<=(csjp::String & lhs, const char * rhs)
 				{ lhs.cutAt(0); lhs << rhs; return lhs; }
 
 #endif
+

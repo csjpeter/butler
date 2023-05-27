@@ -620,3 +620,4 @@ void ItemQueryOptionsView::updateToolButtonStates()
 
 	toolBar.updateButtons();
 }
+

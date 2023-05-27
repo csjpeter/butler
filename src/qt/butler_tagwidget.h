@@ -63,3 +63,4 @@ private:
 bool operator<(const QCheckBox & a, const QCheckBox & b);
 
 #endif
+

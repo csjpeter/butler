@@ -266,3 +266,4 @@ void DatabasesView::currentIndexChanged(const QModelIndex & current, const QMode
 		return;
 	updateToolButtonStates();
 }
+

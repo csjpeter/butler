@@ -3,18 +3,18 @@
  * Copyright (C) 2013 Csaszar, Peter
  */
 
-#define AUTHOR "@AUTHOR@"
-#define EMAIL "@EMAIL@"
-#define VERSION "@VERSION@"
+#define AUTHOR "Császár Péter"
+#define EMAIL "csjpeter@gmail.com"
+#define VERSION "0.1.0"
 #define PREFIX "@PREFIX@"
-#define PRJNAME "@PRJNAME@"
-#define PKGNAME "@PKGNAME@"
-#define ORGANIZATION "@ORGANIZATION@"
-#define ORGANIZATION_DOMAIN_NAME "@ORGANIZATION_DOMAIN_NAME@"
+#define PRJNAME "butler"
+#define PKGNAME "butler0.1"
+#define ORGANIZATION "Peter Csaszar"
+#define ORGANIZATION_DOMAIN_NAME "csjpeter.dyndns.org"
 
-#define ICONS_PATH "@ICONS_PREFIX@share/@PKGNAME_BASE@/icons/"
-#define CSS_PATH "@CSS_PREFIX@share/@PKGNAME_BASE@/css/"
-#define TRANSLATIONS_PATH "@TRANSLATIONS_PREFIX@share/@PKGNAME_BASE@/translations/"
+#define ICONS_PATH "@ICONS_PREFIX@share/butler0.1/icons/"
+#define CSS_PATH "@CSS_PREFIX@share/butler0.1/css/"
+#define TRANSLATIONS_PATH "@TRANSLATIONS_PREFIX@share/butler0.1/translations/"
 
 #define ENDUSER_LICENSE @ENDUSER_LICENSE@
 

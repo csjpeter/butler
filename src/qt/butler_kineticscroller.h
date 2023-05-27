@@ -77,3 +77,4 @@ inline bool operator<(const ObjectScrollerPair & a, const ObjectScrollerPair & b
 extern csjp::OwnerContainer<ObjectScrollerPair> kineticScrollers;
 
 #endif
+

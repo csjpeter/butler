@@ -236,3 +236,4 @@ bool operator<(const QCheckBox & a, const QCheckBox & b)
 {
 	return &a < &b;
 }
+
