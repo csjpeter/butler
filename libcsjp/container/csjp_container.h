@@ -59,11 +59,27 @@ protected:
 	BinTree<DataType> *root;
 
 public:
-	const iterator begin() const {
-		if(!root) return 0; return iterator(root->first()); }
-	const iterator end() const { return iterator(0); }
-	iterator begin() { if(!root) return 0; return iterator(root->first()); }
-	iterator end() { return iterator(0); }
+    const iterator begin() const
+    {
+        if(!root)
+            return 0;
+        return iterator(root->first());
+    }
+
+    const iterator end() const
+    {
+        return iterator(0);
+    }
+    iterator begin()
+    {
+        if(!root)
+            return 0;
+        return iterator(root->first());
+    }
+    iterator end()
+    {
+        return iterator(0);
+    }
 
 /*	bool compare(const DataType &a, const DataType &b) const
 	{

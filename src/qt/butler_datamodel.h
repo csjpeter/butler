@@ -6,6 +6,7 @@
 #ifndef BUTLER_DATAMODEL_H
 #define BUTLER_DATAMODEL_H
 
+#include <csjp_ref_array.h>
 #include <csjp_reference_container.h>
 
 #include <butler_conversions.h>

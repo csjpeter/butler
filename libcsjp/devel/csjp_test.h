@@ -11,6 +11,8 @@
 
 #include <csjp_string.h>
 
+#define TESTDIR "testdir"
+
 #define TEST(...)	{ \
 				csjp::String str; \
 				str.append(VT_GREEN VT_TA_BOLD "TEST     " VT_NORMAL); \

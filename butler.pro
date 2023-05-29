@@ -11,6 +11,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = butler
 TEMPLATE = app
 
+INCLUDEPATH += libcsjp/devel
+INCLUDEPATH += libcsjp/core
+INCLUDEPATH += libcsjp/container
+INCLUDEPATH += libcsjp/system
+INCLUDEPATH += libcsjp/human
+INCLUDEPATH += src
+INCLUDEPATH += src/qt
+
+#DEFINES+="TESTDIR=testdir"
+QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
+QMAKE_CXXFLAGS+=-Wno-deprecated-copy
+QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
+#DEFINES+=-Wnoerror
 
 SOURCES += \
     libcsjp/container/test/array.cpp \

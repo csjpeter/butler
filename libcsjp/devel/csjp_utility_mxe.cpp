@@ -2,6 +2,7 @@
  * Author: Csaszar, Peter <csjpeter@gmail.com>
  * Copyright (C) 2009-2016 Csaszar, Peter
  */
+#ifdef MXE
 
 #include <string.h>
 
@@ -61,3 +62,5 @@ int mkdir(const char *pathname, unsigned mode)
 	(void)mode;
 	return mkdir(pathname);
 }
+
+#endif

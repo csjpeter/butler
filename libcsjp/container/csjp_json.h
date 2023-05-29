@@ -133,32 +133,40 @@ public:
 
 	/* For reading and creating key:value pairs */
 
-	template <typename Type>
-	bool has(const Type & obj)
-	{
-		if(type == Json::Type::Array) { return array.has(obj); }
-		else if(type == Json::Type::Object) { return properties.has(obj); }
-		else { return string.contains(obj); }
+	bool has(const char * objKey) {
+		if(type == Json::Type::Object)
+			return properties.has(objKey);
+		else
+			return false;
 	}
-	template <typename Type>
-	const Json & operator[](const Type & obj) const
-	{
-		try {
-			return properties.query(obj);
-		} catch (Exception &e) {
-			return empty;
-		}
-	}
-	template <typename Type>
-	Json & operator[](const Type & obj)
-	{
-		if(!properties.has(obj)){
+
+	Json & operator[](const char * objKey) {
+		if(!properties.has<const char *>(objKey)){
 			Object<Json> child(new Json());
-			child->key = obj;
+			child->key = objKey;
+			//child->type = Json::Type::String;
 			properties.add(child);
 			type = Json::Type::Object;
 		}
-		return const_cast<Json &>(properties.query(obj));
+		return const_cast<Json &>(properties.query(objKey));
+	}
+
+	bool has(const String & objKey) {
+		if(type == Json::Type::Object)
+			return properties.has(objKey);
+		else
+			return false;
+	}
+
+	Json & operator[](const String & objKey) {
+		if(!properties.has<String>(objKey)){
+			Object<Json> child(new Json());
+			child->key = objKey;
+			//child->type = Json::Type::String;
+			properties.add(child);
+			type = Json::Type::Object;
+		}
+		return const_cast<Json &>(properties.query(objKey));
 	}
 
 	/* To be usable as basic datatypes without explicit conversion. */
@@ -246,6 +254,7 @@ inline bool operator==(const Json& a, const Json& b) { return a.isEqual(b); }
 inline bool operator!=(const Json& a, const Json& b) { return !a.isEqual(b); }
 inline bool operator==(const Json & a, const Str & b) { return a.value().isEqual(b); }
 inline bool operator!=(const Json & a, const Str & b) { return !a.value().isEqual(b); }
+inline bool operator==(const Json & a, const String & b) { return a.value().isEqual(b); }
 inline bool operator==(const Json & a, const char * b) { return a.value().isEqual(b); }
 inline bool operator!=(const Json & a, const char * b) { return !a.value().isEqual(b); }
 

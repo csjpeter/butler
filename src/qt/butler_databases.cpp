@@ -519,9 +519,10 @@ void loadDatabaseConfigs()
 
 void saveDatabaseConfigs()
 {
-	csjp::Json tree("database-connections");
-	for(const auto & desc : descriptorSet){
-		auto & db = tree[desc.name];
+	csjp::Json tree;
+	for(const auto & desc : descriptorSet)
+	{
+        auto & db = tree[desc.name];
 		switch(desc.driver){
 #ifdef PGSQL
 			case SqlDriver::Enum::PSql: db["driver"] = "PSql"; break;

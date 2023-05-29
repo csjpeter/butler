@@ -3,6 +3,8 @@
  * Copyright (C) 2009 Csaszar, Peter
  */
 
+#ifdef ANDROID
+
 #include <stdlib.h>
 
 #include <android/log.h>
@@ -28,3 +30,4 @@ long double log10l(long double d)
 }
 
 }
+#endif

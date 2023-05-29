@@ -7,7 +7,7 @@
 
 #include <QtGui>
 
-#include <config.h>
+//#include <config.h>
 
 #include <csjp_file.h>
 
