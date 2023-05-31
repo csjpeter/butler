@@ -1,9 +1,9 @@
 Compile
 =======
 
-qmake
-make
-make install
+ - qmake
+ - make
+ - make install
 
 Execute
 =======
