@@ -3,14 +3,14 @@ Compile
 
 qmake
 make
+make install
 
 Execute
 =======
 
-build-debug/butler
+release/bin/butler
 
 Install
 =======
 
-Not supported at the moment
-
+Copy the contents of release directory whereever youwant it.

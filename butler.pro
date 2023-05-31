@@ -244,3 +244,6 @@ translations.files = share/translations/en.qm
 translations.files += share/translations/hu.qm
 INSTALLS += translations
 
+DISTFILES += \
+	README.md
+
