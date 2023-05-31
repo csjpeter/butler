@@ -13,4 +13,4 @@ release/bin/butler
 Install
 =======
 
-Copy the contents of release directory whereever youwant it.
+Copy the contents of release directory where ever you want it.
