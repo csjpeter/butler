@@ -4,20 +4,22 @@
  */
 
 #define AUTHOR "Császár Péter"
-#define EMAIL "csjpeter@gmail.com"
-#define VERSION "0.1.0"
-#define PREFIX "usr/"
+#define EMAIL "peter@csaszar.email"
+#define VERSION "0.2.0"
+#define PREFIX "/usr/"
 #define PRJNAME "butler"
-#define PKGNAME "butler0.1"
+#define PKGNAME "butler"
 #define ORGANIZATION "Peter Csaszar"
-#define ORGANIZATION_DOMAIN_NAME "csjpeter.dyndns.org"
+#define ORGANIZATION_DOMAIN_NAME "csjpeter.eu"
 
-#define ICONS_PATH "usr/share/butler0.1/icons/"
-#define CSS_PATH "usr/share/butler0.1/css/"
-#define TRANSLATIONS_PATH "usr/share/butler0.1/translations/"
+#define ICONS_PATH "share/butler/icons/"
+#define CSS_PATH "share/butler/css/"
+#define TRANSLATIONS_PATH "share/butler/translations/"
+
+#define RELATIVE_PATH
 
 #define ENDUSER_LICENSE "This binary software package, butler0.1 0.1.0 was created by\n\
-Császár Péter <csjpeter@gmail.com> on Sat, 27 May 2023 21:00:47 +0200.\n\
+Császár Péter <peter@csaszar.email> on Sat, 27 May 2023 21:00:47 +0200.\n\
 \n\
 License:\n\
 \n\

@@ -82,9 +82,9 @@ void initLibPath(QString path)
 */
 const QString translation(const char * lang)
 {
-	QString path;
+	QString path(PREFIX);
 #ifdef RELATIVE_PATH
-	path += rootDir;
+	path = rootDir;
 #endif
 	path.append(TRANSLATIONS_PATH);
 	LOG("Translation path: ", path);
@@ -95,9 +95,9 @@ const QString translation(const char * lang)
 
 const QString icon(const char * fileName)
 {
-	QString iconPath;
+	QString iconPath(PREFIX);
 #ifdef RELATIVE_PATH
-	iconPath += rootDir;
+	iconPath = rootDir;
 #endif
 	iconPath.append(ICONS_PATH);
 	iconPath.append(fileName);
@@ -107,9 +107,9 @@ const QString icon(const char * fileName)
 
 const QString css(const char * fileName)
 {
-	QString cssPath;
+	QString cssPath(PREFIX);
 #ifdef RELATIVE_PATH
-	cssPath += rootDir;
+	cssPath = rootDir;
 #endif
 	cssPath.append(CSS_PATH);
 	cssPath.append(fileName);
@@ -144,8 +144,8 @@ void initRootPath(const char * args0)
 	csjp::String root(path);
 	root.findLastOf(pos, "/");
 	root.chopBack(root.length - pos);
-	root.findLastOf(pos, "/");
-	root.chopBack(root.length - pos);
+	//root.findLastOf(pos, "/");
+	//root.chopBack(root.length - pos);
 	root << "/";
 
 	rootDir <<= root;

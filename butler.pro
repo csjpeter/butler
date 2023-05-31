@@ -4,7 +4,19 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+CONFIG += static
+CONFIG += staticlib
+#LIBS += /usr/lib/x86_64-linux-gnu/libsqlite3.a
+#LIBS += /usr/lib/x86_64-linux-gnu/libdl.a
+#LIBS += /usr/lib/x86_64-linux-gnu/libc.a
+#LIBS += /usr/lib/x86_64-linux-gnu/libpthread.a
+
+#LIBS += -L/home/csjpeter/devtools/Qt5.4/5.4/gcc_64/lib/
+#LIBS += -L/usr/lib/x86_64-linux-gnu/ -lsqlite3
+#LIBS += -L/home/csjpeter/devtools/Qt5.4/5.4/gcc_64/lib/
+LIBS += /usr/lib/x86_64-linux-gnu/libsqlite3.so
+
+QT     += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,9 +35,12 @@ INCLUDEPATH += src/qt
 QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
 QMAKE_CXXFLAGS+=-Wno-deprecated-copy
 QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
+QMAKE_CXXFLAGS+=-Wno-implicit-fallthrough
+QMAKE_CXXFLAGS+=-Wno-unused-function
 #DEFINES+=-Wnoerror
 
-SOURCES += \
+SOURCES_test += \
+    libcsjp/devel/test/exception.cpp \
     libcsjp/container/test/array.cpp \
     libcsjp/container/test/bintree.cpp \
     libcsjp/container/test/container.cpp \
@@ -36,27 +51,13 @@ SOURCES += \
     libcsjp/container/test/ref_array.cpp \
     libcsjp/container/test/sorter_container.cpp \
     libcsjp/container/test/table.cpp \
-    libcsjp/container/csjp_json.cpp \
     libcsjp/core/test/file.cpp \
     libcsjp/core/test/mutex.cpp \
     libcsjp/core/test/socket.cpp \
     libcsjp/core/test/str.cpp \
     libcsjp/core/test/string.cpp \
-    libcsjp/core/csjp_astr.cpp \
-    libcsjp/core/csjp_file.cpp \
-    libcsjp/core/csjp_mutex.cpp \
-    libcsjp/core/csjp_str.cpp \
-    libcsjp/core/csjp_string.cpp \
-    libcsjp/devel/test/exception.cpp \
-    libcsjp/devel/csjp_exception.cpp \
-    libcsjp/devel/csjp_logger.cpp \
-    libcsjp/devel/csjp_utility.cpp \
-    libcsjp/devel/csjp_utility_android.cpp \
-    libcsjp/devel/csjp_utility_mxe.cpp \
     libcsjp/human/test/text.cpp \
     libcsjp/human/test/unichar.cpp \
-    libcsjp/human/csjp_text.cpp \
-    libcsjp/human/csjp_unichar.cpp \
     libcsjp/system/test/client.cpp \
     libcsjp/system/test/daemon.cpp \
     libcsjp/system/test/epoll.cpp \
@@ -66,7 +67,27 @@ SOURCES += \
     libcsjp/system/test/server.cpp \
     libcsjp/system/test/signal.cpp \
     libcsjp/system/test/socket.cpp \
-    libcsjp/system/test/websocket.cpp \
+    libcsjp/system/test/websocket.cpp
+
+SOURCES_nc += \
+    libcsjp/tools/nc.cpp
+
+SOURCES_unused += \
+    libcsjp/human/csjp_text.cpp \
+    libcsjp/human/csjp_unichar.cpp \
+
+SOURCES += \
+    libcsjp/container/csjp_json.cpp \
+    libcsjp/core/csjp_astr.cpp \
+    libcsjp/core/csjp_file.cpp \
+    libcsjp/core/csjp_mutex.cpp \
+    libcsjp/core/csjp_str.cpp \
+    libcsjp/core/csjp_string.cpp \
+    libcsjp/devel/csjp_exception.cpp \
+    libcsjp/devel/csjp_logger.cpp \
+    libcsjp/devel/csjp_utility.cpp \
+    libcsjp/devel/csjp_utility_android.cpp \
+    libcsjp/devel/csjp_utility_mxe.cpp \
     libcsjp/system/csjp_client.cpp \
     libcsjp/system/csjp_daemon.cpp \
     libcsjp/system/csjp_dup_socket.cpp \
@@ -78,7 +99,6 @@ SOURCES += \
     libcsjp/system/csjp_signal.cpp \
     libcsjp/system/csjp_socket.cpp \
     libcsjp/system/csjp_websocket.cpp \
-    libcsjp/tools/nc.cpp \
     src/qt/butler_application.cpp \
     src/qt/butler_config.cpp \
     src/qt/butler_customview.cpp \
