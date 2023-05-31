@@ -6,7 +6,7 @@
 
 CONFIG += static
 CONFIG += staticlib
-CONFIG+=debug
+CONFIG += debug
 
 QT     += core gui
 
@@ -20,17 +20,10 @@ unix {
     PKGCONFIG += sqlite3
 }
 
-CONFIG(debug, debug|release) {
-    DESTDIR = build-debug
-}
-CONFIG(release, debug|release) {
-    DESTDIR = build-release
-}
-
-OBJECTS_DIR = $$DESTDIR/obj
-MOC_DIR = $$DESTDIR/moc
-RCC_DIR = $$DESTDIR/rcc
-UI_DIR = $$DESTDIR/ui
+OBJECTS_DIR = build/obj
+MOC_DIR = build/moc
+RCC_DIR = build/rcc
+UI_DIR = build/ui
 
 
 INCLUDEPATH += libcsjp/devel
@@ -41,13 +34,13 @@ INCLUDEPATH += libcsjp/human
 INCLUDEPATH += src
 INCLUDEPATH += src/qt
 
-#DEFINES+="TESTDIR=testdir"
 QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
 QMAKE_CXXFLAGS+=-Wno-deprecated-copy
 QMAKE_CXXFLAGS+=-Wno-expansion-to-defined
 QMAKE_CXXFLAGS+=-Wno-implicit-fallthrough
 QMAKE_CXXFLAGS+=-Wno-unused-function
-#DEFINES+=-Wnoerror
+
+QMAKE_CXXFLAGS_DEBUG+=-Og -g3 -ggdb3
 
 SOURCES_test += \
     libcsjp/devel/test/exception.cpp \
@@ -83,8 +76,93 @@ SOURCES_nc += \
     libcsjp/tools/nc.cpp
 
 SOURCES_unused += \
+    libcsjp/human/csjp_text.h \
+    libcsjp/human/csjp_unichar.h \
     libcsjp/human/csjp_text.cpp \
     libcsjp/human/csjp_unichar.cpp \
+
+HEADERS  += \
+    src/qt/butler_abstract_table_model.h \
+    libcsjp/container/csjp_array.h \
+    libcsjp/container/csjp_bintree.h \
+    libcsjp/container/csjp_container.h \
+    libcsjp/container/csjp_ipc_block.h \
+    libcsjp/container/csjp_json.h \
+    libcsjp/container/csjp_owner_container.h \
+    libcsjp/container/csjp_ownerbintree.h \
+    libcsjp/container/csjp_pod_array.h \
+    libcsjp/container/csjp_ref_array.h \
+    libcsjp/container/csjp_reference_container.h \
+    libcsjp/container/csjp_sorter_container.h \
+    libcsjp/container/csjp_sorter_owner_container.h \
+    libcsjp/container/csjp_sorter_reference_container.h \
+    libcsjp/container/csjp_value_bintree.h \
+    libcsjp/container/csjp_value_container.h \
+    libcsjp/core/csjp_astr.h \
+    libcsjp/core/csjp_file.h \
+    libcsjp/core/csjp_mutex.h \
+    libcsjp/core/csjp_stopper.h \
+    libcsjp/core/csjp_str.h \
+    libcsjp/core/csjp_string.h \
+    libcsjp/devel/csjp_carray.h \
+    libcsjp/devel/csjp_ctypes.h \
+    libcsjp/devel/csjp_defines.h \
+    libcsjp/devel/csjp_exception.h \
+    libcsjp/devel/csjp_logger.h \
+    libcsjp/devel/csjp_object.h \
+    libcsjp/devel/csjp_skeleton.h \
+    libcsjp/devel/csjp_test.h \
+    libcsjp/devel/csjp_utility.h \
+    libcsjp/devel/csjp_utility_android.h \
+    libcsjp/devel/csjp_utility_mxe.h \
+    libcsjp/system/csjp_client.h \
+    libcsjp/system/csjp_daemon.h \
+    libcsjp/system/csjp_dup_socket.h \
+    libcsjp/system/csjp_epoll.h \
+    libcsjp/system/csjp_epoll_control.h \
+    libcsjp/system/csjp_http.h \
+    libcsjp/system/csjp_listener.h \
+    libcsjp/system/csjp_server.h \
+    libcsjp/system/csjp_signal.h \
+    libcsjp/system/csjp_socket.h \
+    libcsjp/system/csjp_websocket.h \
+    src/qt/butler_application.h \
+    src/qt/butler_config.h \
+    src/qt/butler_customview.h \
+    src/qt/butler_databases.h \
+    src/qt/butler_databasesview.h \
+    src/qt/butler_datamodel.h \
+    src/qt/butler_editaccountview.h \
+    src/qt/butler_editbrandview.h \
+    src/qt/butler_editcompanyview.h \
+    src/qt/butler_editdbdescview.h \
+    src/qt/butler_editinventoryview.h \
+    src/qt/butler_edititemview.h \
+    src/qt/butler_editpartnerview.h \
+    src/qt/butler_editpaymentview.h \
+    src/qt/butler_edittagview.h \
+    src/qt/butler_editwareview.h \
+    src/qt/butler_infoview.h \
+    src/qt/butler_kineticscroller.h \
+    src/qt/butler_listviews.h \
+    src/qt/butler_mainview.h \
+    src/qt/butler_pannview.h \
+    src/qt/butler_paymentqueryoptionsview.h \
+    src/qt/butler_paymentstatsview.h \
+    src/qt/butler_paymentview.h \
+    src/qt/butler_queryoptionsview.h \
+    src/qt/butler_statsview.h \
+    src/qt/butler_tagwidget.h \
+    src/qt/butler_texts.h \
+    src/qt/butler_widgets.h \
+    src/butler_conversions.h \
+    src/butler_dataclasses.h \
+    src/butler_datetime.h \
+    src/butler_macros.h \
+    src/butler_sql_connection.h \
+    src/butler_text.h \
+    src/butler_types.h \
+    src/config.h
 
 SOURCES += \
     libcsjp/container/csjp_json.cpp \
@@ -142,87 +220,27 @@ SOURCES += \
     src/butler_dataclasses.cpp \
     src/butler_sql_connection.cpp
 
-HEADERS  += \
-    src/qt/butler_abstract_table_model.h \
-    libcsjp/container/csjp_array.h \
-    libcsjp/container/csjp_bintree.h \
-    libcsjp/container/csjp_container.h \
-    libcsjp/container/csjp_ipc_block.h \
-    libcsjp/container/csjp_json.h \
-    libcsjp/container/csjp_owner_container.h \
-    libcsjp/container/csjp_ownerbintree.h \
-    libcsjp/container/csjp_pod_array.h \
-    libcsjp/container/csjp_ref_array.h \
-    libcsjp/container/csjp_reference_container.h \
-    libcsjp/container/csjp_sorter_container.h \
-    libcsjp/container/csjp_sorter_owner_container.h \
-    libcsjp/container/csjp_sorter_reference_container.h \
-    libcsjp/container/csjp_value_bintree.h \
-    libcsjp/container/csjp_value_container.h \
-    libcsjp/core/csjp_astr.h \
-    libcsjp/core/csjp_file.h \
-    libcsjp/core/csjp_mutex.h \
-    libcsjp/core/csjp_stopper.h \
-    libcsjp/core/csjp_str.h \
-    libcsjp/core/csjp_string.h \
-    libcsjp/devel/csjp_carray.h \
-    libcsjp/devel/csjp_ctypes.h \
-    libcsjp/devel/csjp_defines.h \
-    libcsjp/devel/csjp_exception.h \
-    libcsjp/devel/csjp_logger.h \
-    libcsjp/devel/csjp_object.h \
-    libcsjp/devel/csjp_skeleton.h \
-    libcsjp/devel/csjp_test.h \
-    libcsjp/devel/csjp_utility.h \
-    libcsjp/devel/csjp_utility_android.h \
-    libcsjp/devel/csjp_utility_mxe.h \
-    libcsjp/human/csjp_text.h \
-    libcsjp/human/csjp_unichar.h \
-    libcsjp/system/csjp_client.h \
-    libcsjp/system/csjp_daemon.h \
-    libcsjp/system/csjp_dup_socket.h \
-    libcsjp/system/csjp_epoll.h \
-    libcsjp/system/csjp_epoll_control.h \
-    libcsjp/system/csjp_http.h \
-    libcsjp/system/csjp_listener.h \
-    libcsjp/system/csjp_server.h \
-    libcsjp/system/csjp_signal.h \
-    libcsjp/system/csjp_socket.h \
-    libcsjp/system/csjp_websocket.h \
-    src/qt/butler_application.h \
-    src/qt/butler_config.h \
-    src/qt/butler_customview.h \
-    src/qt/butler_databases.h \
-    src/qt/butler_databasesview.h \
-    src/qt/butler_datamodel.h \
-    src/qt/butler_editaccountview.h \
-    src/qt/butler_editbrandview.h \
-    src/qt/butler_editcompanyview.h \
-    src/qt/butler_editdbdescview.h \
-    src/qt/butler_editinventoryview.h \
-    src/qt/butler_edititemview.h \
-    src/qt/butler_editpartnerview.h \
-    src/qt/butler_editpaymentview.h \
-    src/qt/butler_edittagview.h \
-    src/qt/butler_editwareview.h \
-    src/qt/butler_infoview.h \
-    src/qt/butler_kineticscroller.h \
-    src/qt/butler_listviews.h \
-    src/qt/butler_mainview.h \
-    src/qt/butler_pannview.h \
-    src/qt/butler_paymentqueryoptionsview.h \
-    src/qt/butler_paymentstatsview.h \
-    src/qt/butler_paymentview.h \
-    src/qt/butler_queryoptionsview.h \
-    src/qt/butler_statsview.h \
-    src/qt/butler_tagwidget.h \
-    src/qt/butler_texts.h \
-    src/qt/butler_widgets.h \
-    src/butler_conversions.h \
-    src/butler_dataclasses.h \
-    src/butler_datetime.h \
-    src/butler_macros.h \
-    src/butler_sql_connection.h \
-    src/butler_text.h \
-    src/butler_types.h \
-    src/config.h
+DESTDIR = build
+RELEASEDIR = release
+
+butler.path=$$RELEASEDIR/bin/
+butler.files=$$DESTDIR/butler
+INSTALLS += butler
+
+image.path = $$RELEASEDIR/share/butler/icons/
+image.files = share/icons/*.png
+INSTALLS += image
+
+css.path = $$RELEASEDIR/share/butler/css/
+css.files = share/css/application.css
+INSTALLS += css
+
+desktop.path = $$RELEASEDIR/share/applications/butler.desktop
+desktop.files = share/applications/butler.desktop
+INSTALLS += desktop
+
+translations.path = $$RELEASEDIR/share/butler/translations/
+translations.files = share/translations/en.qm
+translations.files += share/translations/hu.qm
+INSTALLS += translations
+

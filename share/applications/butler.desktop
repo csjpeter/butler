@@ -1,12 +1,11 @@
 [Desktop Entry]
-Name=ButlerQt
-Caption=Butler
-GenericName=Butler - shopping list and home accounting
+Name=Butler
+GenericName=Butler - shopping list and home accounting.
 MimeType=application/butler
-Exec=/usr/bin/butler-qt
+Exec=/usr/bin/butler
 Type=Application
 Encoding=UTF-8
-Version=1.0
+Version=0.2.0
 Categories=Application;Office;Qt;User
 Icon=butler
 X-Window-Icon=butler
