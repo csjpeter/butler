@@ -6,15 +6,7 @@
 
 CONFIG += static
 CONFIG += staticlib
-#LIBS += /usr/lib/x86_64-linux-gnu/libsqlite3.a
-#LIBS += /usr/lib/x86_64-linux-gnu/libdl.a
-#LIBS += /usr/lib/x86_64-linux-gnu/libc.a
-#LIBS += /usr/lib/x86_64-linux-gnu/libpthread.a
-
-#LIBS += -L/home/csjpeter/devtools/Qt5.4/5.4/gcc_64/lib/
-#LIBS += -L/usr/lib/x86_64-linux-gnu/ -lsqlite3
-#LIBS += -L/home/csjpeter/devtools/Qt5.4/5.4/gcc_64/lib/
-LIBS += /usr/lib/x86_64-linux-gnu/libsqlite3.so
+CONFIG+=debug
 
 QT     += core gui
 
@@ -22,6 +14,24 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = butler
 TEMPLATE = app
+
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += sqlite3
+}
+
+CONFIG(debug, debug|release) {
+    DESTDIR = build-debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = build-release
+}
+
+OBJECTS_DIR = $$DESTDIR/obj
+MOC_DIR = $$DESTDIR/moc
+RCC_DIR = $$DESTDIR/rcc
+UI_DIR = $$DESTDIR/ui
+
 
 INCLUDEPATH += libcsjp/devel
 INCLUDEPATH += libcsjp/core
