@@ -4,7 +4,7 @@
  */
 
 #define AUTHOR "Császár Péter"
-#define EMAIL "peter@csaszar.email"
+#define EMAIL "csjpeter@gmail.com"
 #define VERSION "0.2.0"
 #define PREFIX "/usr/"
 #define PRJNAME "butler"
@@ -18,8 +18,8 @@
 
 #define RELATIVE_PATH
 
-#define ENDUSER_LICENSE "This binary software package, butler0.1 0.1.0 was created by\n\
-Császár Péter <peter@csaszar.email> on Sat, 27 May 2023 21:00:47 +0200.\n\
+#define ENDUSER_LICENSE "This binary software package, butler 0.2.0 was created by\n\
+Császár Péter <csjpeter@gmail.com>.\n\
 \n\
 License:\n\
 \n\
