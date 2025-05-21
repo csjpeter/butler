@@ -79,7 +79,7 @@ void EPoll::remove(Socket & socket)
 				"Failed to remove a socket from epoll.");
 }
 
-const char * epollEventMap(int event)
+const char * epollEventMap(unsigned event)
 {
 	switch(event)
 	{
