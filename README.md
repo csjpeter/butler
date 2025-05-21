@@ -1,3 +1,8 @@
+
+# Butler
+
+Compiles with Qt4.
+
 Compile
 =======
 
