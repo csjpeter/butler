@@ -23,8 +23,6 @@ public:
 	virtual ~Application();
 
 	void loadTranslation(const char * langCode = NULL);
-	void pixelPerMM();
-	void loadCSS();
 
 	MainView & mainView();
 

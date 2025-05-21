@@ -125,7 +125,7 @@ void DatabasesView::resizeEvent(QResizeEvent * event)
 
 void DatabasesView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void DatabasesView::showEvent(QShowEvent *event)

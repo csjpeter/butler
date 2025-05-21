@@ -207,7 +207,7 @@ void CompanysView::resizeEvent(QResizeEvent * event)
 
 void CompanysView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void CompanysView::showEvent(QShowEvent *event)
@@ -439,7 +439,7 @@ void PartnersView::resizeEvent(QResizeEvent * event)
 
 void PartnersView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void PartnersView::showEvent(QShowEvent *event)
@@ -671,7 +671,7 @@ void AccountsView::resizeEvent(QResizeEvent * event)
 
 void AccountsView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void AccountsView::showEvent(QShowEvent *event)
@@ -905,7 +905,7 @@ void WaresView::resizeEvent(QResizeEvent * event)
 
 void WaresView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void WaresView::showEvent(QShowEvent *event)
@@ -1137,7 +1137,7 @@ void TagsView::resizeEvent(QResizeEvent * event)
 
 void TagsView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void TagsView::showEvent(QShowEvent *event)
@@ -1369,7 +1369,7 @@ void BrandsView::resizeEvent(QResizeEvent * event)
 
 void BrandsView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void BrandsView::showEvent(QShowEvent *event)
@@ -1601,7 +1601,7 @@ void InventorysView::resizeEvent(QResizeEvent * event)
 
 void InventorysView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void InventorysView::showEvent(QShowEvent *event)

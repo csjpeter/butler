@@ -149,7 +149,7 @@ void PaymentView::resizeEvent(QResizeEvent * event)
 
 void PaymentView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void PaymentView::showEvent(QShowEvent *event)
@@ -239,10 +239,14 @@ void PaymentView::delPayment()
 
 	int row = tableView.currentIndex().row();
 	const Payment & payment = model->data(row);
+	QString question(tr("Shall we delete this payment: "));
+    // Add integer to string here
+    question.append(payment.amount.val);
+    question += " " + payment.account + " (" + payment.partner + ")";
 	csjp::Object<QMessageBox> msg(new QMessageBox(
 			QMessageBox::Question,
 			tr("Deleting a payment"),
-			tr("Shall we delete this payment: ") + payment.amount.val +
+			tr("Shall we delete this payment: ").append(payment.amount.val) +
 			" " + payment.account + " (" + payment.partner + ")",
 			QMessageBox::Yes | QMessageBox::No,
 			0, Qt::Dialog));

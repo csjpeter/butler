@@ -215,7 +215,7 @@ public:
 	QLabel label;
 	LineEditor editor;
 private:
-	QRegExpValidator validator;
+	QRegularExpressionValidator validator;
 };
 
 class DoubleEditor : public QWidget
@@ -251,7 +251,7 @@ public:
 private:
 	QString suffix;
 	int precision;
-	QRegExpValidator validator;
+	QDoubleValidator validator;
 };
 
 class QuantityEditor : public DoubleEditor

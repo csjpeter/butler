@@ -160,7 +160,7 @@ void CustomView::resizeEvent(QResizeEvent * event)
 
 void CustomView::keyPressEvent(QKeyEvent * event)
 {
-	qApp->postEvent(&tableView, new QKeyEvent(*event));
+	//qApp->postEvent(&tableView, new QKeyEvent(*event));
 }
 
 void CustomView::showEvent(QShowEvent *event)
