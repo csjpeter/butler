@@ -40,7 +40,9 @@ add_compile_options(
     -Wno-deprecated-copy
     -Wno-implicit-fallthrough
     -Wno-unused-function
-    $<$<CONFIG:Debug>:-Og -g3 -ggdb3>
+    $<$<CONFIG:Debug>:-Og>
+    $<$<CONFIG:Debug>:-g3>
+    $<$<CONFIG:Debug>:-ggdb3>
 )
 
 # Source files
@@ -98,6 +100,7 @@ set(SOURCES
     src/qt/butler_widgets.cpp
     src/qt/main.cpp
     src/butler_dataclasses.cpp
+    src/butler_sql_connection.cpp
 )
 
 # Header files (for IDEs and MOC)
