@@ -10,7 +10,8 @@ Butler is a shopping list like basic home accounting tool.
 Download and install the latest Debian package from the [Releases](https://github.com/csjpeter/butler/releases) page:
 
 ```bash
-sudo dpkg -i butler0.1_0.1.0-24.04-noble_amd64.deb
+# Replace with the actual version you downloaded
+sudo dpkg -i butler0.1_*-24.04-noble_amd64.deb
 ```
 
 If you encounter dependency issues, run:
@@ -45,7 +46,12 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ```
 
-The binary will be located at `build/build/obj/butler`.
+The binary will be located at `build/obj/butler` (relative to the build directory).
+
+To run:
+```bash
+./build/obj/butler
+```
 
 #### Build with qmake
 
@@ -67,17 +73,21 @@ The `.deb` packages will be created in the parent directory.
 
 ## Execute
 
-After building from source:
+After building from source with CMake:
 
 ```bash
-./build/build/obj/butler  # CMake build
-# or
-./butler                  # qmake build
+cd build
+./build/obj/butler
+```
+
+Or with qmake:
+```bash
+./butler
 ```
 
 ## Development
 
-Compiles with Qt5 (Qt4 support is deprecated).
+Built with Qt5 (requires Qt5.15 or later recommended).
 
 ### Project Structure
 
