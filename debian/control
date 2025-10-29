@@ -1,25 +1,34 @@
-Source: butler0.1
+Source: butler
 Section: devel
 Priority: optional
 Maintainer: Császár Péter <csjpeter@gmail.com>
-Standards-Version: 3.9.3
-Build-Depends: make (>=3.0.0), dpkg (>=1.15.0), gawk | mawk, tar (>=1.0.0), gzip (>=1.0.0),
- debhelper (>= 9), pkg-config (>= 0.25), libc6 (>=2.0.0), libcsjp0.3 (>= 0.3.0),
- qtbase5-dev (>= 5.2.1), qtbase5-dev-tools (>= 5.2.1),
- libqt5sql5-sqlite (>= 5.2.1), libqt5gui5 (>= 5.2.1),
- icoutils (>= 0.29.0), dos2unix (>= 5.0.0), nsis (>= 2.46)
+Standards-Version: 4.6.2
+Build-Depends: debhelper-compat (= 13), cmake (>= 3.14), pkg-config,
+ qtbase5-dev, qtbase5-dev-tools,
+ libqt5sql5-sqlite, libsqlite3-dev
 
-Package: butler0.1
+Package: butler
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Butler - shopping list and home accounting.
  Butler is a shopping list like basic home accounting tool.
 
-Package: butler0.1-dbg
+Package: butler-dbg
 Section: debug
 Priority: extra
 Architecture: any
-Depends: butler0.1 (= ${binary:Version}), ${misc:Depends}
-Description: Debug files for butler0.1
+Depends: butler (= ${binary:Version}), ${misc:Depends}
+Description: Debug files for butler
  Butler is a shopping list like basic home accounting tool.
+
+Package: butler-debug
+Section: devel
+Priority: optional
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Butler - debug build with full debugging symbols
+ Butler is a shopping list like basic home accounting tool.
+ .
+ This package contains a non-optimized debug build of butler
+ with full debugging symbols for development and troubleshooting.

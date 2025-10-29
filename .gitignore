@@ -1,0 +1,49 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.exe
+
+# IDE files
+*.pro.user
+*.pro.user.*
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Qt
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*.qm
+
+# Logs
+*.log
+
+# Debian packaging build artifacts
+obj-*/
+debian/.debhelper/
+debian/*.substvars
+debian/*.debhelper.log
+debian/debhelper-build-stamp
+debian/files
+debian/butler0.1/
+debian/butler0.1-dbg/
+src/test_build/
+_codeql_*
+
+# Test directory
+testdir/
+debian/butler/
+debian/butler-dbg/
+debian/butler-debug/
+debian/.debhelper/
+debian/files
+debian/*.debhelper*
+debian/*.substvars
+obj-release/
+obj-debug/

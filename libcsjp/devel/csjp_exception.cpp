@@ -28,7 +28,10 @@ struct NotesNode
 			::free(prev);
 		}
 		if(msg)
+        {
 			::free(msg);
+            msg = nullptr;
+        }
 	}
 
 	char * msg;

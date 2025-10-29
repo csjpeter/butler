@@ -276,12 +276,12 @@ public:
 	/**
 	 * Runtime:		guess O(1)	<br/>
 	 */
-	const DataType & first() const throw()
+	const DataType & first() const
 	{
 		ENSURE(len != 0,  ObjectNotFound);
 		return **val;
 	}
-	DataType & first() throw()
+	DataType & first()
 	{
 		ENSURE(len != 0,  ObjectNotFound);
 		return **val;
@@ -290,12 +290,12 @@ public:
 	/**
 	 * Runtime:		guess O(log(n))	<br/>
 	 */
-	const DataType & last() const throw()
+	const DataType & last() const
 	{
 		ENSURE(len != 0,  ObjectNotFound);
 		return **(val + len - 1);
 	}
-	DataType & last() throw()
+	DataType & last()
 	{
 		ENSURE(len != 0,  ObjectNotFound);
 		return **(val + len - 1);
