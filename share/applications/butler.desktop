@@ -2,13 +2,13 @@
 Name=Butler
 GenericName=Butler - shopping list and home accounting.
 MimeType=application/butler
-Exec=/usr/bin/butler
+Exec=/usr/bin/butler0.1
 Type=Application
 Encoding=UTF-8
 Version=0.2.0
 Categories=Application;Office;Qt;User
-Icon=butler
-X-Window-Icon=butler
-X-Window-Icon-Dimmed=butler
+Icon=butler0.1
+X-Window-Icon=butler0.1
+X-Window-Icon-Dimmed=butler0.1
 X-Osso-Service=butler
 X-Osso-Type=application/x-executable

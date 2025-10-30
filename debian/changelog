@@ -1,3 +1,12 @@
+butler0.1 (0.1.0-24.04-noble) noble; urgency=low
+
+  * Ubuntu 24.04 (Noble) release
+  * Updated packaging for Ubuntu 24.04
+  * Using CMake build system
+  * Updated dependencies for noble
+
+ -- Császár Péter <csjpeter@gmail.com>  Tue, 29 Oct 2024 22:00:00 +0000
+
 butler0.1 (0.1.0-20.04-focal) focal; urgency=low
 
   * Initial public release

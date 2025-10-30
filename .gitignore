@@ -20,3 +20,13 @@ moc_*.cpp
 ui_*.h
 qrc_*.cpp
 *.qm
+
+# Debian packaging build artifacts
+obj-*/
+debian/.debhelper/
+debian/*.substvars
+debian/*.debhelper.log
+debian/debhelper-build-stamp
+debian/files
+debian/butler0.1/
+debian/butler0.1-dbg/
