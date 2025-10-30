@@ -1,3 +1,9 @@
+butler0.1 (0.2) ; urgency=medium
+
+  * Using cmake to build and create debian package with github workflows.
+
+ -- Császár Péter <csjpeter@gmail.com>  Thu, 30 Oct 2025 21:13:28 +0100
+
 butler0.1 (0.1.0-24.04-noble) noble; urgency=low
 
   * Ubuntu 24.04 (Noble) release
