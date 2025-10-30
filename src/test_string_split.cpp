@@ -28,7 +28,7 @@ void TestStringSplit::testSplitWithEmptyParts()
 {
     QString input = "apple,banana,,orange";
     
-    // Test with deprecated API (this is what the current code does)
+    // Test with modern Qt API
     QStringList result = input.split(",", Qt::SkipEmptyParts);
     
     QCOMPARE(result.size(), 3);

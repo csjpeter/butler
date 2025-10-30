@@ -821,7 +821,7 @@ public:
 	{
 		QStringList sl;
 		sl = str.split(",", Qt::SkipEmptyParts);
-		for(auto & s :sl)
+		for(auto & s : sl)
 			s = s.trimmed();
 		for(auto & tag : tags)
 			if(!sl.contains(tag.tag))
