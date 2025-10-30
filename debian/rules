@@ -23,12 +23,19 @@ override_dh_auto_install:
 	# Install desktop file
 	install -D -m 0644 $(CURDIR)/share/applications/butler.desktop \
 		$(CURDIR)/debian/butler0.1/usr/share/applications/butler0.1.desktop
-	# Install icon
+	# Install icon to pixmaps
 	install -D -m 0644 $(CURDIR)/share/icons/butler.png \
 		$(CURDIR)/debian/butler0.1/usr/share/pixmaps/butler0.1.png
-	# Install other share data
-	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler0.1
-	cp -r $(CURDIR)/share/icons $(CURDIR)/debian/butler0.1/usr/share/butler0.1/ || true
+	# Install icons directory
+	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler/icons
+	cp -r $(CURDIR)/share/icons/* $(CURDIR)/debian/butler0.1/usr/share/butler/icons/
+	# Install translation files
+	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler/translations
+	install -m 0644 $(CURDIR)/share/translations/*.qm \
+		$(CURDIR)/debian/butler0.1/usr/share/butler/translations/
+	# Install man page
+	install -D -m 0644 $(CURDIR)/share/man/man1/butler0.1.1 \
+		$(CURDIR)/debian/butler0.1/usr/share/man/man1/butler0.1.1
 
 override_dh_strip:
 	dh_strip --dbg-package=butler0.1-dbg
