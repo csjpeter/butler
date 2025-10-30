@@ -1,3 +1,9 @@
+butler0.1 (0.2.4) noble; urgency=medium
+
+  * Fixed debian packaging to generate only -dbg package (not -dbgsym).
+
+ -- Császár Péter <csjpeter@gmail.com>  Wed, 30 Oct 2025 21:05:42 +0000
+
 butler0.1 (0.2.3) noble; urgency=medium
 
   * Using cmake to build and create debian package with github workflows.
