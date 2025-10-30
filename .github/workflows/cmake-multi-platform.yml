@@ -6,7 +6,7 @@ on:
   push:
     branches: [ "dev/*" ]
   pull_request:
-    branches: [ "master", "release/*" ]
+    branches: [ "master", "stable", "release/*" ]
   workflow_dispatch:
 
 jobs:
