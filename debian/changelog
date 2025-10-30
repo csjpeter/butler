@@ -1,4 +1,4 @@
-butler0.1 (0.2) noble; urgency=medium
+butler0.1 (0.2.3) noble; urgency=medium
 
   * Using cmake to build and create debian package with github workflows.
 
