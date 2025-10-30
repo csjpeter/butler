@@ -19,27 +19,27 @@ override_dh_auto_configure:
 override_dh_auto_install:
 	# Install the binary
 	install -D -m 0755 $(CURDIR)/obj-x86_64-linux-gnu/build/obj/butler \
-		$(CURDIR)/debian/butler0.1/usr/bin/butler0.1
+		$(CURDIR)/debian/butler/usr/bin/butler
 	# Install desktop file
 	install -D -m 0644 $(CURDIR)/share/applications/butler.desktop \
-		$(CURDIR)/debian/butler0.1/usr/share/applications/butler0.1.desktop
+		$(CURDIR)/debian/butler/usr/share/applications/butler.desktop
 	# Install icon to pixmaps
 	install -D -m 0644 $(CURDIR)/share/icons/butler.png \
-		$(CURDIR)/debian/butler0.1/usr/share/pixmaps/butler0.1.png
+		$(CURDIR)/debian/butler/usr/share/pixmaps/butler.png
 	# Install icons directory
-	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler/icons
-	cp -r $(CURDIR)/share/icons/* $(CURDIR)/debian/butler0.1/usr/share/butler/icons/
+	mkdir -p $(CURDIR)/debian/butler/usr/share/butler/icons
+	cp -r $(CURDIR)/share/icons/* $(CURDIR)/debian/butler/usr/share/butler/icons/
 	# Install translation files
-	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler/translations
+	mkdir -p $(CURDIR)/debian/butler/usr/share/butler/translations
 	install -m 0644 $(CURDIR)/share/translations/*.qm \
-		$(CURDIR)/debian/butler0.1/usr/share/butler/translations/
+		$(CURDIR)/debian/butler/usr/share/butler/translations/
 	# Install CSS files
-	mkdir -p $(CURDIR)/debian/butler0.1/usr/share/butler/css
+	mkdir -p $(CURDIR)/debian/butler/usr/share/butler/css
 	install -m 0644 $(CURDIR)/share/css/application.css \
-		$(CURDIR)/debian/butler0.1/usr/share/butler/css/
+		$(CURDIR)/debian/butler/usr/share/butler/css/
 	# Install man page
-	install -D -m 0644 $(CURDIR)/share/man/man1/butler0.1.1 \
-		$(CURDIR)/debian/butler0.1/usr/share/man/man1/butler0.1.1
+	install -D -m 0644 $(CURDIR)/share/man/man1/butler.1 \
+		$(CURDIR)/debian/butler/usr/share/man/man1/butler.1
 
 override_dh_strip:
-	dh_strip --dbg-package=butler0.1-dbg
+	dh_strip --dbg-package=butler-dbg
