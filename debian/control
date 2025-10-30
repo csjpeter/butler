@@ -1,4 +1,4 @@
-Source: butler0.1
+Source: butler
 Section: devel
 Priority: optional
 Maintainer: Császár Péter <csjpeter@gmail.com>
@@ -7,17 +7,17 @@ Build-Depends: debhelper-compat (= 13), cmake (>= 3.14), pkg-config,
  qtbase5-dev, qtbase5-dev-tools,
  libqt5sql5-sqlite, libsqlite3-dev
 
-Package: butler0.1
+Package: butler
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Butler - shopping list and home accounting.
  Butler is a shopping list like basic home accounting tool.
 
-Package: butler0.1-dbg
+Package: butler-dbg
 Section: debug
 Priority: extra
 Architecture: any
-Depends: butler0.1 (= ${binary:Version}), ${misc:Depends}
-Description: Debug files for butler0.1
+Depends: butler (= ${binary:Version}), ${misc:Depends}
+Description: Debug files for butler
  Butler is a shopping list like basic home accounting tool.
