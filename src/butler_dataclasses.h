@@ -790,7 +790,7 @@ public:
 	void setAsTypes(const QString & str)
 	{
 		QStringList sl;
-		sl = str.split(",", QString::SkipEmptyParts);
+		sl = str.split(",", Qt::SkipEmptyParts);
 		for(auto & s : sl)
 			s = s.trimmed();
 		for(auto & type : types)
@@ -820,8 +820,8 @@ public:
 	void setAsTags(const QString & str)
 	{
 		QStringList sl;
-		sl = str.split(",", QString::SkipEmptyParts);
-		for(auto & s :sl)
+		sl = str.split(",", Qt::SkipEmptyParts);
+		for(auto & s : sl)
 			s = s.trimmed();
 		for(auto & tag : tags)
 			if(!sl.contains(tag.tag))
@@ -4443,7 +4443,7 @@ inline QString & operator<<=(QString & str, const ItemQueryWareSet & wares)
 inline bool operator==(const WareTypeSet & a, const QString & b)
 {
 	QStringList sl;
-	sl = b.split(",", QString::SkipEmptyParts);
+	sl = b.split(",", Qt::SkipEmptyParts);
 	unsigned s = sl.size();
 	if(s != a.size())
 		return false;

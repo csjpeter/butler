@@ -30,3 +30,5 @@ debian/debhelper-build-stamp
 debian/files
 debian/butler0.1/
 debian/butler0.1-dbg/
+src/test_build/
+_codeql_*

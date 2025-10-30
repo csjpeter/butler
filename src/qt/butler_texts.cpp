@@ -13,7 +13,7 @@
 
 QString translationVariant(const QString & text, TextVariant variant)
 {
-	QStringList list = text.split(QChar(0x9c), QString::SkipEmptyParts);
+	QStringList list = text.split(QChar(0x9c), Qt::SkipEmptyParts);
 
 	int lengthVariantIdx = static_cast<int>(variant);
 	if(list.size() <= lengthVariantIdx)
