@@ -462,6 +462,9 @@ public:
 			root = repl;
 
 //		DBG("Unlink % - %", this->data, toCStr());
+		/* Save parent before unlinking, needed for balancing when repl is NULL */
+		BinTree<DataType> *saved_parent = parent;
+
 		/* unlink the removed node */
 		parent = NULL;
 		left = NULL;
@@ -470,7 +473,10 @@ public:
 
 		/* Lets check for violations */
 //		DBG("Balancing root % - %", root ? root->data : 0, root ? *((unsigned*)(root->data)) : 0);
-		repl->balancing(root);
+		if(repl != NULL)
+			repl->balancing(root);
+		else if(saved_parent != NULL)
+			saved_parent->balancing(root);
 
 		//if(root)
 		//	root->treeValidity();
