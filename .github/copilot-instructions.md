@@ -249,6 +249,16 @@ When making changes:
 4. The Build Workflow will run on pushes to `dev/*` branches
 5. Pull requests to `master`, `stable`, or `release/*` trigger full CI
 
+## Commit Message Guidelines
+
+Keep commit messages compact and focused:
+
+- **Maximum 5 lines total** including the subject line
+- Subject line: Brief summary of changes (50 characters or less)
+- Body (if needed): 2-3 lines maximum explaining the what and why
+- Use imperative mood ("Add feature" not "Added feature")
+- No need for extensive details - code changes speak for themselves
+
 ## Additional Resources
 
 - Main repository: https://github.com/csjpeter/butler
