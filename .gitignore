@@ -35,3 +35,10 @@ _codeql_*
 
 # Test directory
 testdir/
+debian/butler/
+debian/butler-dbg/
+debian/butler-debug/
+debian/.debhelper/
+debian/files
+debian/*.debhelper*
+debian/*.substvars
