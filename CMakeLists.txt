@@ -148,3 +148,16 @@ target_link_libraries(${PROJECT_NAME}
 
 # Install rules (optional)
 # install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+
+# Enable testing
+enable_testing()
+
+# Add test subdirectories
+add_subdirectory(libcsjp/container/test)
+add_subdirectory(libcsjp/core/test)
+add_subdirectory(libcsjp/devel/test)
+# libcsjp/human tests require ICU - skip for now
+# add_subdirectory(libcsjp/human/test)
+add_subdirectory(libcsjp/system/test)
+add_subdirectory(src/test)
+add_subdirectory(src/qt/test)
