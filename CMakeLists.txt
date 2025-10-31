@@ -38,7 +38,7 @@ elseif(WIN32)
         include_directories(${SQLITE3_INCLUDE_DIR})
         set(SQLITE3_LIBRARIES ${SQLITE3_LIBRARY})
     else()
-        message(WARNING "SQLite3 not found. Attempting to continue without it.")
+        message(FATAL_ERROR "SQLite3 not found. Please install SQLite3 or set CMAKE_PREFIX_PATH to include the SQLite3 installation directory.")
     endif()
 endif()
 

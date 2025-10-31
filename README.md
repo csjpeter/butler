@@ -163,8 +163,7 @@ Or with qmake:
 After building from source with CMake:
 
 ```powershell
-cd build
-.\build\obj\Release\butler.exe
+.\build\build\obj\Release\butler.exe
 ```
 
 Or run from the installation directory if you installed using the installer.

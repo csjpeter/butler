@@ -89,9 +89,11 @@ jobs:
         New-Item -ItemType Directory -Force -Path installer/bin/platforms
         Copy-Item 5.15.2/msvc2019_64/plugins/platforms/qwindows.dll installer/bin/platforms/
         
-        # Copy icon if it exists
+        # Copy icon if it exists, otherwise create a placeholder
         if (Test-Path share/pixmaps/butler.ico) {
           Copy-Item share/pixmaps/butler.ico installer/share/pixmaps/
+        } else {
+          Write-Warning "Icon file not found. NSIS may fail if Icon directive is required."
         }
         
         # Copy license
@@ -100,6 +102,12 @@ jobs:
     - name: Create NSIS script
       shell: bash
       run: |
+        # Check if NSIS template exists
+        if [ ! -f "nsis/install.nsi.in" ]; then
+          echo "Error: NSIS template not found at nsis/install.nsi.in"
+          exit 1
+        fi
+        
         # Generate NSIS script from template
         sed -e "s|@PKGNAME_BASE@|butler|g" \
             -e "s|@TCROOT@||g" \
@@ -114,6 +122,11 @@ jobs:
         
         # Update paths in the NSIS script to match our structure
         sed -i 's|../\${TCROOT}\${PREFIX}/\*|installer/*|g' installer.nsi
+        
+        # If icon doesn't exist, comment out the Icon directive
+        if [ ! -f "installer/share/pixmaps/butler.ico" ]; then
+          sed -i 's|^Icon |; Icon |g' installer.nsi
+        fi
 
     - name: Build installer
       shell: pwsh
