@@ -332,6 +332,7 @@ public:
 				if(r_right_size < r_left_size){
 					//DBG("balancing to left (right)");
 					right->rotateRight(root);
+					right = iter->right;
 					unsigned r2_left_size = right->left ? right->left->size : 0;
 					unsigned r2_right_size = right->right ? right->right->size : 0;
 					if(r2_left_size * 2 + 1 < r2_right_size){
@@ -353,6 +354,7 @@ public:
 				if(l_left_size < l_right_size){
 					//DBG("balancing to right (left)");
 					left->rotateLeft(root);
+					left = iter->left;
 					unsigned l2_left_size = left->left ? left->left->size : 0;
 					unsigned l2_right_size = left->right ? left->right->size : 0;
 					if(l2_left_size * 2 + 1 < l2_right_size){
