@@ -97,7 +97,33 @@ Built with Qt5 (requires Qt5.15 or later recommended).
 - `debian/` - Debian packaging files
 - `.github/workflows/` - CI/CD workflows
 
+### Testing
+
+The project includes unit tests for the libcsjp library and application code.
+
+#### Running Tests
+
+To run all tests:
+
+```bash
+mkdir -p testdir  # Some tests require this directory
+cd build
+ctest --build-config Debug --output-on-failure
+```
+
+#### Test Organization
+
+- `libcsjp/container/test/` - Container data structure tests
+- `libcsjp/core/test/` - Core utilities (file, string, mutex) tests
+- `libcsjp/devel/test/` - Development utilities (exception) tests
+- `libcsjp/system/test/` - System/network (socket, epoll, HTTP) tests
+- `src/test/` - Application data classes tests
+- `src/qt/test/` - Qt-specific code tests
+
+Tests are automatically run by the Build Workflow on pull requests and pushes to development branches.
+
 ## License
 
 See LICENSE file for details.
+
 
