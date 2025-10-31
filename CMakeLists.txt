@@ -87,19 +87,6 @@ set(SOURCES
     libcsjp/devel/csjp_exception.cpp
     libcsjp/devel/csjp_logger.cpp
     libcsjp/devel/csjp_utility.cpp
-    libcsjp/devel/csjp_utility_android.cpp
-    libcsjp/devel/csjp_utility_mxe.cpp
-    libcsjp/system/csjp_client.cpp
-    libcsjp/system/csjp_daemon.cpp
-    libcsjp/system/csjp_dup_socket.cpp
-    libcsjp/system/csjp_epoll.cpp
-    libcsjp/system/csjp_epoll_control.cpp
-    libcsjp/system/csjp_http.cpp
-    libcsjp/system/csjp_listener.cpp
-    libcsjp/system/csjp_server.cpp
-    libcsjp/system/csjp_signal.cpp
-    libcsjp/system/csjp_socket.cpp
-    libcsjp/system/csjp_websocket.cpp
     src/qt/butler_application.cpp
     src/qt/butler_config.cpp
     src/qt/butler_customview.cpp
@@ -133,6 +120,32 @@ set(SOURCES
     src/butler_dataclasses.cpp
     src/butler_sql_connection.cpp
 )
+
+# Platform-specific utility files
+if(ANDROID)
+    list(APPEND SOURCES libcsjp/devel/csjp_utility_android.cpp)
+endif()
+
+if(WIN32)
+    list(APPEND SOURCES libcsjp/devel/csjp_utility_mxe.cpp)
+endif()
+
+# UNIX-specific system/network files (not used by Butler app, but included for completeness on Linux)
+if(UNIX)
+    list(APPEND SOURCES
+        libcsjp/system/csjp_client.cpp
+        libcsjp/system/csjp_daemon.cpp
+        libcsjp/system/csjp_dup_socket.cpp
+        libcsjp/system/csjp_epoll.cpp
+        libcsjp/system/csjp_epoll_control.cpp
+        libcsjp/system/csjp_http.cpp
+        libcsjp/system/csjp_listener.cpp
+        libcsjp/system/csjp_server.cpp
+        libcsjp/system/csjp_signal.cpp
+        libcsjp/system/csjp_socket.cpp
+        libcsjp/system/csjp_websocket.cpp
+    )
+endif()
 
 # Header files (for IDEs and MOC)
 set(HEADERS
@@ -189,6 +202,9 @@ add_subdirectory(libcsjp/core/test)
 add_subdirectory(libcsjp/devel/test)
 # libcsjp/human tests require ICU - skip for now
 # add_subdirectory(libcsjp/human/test)
-add_subdirectory(libcsjp/system/test)
+# libcsjp/system tests use UNIX-specific networking code - skip on Windows
+if(UNIX)
+    add_subdirectory(libcsjp/system/test)
+endif()
 add_subdirectory(src/test)
 add_subdirectory(src/qt/test)
