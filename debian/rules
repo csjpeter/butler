@@ -64,3 +64,4 @@ override_dh_auto_install:
 override_dh_strip:
 	dh_strip --dbg-package=butler-dbg -pbutler
 	# Don't strip butler-debug package - skip it entirely
+	dh_strip -Nbutler-debug
