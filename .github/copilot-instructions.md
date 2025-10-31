@@ -49,7 +49,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ```
 
-The binary will be located at `build/build/obj/butler`.
+The binary will be located at `build/obj/butler` (relative to the build directory).
 
 **qmake (Alternative):**
 ```bash
