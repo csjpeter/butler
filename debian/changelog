@@ -1,3 +1,11 @@
+butler (0.2.5) noble; urgency=medium
+
+  * Added butler-debug package with non-optimized debug build.
+  * Build both Release and Debug configurations in debian packaging.
+  * Debug binary installed as /usr/bin/butler-debug with full symbols.
+
+ -- Császár Péter <csjpeter@gmail.com>  Thu, 31 Oct 2025 20:45:00 +0000
+
 butler (0.2.4) noble; urgency=medium
 
   * Fixed debian packaging to generate only -dbg package (not -dbgsym).

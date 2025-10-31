@@ -11,7 +11,7 @@ Download and install the latest Debian package from the [Releases](https://githu
 
 ```bash
 # Replace with the actual version you downloaded
-sudo dpkg -i butler0.1_*-24.04-noble_amd64.deb
+sudo dpkg -i butler_*_amd64.deb
 ```
 
 If you encounter dependency issues, run:
@@ -23,10 +23,25 @@ sudo apt-get install -f
 After installation, you can run Butler with:
 
 ```bash
-butler0.1
+butler
 ```
 
 Or find it in your application menu as "Butler".
+
+#### Available Packages
+
+The project provides three Debian packages:
+
+- **butler**: The main package with optimized release binary
+- **butler-dbg**: Debug symbols for the release binary (for debugging optimized code)
+- **butler-debug**: Non-optimized debug build with full debugging symbols (for development and troubleshooting)
+
+To install the debug version for development:
+
+```bash
+sudo dpkg -i butler-debug_*_amd64.deb
+butler-debug
+```
 
 ### Building from Source
 
