@@ -20,7 +20,7 @@ override_dh_auto_test:
 	# Create testdir required by some tests
 	mkdir -p $(CURDIR)/testdir
 	# Run tests sequentially to avoid port conflicts
-	dh_auto_test -- ARGS="--verbose"
+	dh_auto_test -- ARGS="--verbose -j1"
 
 override_dh_auto_install:
 	# Install the binary
