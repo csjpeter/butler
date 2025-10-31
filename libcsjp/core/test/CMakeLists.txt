@@ -5,6 +5,7 @@ macro(add_csjp_test test_name sources)
     add_executable(${test_name} ${sources})
     target_link_libraries(${test_name} ${SQLITE3_LIBRARIES})
     add_test(NAME ${test_name} COMMAND ${test_name})
+    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endmacro()
 
 # Common source files for tests

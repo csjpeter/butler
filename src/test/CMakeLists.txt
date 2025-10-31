@@ -12,6 +12,7 @@ macro(add_butler_test test_name sources)
         ${SQLITE3_LIBRARIES}
     )
     add_test(NAME ${test_name} COMMAND ${test_name})
+    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endmacro()
 
 # Common source files for butler tests

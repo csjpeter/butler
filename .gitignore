@@ -32,3 +32,6 @@ debian/butler0.1/
 debian/butler0.1-dbg/
 src/test_build/
 _codeql_*
+
+# Test directory
+testdir/
