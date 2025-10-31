@@ -80,7 +80,7 @@ void Socket::close(bool throws) const
 bool Socket::readToBuffer()
 {
 	if(file < 0)
-		throw SocketClosed("Can not read on closed Socket.");
+		throw InvalidState("Can not read on closed Socket.");
 
 	char buffer[64*1024];
 	ssize_t readIn = 0;
@@ -108,7 +108,7 @@ bool Socket::readToBuffer()
 String Socket::receive(size_t length)
 {
 	if(file < 0)
-		throw SocketClosed("Can not receive on closed Socket.");
+		throw InvalidState("Can not receive on closed Socket.");
 
 	if(readBuffer.length < length){
 		readToBuffer();
@@ -126,7 +126,7 @@ String Socket::receive(size_t length)
 bool Socket::writeFromBuffer()
 {
 	if(file < 0)
-		throw SocketClosed("Can not write on closed Socket.");
+		throw InvalidState("Can not write on closed Socket.");
 
 	long unsigned written = 0;
 	int justWritten = 0;
@@ -161,7 +161,7 @@ bool Socket::writeFromBuffer()
 bool Socket::send(const Str & data)
 {
 	if(file < 0)
-		throw SocketClosed("Can not send on closed Socket.");
+		throw InvalidState("Can not send on closed Socket.");
 
 	writeBuffer.append(data);
 
