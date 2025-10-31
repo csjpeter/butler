@@ -21,3 +21,14 @@ Architecture: any
 Depends: butler (= ${binary:Version}), ${misc:Depends}
 Description: Debug files for butler
  Butler is a shopping list like basic home accounting tool.
+
+Package: butler-debug
+Section: devel
+Priority: optional
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Butler - debug build with full debugging symbols
+ Butler is a shopping list like basic home accounting tool.
+ .
+ This package contains a non-optimized debug build of butler
+ with full debugging symbols for development and troubleshooting.
