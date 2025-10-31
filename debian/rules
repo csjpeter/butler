@@ -16,6 +16,12 @@ override_dh_auto_configure:
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr
 
+override_dh_auto_test:
+	# Create testdir required by some tests
+	mkdir -p $(CURDIR)/testdir
+	# Run tests sequentially to avoid port conflicts
+	dh_auto_test -- ARGS="--verbose -j1"
+
 override_dh_auto_install:
 	# Install the binary
 	install -D -m 0755 $(CURDIR)/obj-x86_64-linux-gnu/build/obj/butler \
