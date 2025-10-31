@@ -11,16 +11,35 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
 # Output directories
+# For multi-config generators (Visual Studio, Xcode), output goes to config-specific subdirs
+# For single-config generators (Unix Makefiles, Ninja), output goes directly to build/obj
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/obj)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/obj)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/obj)
+# Also set per-configuration directories for multi-config generators
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG_UPPER)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/build/obj/${OUTPUTCONFIG})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/build/obj/${OUTPUTCONFIG})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG_UPPER} ${CMAKE_BINARY_DIR}/build/obj/${OUTPUTCONFIG})
+endforeach()
 
-# Unix-specific settings
+# Platform-specific settings
 if(UNIX)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(SQLITE3 REQUIRED sqlite3)
     include_directories(${SQLITE3_INCLUDE_DIRS})
     link_libraries(${SQLITE3_LIBRARIES})
+elseif(WIN32)
+    # On Windows, find SQLite3 using CMake's find_library
+    find_path(SQLITE3_INCLUDE_DIR sqlite3.h)
+    find_library(SQLITE3_LIBRARY NAMES sqlite3)
+    if(SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
+        include_directories(${SQLITE3_INCLUDE_DIR})
+        set(SQLITE3_LIBRARIES ${SQLITE3_LIBRARY})
+    else()
+        message(WARNING "SQLite3 not found. Attempting to continue without it.")
+    endif()
 endif()
 
 # Include directories
@@ -35,15 +54,27 @@ include_directories(
 )
 
 # Compiler flags
-add_compile_options(
-    -Wno-expansion-to-defined
-    -Wno-deprecated-copy
-    -Wno-implicit-fallthrough
-    -Wno-unused-function
-    $<$<CONFIG:Debug>:-Og>
-    $<$<CONFIG:Debug>:-g3>
-    $<$<CONFIG:Debug>:-ggdb3>
-)
+if(MSVC)
+    # MSVC-specific flags
+    add_compile_options(
+        /W3
+        $<$<CONFIG:Debug>:/Od>
+        $<$<CONFIG:Debug>:/Zi>
+    )
+    # Disable specific warnings for Qt and third-party code
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+else()
+    # GCC/Clang flags
+    add_compile_options(
+        -Wno-expansion-to-defined
+        -Wno-deprecated-copy
+        -Wno-implicit-fallthrough
+        -Wno-unused-function
+        $<$<CONFIG:Debug>:-Og>
+        $<$<CONFIG:Debug>:-g3>
+        $<$<CONFIG:Debug>:-ggdb3>
+    )
+endif()
 
 # Source files
 set(SOURCES

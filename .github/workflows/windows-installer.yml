@@ -1,0 +1,147 @@
+name: Build Windows Installer
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "master", "stable", "release/*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-installer:
+    name: Build Windows Installer
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      shell: pwsh
+      run: |
+        # Install Qt5 using aqtinstall
+        pip install aqtinstall
+        aqt install-qt windows desktop 5.15.2 win64_msvc2019_64 -m qtbase
+        
+        # Install SQLite3 using vcpkg
+        vcpkg install sqlite3:x64-windows
+        
+        # Install NSIS for creating installer
+        choco install nsis -y
+
+    - name: Set up MSVC
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Configure CMake
+      shell: bash
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/5.15.2/msvc2019_64;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -S .
+
+    - name: Build
+      shell: bash
+      run: cmake --build build --config Release
+
+    - name: Get version
+      id: get_version
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == v* ]]; then
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUM="${VERSION#v}"
+        else
+          VERSION="dev"
+          VERSION_NUM="0.0.1"
+        fi
+        VERSION_MAJOR="${VERSION_NUM%%.*}"
+        VERSION_MINOR="${VERSION_NUM#*.}"
+        VERSION_MINOR="${VERSION_MINOR%%.*}"
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "version_num=${VERSION_NUM}" >> $GITHUB_OUTPUT
+        echo "version_major=${VERSION_MAJOR}" >> $GITHUB_OUTPUT
+        echo "version_minor=${VERSION_MINOR}" >> $GITHUB_OUTPUT
+
+    - name: Prepare installer directory
+      shell: pwsh
+      run: |
+        # Create installer staging directory
+        New-Item -ItemType Directory -Force -Path installer/bin
+        New-Item -ItemType Directory -Force -Path installer/share/pixmaps
+        
+        # Copy the built executable
+        Copy-Item build/build/obj/Release/butler.exe installer/bin/
+        
+        # Copy Qt DLLs
+        Copy-Item 5.15.2/msvc2019_64/bin/Qt5Core.dll installer/bin/
+        Copy-Item 5.15.2/msvc2019_64/bin/Qt5Gui.dll installer/bin/
+        Copy-Item 5.15.2/msvc2019_64/bin/Qt5Widgets.dll installer/bin/
+        
+        # Copy SQLite3 DLL
+        Copy-Item "$env:VCPKG_INSTALLATION_PATH/installed/x64-windows/bin/sqlite3.dll" installer/bin/
+        
+        # Copy Qt plugins
+        New-Item -ItemType Directory -Force -Path installer/bin/platforms
+        Copy-Item 5.15.2/msvc2019_64/plugins/platforms/qwindows.dll installer/bin/platforms/
+        
+        # Copy icon if it exists
+        if (Test-Path share/pixmaps/butler.ico) {
+          Copy-Item share/pixmaps/butler.ico installer/share/pixmaps/
+        }
+        
+        # Copy license
+        Copy-Item LICENSE installer/license.txt
+
+    - name: Create NSIS script
+      shell: bash
+      run: |
+        # Generate NSIS script from template
+        sed -e "s|@PKGNAME_BASE@|butler|g" \
+            -e "s|@TCROOT@||g" \
+            -e "s|@PREFIX@||g" \
+            -e "s|@AUTHOR@|Csaszar Peter|g" \
+            -e "s|@PRJDESC@|Butler Shopping List and Home Accounting|g" \
+            -e "s|@EMAIL@|csjpeter@gmail.com|g" \
+            -e "s|@VERSION@|${{ steps.get_version.outputs.version_num }}|g" \
+            -e "s|@VERSION_MAJOR@|${{ steps.get_version.outputs.version_major }}|g" \
+            -e "s|@VERSION_MINOR@|${{ steps.get_version.outputs.version_minor }}|g" \
+            nsis/install.nsi.in > installer.nsi
+        
+        # Update paths in the NSIS script to match our structure
+        sed -i 's|../\${TCROOT}\${PREFIX}/\*|installer/*|g' installer.nsi
+
+    - name: Build installer
+      shell: pwsh
+      run: |
+        & "C:\Program Files (x86)\NSIS\makensis.exe" installer.nsi
+
+    - name: Rename installer
+      shell: bash
+      run: |
+        mv butler-installer.exe butler-${{ steps.get_version.outputs.version }}-windows-x64-installer.exe
+
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          butler-${{ steps.get_version.outputs.version }}-windows-x64-installer.exe
+        name: Release ${{ steps.get_version.outputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifact (for non-tag builds)
+      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-installer
+        path: butler-${{ steps.get_version.outputs.version }}-windows-x64-installer.exe
+        retention-days: 30
