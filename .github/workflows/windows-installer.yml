@@ -18,13 +18,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Install Qt for Windows
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '5.15.2'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        cache: true
+        modules: 'qtbase'
+        aqtversion: '==3.1.*'
+
     - name: Install Dependencies
       shell: pwsh
       run: |
-        # Install Qt5 using aqtinstall
-        pip install aqtinstall
-        aqt install-qt windows desktop 5.15.17 win64_msvc2019_64 -m qtbase
-        
         # Install SQLite3 using vcpkg
         vcpkg install sqlite3:x64-windows
         
@@ -37,9 +44,10 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
+        # The install-qt-action sets Qt5_DIR automatically
         cmake -B build \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/5.15.17/msvc2019_64/lib/cmake;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -DCMAKE_PREFIX_PATH="${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
           -S .
 
     - name: Build
@@ -75,17 +83,22 @@ jobs:
         # Copy the built executable
         Copy-Item build/build/obj/Release/butler.exe installer/bin/
         
+        # Find Qt installation directory from Qt5_DIR
+        # Qt5_DIR points to lib/cmake/Qt5, so we need to go up 3 levels
+        $QtRoot = Split-Path (Split-Path (Split-Path $env:Qt5_DIR -Parent) -Parent) -Parent
+        Write-Host "Qt Root: $QtRoot"
+        
         # Copy Qt DLLs
-        Copy-Item 5.15.17/msvc2019_64/bin/Qt5Core.dll installer/bin/
-        Copy-Item 5.15.17/msvc2019_64/bin/Qt5Gui.dll installer/bin/
-        Copy-Item 5.15.17/msvc2019_64/bin/Qt5Widgets.dll installer/bin/
+        Copy-Item "$QtRoot/bin/Qt5Core.dll" installer/bin/
+        Copy-Item "$QtRoot/bin/Qt5Gui.dll" installer/bin/
+        Copy-Item "$QtRoot/bin/Qt5Widgets.dll" installer/bin/
         
         # Copy SQLite3 DLL
         Copy-Item "$env:VCPKG_INSTALLATION_PATH/installed/x64-windows/bin/sqlite3.dll" installer/bin/
         
         # Copy Qt plugins
         New-Item -ItemType Directory -Force -Path installer/bin/platforms
-        Copy-Item 5.15.17/msvc2019_64/plugins/platforms/qwindows.dll installer/bin/platforms/
+        Copy-Item "$QtRoot/plugins/platforms/qwindows.dll" installer/bin/platforms/
         
         # Copy icon if it exists, otherwise create a placeholder
         if (Test-Path share/pixmaps/butler.ico) {
