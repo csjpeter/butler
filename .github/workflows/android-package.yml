@@ -27,24 +27,26 @@ jobs:
         java-version: '11'
 
     - name: Install Qt for Android
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
-        version: '5.15.2'
+        version: '5.15.17'
         host: 'linux'
         target: 'android'
         arch: 'android_arm64_v8a'
         cache: true
         set-env: true
+        aqtversion: '==3.1.*'
 
     - name: Install Qt for Linux (host tools)
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
-        version: '5.15.2'
+        version: '5.15.17'
         host: 'linux'
         target: 'desktop'
         arch: 'gcc_64'
         cache: true
         set-env: false
+        aqtversion: '==3.1.*'
 
     - name: Set up Android SDK and NDK
       run: |
