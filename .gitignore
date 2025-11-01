@@ -21,6 +21,9 @@ ui_*.h
 qrc_*.cpp
 *.qm
 
+# Logs
+*.log
+
 # Debian packaging build artifacts
 obj-*/
 debian/.debhelper/
