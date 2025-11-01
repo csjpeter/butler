@@ -39,7 +39,7 @@ jobs:
       run: |
         cmake -B build \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/5.15.2/msvc2019_64;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/5.15.2/msvc2019_64/lib/cmake;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
           -S .
 
     - name: Build
