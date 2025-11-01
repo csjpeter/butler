@@ -33,7 +33,6 @@ jobs:
         host: 'linux'
         target: 'android'
         arch: 'android_arm64_v8a'
-        modules: 'qtbase'
         cache: true
         set-env: true
 
@@ -44,7 +43,6 @@ jobs:
         host: 'linux'
         target: 'desktop'
         arch: 'gcc_64'
-        modules: 'qtbase'
         cache: true
         set-env: false
 
