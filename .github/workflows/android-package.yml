@@ -35,6 +35,18 @@ jobs:
         arch: 'android_arm64_v8a'
         modules: 'qtbase'
         cache: true
+        set-env: true
+
+    - name: Install Qt for Linux (host tools)
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+        host: 'linux'
+        target: 'desktop'
+        arch: 'gcc_64'
+        modules: 'qtbase'
+        cache: true
+        set-env: false
 
     - name: Set up Android SDK and NDK
       run: |
@@ -72,8 +84,15 @@ jobs:
         mkdir -p build-android
         cd build-android
         
+        # Find Qt installation paths
+        QT_ANDROID_ROOT="${Qt5_DIR}/../../.."
+        QT_HOST_ROOT="${Qt5_DIR}/../../../../../gcc_64"
+        
+        echo "Qt Android root: ${QT_ANDROID_ROOT}"
+        echo "Qt Host root: ${QT_HOST_ROOT}"
+        
         # Set Qt paths
-        export QT_HOST_PATH=${Qt5_DIR}/../../../gcc_64
+        export QT_HOST_PATH=${QT_HOST_ROOT}
         export ANDROID_NDK_HOST=linux-x86_64
         export ANDROID_API_VERSION=android-30
         
@@ -84,9 +103,9 @@ jobs:
           -DCMAKE_ANDROID_NDK=${ANDROID_NDK_ROOT} \
           -DCMAKE_ANDROID_STL_TYPE=c++_shared \
           -DCMAKE_ANDROID_API=30 \
-          -DCMAKE_PREFIX_PATH=${Qt5_DIR} \
-          -DQt5_DIR=${Qt5_DIR} \
-          -DCMAKE_FIND_ROOT_PATH=${Qt5_DIR} \
+          -DCMAKE_PREFIX_PATH="${QT_ANDROID_ROOT}" \
+          -DQt5_DIR="${Qt5_DIR}" \
+          -DCMAKE_FIND_ROOT_PATH="${QT_ANDROID_ROOT}" \
           -DCMAKE_BUILD_TYPE=Release \
           -DANDROID_PLATFORM=android-30 \
           -DANDROID_ABI=arm64-v8a \
@@ -139,11 +158,15 @@ jobs:
       run: |
         cd build-android
         
+        # Find Qt installation paths
+        QT_ANDROID_ROOT="${Qt5_DIR}/../../.."
+        QT_HOST_ROOT="${Qt5_DIR}/../../../../../gcc_64"
+        
         # Create deployment settings JSON
         cat > android-deployment-settings.json << EOF
         {
           "description": "Butler Android Deployment Configuration",
-          "qt": "${Qt5_DIR}/../../..",
+          "qt": "${QT_ANDROID_ROOT}",
           "sdk": "${ANDROID_SDK_ROOT}",
           "ndk": "${ANDROID_NDK_ROOT}",
           "sdkBuildToolsRevision": "30.0.3",
@@ -209,8 +232,11 @@ jobs:
       run: |
         cd build-android
         
+        # Find Qt host tools path
+        QT_HOST_ROOT="${Qt5_DIR}/../../../../../gcc_64"
+        
         # Run androiddeployqt
-        ${Qt5_DIR}/../../../gcc_64/bin/androiddeployqt \
+        ${QT_HOST_ROOT}/bin/androiddeployqt \
           --input android-deployment-settings.json \
           --output android-build \
           --android-platform android-30 \
