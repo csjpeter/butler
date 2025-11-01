@@ -55,6 +55,24 @@ sudo dpkg -i butler-debug_*_amd64.deb
 butler-debug
 ```
 
+### Android
+
+Download the latest APK from the [Releases](https://github.com/csjpeter/butler/releases) page.
+
+#### Installation
+
+1. Transfer the APK file to your Android device
+2. Enable "Install from Unknown Sources" in your device settings (if not already enabled)
+3. Open the APK file to install
+4. Launch Butler from your app drawer
+
+**Note:** The APK is signed with a debug certificate for development purposes. For production use, a proper release signing key should be used.
+
+#### Requirements
+
+- Android 9.0 (API level 28) or higher
+- ARM64 (arm64-v8a) device architecture
+
 ### Building from Source
 
 #### Requirements
@@ -141,6 +159,48 @@ To create an installer, you'll also need NSIS (Nullsoft Scriptable Install Syste
 choco install nsis
 # Then follow the steps in .github/workflows/windows-installer.yml
 ```
+
+#### Android
+
+##### Prerequisites
+
+- Qt 5.15.2 for Android (arm64-v8a)
+- Android SDK (API level 30 or higher)
+- Android NDK r21 or later
+- JDK 11 or later
+- CMake 3.14 or later
+
+##### Build APK
+
+```bash
+# Install Qt for Android
+pip install aqtinstall
+aqt install-qt linux android 5.15.2 android_arm64_v8a
+
+# Set environment variables
+export ANDROID_SDK_ROOT=/path/to/android-sdk
+export ANDROID_NDK_ROOT=/path/to/android-ndk
+export Qt5_DIR=/path/to/Qt/5.15.2/android_arm64_v8a/lib/cmake/Qt5
+
+# Configure and build
+mkdir build-android
+cd build-android
+cmake .. \
+  -DCMAKE_SYSTEM_NAME=Android \
+  -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a \
+  -DCMAKE_ANDROID_NDK=${ANDROID_NDK_ROOT} \
+  -DCMAKE_ANDROID_STL_TYPE=c++_shared \
+  -DCMAKE_ANDROID_API=30 \
+  -DCMAKE_PREFIX_PATH=${Qt5_DIR} \
+  -DCMAKE_BUILD_TYPE=Release
+
+cmake --build . --config Release
+
+# Use androiddeployqt to create APK
+# Follow the steps in .github/workflows/android-package.yml
+```
+
+For a complete automated build, refer to the GitHub Actions workflow at `.github/workflows/android-package.yml`.
 
 ## Execute
 
