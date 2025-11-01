@@ -145,13 +145,19 @@ jobs:
           VERSION="dev"
           VERSION_NUM="0.2.5"
         fi
-        VERSION_CODE=$(echo $VERSION_NUM | sed 's/\.//g' | sed 's/^0*//')
-        if [ -z "$VERSION_CODE" ]; then
+        # Generate version code: convert X.Y.Z to XXYYZZ format (e.g., 0.2.5 -> 000205)
+        IFS='.' read -ra VERSION_PARTS <<< "$VERSION_NUM"
+        VERSION_MAJOR=${VERSION_PARTS[0]:-0}
+        VERSION_MINOR=${VERSION_PARTS[1]:-0}
+        VERSION_PATCH=${VERSION_PARTS[2]:-0}
+        VERSION_CODE=$(printf "%02d%02d%02d" $VERSION_MAJOR $VERSION_MINOR $VERSION_PATCH | sed 's/^0*//')
+        if [ -z "$VERSION_CODE" ] || [ "$VERSION_CODE" = "0" ]; then
           VERSION_CODE="1"
         fi
         echo "version=${VERSION}" >> $GITHUB_OUTPUT
         echo "version_num=${VERSION_NUM}" >> $GITHUB_OUTPUT
         echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
+        echo "version_major=${VERSION_MAJOR}" >> $GITHUB_OUTPUT
         echo "Version: ${VERSION}, Version Number: ${VERSION_NUM}, Version Code: ${VERSION_CODE}"
 
     - name: Prepare androiddeployqt configuration
@@ -161,6 +167,9 @@ jobs:
         # Find Qt installation paths
         QT_ANDROID_ROOT="${Qt5_DIR}/../../.."
         QT_HOST_ROOT="${Qt5_DIR}/../../../../../gcc_64"
+        
+        # Get absolute path to application binary
+        APP_BINARY_PATH="$(pwd)/android-build/libs/arm64-v8a/libbutler.so"
         
         # Create deployment settings JSON
         cat > android-deployment-settings.json << EOF
@@ -174,7 +183,7 @@ jobs:
           "tool-prefix": "aarch64-linux-android",
           "ndk-host": "linux-x86_64",
           "target-architecture": "arm64-v8a",
-          "application-binary": "$(pwd)/android-build/libs/arm64-v8a/libbutler.so",
+          "application-binary": "${APP_BINARY_PATH}",
           "android-package-source-directory": "${GITHUB_WORKSPACE}/android",
           "android-package": "com.butler",
           "android-app-name": "Butler",
@@ -191,6 +200,7 @@ jobs:
         mkdir -p build-android/android-build
         
         # Process AndroidManifest.xml.in
+        # Note: @VERSION_MAJOR@ in manifest is used for versionCode (integer)
         sed -e "s|@PRJNAME@|butler|g" \
             -e "s|@VERSION_MAJOR@|${{ steps.get_version.outputs.version_code }}|g" \
             -e "s|@VERSION@|${{ steps.get_version.outputs.version_num }}|g" \
@@ -214,8 +224,10 @@ jobs:
         mkdir -p build-android/android-build/res/drawable-xxhdpi
         
         # Use butler.png as the app icon
+        # TODO: Ideally should resize for different densities:
+        #   mdpi: 48px, hdpi: 72px, xhdpi: 96px, xxhdpi: 144px
+        # For now, copying the same icon to all densities for simplicity
         if [ -f "share/icons/butler.png" ]; then
-          # Copy to all density folders (ideally would resize, but copying same for now)
           cp share/icons/butler.png build-android/android-build/res/drawable-mdpi/icon.png
           cp share/icons/butler.png build-android/android-build/res/drawable-hdpi/icon.png
           cp share/icons/butler.png build-android/android-build/res/drawable-xhdpi/icon.png
