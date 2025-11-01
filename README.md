@@ -124,7 +124,7 @@ The `.deb` packages will be created in the parent directory.
 
 - Visual Studio 2019 or later with C++ development tools
 - CMake 3.14 or later
-- Qt5 5.15.2 or later
+- Qt5 5.15.17 or later
 - SQLite3
 
 ##### Build with CMake
@@ -142,12 +142,12 @@ cd vcpkg
 
 # Install Qt5 using aqtinstall (or install manually from qt.io)
 pip install aqtinstall
-aqt install-qt windows desktop 5.15.2 win64_msvc2019_64
+aqt install-qt windows desktop 5.15.17 win64_msvc2019_64
 
 # Build Butler
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="<path-to-qt>\5.15.2\msvc2019_64;<path-to-vcpkg>\installed\x64-windows"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="<path-to-qt>\5.15.17\msvc2019_64;<path-to-vcpkg>\installed\x64-windows"
 cmake --build . --config Release
 ```
 
@@ -164,7 +164,7 @@ choco install nsis
 
 ##### Prerequisites
 
-- Qt 5.15.2 for Android (arm64-v8a)
+- Qt 5.15.17 for Android (arm64-v8a)
 - Android SDK (API level 30 or higher)
 - Android NDK r21 or later
 - JDK 11 or later
@@ -175,12 +175,12 @@ choco install nsis
 ```bash
 # Install Qt for Android
 pip install aqtinstall
-aqt install-qt linux android 5.15.2 android_arm64_v8a
+aqt install-qt linux android 5.15.17 android_arm64_v8a
 
 # Set environment variables
 export ANDROID_SDK_ROOT=/path/to/android-sdk
 export ANDROID_NDK_ROOT=/path/to/android-ndk
-export Qt5_DIR=/path/to/Qt/5.15.2/android_arm64_v8a/lib/cmake/Qt5
+export Qt5_DIR=/path/to/Qt/5.15.17/android_arm64_v8a/lib/cmake/Qt5
 
 # Configure and build
 mkdir build-android
