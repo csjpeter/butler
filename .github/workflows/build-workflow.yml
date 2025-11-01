@@ -3,8 +3,8 @@
 name: Build Workflow
 
 on:
-  push:
-    branches: [ "dev/*" ]
+  # push:
+  #   branches: [ "dev/*", "copilot/*" ]
   pull_request:
     branches: [ "master", "stable", "release/*" ]
   workflow_dispatch:
