@@ -124,7 +124,7 @@ The `.deb` packages will be created in the parent directory.
 
 - Visual Studio 2019 or later with C++ development tools
 - CMake 3.14 or later
-- Qt5 5.15.17 or later
+- Qt5 5.15.2 or later
 - SQLite3
 
 ##### Build with CMake
@@ -142,12 +142,12 @@ cd vcpkg
 
 # Install Qt5 using aqtinstall (or install manually from qt.io)
 pip install aqtinstall
-aqt install-qt windows desktop 5.15.17 win64_msvc2019_64
+aqt install-qt windows desktop 5.15.2 win64_msvc2019_64
 
 # Build Butler
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="<path-to-qt>\5.15.17\msvc2019_64;<path-to-vcpkg>\installed\x64-windows"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="<path-to-qt>\5.15.2\msvc2019_64;<path-to-vcpkg>\installed\x64-windows"
 cmake --build . --config Release
 ```
 
