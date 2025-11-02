@@ -28,6 +28,7 @@ jobs:
         target: 'desktop'
         arch: 'win64_msvc2019_64'
         cache: true
+        set-env: true
         modules: 'qtbase'
         aqtversion: '==3.1.*'
 
@@ -46,10 +47,12 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
-        # The install-qt-action sets Qt5_DIR automatically
+        # The install-qt-action sets Qt5_DIR to lib/cmake/Qt5
+        # We explicitly pass Qt5_DIR and also add Qt root (3 levels up) to CMAKE_PREFIX_PATH
         cmake -B build \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH="${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -DCMAKE_PREFIX_PATH="${Qt5_DIR}/../../..;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -DQt5_DIR="${Qt5_DIR}" \
           -S .
 
     - name: Build
