@@ -21,8 +21,7 @@ jobs:
     - name: Install Qt for Windows
       uses: jurplel/install-qt-action@v4
       with:
-        # Note: Qt 5.15.2 is used for Windows desktop (5.15.17 not available for this platform)
-        # Android workflow uses 5.15.17 which is available for that platform
+        # Note: Qt 5.15.2 is the latest available LTS version in the Qt archives
         version: '5.15.2'
         host: 'windows'
         target: 'desktop'
