@@ -29,7 +29,6 @@ jobs:
         arch: 'win64_msvc2019_64'
         cache: true
         set-env: true
-        modules: 'qtbase'
         aqtversion: '==3.1.*'
 
     - name: Install Dependencies
