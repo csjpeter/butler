@@ -31,14 +31,32 @@ if(UNIX)
     include_directories(${SQLITE3_INCLUDE_DIRS})
     link_libraries(${SQLITE3_LIBRARIES})
 elseif(WIN32)
-    # On Windows, find SQLite3 using CMake's find_library
-    find_path(SQLITE3_INCLUDE_DIR sqlite3.h)
-    find_library(SQLITE3_LIBRARY NAMES sqlite3)
+    # On Windows, find SQLite3
+    # When using vcpkg, the toolchain file should be set, which helps CMake find packages
+    # Otherwise, we search in common locations
+    find_path(SQLITE3_INCLUDE_DIR 
+        NAMES sqlite3.h
+        HINTS 
+            "${CMAKE_PREFIX_PATH}/include"
+            "$ENV{VCPKG_ROOT}/installed/x64-windows/include"
+            "$ENV{VCPKG_INSTALLATION_PATH}/installed/x64-windows/include"
+    )
+    find_library(SQLITE3_LIBRARY 
+        NAMES sqlite3
+        HINTS 
+            "${CMAKE_PREFIX_PATH}/lib"
+            "$ENV{VCPKG_ROOT}/installed/x64-windows/lib"
+            "$ENV{VCPKG_INSTALLATION_PATH}/installed/x64-windows/lib"
+    )
     if(SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
         include_directories(${SQLITE3_INCLUDE_DIR})
         set(SQLITE3_LIBRARIES ${SQLITE3_LIBRARY})
+        message(STATUS "Found SQLite3: ${SQLITE3_LIBRARY}")
     else()
-        message(FATAL_ERROR "SQLite3 not found. Please install SQLite3 or set CMAKE_PREFIX_PATH to include the SQLite3 installation directory.")
+        message(FATAL_ERROR "SQLite3 not found. Please install SQLite3 or set CMAKE_PREFIX_PATH to include the SQLite3 installation directory.\n"
+                "When using vcpkg, make sure to set CMAKE_TOOLCHAIN_FILE to the vcpkg toolchain file.\n"
+                "SQLITE3_INCLUDE_DIR: ${SQLITE3_INCLUDE_DIR}\n"
+                "SQLITE3_LIBRARY: ${SQLITE3_LIBRARY}")
     endif()
 endif()
 

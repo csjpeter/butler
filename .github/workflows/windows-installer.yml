@@ -46,10 +46,11 @@ jobs:
       shell: bash
       run: |
         # The install-qt-action sets Qt5_DIR to lib/cmake/Qt5
-        # We explicitly pass Qt5_DIR and also add Qt root (3 levels up) to CMAKE_PREFIX_PATH
+        # Use vcpkg toolchain file to properly find vcpkg-installed packages
         cmake -B build \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH="${Qt5_DIR}/../../..;${VCPKG_INSTALLATION_PATH}/installed/x64-windows" \
+          -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_PATH}/scripts/buildsystems/vcpkg.cmake" \
+          -DCMAKE_PREFIX_PATH="${Qt5_DIR}/../../.." \
           -DQt5_DIR="${Qt5_DIR}" \
           -S .
 
