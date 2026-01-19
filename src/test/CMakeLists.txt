@@ -30,3 +30,7 @@ set(BUTLER_COMMON_SOURCES
 
 # Add test executables
 add_butler_test(test_src_dataclasses "dataclasses.cpp;${CMAKE_SOURCE_DIR}/src/butler_dataclasses.cpp;${CMAKE_SOURCE_DIR}/src/butler_sql_connection.cpp;${BUTLER_COMMON_SOURCES}")
+add_butler_test(test_src_sql_connection "sql_connection.cpp;${CMAKE_SOURCE_DIR}/src/butler_dataclasses.cpp;${CMAKE_SOURCE_DIR}/src/butler_sql_connection.cpp;${BUTLER_COMMON_SOURCES}")
+add_butler_test(test_src_datetime "datetime.cpp;${BUTLER_COMMON_SOURCES}")
+add_butler_test(test_src_types "types.cpp;${BUTLER_COMMON_SOURCES}")
+add_butler_test(test_src_conversions "conversions.cpp;${CMAKE_SOURCE_DIR}/src/butler_dataclasses.cpp;${CMAKE_SOURCE_DIR}/src/butler_sql_connection.cpp;${BUTLER_COMMON_SOURCES}")

@@ -17,9 +17,6 @@
 #include <QVariant>
 
 
-inline csjp::String & operator<<=(csjp::String & lhs, unsigned rhs)
-		{ lhs.cutAt(0); lhs << rhs; return lhs; }
-
 inline csjp::String & operator<<=(csjp::String & lhs, const QString & rhs)
 		{ lhs = C_STR(rhs); return lhs; }
 inline QString & operator<<=(QString & lhs, const csjp::String & rhs)
