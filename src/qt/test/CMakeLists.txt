@@ -32,3 +32,5 @@ set(BUTLER_QT_COMMON_SOURCES
 
 # Add test executables
 add_butler_qt_test(test_qt_config "config.cpp;${CMAKE_SOURCE_DIR}/src/qt/butler_config.cpp;${CMAKE_SOURCE_DIR}/src/qt/butler_texts.cpp;${BUTLER_QT_COMMON_SOURCES}")
+add_butler_qt_test(test_qt_texts "texts.cpp;${CMAKE_SOURCE_DIR}/src/qt/butler_texts.cpp;${BUTLER_QT_COMMON_SOURCES}")
+add_butler_qt_test(test_qt_abstract_table_model "abstract_table_model.cpp;${BUTLER_QT_COMMON_SOURCES}")
